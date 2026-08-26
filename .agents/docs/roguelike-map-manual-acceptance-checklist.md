@@ -2,56 +2,58 @@
 
 本文件是 `.agents/plans/roguelike-map-real-tilemap-atlas.md` 的分阶段人工验收操作指南，方便按 PR 连续执行；它不保存 verdict。实际 `pending / passed / failed / deferred / blocked` 状态、稳定 MQA ID 和用户反馈只写入 [人工验收账本](manual-acceptance.md)。只有对应 PR 完成 review 且所需自动门禁通过后，才执行该阶段；未实现阶段不能按人工失败记录。
 
-## 本轮验证状态（2026-08-24）
+## 本轮验证状态
 
 ### 已通过的自动验证
 
 - [x] `dotnet build Tactics.Godot.slnx --no-restore`：成功，0 warning、0 error。
-- [x] Application Start/Save 回归：60/60，包括增量选人、首位顺序、重复/满员拒绝、setup 放弃和 V11 编解码。
-- [x] Core Adventure Map 合同测试：3/3。
-- [x] 隔离 Godot TileMap/Start Camp 测试：7/7，包括 100 Tile 投影、模板、真实 Actor、唯一 Active、Start→N1 锚点连线、统一地图尺寸和地图集方向。
-- [x] OKF 工具测试：16/16；knowledge bundle 校验通过。
-- [x] `git diff --check`：通过；未暂存、提交或清理用户现有改动。
+- [x] Core tests：183/183。
+- [x] Application tests：195/195，包含增量选人、Start/Save、V11 编解码与 Adventure Map 合同回归。
+- [x] `git diff --cached --check`：两笔恢复提交均通过；主 worktree 原有 `brainstorm.md` 与 `project.godot` 修改未被暂存或提交。
 
-### 当前工具阻断（不等于本切片测试失败）
+### 当前环境阻断
 
-- [ ] 完整 `Verify-GodotProject.ps1` 在运行测试前因仓库仍存在退役 Unity 根目录 `Assets` 而停止；未授权删除该目录。
-- [ ] gameplay contract CLI 因本地缺少 Node 包 `commander` 无法启动；未擅自安装依赖或修改 lockfile。
+- [ ] 完整 `Tools/godot/Verify-GodotProject.ps1` 在引擎测试前停止：固定路径缺少 `D:\Godot\Godot_v4.7.1-stable_mono_win64\Godot_v4.7.1-stable_mono_win64_console.exe`。
+- [ ] 因统一 Godot 门禁尚未通过，本 checklist 暂不宣告可开始人工验收；待安装固定 Godot 4.7.1 Mono 工具链并重跑门禁。
 
-### 仍需人工验证
+### 门禁恢复后仍需人工验证
 
 - [ ] 首屏自动路由、视觉布局、输入手感、误触、真实重启/Reload、损坏存档隔离文件和 Godot Output。
-- [ ] 以下 Start 四项均保持 `pending`；自动测试不得代替玩家 verdict。
+- [ ] 以下 Start 四项保持 `pending`；自动测试不得代替玩家 verdict。
 
 ## 环境准备
 
-- [ ] 在 `D:\codes\tactics-worktrees\feat-gd1` 通过 `Tools/godot/Open-GodotDev.ps1` 打开唯一 `godot/project.godot`；已有正确 Editor 时不重复启动。
+- [ ] 门禁恢复后，在 `D:\codes\tactics` 通过 `Tools/godot/Open-GodotDev.ps1` 打开唯一 `godot/project.godot`；已有正确 Editor 时不重复启动。
 - [ ] 使用隔离、可丢弃 Run；涉及节点迁移、奖励、战斗或 Continue 前先保留 save/backup。
 - [ ] 以 1600×900 为首轮基线，需要布局检查时再覆盖 16:9、16:10 和 21:9。
 - [ ] 保持 Godot Output 可见；失败时先保存截图/短视频、Run seed、节点/格位、存档和第一条异常，不立即重试覆盖现场。
 
-## 本轮重点：Start 优先切片
+## 本轮重点
 
-1. [ ] **自动启动与恢复（`MQA-GODOT-START-FLOW`）**
+统一 Godot 门禁恢复后，先复验最近恢复的角色点击与双状态相机；通过后再继续累计待验收项。建议使用一份可丢弃的新 Run，第 1 项首次选人后可直接沿用到第 3 项。
+
+1. [ ] **Start 地图集、角色点击与相机（`MQA-GODOT-MAP-CAMERA`）**
+   - **操作**：在 Current 确认 Start 10×10 地图基本撑满视口；分别点击候选身体，选定首位领队并点击可走 Tile。按 `M` 进入 Overview，用右键拖动和 WASD/方向键浏览最远节点并点击 Preview；滚动滚轮确认无变化，再按 `M` 返回，另用 `F/Home` 聚焦领队。
+   - **预期**：Current 聚焦完整 Start，重叠处命中前景角色；Overview 保持 TileMap 与文字可读，只允许浏览和 Preview，不允许选人、移动或出口。滚轮无作用；`M` 不受焦点影响并稳定往返；标题固定在自身 TileMap 上方中央；两种模式提示互斥，Party Setup、状态与 Esc 始终位于地图内容上方。
+   - **观察**：StartCampView、10×10 Tile 边界、Start→N1 端点、路线方向、节点尺度/标题、Party Setup、操作提示、Esc overlay 和 Godot Output。
+   - **失败保留**：窗口尺寸、输入序列、点击位置、节点 ID、相机状态、截图/短视频、Run seed/revision 和第一条 Output 异常。
+   - **存档边界**：相机和 Preview 只读，但首次选人会写入 PendingRunSetup；使用可丢弃 Run，失败后先复制存档再继续。
+
+## 累计待验收
+
+2. [ ] **自动启动与恢复（`MQA-GODOT-START-FLOW`）**
    - **操作**：备份存档后，依次验证空存档、营地已选 1 人、技能选择中、普通节点和 PendingBattle 的关闭再启动；另用可丢弃损坏副本启动一次。
-   - **预期**：没有旧 Home；空/不可恢复存档直接进入新营地，其余直接恢复对应页面；PendingBattle 保持 Encounter/Seed 并从入口 checkpoint 重开；损坏文件被隔离。
+   - **预期**：没有旧 Home；空/不可恢复存档直接进入新营地，其余恢复对应页面；PendingBattle 保持 Encounter/Seed 并从入口 checkpoint 重开；损坏文件被隔离。
    - **观察**：首个可交互页面、Run seed/revision、`user://pure-run` 文件和 Godot Output。
    - **失败保留**：save/backup/corrupt 文件、首屏截图、页面标题、seed/revision 和第一条 Output 异常。
    - **存档边界**：只使用备份或隔离存档，损坏测试不得针对唯一生产存档。
 
-2. [ ] **营地组队与领队（`MQA-GODOT-TILE-START-CAMP`）**
-   - **操作**：确认选 3 人提示、计数、三槽、首位领队和出口原因；先选 1 人并移动到多个可走 Tile，再选满 3 人；重复点击已选角色并在满员后点击第 4 人；关闭再启动。
+3. [ ] **营地组队与领队（`MQA-GODOT-TILE-START-CAMP`）**
+   - **操作**：确认选 3 人提示、计数、三槽、首位领队和出口原因；先选 1 人并移动，再选满 3 人；重复点击已选角色并在满员后点击第 4 人；关闭再启动。
    - **预期**：首人是唯一可移动领队，后续成员留在模板槽；选择不可撤销/重排且不超过 3 人；重启保留顺序但 Actor 回模板格；出口只在 3/3 解锁。
    - **观察**：StartCampView、Party 面板、角色 Body/Shadow、Tile、出口和 Godot Output。
    - **失败保留**：点击位置、选择顺序、移动前后格位、截图/短视频、save/backup 和 Output。
    - **存档边界**：每次选人都会修改 PendingRunSetup；失败后先复制存档再继续。
-
-3. [ ] **Start 地图集与相机（`MQA-GODOT-MAP-CAMERA`）**
-   - **操作**：在 Current 状态分别点击各候选角色身体并移动首位领队；按 `M` 进入 Overview，用右键拖动和 WASD/方向键浏览到最远节点并点击 Preview；滚动滚轮确认无变化，再按 `M` 返回，另用 `F/Home` 返回领队。
-   - **预期**：Current 完整显示 10×10 Start，角色身体可选且重叠处选择前景角色。Overview 保持地图与文字可读，不要求一屏显示全路线；只允许浏览和 Preview，不允许选人、移动或出口。滚轮在两种状态均无作用；`M` 不受焦点影响并可反复稳定切换。每张 TileMap 的“标题·类型·层数”固定在自身上方中央，随地图平移而不漂移。Current 与 Overview 显示不同的固定操作提示；Party Setup、状态和 Esc 菜单始终位于地图内容上方。
-   - **观察**：StartCampView、10×10 Tile 边界、Start→N1 端点、主路线/分支方向、各节点视觉尺度、页头、Party Setup、Planning/Party 状态、操作提示、Esc overlay 和 Godot Output。
-   - **失败保留**：窗口尺寸、输入序列、节点 ID、缩放/位置、短视频和 Output。
-   - **存档边界**：Preview 与相机只读；不要点击出口覆盖故障现场。
 
 4. [ ] **出口、技能与 Esc（`MQA-GODOT-START-ESC`）**
    - **操作**：在 0/3、1/3、2/3 点击出口，再在 3/3 点击一次并完成起始技能；检查 Esc 菜单；分别验证营地 Abandon Run 与战斗 Save and Quit。
@@ -107,8 +109,8 @@
 
 ## 环境与收尾
 
-- [ ] 使用 `Tools/godot/Open-GodotDev.ps1` 打开 canonical Editor；不要再输入 `cd cd ...`。
-- [ ] 本轮 Editor 已恢复到 `D:\codes\tactics-worktrees\feat-gd1\godot`；如果当前已经打开，无需重复启动。
+- [ ] 安装门禁固定的 Godot 4.7.1 Mono 工具链并重跑 `Tools/godot/Verify-GodotProject.ps1`；门禁通过前不开始人工验收。
+- [ ] 通过 `Tools/godot/Open-GodotDev.ps1` 打开 `D:\codes\tactics\godot` 的 canonical Editor；已有正确 Editor 时不重复启动。
 - [ ] 完成 1–4 后检查 Godot Output；失败现场先保存证据，再恢复原生产 save/backup。
 
 ## 反馈格式

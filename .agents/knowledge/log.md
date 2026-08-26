@@ -1,5 +1,8 @@
 # Tactics Knowledge Update Log
 
+## 2026-08-27
+* **Sync**: `roguelike-run` 已同步到来源指纹 `sha256:57b0cc3c4eb38270d7488ac9d21350981e8a6606cb55ecbb39d31f97848fb027`。
+
 ## 2026-08-25
 * **Sync**: `project-documentation` 已同步到来源指纹 `sha256:6516f4a16f545f918f84fd1dac00677e96100d0b89428058ca9097f1a94f9e50`。
 * **Sync**: `pure-run-artwork` 已同步到来源指纹 `sha256:0049d09e04f5a74522afefe34244048c03483fbc673096b0507a57d29f925e2e`。
