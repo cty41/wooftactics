@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "batchId": "roguelike-map-templates-v1",
+  "state": "Generated",
+  "ownership": "GodotOwned",
+  "contractId": "ROGUELIKE-MAP-TEMPLATE-001",
+  "catalogCount": 2,
+  "artifacts": [
+    {
+      "resourcePath": "res://content/adventure_maps/AdventureMapTileSetV1.tres",
+      "resourceUid": "uid://dsp2ybrc0vxay",
+      "semanticFingerprint": null
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/StartCampTemplateV1.tres",
+      "resourceUid": "uid://b3m7aevx135rv",
+      "semanticFingerprint": "sha256:87429637862c25f0f8760c45a6d4d2ebe313d5f5c25ee95fca49d716bb19a4e1"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/BasicBattleTemplateV1.tres",
+      "resourceUid": "uid://cmy865eeymqss",
+      "semanticFingerprint": "sha256:e5178d0ca3715d11bdb0a632c0b0607869524af1ee56c32bcd02d06f3fa7ae81"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/ContentCatalog.tres",
+      "resourceUid": "uid://d0pd8f783qad2",
+      "semanticFingerprint": null
+    }
+  ]
+}

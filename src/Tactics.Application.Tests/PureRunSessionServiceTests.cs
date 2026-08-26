@@ -112,6 +112,59 @@ public sealed class PureRunSessionServiceTests
     }
 
     [Test]
+    public void FourCandidateSetup_PersistsImmutableLeaderFirstSelectionAndRejectsOverflow()
+    {
+        var store = new MemoryRunStore();
+        var service = new PureRunSessionService(DefinitionWithDemonbound(), store);
+        Assert.That(service.BeginNewRunSetup(41).Succeeded, Is.True);
+
+        Assert.That(service.SelectPartyMember("demonbound").Succeeded, Is.True);
+        Assert.That(service.SelectPartyMember("mage").Succeeded, Is.True);
+        Assert.That(service.SelectPartyMember("amazon").Succeeded, Is.True);
+        PureRunSaveSnapshot selected = store.Snapshot!;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(selected.PendingRunSetup!.SelectedCharacterIds,
+                Is.EqualTo(new[] { "demonbound", "mage", "amazon" }));
+            Assert.That(service.SelectPartyMember("demonbound").ErrorCode,
+                Is.EqualTo("run_setup.party_character_immutable"));
+            Assert.That(service.SelectPartyMember("necromancer").ErrorCode,
+                Is.EqualTo("run_setup.party_full"));
+            Assert.That(service.ChooseParty(["mage", "demonbound", "amazon"]).ErrorCode,
+                Is.EqualTo("run_setup.party_order_immutable"));
+        });
+
+        IReadOnlyList<string> persistedOrder = selected.PendingRunSetup!.SelectedCharacterIds;
+        RunSessionResult finalized = service.ChooseParty(persistedOrder);
+        Assert.That(finalized.Succeeded, Is.True);
+        Assert.Multiple(() =>
+        {
+            Assert.That(finalized.Snapshot!.PendingRunSetup!.SelectedCharacterIds[0], Is.EqualTo("demonbound"));
+            Assert.That(finalized.Snapshot.PendingRunSetup.CurrentCharacterId, Is.EqualTo("mage"));
+        });
+    }
+
+    [Test]
+    public void AbandonPendingSetup_CreatesAbandonedTerminalSummary()
+    {
+        var store = new MemoryRunStore();
+        var service = new PureRunSessionService(DefinitionWithDemonbound(), store);
+        service.BeginNewRunSetup(42);
+        service.SelectPartyMember("mage");
+
+        RunSessionResult result = service.AbandonRun();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.Succeeded, Is.True);
+            Assert.That(result.Snapshot!.PendingRunSetup, Is.Null);
+            Assert.That(result.Snapshot.ActiveRun, Is.Null);
+            Assert.That(result.Snapshot.TerminalSummary!.Outcome, Is.EqualTo(PureRunOutcome.Abandoned));
+        });
+    }
+
+    [Test]
     public void NewRunSetup_RequiresThreeCanonicalChoicesBeforeReplacingActiveRun()
     {
         var store = new MemoryRunStore();

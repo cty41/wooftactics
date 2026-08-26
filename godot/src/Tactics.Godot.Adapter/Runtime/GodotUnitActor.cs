@@ -42,6 +42,7 @@ public partial class GodotUnitActor : Node2D
     public bool UsesGoatBodyMaskTint =>
         _definition?.BodyTintModeValue == UnitBodyTintModes.GoatBodyMaskV1;
     public bool IsAirborne => _definition?.MovementKindValue == "air" && !IsShowingDeath;
+    public string DefinitionId => _definition?.ContentIdValue ?? string.Empty;
 
     /// <summary>
     /// Applies presentation data from a generated definition without touching Core state.

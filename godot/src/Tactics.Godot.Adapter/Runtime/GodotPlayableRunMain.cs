@@ -12,10 +12,11 @@ using Tactics.Core.Runs;
 using Tactics.Core.Skills;
 using Tactics.Core.Units;
 using System.Text.Json;
+using System.Security.Cryptography;
 
 namespace Tactics.Godot.Adapter.Runtime;
 
-/// <summary>Native 1600x900 Home -> N1/N2/N3 -> Summary playable flow.</summary>
+/// <summary>Native 1600x900 auto-continue Pure Run flow.</summary>
 public partial class GodotPlayableRunMain : Control
 {
     public const int CanvasWidth = 1600;
@@ -89,6 +90,7 @@ public partial class GodotPlayableRunMain : Control
     private readonly PureRunFlowProjector _flowProjector = new();
     private GodotRogueMapView? _mapView;
     private GodotAdventureBoardView? _adventureBoard;
+    private GodotStartCampView? _startCampView;
     private readonly List<string> _partySelectionOrder = new();
     private string? _adventureLastBoardContentId;
     private Label? _mapDetail;
@@ -128,7 +130,7 @@ public partial class GodotPlayableRunMain : Control
         _playbackSpeed = _testContext?.InitialPlaybackSpeed ?? 1f;
         SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         LoadCatalogs();
-        ShowHome();
+        RouteStartup();
     }
 
     public void ConfigureTestContext(GodotPlayableRunTestContext context)
@@ -166,9 +168,9 @@ public partial class GodotPlayableRunMain : Control
         RunAdventureState? adventure = run?.AdventureState;
         if (adventure is null)
         {
-            if (snapshot?.PendingRunSetup is null || _adventureBoard is null || !GodotObject.IsInstanceValid(_adventureBoard)) return null;
-            return new GodotAdventureRuntimeProbe(_adventureBoard.Definition.ContentId.Value, null,
-                _adventureBoard.ActorCells.ToDictionary(value => value.Key, value => $"{value.Value.X},{value.Value.Y}", StringComparer.Ordinal),
+            if (snapshot?.PendingRunSetup is null || _startCampView is null || !GodotObject.IsInstanceValid(_startCampView)) return null;
+            return new GodotAdventureRuntimeProbe(_startCampView.MapInstance.Surface.Template!.BoardContentIdValue, null,
+                _startCampView.CandidateCells.ToDictionary(value => value.Key, value => $"{value.Value.X},{value.Value.Y}", StringComparer.Ordinal),
                 new Dictionary<string, string>(StringComparer.Ordinal)
                 {
                     ["start-exit"] = _partySelectionOrder.Count == _runDefinition?.ActivePartySize ? "Ready" : "Locked"
@@ -302,6 +304,12 @@ public partial class GodotPlayableRunMain : Control
     public bool TryResolveTestAdventurePointerTarget(string targetKind, string locator,
         out Control? surface, out Vector2 globalPoint)
     {
+        if (_startCampView is not null && GodotObject.IsInstanceValid(_startCampView) &&
+            _startCampView.TryResolveTarget(targetKind, locator, out globalPoint))
+        {
+            surface = _startCampView;
+            return true;
+        }
         surface = _adventureBoard;
         globalPoint = Vector2.Zero;
         if (_adventureBoard is null || !GodotObject.IsInstanceValid(_adventureBoard) ||
@@ -490,6 +498,24 @@ public partial class GodotPlayableRunMain : Control
         _status.AddThemeColorOverride("font_color", GodotTacticsTheme.TextSecondary); menu.AddChild(_status);
     }
 
+    private void RouteStartup()
+    {
+        _logs.Clear(); _visibleSnapshot = null; _battle = null;
+        RunStoreResult loaded = SaveStore.Load();
+        // GodotRunSaveStore quarantines unrecoverable documents during Load. A second
+        // read observes the clean slot while preserving the corrupt evidence files.
+        if (!loaded.Succeeded) loaded = SaveStore.Load();
+        if (loaded.Succeeded && loaded.Snapshot is { } snapshot &&
+            (snapshot.PendingRunSetup is not null || snapshot.ActiveRun is not null || snapshot.TerminalSummary is not null))
+        {
+            if (snapshot.PendingRunSetup is not null) ShowNewRunSetup(snapshot);
+            else if (snapshot.TerminalSummary is not null) ShowSummary(snapshot.TerminalSummary);
+            else ContinueRun();
+            return;
+        }
+        StartNewRunConfirmed();
+    }
+
     private void ShowHomeOptions()
     {
         Control root = NewPage("OPTIONS", "Display and presentation settings");
@@ -526,7 +552,8 @@ public partial class GodotPlayableRunMain : Control
 
     private void StartNewRunConfirmed()
     {
-        RunSessionResult started = _run!.BeginNewRunSetup(_testContext?.FixedSeed ?? 7);
+        int seed = _testContext?.FixedSeed ?? System.Security.Cryptography.RandomNumberGenerator.GetInt32(int.MinValue, int.MaxValue);
+        RunSessionResult started = _run!.BeginNewRunSetup(seed);
         if (!started.Succeeded) { SetStatus(started.ErrorCode); return; }
         ShowNewRunSetup(started.Snapshot!);
     }
@@ -548,7 +575,8 @@ public partial class GodotPlayableRunMain : Control
     private void ShowNewRunSetup(PureRunSaveSnapshot snapshot)
     {
         PendingRunSetup setup = snapshot.PendingRunSetup ?? throw new InvalidOperationException("Pending setup is missing.");
-        if (setup.SelectedCharacterIds.Count == 0 && _runDefinition!.Party.Count > _runDefinition.ActivePartySize)
+        if (setup.SelectedCharacterIds.Count < _runDefinition!.ActivePartySize &&
+            _runDefinition.Party.Count > _runDefinition.ActivePartySize)
         {
             ShowPartySelection();
             return;
@@ -572,59 +600,66 @@ public partial class GodotPlayableRunMain : Control
             skillButton.Name = $"starting_skill__{captured.Value.Replace('.', '_')}";
             choices.AddChild(skillButton);
         }
-        root.AddChild(PlaceControl(Button("Cancel", () =>
-        {
-            RunSessionResult canceled = _run!.CancelNewRunSetup();
-            if (!canceled.Succeeded) { SetStatus(canceled.ErrorCode); return; }
-            ShowHome();
-        }), new Vector2(650, 720), new Vector2(300, 60)));
-        _status = LabelAt(root, "The previous active run is preserved until all three choices are confirmed.", new Vector2(470, 680), 18);
+        _status = LabelAt(root, "Starting skill choices are saved immediately. Press Esc for run controls.", new Vector2(470, 680), 18);
     }
 
     private void ShowPartySelection()
     {
-        Control root = NewPage("NEW RUN — START CAMP", "Hover a candidate; click to add or remove. Select three, then click Start.");
+        Control root = NewPage("NEW RUN — START CAMP", "Select exactly 3. Your first choice becomes the leader and can move on camp tiles.");
         _partySelectionOrder.Clear();
-        AdventureActorPlacement[] placements = _runDefinition!.Party.Select((value, index) =>
-            new AdventureActorPlacement(value.CharacterId, new[] { new GridPoint(3, 4), new GridPoint(6, 4), new GridPoint(3, 7), new GridPoint(6, 7) }[index])).ToArray();
-        AdventureBoardDefinition definition = CreateStartCampBoard(placements);
-        _adventureBoard = new GodotAdventureBoardView { Name = "StartCampAdventureBoard" };
-        root.AddChild(_adventureBoard);
-        _adventureBoard.SetBoard(definition);
-        _adventureBoard.ActorPressed += characterId =>
+        PendingRunSetup setup = SaveStore.Load().Snapshot?.PendingRunSetup ??
+            throw new InvalidOperationException("Pending setup is missing.");
+        _partySelectionOrder.AddRange(setup.SelectedCharacterIds);
+        AdventureMapTemplateResource template = RequiredResourceLoader.Load<AdventureMapTemplateResource>(
+            "res://content/adventure_maps/StartCampTemplateV1.tres", "Start camp template load failed");
+        GodotStartCampCandidate[] candidates = _runDefinition!.Party.Select(value =>
+            new GodotStartCampCandidate(value.CharacterId, _unitResources[value.UnitContentId])).ToArray();
+        _startCampView = new GodotStartCampView { Name = "StartCampView" };
+        root.AddChild(_startCampView);
+        _startCampView.Configure(template, candidates);
+        AdventureMapTemplateResource planningTemplate = RequiredResourceLoader.Load<AdventureMapTemplateResource>(
+            "res://content/adventure_maps/BasicBattleTemplateV1.tres", "Planning preview template load failed");
+        _startCampView.ConfigureRoutePreviews(planningTemplate, MapDefinition);
+        _startCampView.PreviewPressed += nodeId =>
         {
-            if (_partySelectionOrder.Remove(characterId)) { }
-            else if (_partySelectionOrder.Count < _runDefinition.ActivePartySize) _partySelectionOrder.Add(characterId);
-            SetStatus($"Party {_partySelectionOrder.Count}/3: {string.Join(" → ", _partySelectionOrder)}");
+            PureRunMapNodeDefinition node = MapDefinition.Nodes.Single(value => value.NodeId == nodeId);
+            SetStatus($"Planning preview — {node.Title ?? node.NodeId} | {node.Kind} | Layer {node.Layer}. No encounter details revealed yet.");
         };
-        _adventureBoard.ObjectPressed += objectId =>
+        _startCampView.SetSelection(_partySelectionOrder, _partySelectionOrder.Count == _runDefinition.ActivePartySize);
+        _startCampView.CandidatePressed += characterId =>
         {
-            if (objectId != "start-exit") return;
+            if (_partySelectionOrder.Contains(characterId, StringComparer.Ordinal))
+            {
+                SetStatus($"{characterId} is already selected. Party order is locked for this run.");
+                return;
+            }
+            RunSessionResult selected = _run!.SelectPartyMember(characterId);
+            if (!selected.Succeeded) { SetStatus(selected.ErrorCode); return; }
+            _partySelectionOrder.Add(characterId);
+            _startCampView.SetSelection(_partySelectionOrder, _partySelectionOrder.Count == _runDefinition.ActivePartySize);
+            SetStatus(PartySelectionStatus());
+        };
+        _startCampView.ExitPressed += () =>
+        {
             if (_partySelectionOrder.Count != _runDefinition.ActivePartySize) { SetStatus("Choose exactly three candidates first."); return; }
             RunSessionResult result = _run!.ChooseParty(_partySelectionOrder);
             if (!result.Succeeded) { SetStatus(result.ErrorCode); return; }
             if (result.Snapshot!.PendingRunSetup is not null) ShowNewRunSetup(result.Snapshot);
             else RouteRunState(result.Snapshot);
         };
-        root.AddChild(PlaceControl(Button("Cancel", () =>
-        {
-            RunSessionResult canceled = _run!.CancelNewRunSetup();
-            if (!canceled.Succeeded) { SetStatus(canceled.ErrorCode); return; }
-            ShowHome();
-        }), new Vector2(650, 740), new Vector2(300, 50)));
-        _status = LabelAt(root, "Party 0/3. Selection order becomes party order.", new Vector2(470, 810), 18);
+        PanelAt(root, new Vector2(1080, 150), new Vector2(460, 220), GodotTacticsTheme.Card).Name = "StartCampPartyPanel";
+        LabelAt(root, "PARTY SETUP\nChoose exactly 3 candidates\nFirst choice = Leader\nSelected members cannot be removed or reordered\nExit unlocks at 3/3", new Vector2(1105, 172), 18).Size = new Vector2(410, 170);
+        _status = LabelAt(root, PartySelectionStatus(), new Vector2(470, 810), 18);
+        BuildPauseMenu(root, false);
     }
 
-    private static AdventureBoardDefinition CreateStartCampBoard(IReadOnlyList<AdventureActorPlacement> actors)
+    private string PartySelectionStatus()
     {
-        GridPoint[] perimeter = Enumerable.Range(0, 10).SelectMany(value =>
-                new[] { new GridPoint(value, 0), new GridPoint(value, 9) })
-            .Concat(Enumerable.Range(1, 8).SelectMany(value => new[] { new GridPoint(0, value), new GridPoint(9, value) }))
-            .Distinct().ToArray();
-        return new AdventureBoardDefinition(new ContentId("adventure-board.pure-run.start-camp"), 10, 10, perimeter,
-            [new AdventureBoardObject("campfire", AdventureObjectKind.Campfire, new GridPoint(5, 5), true, false),
-             new AdventureBoardObject("start-exit", AdventureObjectKind.Exit, new GridPoint(8, 5), false, false)],
-            actors, new GridPoint(1, 5), new GridPoint(8, 5));
+        string leader = _partySelectionOrder.FirstOrDefault() ?? "not selected";
+        string slots = string.Join(" | ", Enumerable.Range(0, _runDefinition!.ActivePartySize)
+            .Select(index => index < _partySelectionOrder.Count ? _partySelectionOrder[index] : "empty"));
+        return $"Party {_partySelectionOrder.Count}/{_runDefinition.ActivePartySize}  Leader: {leader}  Slots: {slots}  " +
+            (_partySelectionOrder.Count == _runDefinition.ActivePartySize ? "Exit ready." : "Exit locked: select more candidates.");
     }
 
     private void ShowInitialAdventure(PureRunState run)
@@ -2107,7 +2142,7 @@ public partial class GodotPlayableRunMain : Control
         Control root = NewPage(summary.Outcome.ToString(), "Three-encounter slice complete");
         PanelAt(root,new Vector2(450,205),new Vector2(700,470)).Name="TerminalSummaryPanel";
         LabelAt(root, $"Battles: {summary.BattlesCompleted}\nKills: {summary.EnemiesDefeated}\nGold: {summary.TotalGoldEarned}\nItems: {string.Join(", ", summary.AcquiredItems.Select(id => id.Value))}\nDead: {string.Join(", ", summary.DeadCharacters)}", new Vector2(520, 260), 30);
-        Button home = Button("Return Home", () => { _run!.ConsumeCompletedSummary(); ShowHome(); }); home.Position = new Vector2(650, 620); home.Size = new Vector2(300, 70); root.AddChild(home);
+        Button home = Button("Continue to Fresh Camp", () => { _run!.ConsumeCompletedSummary(); StartNewRunConfirmed(); }); home.Position = new Vector2(620, 620); home.Size = new Vector2(360, 70); root.AddChild(home);
     }
 
     private void AbandonRun()
@@ -2129,7 +2164,30 @@ public partial class GodotPlayableRunMain : Control
         menu.AddChild(new ColorRect { Color = GodotTacticsTheme.Accent, CustomMinimumSize = new Vector2(0, 2), MouseFilter = MouseFilterEnum.Ignore });
         menu.AddChild(Button("CONTINUE",ClosePauseMenu));
         menu.AddChild(Button("OPTIONS",()=>ShowPauseOptions(menu)));
-        menu.AddChild(Button("MAIN MENU",()=>{ClosePauseMenu();ShowHome();}));
+        menu.AddChild(Button("ABANDON RUN", ConfirmAbandonRun));
+        menu.AddChild(Button("SAVE AND QUIT", SaveAndQuit));
+    }
+
+    private void ConfirmAbandonRun()
+    {
+        ClosePauseMenu();
+        var confirm = new ConfirmationDialog
+        {
+            Title = "Abandon Run",
+            DialogText = "Abandon this run? This records an Abandoned summary before a fresh camp is created."
+        };
+        AddChild(confirm);
+        confirm.Confirmed += () => { confirm.QueueFree(); AbandonRun(); };
+        confirm.Canceled += confirm.QueueFree;
+        confirm.PopupCentered();
+    }
+
+    private void SaveAndQuit()
+    {
+        ClosePauseMenu();
+        // Every run/session mutation is already an atomic node-level checkpoint. A
+        // pending battle resumes from its persisted entry checkpoint and seed.
+        RequestQuit();
     }
 
     private void ShowPauseOptions(VBoxContainer menu)
@@ -2183,6 +2241,7 @@ public partial class GodotPlayableRunMain : Control
         _eventLog=null;
         _mapView=null;
         _adventureBoard=null;
+        _startCampView=null;
         _mapDetail=null;
         _pauseMenu=null;
         _pauseMenuControlsBattlePlayback=false;

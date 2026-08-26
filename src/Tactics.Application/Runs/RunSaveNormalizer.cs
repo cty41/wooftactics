@@ -98,7 +98,9 @@ internal static class RunSaveNormalizer
             .ToDictionary(value => value.Key, value => value.Value, StringComparer.Ordinal),
         StoreOffers = state.StoreOffers?.OrderBy(value => value.InstanceId.Value, StringComparer.Ordinal).ToArray(),
         PendingStatuses = state.PendingStatuses?.OrderBy(value => value.CharacterId, StringComparer.Ordinal)
-            .ThenBy(value => value.StatusId.Value, StringComparer.Ordinal).ToArray()
+            .ThenBy(value => value.StatusId.Value, StringComparer.Ordinal).ToArray(),
+        NodeIntelStates = state.NodeIntelStates?.OrderBy(value => value.Key, StringComparer.Ordinal)
+            .ToDictionary(value => value.Key, value => value.Value, StringComparer.Ordinal)
     };
 
     private static PureRunSummary Normalize(PureRunSummary summary) => summary with

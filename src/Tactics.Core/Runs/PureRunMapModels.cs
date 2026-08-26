@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Tactics.Core.Content;
 using Tactics.Core.Items;
 
@@ -87,7 +88,9 @@ public sealed record PureRunMapState(
     IReadOnlyDictionary<string, string>? MysteryAdjudicatorAssignments = null,
     ContentId? MapContentId = null,
     int MapLayoutVersion = 0,
-    RunTreasureResolutionState? TreasureResolution = null);
+    RunTreasureResolutionState? TreasureResolution = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    IReadOnlyDictionary<string, PureRunNodeIntelState>? NodeIntelStates = null);
 
 public sealed record RunStoreOfferState(
     ContentId ContentId,

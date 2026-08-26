@@ -7,6 +7,7 @@ namespace Tactics.Godot.Adapter.Runtime;
 /// <summary>Production-input surface backed by a real Godot TileMapLayer.</summary>
 public partial class GodotAdventureBoardView : Control
 {
+    private const string SharedTileSetPath = "res://content/adventure_maps/AdventureMapTileSetV1.tres";
     private static readonly Vector2 BoardOffset = new(400, 400);
     private readonly Dictionary<string, Label> _actors = new(StringComparer.Ordinal);
     private readonly Dictionary<string, Label> _objects = new(StringComparer.Ordinal);
@@ -25,7 +26,9 @@ public partial class GodotAdventureBoardView : Control
     {
         MouseFilter = MouseFilterEnum.Stop;
         SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-        _tiles = new TileMapLayer { Name = "AdventureTileMapLayer", TileSet = CreatePlaceholderTileSet(), Position = BoardOffset };
+        TileSet tileSet = ResourceLoader.Load<TileSet>(SharedTileSetPath)
+            ?? throw new InvalidOperationException($"Generated adventure TileSet is missing: {SharedTileSetPath}.");
+        _tiles = new TileMapLayer { Name = "AdventureTileMapLayer", TileSet = tileSet, Position = BoardOffset };
         AddChild(_tiles);
         GuiInput += OnGuiInput;
     }
@@ -112,33 +115,6 @@ public partial class GodotAdventureBoardView : Control
             Position = CellCenter(cell) - new Vector2(42, 34), Size = new Vector2(84, 28), HorizontalAlignment = HorizontalAlignment.Center };
         AddChild(marker);
         return marker;
-    }
-
-    private static TileSet CreatePlaceholderTileSet()
-    {
-        Image image = Image.CreateEmpty(192, 48, false, Image.Format.Rgba8);
-        image.Fill(Colors.Transparent);
-        PaintDiamond(image, 0, new Color("334b3f"));
-        PaintDiamond(image, 96, new Color("17251f"));
-        var source = new TileSetAtlasSource { Texture = ImageTexture.CreateFromImage(image), TextureRegionSize = new Vector2I(96, 48) };
-        source.CreateTile(new Vector2I(0, 0)); source.CreateTile(new Vector2I(1, 0));
-        var set = new TileSet
-        {
-            TileSize = new Vector2I(96, 48),
-            TileShape = TileSet.TileShapeEnum.Isometric,
-            TileLayout = TileSet.TileLayoutEnum.DiamondRight
-        };
-        set.AddSource(source, 0);
-        return set;
-    }
-
-    private static void PaintDiamond(Image image, int offset, Color color)
-    {
-        for (int y = 0; y < 48; y++)
-        {
-            int half = y < 24 ? y * 2 : (47 - y) * 2;
-            for (int x = 48 - half; x <= 48 + half && x < 96; x++) image.SetPixel(offset + x, y, color);
-        }
     }
 
     private static bool TryCell(string value, out GridPoint cell)
