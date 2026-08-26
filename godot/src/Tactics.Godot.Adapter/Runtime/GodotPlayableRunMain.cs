@@ -22,6 +22,9 @@ public partial class GodotPlayableRunMain : Control
     public const int CanvasWidth = 1600;
     public const int CanvasHeight = 900;
     public const int PauseOverlayZIndex = 4000;
+    public const int StartPageUiZIndex = 1200;
+    public const string StartCurrentControlsHint = "[LMB] select/move   [M] route overview   [F/Home] leader";
+    public const string StartOverviewControlsHint = "[LMB] inspect node   [RMB/WASD] browse route   [M] return to camp";
     internal static IReadOnlyDictionary<string, Rect2> BattleHudPanelRects { get; } =
         new Dictionary<string, Rect2>(StringComparer.Ordinal)
         {
@@ -348,6 +351,13 @@ public partial class GodotPlayableRunMain : Control
         return paused || pauseAfterCurrentFrame ? PresentationDrainAction.Pause : PresentationDrainAction.Refresh;
     }
 
+    public override void _Input(InputEvent inputEvent)
+    {
+        if (_startCampView is null || _pauseMenu?.Visible == true || _cheatConsole?.Visible == true) return;
+        if (!_startCampView.HandleAtlasKey(inputEvent)) return;
+        GetViewport().SetInputAsHandled();
+    }
+
     public override void _UnhandledInput(InputEvent inputEvent)
     {
         if (_battle is not null && inputEvent.IsActionPressed("toggle_console"))
@@ -647,9 +657,41 @@ public partial class GodotPlayableRunMain : Control
             if (result.Snapshot!.PendingRunSetup is not null) ShowNewRunSetup(result.Snapshot);
             else RouteRunState(result.Snapshot);
         };
-        PanelAt(root, new Vector2(1080, 150), new Vector2(460, 220), GodotTacticsTheme.Card).Name = "StartCampPartyPanel";
-        LabelAt(root, "PARTY SETUP\nChoose exactly 3 candidates\nFirst choice = Leader\nSelected members cannot be removed or reordered\nExit unlocks at 3/3", new Vector2(1105, 172), 18).Size = new Vector2(410, 170);
+        var atlasInput = new Control
+        {
+            Name = "StartCampAtlasInput",
+            Position = GodotStartCampView.AtlasViewport.Position,
+            Size = GodotStartCampView.AtlasViewport.Size,
+            MouseFilter = MouseFilterEnum.Stop,
+            ZIndex = StartPageUiZIndex - 1
+        };
+        root.AddChild(atlasInput);
+        atlasInput.GuiInput += input =>
+        {
+            if (input is InputEventMouse mouse)
+                _startCampView?.HandleAtlasInput(input, atlasInput.Position + mouse.Position);
+        };
+        PanelContainer partyPanel = PanelAt(root, new Vector2(1080, 150), new Vector2(460, 220), GodotTacticsTheme.Card);
+        partyPanel.Name = "StartCampPartyPanel";
+        partyPanel.ZIndex = StartPageUiZIndex;
+        Label partyInstructions = LabelAt(root, "PARTY SETUP\nChoose exactly 3 candidates\nFirst choice = Leader\nSelected members cannot be removed or reordered\nExit unlocks at 3/3", new Vector2(1105, 172), 18);
+        partyInstructions.Name = "StartCampPartyInstructions";
+        partyInstructions.Size = new Vector2(410, 170);
+        partyInstructions.ZIndex = StartPageUiZIndex + 1;
         _status = LabelAt(root, PartySelectionStatus(), new Vector2(470, 810), 18);
+        _status.Name = "StartCampStatus";
+        _status.ZIndex = StartPageUiZIndex;
+        Label controlsHint = LabelAt(root,
+            StartCurrentControlsHint,
+            new Vector2(710, 742), 14);
+        controlsHint.Name = "StartCampControlsHint";
+        controlsHint.Size = new Vector2(830, 28);
+        controlsHint.HorizontalAlignment = HorizontalAlignment.Right;
+        controlsHint.AddThemeColorOverride("font_color", new Color("c4d0d3b8"));
+        controlsHint.ZIndex = StartPageUiZIndex;
+        _startCampView.CameraModeChanged += mode => controlsHint.Text = mode == StartAtlasCameraMode.Current
+            ? StartCurrentControlsHint
+            : StartOverviewControlsHint;
         BuildPauseMenu(root, false);
     }
 
@@ -2252,6 +2294,7 @@ public partial class GodotPlayableRunMain : Control
         if (!battleBackdrop && showHeader)
         {
             PanelContainer header = PanelAt(root, new Vector2(48, 24), new Vector2(1504, 104));
+            header.ZIndex = StartPageUiZIndex;
             var labels = new VBoxContainer(); header.AddChild(labels);
             labels.AddChild(Label(title, 34));
             Label detail = Label(subtitle, 16); detail.AddThemeColorOverride("font_color", GodotTacticsTheme.TextSecondary); labels.AddChild(detail);

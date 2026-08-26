@@ -9,7 +9,7 @@
 - [x] `dotnet build Tactics.Godot.slnx --no-restore`：成功，0 warning、0 error。
 - [x] Application Start/Save 回归：60/60，包括增量选人、首位顺序、重复/满员拒绝、setup 放弃和 V11 编解码。
 - [x] Core Adventure Map 合同测试：3/3。
-- [x] 隔离 Godot TileMap/Start Camp 测试：7/7，包括 100 Tile 投影、模板、真实 Actor、唯一 Active 与全节点 Preview。
+- [x] 隔离 Godot TileMap/Start Camp 测试：7/7，包括 100 Tile 投影、模板、真实 Actor、唯一 Active、Start→N1 锚点连线、统一地图尺寸和地图集方向。
 - [x] OKF 工具测试：16/16；knowledge bundle 校验通过。
 - [x] `git diff --check`：通过；未暂存、提交或清理用户现有改动。
 
@@ -47,9 +47,9 @@
    - **存档边界**：每次选人都会修改 PendingRunSetup；失败后先复制存档再继续。
 
 3. [ ] **Start 地图集与相机（`MQA-GODOT-MAP-CAMERA`）**
-   - **操作**：在 Start 页面检查当前营地与全部后续节点；点击 Preview；依次使用右键按住拖动、指针位置滚轮缩放、WASD/方向键、`M`、`F/Home`，最后左键移动领队。
-   - **预期**：营地是唯一 Active TileMap，其余均为带徽标和连线的无 Actor/AI Preview；Preview 点击只更新 Planning 摘要；右键拖动、指针中心缩放、键盘平移、总览和领队聚焦正确且受边界约束；左键不拖相机；右下提示不挡输入。
-   - **观察**：StartCampView、Preview TileMap、连接线、Planning 状态文字、右下提示和 Godot Output。
+   - **操作**：在 Current 状态分别点击各候选角色身体并移动首位领队；按 `M` 进入 Overview，用右键拖动和 WASD/方向键浏览到最远节点并点击 Preview；滚动滚轮确认无变化，再按 `M` 返回，另用 `F/Home` 返回领队。
+   - **预期**：Current 完整显示 10×10 Start，角色身体可选且重叠处选择前景角色。Overview 保持地图与文字可读，不要求一屏显示全路线；只允许浏览和 Preview，不允许选人、移动或出口。滚轮在两种状态均无作用；`M` 不受焦点影响并可反复稳定切换。每张 TileMap 的“标题·类型·层数”固定在自身上方中央，随地图平移而不漂移。Current 与 Overview 显示不同的固定操作提示；Party Setup、状态和 Esc 菜单始终位于地图内容上方。
+   - **观察**：StartCampView、10×10 Tile 边界、Start→N1 端点、主路线/分支方向、各节点视觉尺度、页头、Party Setup、Planning/Party 状态、操作提示、Esc overlay 和 Godot Output。
    - **失败保留**：窗口尺寸、输入序列、节点 ID、缩放/位置、短视频和 Output。
    - **存档边界**：Preview 与相机只读；不要点击出口覆盖故障现场。
 
