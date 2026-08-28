@@ -27,6 +27,9 @@ $runSettings = Join-Path $repoRoot 'Tactics.Godot.runsettings'
 $adapterProject = Join-Path $projectRoot 'Tactics.Godot.Adapter.csproj'
 $toolingManifest = Join-Path $repoRoot 'Tools\migration\manifest\godot-tooling.json'
 $packageValidator = Join-Path $repoRoot 'Tools\godot\Test-GodotWindowsPackage.ps1'
+$sessionModule = Join-Path $PSScriptRoot 'GodotDevSession.psm1'
+Import-Module $sessionModule -Force
+$editorLaunchArgument = Get-TacticsGodotLaunchArgument
 
 function Invoke-Checked {
     param(
@@ -134,7 +137,7 @@ try {
         dotnet test 'src/Tactics.Application.Tests/Tactics.Application.Tests.csproj' -c Debug --no-restore --no-build --settings $runSettings --logger 'console;verbosity=minimal'
     }
     Invoke-Checked 'Scan Godot project in headless Editor' {
-        & $GodotExecutable --headless --editor --path $projectRoot --quit-after 6000
+        & $GodotExecutable --headless --editor --path $projectRoot --quit-after 6000 -- $editorLaunchArgument
     }
 
     if ($selectedFlavors -contains 'Debug') {

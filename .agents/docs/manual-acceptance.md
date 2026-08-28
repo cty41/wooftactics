@@ -36,12 +36,24 @@ Roguelike Map 分阶段操作步骤见 [真实 TileMap 人工验收 Checklist](r
 - Status: `pending`
 - Source: Unified multi-worktree Godot development launcher
 - Action: In a fresh worktree, start with `Tools/godot/Open-GodotDev.ps1`; after the first `CODEX_RESTART_REQUIRED`, restart Codex once, rerun the entry, and inspect the Editor and Godot AI Dock. Repeat while another Godot worktree Editor is open.
-- Expected: The correct project opens without manually running `dotnet build`; both C# EditorPlugins remain enabled; the Godot AI Dock is visible; the Agent session routes only to this worktree; the other worktree Editor remains running and unchanged.
+- Expected: The correct project opens without manually running `dotnet build`; both EditorPlugins remain enabled (Godot AI plus the GDScript-bootstrap/C#-controller Tactics Tooling); the Godot AI Dock is visible; the Agent session routes only to this worktree; the other worktree Editor remains running and unchanged.
 - Observe: Editor title/project path, Project Settings plugin list, Godot AI Dock/session list, `.godot/tactics-dev-session.json`, and Output errors.
 - Preserve on failure: Launcher output, both worktree paths/PIDs, plugin state, Dock screenshot, session listing, and first Godot error.
 - Save boundary: Use worktree-isolated user data; do not use `SharedManualQA` for Agent acceptance.
 - Automated evidence: Vendor hash, launcher policy, Codex bootstrap/profile, production assembly identity, release exclusion and same-worktree mutex checks are automated. Real Dock visibility, Editor reload and two-window routing remain human-only.
 - User verdict: none.
+
+### MQA-GODOT-DIRECT-LAUNCH-GUARD — Direct Editor launch recovery prompt
+
+- Status: `pending`
+- Source: GDScript Tactics Tooling Bootstrap and supported-launch argument contract.
+- Action: First close every Editor for this worktree, then open `godot/project.godot` directly without `Open-GodotDev.ps1`; inspect the prompt and use “复制启动命令”. Close that Editor normally, run the copied command, and inspect the reopened Editor. If practical, repeat the first direct-open step after moving the generated Debug Adapter DLL aside through a controlled backup/restore flow.
+- Expected: Direct launch shows one Chinese recovery prompt, omits the Tactics Tooling Main Screen, keeps the addon enabled, and copies a correctly quoted absolute PowerShell command without executing it. The supported launch builds with 0 errors, shows no recovery prompt and restores one working Tactics Tooling Main Screen. Neither path reports the legacy `Unable to load addon script ... TacticsEditorPlugin.cs` error.
+- Observe: Recovery dialog, clipboard text, top-level Editor workspaces, Project Settings plugin list, Godot Output, and `.godot/tactics-dev-session.json` after the supported launch.
+- Preserve on failure: Screenshot of the prompt or missing prompt, copied command, exact launch method, DLL-present/absent state, plugin enabled state, first Output error and Editor PID/project path.
+- Save boundary: Editor-only/read-only check; close normally, do not force-kill, do not execute the copied launcher while the direct-open Editor remains active, and restore any temporarily moved generated DLL in `finally`.
+- Automated evidence: Godot tooling policy tests cover launch-time Main Screen registration, quoted process paths, unique logs, verifier-lock reuse and PCK exclusion; Debug Adapter build, four headless Bootstrap probes (direct with old/absent DLL and supported argument with absent/valid DLL) and real same-PID assembly reload passed. The full verifier is currently blocked before project tests by an unrelated pinned godot-ai vendor-tree hash drift, so this item is not ready to mark passed from automation.
+- User verdict: Partial pass on 2026-08-28: after the repository-root SDK fix, the user confirmed the copied `Open-GodotDev.ps1` command works. Direct-launch dialog appearance, clipboard contents, plugin-list persistence and absence of the legacy Output error remain pending.
 
 ### MQA-GODOT-DEMONBOUND-ACTION-ART — Demonbound native pose integration
 

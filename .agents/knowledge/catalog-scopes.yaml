@@ -34,6 +34,8 @@ scopes:
       - src/Tactics.Core
       - src/Tactics.Application
       - godot/src/Tactics.Godot.Adapter
+      - godot/addons/tactics_tooling
+      - godot/export_presets.cfg
       - godot/project.godot
 
   project-documentation:
@@ -140,6 +142,8 @@ scopes:
       - Tactics.Godot.slnx
       - Tactics.Godot.runsettings
       - godot/project.godot
+      - godot/export_presets.cfg
+      - godot/addons/tactics_tooling
       - godot/Tactics.Godot.Adapter.csproj
       - .github/workflows/godot-windows-build.yml
       - Tools/godot/Build-GodotWindows.ps1
@@ -149,8 +153,11 @@ scopes:
       - Tools/migration/manifest/godot-tooling.json
       - Tools/godot/Verify-GodotProject.ps1
       - Tools/godot/Open-GodotDev.ps1
+      - Tools/godot/Test-TacticsToolingBootstrap.ps1
+      - Tools/godot/Test-TacticsToolingAssemblyReload.ps1
       - Tools/godot/GodotDevSession.psm1
       - Tools/godot/tests/test_godot_dev_launcher.py
+      - Tools/godot/tests/test_windows_rc_pipeline.py
       - Tools/godot/Sync-GodotAiCodexConfig.ps1
       - Tools/migration/godot_ai_codex_config.py
       - Tools/migration/godot_ai_vendor.py

@@ -1,5 +1,11 @@
 Set-StrictMode -Version Latest
 
+$script:TacticsGodotLaunchArgument = '--tactics-open-godot-dev=v1'
+
+function Get-TacticsGodotLaunchArgument {
+    $script:TacticsGodotLaunchArgument
+}
+
 function Get-TacticsGodotWorktreeIdentity {
     param([Parameter(Mandatory = $true)][string]$RepoRoot)
     $resolved = (Resolve-Path -LiteralPath $RepoRoot).Path.TrimEnd([IO.Path]::DirectorySeparatorChar)
@@ -57,4 +63,4 @@ function Get-TacticsGodotEditorProcess {
     })
 }
 
-Export-ModuleMember -Function Get-TacticsGodotWorktreeIdentity, Enter-TacticsGodotOperationLock, Exit-TacticsGodotOperationLock, Get-TacticsGodotEditorProcess
+Export-ModuleMember -Function Get-TacticsGodotLaunchArgument, Get-TacticsGodotWorktreeIdentity, Enter-TacticsGodotOperationLock, Exit-TacticsGodotOperationLock, Get-TacticsGodotEditorProcess

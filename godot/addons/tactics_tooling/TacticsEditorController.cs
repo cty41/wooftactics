@@ -5,20 +5,39 @@ using Tactics.Godot.Adapter.Editor;
 namespace Tactics.Godot.Adapter.Editor;
 
 [Tool]
-public partial class TacticsEditorPlugin : EditorPlugin, ISerializationListener
+public partial class TacticsEditorController : Node, ISerializationListener
 {
+    internal const string InitializationMetadata = "tactics_tooling_initialized";
     private const string BridgeNodeName = "TacticsAuthoringEditorBridge";
     private const string WorkbenchNodeName = "TacticsContentWorkbench";
     private TacticsContentWorkbench? _workbench;
+    private EditorUndoRedoManager? _undoRedo;
     private bool _headless;
+    private bool _mainScreenVisible;
     private TacticsAuthoringEditorBridge? _authoringBridge;
     private int _readinessAttempts;
     private string _lastReadinessDiagnostic = string.Empty;
     private bool _shuttingDown;
 
+    private EditorUndoRedoManager EditorUndoRedo =>
+        _undoRedo ?? throw new InvalidOperationException("Tactics tooling controller requires Editor UndoRedo before entering the tree.");
+
+    public void Configure(EditorUndoRedoManager undoRedo)
+    {
+        _undoRedo = undoRedo ?? throw new ArgumentNullException(nameof(undoRedo));
+    }
+
+    public void SetMainScreenVisible(bool visible)
+    {
+        _mainScreenVisible = visible;
+        if (_workbench is not null && GodotObject.IsInstanceValid(_workbench))
+            _workbench.Visible = visible;
+    }
+
     public override void _EnterTree()
     {
-        GD.Print("[Tactics Tooling] EditorPlugin entering tree.");
+        SetMeta(InitializationMetadata, false);
+        GD.Print("[Tactics Tooling] Controller entering tree.");
 
         try
         {
@@ -26,34 +45,37 @@ public partial class TacticsEditorPlugin : EditorPlugin, ISerializationListener
             if (OS.GetCmdlineArgs().Contains("--build-poison-spear"))
             {
                 PoisonSpearAssetFactory.BuildLv1();
+                SetMeta(InitializationMetadata, true);
                 GetTree().Quit();
                 return;
             }
 
             // Headless import/generation runs can temporarily expose scripted resources as base Resource
             // while EditorFileSystem updates the C# global-class cache. The authoring UI has no headless
-            // consumer, so keep the plugin lifecycle observable without constructing its typed panels.
+            // consumer, so keep the controller lifecycle observable without constructing its typed panels.
             if (DisplayServer.GetName() == "headless")
             {
                 _headless = true;
                 SetProcess(false);
+                SetMeta(InitializationMetadata, true);
                 GD.Print("[Tactics Tooling] Main screen skipped in headless editor mode.");
                 return;
             }
 
             SetProcess(true);
             CreateBridge();
+            SetMeta(InitializationMetadata, true);
         }
         catch (Exception exception)
         {
-            GD.PushError($"[Tactics Tooling] Failed to initialize: {exception}");
+            GD.PushError($"[Tactics Tooling] Failed to initialize controller: {exception}");
             ShutdownForReload();
         }
     }
 
     public override void _ExitTree()
     {
-        GD.Print("[Tactics Tooling] EditorPlugin exiting tree.");
+        GD.Print("[Tactics Tooling] Controller exiting tree.");
         ShutdownForReload();
     }
 
@@ -65,23 +87,23 @@ public partial class TacticsEditorPlugin : EditorPlugin, ISerializationListener
     public void OnAfterDeserialize()
     {
         _shuttingDown = false;
-        CallDeferred(nameof(RestoreAfterAssemblyReload));
+        if (!_headless)
+            CallDeferred(nameof(RestoreAfterAssemblyReload));
     }
 
     private void RestoreAfterAssemblyReload()
     {
+        if (_shuttingDown || !IsInsideTree()) return;
         _shuttingDown = false;
         _authoringBridge ??= GetNodeOrNull<TacticsAuthoringEditorBridge>(BridgeNodeName);
         _workbench ??= EditorInterface.Singleton.GetEditorMainScreen()
             .GetNodeOrNull<TacticsContentWorkbench>(WorkbenchNodeName);
         if (_authoringBridge is not null && GodotObject.IsInstanceValid(_authoringBridge))
-            _authoringBridge.RestartAfterReload(GetUndoRedo());
+            _authoringBridge.RestartAfterReload(EditorUndoRedo);
         else
             CreateBridge();
         SetProcess(true);
     }
-
-    public override bool _HasMainScreen() => true;
 
     public override void _Process(double delta)
     {
@@ -98,22 +120,11 @@ public partial class TacticsEditorPlugin : EditorPlugin, ISerializationListener
         RegisterMainScreenWhenReady();
     }
 
-    public override void _MakeVisible(bool visible)
-    {
-        if (_workbench is not null && GodotObject.IsInstanceValid(_workbench))
-            _workbench.Visible = visible;
-    }
-
-    public override string _GetPluginName() => "Tactics Tooling";
-
-    public override Texture2D _GetPluginIcon() =>
-        EditorInterface.Singleton.GetEditorTheme().GetIcon("Node", "EditorIcons");
-
     private void CreateBridge()
     {
         if (_authoringBridge is not null) return;
         _authoringBridge = new TacticsAuthoringEditorBridge { Name = BridgeNodeName };
-        _authoringBridge.Configure(GetUndoRedo());
+        _authoringBridge.Configure(EditorUndoRedo);
         AddChild(_authoringBridge);
     }
 
@@ -153,9 +164,9 @@ public partial class TacticsEditorPlugin : EditorPlugin, ISerializationListener
         _readinessAttempts = 0;
         _lastReadinessDiagnostic = string.Empty;
         _workbench = new TacticsContentWorkbench { Name = WorkbenchNodeName };
-        _workbench.Configure(GetUndoRedo());
+        _workbench.Configure(EditorUndoRedo);
         EditorInterface.Singleton.GetEditorMainScreen().AddChild(_workbench);
-        _MakeVisible(false);
+        _workbench.Visible = _mainScreenVisible;
         _authoringBridge?.MarkReady();
         GD.Print("[Tactics Tooling] Main screen registered after filesystem scan.");
     }

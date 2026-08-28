@@ -46,7 +46,7 @@ public partial class TacticsAuthoringEditorBridge : Node, ISerializationListener
     public void OnAfterDeserialize()
     {
         // Godot invokes this while other tool scripts may still have old handles.
-        // TacticsEditorPlugin defers the actual restart until deserialization finishes.
+        // TacticsEditorController defers the actual restart until deserialization finishes.
     }
 
     internal void RestartAfterReload(EditorUndoRedoManager undoRedo)

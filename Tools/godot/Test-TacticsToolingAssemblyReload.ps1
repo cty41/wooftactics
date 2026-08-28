@@ -10,6 +10,9 @@ $projectRoot = Join-Path $repoRoot 'godot'
 $projectFile = Join-Path $projectRoot 'project.godot'
 $logPath = Join-Path $env:TEMP ('tactics-tooling-reload-' + [guid]::NewGuid().ToString('N') + '.log')
 $descriptorPattern = Join-Path $projectRoot '.godot\tactics-authoring-session-*.json'
+$sessionModule = Join-Path $PSScriptRoot 'GodotDevSession.psm1'
+Import-Module $sessionModule -Force
+$editorLaunchArgument = Get-TacticsGodotLaunchArgument
 $forbidden = @('InvalidCastException', 'Failed to unload assemblies', 'delegate_handle.value', 'Method not found')
 
 if (!(Test-Path -LiteralPath $GodotExecutable)) { throw "Godot executable not found: $GodotExecutable" }
@@ -53,7 +56,10 @@ function Invoke-AuthoringPreview($descriptor, [string]$contentId) {
         $reader = [System.IO.StreamReader]::new($pipe, [System.Text.Encoding]::UTF8, $false, 4096, $true)
         $writer.AutoFlush = $true; $writer.WriteLine($request)
         $response = $reader.ReadLine() | ConvertFrom-Json
-        if (!$response.succeeded) { throw "Preview failed for ${contentId}: $($response.error ?? ($response.diagnostics | ConvertTo-Json -Compress))" }
+        if (!$response.succeeded) {
+            $errorText = if ($response.error) { $response.error } else { $response.diagnostics | ConvertTo-Json -Compress }
+            throw "Preview failed for ${contentId}: $errorText"
+        }
         return $response
     }
     finally { if ($reader) { $reader.Dispose() }; if ($writer) { $writer.Dispose() }; $pipe.Dispose() }
@@ -61,8 +67,10 @@ function Invoke-AuthoringPreview($descriptor, [string]$contentId) {
 
 $process = $null
 try {
-    $process = Start-Process -FilePath $GodotExecutable -ArgumentList @('--editor', '--path', $projectRoot,
-        '--log-file', $logPath) -PassThru -WindowStyle Hidden
+    $quotedProjectRoot = '"' + $projectRoot + '"'
+    $quotedLogPath = '"' + $logPath + '"'
+    $process = Start-Process -FilePath $GodotExecutable -ArgumentList @('--editor', '--path', $quotedProjectRoot,
+        '--log-file', $quotedLogPath, '--', $editorLaunchArgument) -PassThru -WindowStyle Hidden
     $before = Wait-Descriptor $process.Id
     $ids = @('presentation.skill.mage.fireball', 'presentation.status.standard-v1', 'presentation.unit.standard-v1')
     foreach ($id in $ids) { $null = Invoke-AuthoringPreview $before $id }

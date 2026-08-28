@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics/tree/main/.agents/docs
 title: Project Documentation
 description: 当前设计、活跃计划、统一缺口与 OKF 综合层的文档生命周期。
 tags: [operations, documentation, plans, knowledge]
-timestamp: "2026-08-24T23:02:40+08:00"
+timestamp: "2026-08-28T11:46:28+08:00"
 status: active
 catalog_scope: project-documentation
 repo_paths:
@@ -14,7 +14,7 @@ repo_paths:
   - .agents/skills/plan-mode-plan-writer/SKILL.md
   - .agents/skills/manual-qa-handoff/SKILL.md
 verified_revision: c56d71ad4ebd
-source_fingerprint: sha256:8d4997e15f6e7a056d995c60d8dc8efaa4c5df0a03f40d6b8d83dcb537e53041
+source_fingerprint: sha256:a65f1a6a71dac81d7dd92e25adb3fce367d709a11df5d7a4cf21098ec0ee92e8
 ---
 
 # Current State
@@ -29,7 +29,7 @@ source_fingerprint: sha256:8d4997e15f6e7a056d995c60d8dc8efaa4c5df0a03f40d6b8d83d
 
 `.agents/knowledge/` 负责跨系统摘要、关系和导航，不复制完整设计或已完成计划。代码、Godot Resource 和测试仍是当前行为的最终事实源。
 
-当前 Godot 人工验收状态由 `.agents/docs/manual-acceptance.md` 以稳定 ID 维护；需要继续开发或决策的 TODO 则只进入 `.agents/docs/project-known-gaps.md`，不另建并列总清单。实现通过 code review 与自动门禁后，`manual-qa-handoff` 只重开受本轮行为、UI、表现、流程或 Editor 生命周期影响的项目，并输出本轮重点、累计待验收、自动覆盖边界和最短操作旅程；自动证据不能把人工项晋升为 passed，只有用户明确反馈可以更新人工结论。
+当前 Godot 人工验收状态由 `.agents/docs/manual-acceptance.md` 以稳定 ID 维护；需要继续开发或决策的 TODO 则只进入 `.agents/docs/project-known-gaps.md`，不另建并列总清单。实现通过 code review 与自动门禁后，`manual-qa-handoff` 只重开受本轮行为、UI、表现、流程或 Editor 生命周期影响的项目，并输出本轮重点、累计待验收、自动覆盖边界和最短操作旅程；自动证据不能把人工项晋升为 passed，只有用户明确反馈可以更新人工结论。直接打开 Editor 的恢复提示、剪贴板命令和经支持入口恢复 Tooling 的 GUI 边界由 `MQA-GODOT-DIRECT-LAUNCH-GUARD` 独立跟踪。
 
 Agent-first Editor 开发入口及首次 Codex 重启、worktree 隔离、共享人工 QA 边界记录在 `.agents/docs/godot-agent-first-development.md`；真实 Dock 可见性和跨 worktree 路由继续由人工验收账本判定。
 

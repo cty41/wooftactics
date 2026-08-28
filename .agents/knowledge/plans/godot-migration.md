@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Godot migration provenance
 description: 已完成迁移的冻结来源、Godot ownership、生成批次与验证边界。
 tags: [migration, godot, provenance, testing]
-timestamp: "2026-08-23T01:18:13+08:00"
+timestamp: "2026-08-28T11:46:27+08:00"
 status: active
 catalog_scope: godot-migration
 repo_paths:
@@ -16,7 +16,7 @@ repo_paths:
   - Tools/migration
   - Tools/migration/manifest/retirement
 verified_revision: 2b341cb3
-source_fingerprint: sha256:9946b7540de3b3c6afd3a1975b79d677b5e7762f8c132d331ad7618589adca59
+source_fingerprint: sha256:fc776ad396b026817e67683f6efe58cc49ea67db8cd8a71d28756e5673817279
 ---
 
 # Current State
@@ -29,7 +29,7 @@ Godot 4.7 C# 是唯一产品主线，`godot/project.godot` 是唯一项目。Cor
 
 Roguelike 地图迁移的首个切片已建立 engine-neutral 10×10 模板、出生槽/入口/出口/状态层合同，以及由 `AdventureMapAssetBuilder` 通过 ResourceSaver 生成的共享等距 TileSet、开始营地和基础战斗模板。生成 manifest、固定 UID、Catalog 与连续两轮字节级幂等共同约束这些资源；运行时不再为 Adventure Board 临时绘制双色 TileSet。
 
-开发工具链把固定的 MIT godot-ai v3.1.2 源码作为 Editor-only vendor 依赖纳入公开源码，并由 manifest tree hash 审计；它不进入游戏 PCK/Windows 包。Editor 通过统一入口完成 production C# Build、worktree 用户数据隔离、项目级 Codex 配置和会话租约，避免测试宿主程序集或另一个 worktree 的窗口被误认成当前项目。
+开发工具链把固定的 MIT godot-ai v3.1.2 源码作为 Editor-only vendor 依赖纳入公开源码，并由 manifest tree hash 审计；它不进入游戏 PCK/Windows 包。Editor 通过统一入口完成 production C# Build、worktree 用户数据隔离、项目级 Codex 配置和会话租约，避免测试宿主程序集或另一个 worktree 的窗口被误认成当前项目。Tactics Tooling 的 GDScript Bootstrap 在缺少入口启动契约时不会加载 C# controller，而是 fail-closed 并给出恢复步骤，因此首次直接打开且 Adapter DLL 不存在时也不再由含糊的 C# addon 错误承担指导职责；受支持入口则以构造时参数完成早期 Main Screen 注册。整个 tooling addon 同样由 export preset 与包审计排除在游戏 PCK 外。
 
 # Relationships
 

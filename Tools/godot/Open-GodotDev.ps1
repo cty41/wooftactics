@@ -17,6 +17,7 @@ $adapterProject = Join-Path $projectRoot 'Tactics.Godot.Adapter.csproj'
 $manifest = Get-Content -LiteralPath (Join-Path $repoRoot 'Tools\migration\manifest\godot-tooling.json') -Raw | ConvertFrom-Json
 $sessionModule = Join-Path $PSScriptRoot 'GodotDevSession.psm1'
 Import-Module $sessionModule -Force
+$editorLaunchArgument = Get-TacticsGodotLaunchArgument
 
 if ($Mode -eq 'Agent' -and $UserDataProfile -eq 'SharedManualQA') {
     throw 'SharedManualQA is a Human-only profile; Agent sessions must use worktree-isolated user data.'
@@ -30,7 +31,13 @@ if ($actualGodotVersion -ne $expectedGodotVersion) {
     throw "Expected Godot $expectedGodotVersion, found $actualGodotVersion at $GodotExecutable."
 }
 $expectedSdk = [Version][string]$manifest.dotnetSdk
-$actualSdkText = (dotnet --version).Trim()
+Push-Location $repoRoot
+try {
+    $actualSdkText = (dotnet --version).Trim()
+}
+finally {
+    Pop-Location
+}
 $actualSdk = [Version]$actualSdkText
 $expectedFeatureBand = [Math]::Floor($expectedSdk.Build / 100)
 $actualFeatureBand = [Math]::Floor($actualSdk.Build / 100)
@@ -66,8 +73,15 @@ config/custom_user_dir_name="$userDirectory"
     & powershell @syncArguments
     if ($LASTEXITCODE -ne 0) { throw "Godot AI Codex configuration failed with exit code $LASTEXITCODE." }
 
-    & dotnet build $adapterProject -c Debug -m:1
-    if ($LASTEXITCODE -ne 0) { throw "Godot Adapter Debug build failed with exit code $LASTEXITCODE." }
+    Push-Location $repoRoot
+    try {
+        & dotnet build $adapterProject -c Debug -m:1
+        $buildExitCode = $LASTEXITCODE
+    }
+    finally {
+        Pop-Location
+    }
+    if ($buildExitCode -ne 0) { throw "Godot Adapter Debug build failed with exit code $buildExitCode." }
     $assemblyPath = Join-Path $projectRoot '.godot\mono\temp\bin\Debug\Tactics.Godot.Adapter.dll'
     if (-not (Test-Path -LiteralPath $assemblyPath -PathType Leaf)) { throw "Production Adapter assembly is missing: $assemblyPath" }
     $assemblyName = [Reflection.AssemblyName]::GetAssemblyName($assemblyPath)
@@ -79,7 +93,9 @@ config/custom_user_dir_name="$userDirectory"
         return
     }
 
-    $process = Start-Process -FilePath $GodotExecutable -ArgumentList @('--editor', '--path', $projectRoot) -PassThru
+    $quotedProjectRoot = '"' + $projectRoot + '"'
+    $process = Start-Process -FilePath $GodotExecutable -ArgumentList @(
+        '--editor', '--path', $quotedProjectRoot, '--', $editorLaunchArgument) -PassThru
     $sessionPath = Join-Path $projectRoot '.godot\tactics-dev-session.json'
     New-Item -ItemType Directory -Path (Split-Path $sessionPath) -Force | Out-Null
     [ordered]@{

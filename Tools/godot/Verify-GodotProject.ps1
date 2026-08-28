@@ -115,6 +115,7 @@ function Invoke-Checked {
     )
 
     Write-Host "== $Description =="
+    $global:LASTEXITCODE = 0
     & $Command
     if ($LASTEXITCODE -ne 0) {
         throw "$Description failed with exit code $LASTEXITCODE"
@@ -184,6 +185,7 @@ function Invoke-IsolatedGdUnitSuite {
 
 $sessionModule = Join-Path $PSScriptRoot 'GodotDevSession.psm1'
 Import-Module $sessionModule -Force
+$editorLaunchArgument = Get-TacticsGodotLaunchArgument
 $operationLock = Enter-TacticsGodotOperationLock -RepoRoot $repoRoot
 $openEditors = @(Get-TacticsGodotEditorProcess -ProjectRoot $projectRoot)
 if ($openEditors.Count -gt 0) {
@@ -245,7 +247,7 @@ try {
 
     if ($GodotOwned) {
         Invoke-Checked 'Prime fresh Godot resource UID cache' {
-            & $GodotExecutable --headless --editor --path $projectRoot --import
+            & $GodotExecutable --headless --editor --path $projectRoot --import -- $editorLaunchArgument
         }
     }
 
@@ -275,6 +277,10 @@ try {
 
     Invoke-Checked 'Run agent policy unittest' {
         python -m unittest discover -s 'Tools/agent-policy' -p 'test_*.py'
+    }
+
+    Invoke-Checked 'Run Godot tooling policy unittest' {
+        python -m unittest discover -s 'Tools/godot/tests' -p 'test_*.py'
     }
 
     Invoke-Checked 'Validate Godot Incidents' {
@@ -526,7 +532,7 @@ try {
 
         # ResourceSaver must resolve imported Texture2D resources on a clean checkout.
         Invoke-Checked 'Import Pure Run Unit PNG payload in headless Editor' {
-            & $GodotExecutable --headless --editor --path $projectRoot --quit-after 6000
+            & $GodotExecutable --headless --editor --path $projectRoot --quit-after 6000 -- $editorLaunchArgument
         }
 
         $unitGeneratedTargets = @(
@@ -900,10 +906,15 @@ try {
     }
     }
 
+    Invoke-Checked 'Tactics tooling direct-launch bootstrap contract' {
+        & 'Tools/godot/Test-TacticsToolingBootstrap.ps1' `
+            -GodotExecutable $GodotExecutable -HeldOperationLock $operationLock
+    }
+
     # A ResourceSaver script can register a newly created UID only in its current process.
     # The headless Editor filesystem scan persists the project UID cache before Runtime validation.
     Invoke-Checked 'Godot editor filesystem scan and plugin initialization' {
-        & $GodotExecutable --headless --editor --path $projectRoot --quit-after 120
+        & $GodotExecutable --headless --editor --path $projectRoot --quit-after 120 -- $editorLaunchArgument
     }
 
     Invoke-Checked 'Build Release without test sources or dev packages' {

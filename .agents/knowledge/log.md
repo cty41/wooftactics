@@ -1,5 +1,13 @@
 # Tactics Knowledge Update Log
 
+## 2026-08-28
+* **Sync**: `godot-agent-workflow` 已同步到来源指纹 `sha256:271dd95c722c2a779339c673397ec1cbec13fd50d4a70907f88984a00362982e`。
+* **Sync**: `project-architecture` 已同步到来源指纹 `sha256:4169e117c64f8fc886a15d3bdb8b8e6dc4d21b661846377947a1015f78c799a6`。
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:a65f1a6a71dac81d7dd92e25adb3fce367d709a11df5d7a4cf21098ec0ee92e8`。
+* **Sync**: `godot-migration` 已同步到来源指纹 `sha256:fc776ad396b026817e67683f6efe58cc49ea67db8cd8a71d28756e5673817279`。
+* **Update**: Godot Editor 直接启动改由无 C# 依赖的 Tactics Tooling Bootstrap fail-closed，并提示通过 `Tools/godot/Open-GodotDev.ps1` 完成 Build、隔离用户数据和受支持启动。
+* **Fix**: 本任务相关 OKF 指纹以将要提交的来源文件计算；明确排除未暂存、用户持有的 `godot/project.godot` 工作区差异，保证 clean checkout 可复现。
+
 ## 2026-08-24
 * **Sync**: `roguelike-run` 已同步到来源指纹 `sha256:729ffdfb4a5afe5ce06de79c151fd62fb7325a0c5b2efa77583a771e9522cca0`。
 * **Sync**: `project-documentation` 已同步到来源指纹 `sha256:8d4997e15f6e7a056d995c60d8dc8efaa4c5df0a03f40d6b8d83dcb537e53041`。

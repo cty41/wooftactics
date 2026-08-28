@@ -28,6 +28,60 @@ foreach ($required in @($exe, $pck, $SourceManifestPath)) {
     }
 }
 
+# Parse the unencrypted Godot 4 PCK directory; scanning payload bytes would reject harmless path strings.
+function Get-GodotPckEntries {
+    param([string]$Path)
+
+    $stream = [IO.File]::OpenRead($Path)
+    try {
+        $reader = [IO.BinaryReader]::new($stream, [Text.Encoding]::UTF8, $true)
+        if ($reader.ReadUInt32() -ne 0x43504447) { throw 'Tactics.pck has an invalid GDPC header.' }
+        $formatVersion = $reader.ReadUInt32()
+        $null = $reader.ReadUInt32() # Engine major.
+        $null = $reader.ReadUInt32() # Engine minor.
+        $null = $reader.ReadUInt32() # Engine patch.
+        $packFlags = $reader.ReadUInt32()
+        $null = $reader.ReadUInt64() # File base.
+        if (($packFlags -band 1) -ne 0) { throw 'Encrypted PCK directories cannot be audited.' }
+
+        if ($formatVersion -in @(3, 4)) {
+            $directoryOffset = $reader.ReadUInt64()
+            $stream.Position = $directoryOffset
+        }
+        elseif ($formatVersion -eq 2) {
+            $stream.Position += 64 # Reserved V2 header fields.
+        }
+        else {
+            throw "Unsupported Godot PCK format version: $formatVersion"
+        }
+
+        $fileCount = $reader.ReadUInt32()
+        if ($fileCount -gt 1000000) { throw "Implausible Godot PCK entry count: $fileCount" }
+        for ($index = 0; $index -lt $fileCount; $index++) {
+            $pathLength = $reader.ReadUInt32()
+            if ($pathLength -gt 1048576) { throw "Implausible Godot PCK path length: $pathLength" }
+            $pathBytes = $reader.ReadBytes($pathLength)
+            if ($pathBytes.Length -ne $pathLength) { throw 'Godot PCK directory ended inside a path.' }
+            [Text.Encoding]::UTF8.GetString($pathBytes)
+            $null = $reader.ReadUInt64() # File offset.
+            $null = $reader.ReadUInt64() # File size.
+            if ($reader.ReadBytes(16).Length -ne 16) { throw 'Godot PCK directory ended inside an MD5 hash.' }
+            $null = $reader.ReadUInt32() # Entry flags.
+        }
+    }
+    finally {
+        $stream.Dispose()
+    }
+}
+
+$pckEntries = @(Get-GodotPckEntries -Path $pck)
+$forbiddenPckEntries = @($pckEntries | Where-Object {
+    $_ -match '(^|/)addons/(godot_ai|tactics_tooling)/' -or $_ -match '(^|/)tests/'
+})
+if ($forbiddenPckEntries.Count -gt 0) {
+    throw "Forbidden Editor/test content is embedded in Tactics.pck: $($forbiddenPckEntries -join ', ')"
+}
+
 $stream = [IO.File]::OpenRead($exe)
 try {
     $reader = [IO.BinaryReader]::new($stream)

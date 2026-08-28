@@ -24,6 +24,19 @@ def run_pwsh(script: pathlib.Path, *args: str, cwd: pathlib.Path | None = None):
     )
 
 
+def make_pck(*paths: str) -> bytes:
+    header = struct.pack("<4sIIIIIQQ", b"GDPC", 3, 4, 7, 1, 2, 0, 40)
+    directory = bytearray(struct.pack("<I", len(paths)))
+    for path in paths:
+        path_bytes = path.encode("utf-8")
+        directory.extend(struct.pack("<I", len(path_bytes)))
+        directory.extend(path_bytes)
+        directory.extend(struct.pack("<QQ", 0, 0))
+        directory.extend(bytes(16))
+        directory.extend(struct.pack("<I", 0))
+    return header + directory
+
+
 class WindowsRcPipelineTests(unittest.TestCase):
     def test_powershell_scripts_parse(self):
         scripts = [
@@ -46,6 +59,11 @@ class WindowsRcPipelineTests(unittest.TestCase):
                 stderr=subprocess.STDOUT,
             )
             self.assertEqual(0, result.returncode, f"{script}: {result.stdout}")
+
+    def test_export_excludes_all_editor_only_addons_from_pck(self):
+        preset = (REPO / "godot" / "export_presets.cfg").read_text(encoding="utf-8-sig")
+        self.assertIn("addons/godot_ai/*", preset)
+        self.assertIn("addons/tactics_tooling/*", preset)
 
     def test_public_source_staging_records_byte_identical_hashes(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -143,7 +161,9 @@ class WindowsRcPipelineTests(unittest.TestCase):
             struct.pack_into("<I", pe, 0x80, 0x00004550)
             struct.pack_into("<H", pe, 0x84, 0x8664)
             (package / "Tactics.exe").write_bytes(pe)
-            (package / "Tactics.pck").write_bytes(b"PCK")
+            (package / "Tactics.pck").write_bytes(
+                make_pck("res://scenes/Main.tscn") + b"payload addons/tactics_tooling/ is harmless"
+            )
             (package / "Tactics.dll").write_bytes(b"managed")
             source_manifest = root / "source.json"
             source_manifest.write_text('{"schemaVersion":1}', encoding="utf-8")
@@ -177,6 +197,17 @@ class WindowsRcPipelineTests(unittest.TestCase):
             semantic = json.loads((package / "rc-semantic-manifest.json").read_text(encoding="utf-8-sig"))
             self.assertEqual("PckEmbedded", semantic["managedPayloadMode"])
 
+            (package / "Tactics.pck").write_bytes(make_pck("res://addons/tactics_tooling/TacticsToolingBootstrap.gd"))
+            embedded_editor_tooling = run_pwsh(
+                TOOLS / "Test-GodotWindowsPackage.ps1",
+                "-PackageRoot", str(package),
+                "-SourceManifestPath", str(source_manifest),
+                "-ManagedPayloadMode", "PckEmbedded",
+            )
+            self.assertNotEqual(0, embedded_editor_tooling.returncode)
+            self.assertIn("Forbidden Editor/test content is embedded in Tactics.pck", embedded_editor_tooling.stdout)
+            (package / "Tactics.pck").write_bytes(make_pck())
+
             (package / "UnityEngine.CoreModule.dll").write_bytes(b"forbidden")
             rejected = run_pwsh(
                 TOOLS / "Test-GodotWindowsPackage.ps1",
@@ -197,7 +228,7 @@ class WindowsRcPipelineTests(unittest.TestCase):
             struct.pack_into("<I", pe, 0x80, 0x00004550)
             struct.pack_into("<H", pe, 0x84, 0x8664)
             (package / "Tactics.exe").write_bytes(pe)
-            (package / "Tactics.pck").write_bytes(b"PCK")
+            (package / "Tactics.pck").write_bytes(make_pck())
             (package / "Tactics.dll").write_bytes(b"managed")
             (package / "Tactics.pdb").write_bytes(b"symbols")
             source_manifest = root / "source.json"
@@ -310,7 +341,7 @@ class WindowsRcPipelineTests(unittest.TestCase):
         self.assertIn("GodotSharpEditor/4\\.7\\.1", verifier)
         self.assertIn("GodotRuntimeTestRunner ends with exit code", verifier)
         self.assertIn("$reportedAssertionFailure", verifier)
-        self.assertIn("<TestSessionTimeout>120000</TestSessionTimeout>", runsettings)
+        self.assertIn("<TestSessionTimeout>600000</TestSessionTimeout>", runsettings)
 
 
 if __name__ == "__main__":

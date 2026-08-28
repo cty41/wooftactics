@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Tactics Project Overview
 description: Tactics 的 Godot 产品主线、纯 .NET 分层、运行时和主要游戏系统总入口。
 tags: [architecture, godot, agent-first]
-timestamp: "2026-08-23T01:18:14+08:00"
+timestamp: "2026-08-28T11:48:06+08:00"
 status: active
 catalog_scope: project-architecture
 repo_paths:
@@ -15,9 +15,11 @@ repo_paths:
   - src/Tactics.Core
   - src/Tactics.Application
   - godot/src/Tactics.Godot.Adapter
+  - godot/addons/tactics_tooling
+  - godot/export_presets.cfg
   - godot/project.godot
 verified_revision: c56d71ad4ebd
-source_fingerprint: sha256:8b8d7204ac61bca869b9d23c90aa8b560bb4196aae15714e454e384e27dd1742
+source_fingerprint: sha256:4169e117c64f8fc886a15d3bdb8b8e6dc4d21b661846377947a1015f78c799a6
 ---
 
 # Summary
@@ -47,7 +49,7 @@ Tactics 是 Agent 优先维护并准备公开发布的 Godot 4.7 C# 战棋项目
 Session 与批量事务协调器；Godot Adapter 负责 Catalog/UID、EditorUndoRedo、SubViewport 和 ResourceSaver。
 Map、Event、Treasure、Encounter/Layout、AI、Skill 与 Godot-native Presentation Profile 已接入同一
 draft→validate→apply/revert 边界，QA 页显示作者 revision 和正反向引用审计。
-Main Screen 与本机 authoring bridge 在 assembly reload 后先以 untyped probe 验证所有立即使用的 C# Resource；
+Main Screen 的最外层由无 C# 依赖的 GDScript Bootstrap 承载：它用构造时的启动参数回答 Godot 早于 `_enter_tree()` 的 Main Screen 注册查询；只有受支持的开发入口完成 Build 并传入启动契约后才实例化 C# controller，直接打开项目时保持 Tooling fail-closed 并显示恢复提示。整个 `addons/tactics_tooling` 由 export preset 和包审计排除在运行时 PCK 外。Main Screen 与本机 authoring bridge 在 assembly reload 后先以 untyped probe 验证所有立即使用的 C# Resource；
 匹配脚本但尚未恢复 typed 实例时延迟重试，真实脚本/schema 错误则 fail-closed。Presentation Preview 只在 Unit/Profile
 全部 typed ready 后原子建立临时 actor，并在停止、切页或退出时清理。
 
