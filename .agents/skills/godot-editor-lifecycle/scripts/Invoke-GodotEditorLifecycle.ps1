@@ -136,12 +136,17 @@ if ($Action -eq 'Close') {
     exit 0
 }
 
+$supportedLauncher = Resolve-RequiredFile `
+    -LiteralPath (Join-Path $repoRoot 'Tools\godot\Open-GodotDev.ps1') `
+    -Description 'Supported Godot development launcher'
+
 if ($DryRun) {
     Write-Result @{
         action = 'open'
         status = 'planned'
         projectPath = $requestedProjectPath
         executable = $resolvedGodotExecutable
+        launcher = $supportedLauncher
     }
     exit 0
 }
@@ -162,17 +167,27 @@ if ($matchingProcesses.Count -gt 0) {
     throw "Canonical Godot Editor is already running; refusing a duplicate launch: $matchingIds"
 }
 
-$argumentList = @('--editor', '--path', ('"{0}"' -f $requestedProjectPath))
-$startedProcess = Start-Process `
-    -FilePath $resolvedGodotExecutable `
-    -ArgumentList $argumentList `
-    -WindowStyle Normal `
-    -PassThru
+# Agent restoration is a prepared development launch, not the supported Human
+# Project Manager direct-open path. The canonical launcher owns the serial Adapter
+# build, worktree user data, bootstrap argument, mutex, Codex config, and session record.
+$launcherOutput = @(& $supportedLauncher `
+    -Mode Agent `
+    -UserDataProfile Worktree `
+    -GodotExecutable $resolvedGodotExecutable)
+if (-not $?) {
+    throw 'Supported Godot development launcher failed during Editor restoration.'
+}
+$startedLine = $launcherOutput | Where-Object { $_ -match '^GODOT_EDITOR_STARTED pid=(\d+) project=' } | Select-Object -Last 1
+if ($null -eq $startedLine) {
+    throw "Supported Godot development launcher did not report a started Editor. Output: $($launcherOutput -join ' | ')"
+}
+$startedPid = [int]([regex]::Match([string]$startedLine, '^GODOT_EDITOR_STARTED pid=(\d+)').Groups[1].Value)
 
 Write-Result @{
     action = 'open'
     status = 'started'
-    editorProcessId = $startedProcess.Id
+    editorProcessId = $startedPid
     projectPath = $requestedProjectPath
     executable = $resolvedGodotExecutable
+    launcher = $supportedLauncher
 }

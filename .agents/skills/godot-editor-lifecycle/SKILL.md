@@ -14,7 +14,7 @@ description: Use when an authorized canonical Godot modification task needs the 
 | Snapshot | `session_manage(op="list")` then `editor_state` |
 | Quiesce | Stop project playback; save the current scene when `scene_save` is available |
 | Close | `scripts/Invoke-GodotEditorLifecycle.ps1 -Action Close -EditorProcessId <pid>` |
-| Reopen | `scripts/Invoke-GodotEditorLifecycle.ps1 -Action Open` then poll MCP |
+| Reopen | `scripts/Invoke-GodotEditorLifecycle.ps1 -Action Open`; it must delegate to `Tools/godot/Open-GodotDev.ps1`, then poll MCP |
 | Safety | Never force-kill; never reopen an Editor that was initially closed |
 
 ## When to use
@@ -48,13 +48,16 @@ powershell -NoProfile -ExecutionPolicy Bypass -File `
   -Action Open
 ```
 
-   The visible Editor may briefly receive focus; do not activate it and do not inject input. Poll for up to 120 seconds without starting a second process. Require exactly one new MCP session with the canonical path, Godot `4.7.1`, plugin `3.1.2`, and readiness `ready`.
+   本 Skill 服务 Agent session 恢复，因此 `-Action Open` 只能委托 `Tools/godot/Open-GodotDev.ps1`，由 prepared 入口完成串行 production Adapter Build、程序集身份校验、worktree 用户数据、bootstrap 参数、互斥锁和 session 记录；禁止 Agent 直接执行 `godot --editor --path`。人工从 Project Manager 直接打开由 GDScript 自恢复 Shell 支持，但不构成本 Skill 的 Agent 恢复证据。若输出没有 `GODOT_EDITOR_STARTED`，恢复失败并停止，不得用裸启动兜底。
+
+   The visible Editor may briefly receive focus; do not activate it and do not inject input. Poll for up to 120 seconds without starting a second process. Require exactly one new MCP session with the canonical path, Godot `4.7.1`, plugin `3.1.2`, and readiness `ready`。如果 MCP 工具在当前会话不可用，只能报告“进程已由正式入口恢复、MCP readiness 未验证”，不能宣称完整恢复。
 7. If the restored `current_scene` differs from the snapshot, reopen the recorded `res://` scene through `scene_open`. Read editor/plugin logs without clearing them. Report lifecycle restoration separately from the task's build/test result.
 
 ## Anti-patterns
 
 - Do not use force termination, generic process-name matching, Computer Use, window activation, or keyboard shortcuts.
 - Do not launch a second Editor because MCP attachment is slow; keep polling the started PID.
+- Do not restore with raw `Start-Process godot --editor --path`, even when C# was already built elsewhere; TestHost output is not a substitute for the production Adapter launch contract.
 - Do not act on multiple sessions, another project root, another Godot version, or an unverified PID.
 - Do not promote migration ownership or visual acceptance merely because restart and reconnect succeeded.
 
@@ -65,4 +68,5 @@ powershell -NoProfile -ExecutionPolicy Bypass -File `
 - [ ] Close targeted the exact canonical Editor PID and session reached `0`.
 - [ ] No force-kill or foreground input was used.
 - [ ] The Editor was reopened only if this workflow closed it.
+- [ ] Reopen delegated to `Tools/godot/Open-GodotDev.ps1` and returned `GODOT_EDITOR_STARTED`; no raw launch fallback was used.
 - [ ] New session path/version/plugin/readiness and logs were checked.
