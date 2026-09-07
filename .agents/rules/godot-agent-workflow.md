@@ -30,9 +30,9 @@
 ## godot-ai 项目级 MCP
 
 - Godot Editor 只通过 `Tools/godot/Open-GodotDev.ps1` 启动。入口始终串行增量 Build production Adapter，校验程序集身份，并以 worktree 路径派生互斥锁、用户数据目录和会话记录；禁止把直接双击 Editor 作为 Agent 支持流程。
-- godot-ai v3.1.2 源码固定在 `godot/addons/godot_ai`，允许进入公开源码根，但必须从 PCK/Windows 运行时包排除。Dock 自更新不受支持；升级只能通过固定 Tag/commit/hash 的显式 vendor refresh、许可证审计和完整门禁。
+- godot-ai 源码按 manifest 中的精确 Tag、commit、tree digest 与 license digest 固定在 `godot/addons/godot_ai`，允许进入公开源码根，但必须从 PCK/Windows 运行时包排除。Dock 自更新不受支持；升级只能通过显式 vendor refresh 生成候选 diff 并经 review。
 - godot-ai 只允许由包含 canonical `godot/project.godot` 的当前项目 worktree 中、被 Git 忽略的 `.codex/config.toml` 加载；用户级 `~/.codex/config.toml` 不得长期保留 godot-ai 表，也不得影响历史 Unity 检出或其他项目。
-- 固定使用 `godot-ai==3.1.2` 的 Windows Attach 启动方式：绝对路径 `pythonw.exe`、无窗口 bootstrap、HTTP 8000、WebSocket 9500。配置以 `Tools/migration/manifest/godot-tooling.json` 为策略真相源。
+- 固定使用 manifest tag 对应的 `godot-ai==<version>` Windows Attach 启动方式：绝对路径 `pythonw.exe`、无窗口 bootstrap、HTTP 8000、WebSocket 9500。配置以 `Tools/migration/manifest/godot-tooling.json` 为策略真相源。
 - 首次启动由统一入口运行 `Sync-GodotAiCodexConfig.ps1 -Bootstrap` 生成项目配置，并输出 `CODEX_RESTART_REQUIRED`；重启一次当前 worktree 根目录的 Codex 任务。后续用 `-Check` 验证，用 `-Profile <name>` 切换累积白名单。
 - Agent 只允许 `Worktree` 用户数据；固定 `SharedManualQA` 数据只允许 `-Mode Human` 显式选择。一个 worktree 同时只允许一个 Editor/Agent 写会话；多个 worktree 可共享兼容的 8000/9500 Attach backend，但每次写入仍必须核对 session 的项目路径。
 - 更换 godot-ai 版本、端口、启动方式或工具 Profile 后，必须重新生成/同步配置并重启根目录为该 canonical Godot worktree 的 Codex 任务。

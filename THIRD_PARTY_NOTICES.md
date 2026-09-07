@@ -7,7 +7,7 @@ Apache-2.0 or CC BY 4.0 grants.
 | Component | Version range or locked version | License | Use |
 |---|---:|---|---|
 | Godot Engine / GodotSharp / Godot.NET.Sdk | 4.7.1 | MIT | Engine and C# SDK |
-| Godot AI EditorPlugin | 3.1.2 (`678b16a6`) | MIT | Project-scoped Editor automation and MCP Attach integration; source vendored under `godot/addons/godot_ai` |
+| Godot AI EditorPlugin | 3.2.5 (`43369d39`) | MIT | Project-scoped Editor automation and MCP Attach integration; source vendored under `godot/addons/godot_ai` |
 | .NET SDK | 9.0.312 | MIT and component notices | Build/runtime toolchain |
 | NUnit | 4.3.2 | MIT | Core/Application/Oracle tests |
 | NUnit3TestAdapter | 4.6.0 | MIT | Test discovery |
@@ -22,9 +22,10 @@ Apache-2.0 or CC BY 4.0 grants.
 | Node.js type declarations | locked by package-lock | MIT | TypeScript development |
 | PyYAML | >=6.0,<7.0 | MIT | OKF YAML parsing |
 
-The authoritative versions are the checked-in NuGet and npm lockfiles. The
-public-release verifier emits a machine-readable dependency report and fails
-when an undeclared direct dependency is introduced.
+The authoritative versions are the checked-in NuGet and npm lockfiles plus the
+Godot tooling manifest for vendored godot-ai. The public-release verifier checks
+that the machine-readable dependency inventory and this Godot AI notice match
+those sources; dependency classification outside those sources remains review-owned.
 
 The complete Godot AI MIT license is preserved at
 `godot/addons/godot_ai/LICENSE`. Godot AI is shipped in the public source tree

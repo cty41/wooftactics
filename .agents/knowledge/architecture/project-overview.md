@@ -33,9 +33,9 @@ Tactics 是 Agent 优先维护并准备公开发布的 Godot 4.7 C# 战棋项目
 - Pure Run 使用确定性 Battle/Run 状态、版本化 Save 与单一 `Main.tscn`；开始营地现在由 engine-neutral 10×10 地图模板和 Godot Resource 适配层驱动，全部候选按声明式槽位实例化为真实 `GodotUnitActor`，选三人的业务事务仍由 Application/Core 裁决。下一版 Save 合同只保留节点级语义、领队和遭遇 checkpoint，不持久化格位或相机表现；新增的魔剑士非大师内容使用魅力主属性、腐化/冥想与附身控制合同；
   `battle-layout.pure-run.split-flank` 将原本只在运行时代码中补建的布局闭合为正式 Resource。
 - Battle HUD 由 Godot Adapter 将 Application Snapshot 投影为当前行动者状态卡和鼠标 Hover 浮层；头像来自 typed Unit Resource，HP/MP/腐化只读展示，不参与战斗裁决或输入合法性。
-- `Tools/godot/Verify-GodotProject.ps1` 是本地主线统一门禁；Windows RC 使用只读 staging、包审计和双 renderer EXE smoke。
-- `Tools/public-release` 固定公开文件策略、资产来源哈希、依赖清单与单 root 候选重建；运行时不依赖这些审计工具。
-- 固定的 godot-ai v3.1.2 源码是公开可审计的 MIT Editor-only 依赖，由统一入口按 worktree 隔离；导出与 Windows 运行时包继续排除该插件。
+- `Tools/godot/Verify-GodotProject.ps1` 是本地主线统一产品门禁；Windows RC 使用只读 staging、包审计和双 renderer EXE smoke。
+- `Tools/public-release/Verify-PublicRelease.ps1` 独立验证公开文件策略、资产来源哈希、依赖清单与第三方声明，并由单 root 候选重建入口在源树和候选树各调用一次；运行时不依赖这些审计工具。
+- 固定的 godot-ai v3.2.5 源码是公开可审计的 MIT Editor-only 依赖；manifest 是 tag、commit、vendor tree 与 license digest 的单一真相源，显式 refresh 只生成待 review 的候选 diff。导出与 Windows 运行时包继续排除该插件。
 - Agent 默认在用户指定的 worktree 中完成审计和修复；新建、删除或切换 worktree 必须有活跃计划或用户明确授权。
 - Godot 只使用 `godot/project.godot`；未知 Godot 行为先研究与本地复现，详细路由见 [Godot Agent Workflow](../operations/godot-agent-workflow.md)。
 - Agent 默认禁止 Computer Use、窗口激活和真实鼠标键盘等前台交互；实现、截图、视觉 QA、测试或连接恢复不构成例外授权。后台验证不足时停止为人工验证待办，完整规则由 [Godot Agent Workflow](../operations/godot-agent-workflow.md) 导航。

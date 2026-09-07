@@ -26,7 +26,7 @@ source_fingerprint: sha256:271dd95c722c2a779339c673397ec1cbec13fd50d4a70907f8898
 
 # Current State
 
-Godot 4.7 C# 与 `godot/project.godot` 是唯一产品和编辑权威。Core/Application 保持纯 .NET；Adapter 承载 Node、Resource、文件系统、UI、EditorPlugin 与运行时集成。godot-ai v3.1.2 与 `addons/tactics_tooling` 作为 Editor-only 工具保留在源码树中，但均由 export preset 从游戏 PCK 与 Windows 运行时包排除。
+Godot 4.7 C# 与 `godot/project.godot` 是唯一产品和编辑权威。Core/Application 保持纯 .NET；Adapter 承载 Node、Resource、文件系统、UI、EditorPlugin 与运行时集成。godot-ai v3.2.5 与 `addons/tactics_tooling` 作为 Editor-only 工具保留在源码树中，但均由 export preset 从游戏 PCK 与 Windows 运行时包排除。godot-ai manifest 是 tag、commit、vendor tree 与 license digest 的单一真相源；显式 refresh 只准备待 review 的升级 diff，日常 Godot 门禁验证 vendor 完整性，依赖清单与第三方声明由独立 public-release 门禁验证。
 
 `Tools/godot/Open-GodotDev.ps1` 是唯一支持的 Editor 启动入口：每次串行增量 Build production Adapter、验证程序集身份、按 worktree 隔离 `user://`、生成项目级 Codex Attach 配置，并记录 Editor session。入口在 Godot 的 `--` 后传递项目启动契约；不经入口直接打开时，依赖无关的 GDScript Bootstrap 会保持 `Tactics Tooling` 停用，并在 GUI 中提示关闭 Editor、运行入口和等待 Build，而不是让缺失或过期的 C# 程序集触发含糊 addon 错误。Bootstrap 的 Main Screen 注册只依赖构造时已取得的启动参数，因为 Godot 可能在 `_enter_tree()` 前查询 `_has_main_screen()`；Controller 就绪后再重放可见性。复制出的绝对启动命令可在任意 shell 目录执行；入口会先切到仓库根解析 `global.json` 和执行 Adapter Build，避免误用调用目录中的其他 .NET SDK。首次生成配置会要求重启一次 Codex 任务。Agent 不得使用共享人工 QA 用户数据；同 worktree 的 Editor 启动与统一 verifier 由同一命名 mutex 串行化。
 

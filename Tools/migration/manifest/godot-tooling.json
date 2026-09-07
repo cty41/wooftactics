@@ -10,10 +10,10 @@
     "templateDirectory": "4.7.1.stable.mono"
   },
   "godotAi": {
-    "tag": "v3.1.2",
-    "commit": "678b16a6a0a335cf80cbb7d3f85c183cd3e616de",
+    "tag": "v3.2.5",
+    "commit": "43369d39a82f23e4d2e32d232567da7c5d688395",
     "vendorPath": "godot/addons/godot_ai",
-    "vendorTreeSha256": "f0dc883d99b398e90c2a68e3dda5b20eee09aecc93ef9497c596cc0501f3e801",
+    "vendorTreeSha256": "71797af90ea3551d7b78190b8bdcd1a750932cc0e9ae0b78816e7d9308d580f8",
     "licenseSha256": "f2afe4af4ec80c453ca34704bc61d5d24a9bd948d365ca22699cabb8b4a18308",
     "runtimePackaging": "excluded",
     "selfUpdate": "unsupported; update only through reviewed vendor refresh",
