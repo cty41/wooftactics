@@ -75,6 +75,20 @@ class PublicCandidateAuditTests(unittest.TestCase):
         self.assertTrue(result.ok, result.errors)
         self.assertEqual(1, result.approved_assets)
 
+    def test_candidate_allows_documented_placeholder_user_paths(self):
+        sample = self.root / "sample.md"
+        sample.write_text(r"Examples: C:\Users\foo\uvx.exe and C:\Users\<user>\uvx.exe", encoding="utf-8")
+        subprocess.run(["git", "add", "sample.md"], cwd=self.root, check=True)
+        result = audit(self.root, candidate=True)
+        self.assertTrue(result.ok, result.errors)
+
+    def test_candidate_rejects_concrete_local_user_path(self):
+        sample = self.root / "sample.md"
+        sample.write_text("C:\\Users\\" + "alice\\secret.txt", encoding="utf-8")
+        subprocess.run(["git", "add", "sample.md"], cwd=self.root, check=True)
+        result = audit(self.root, candidate=True)
+        self.assertIn("local_user_path:sample.md", result.errors)
+
     def test_candidate_rejects_hash_drift(self):
         self._write_manifest("0" * 64)
         result = audit(self.root, candidate=True)

@@ -4,7 +4,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from Tools.migration.godot_ai_vendor import canonical_bytes, tree_digest, validate
+from Tools.migration.godot_ai_baseline import canonical_bytes
+from Tools.migration.godot_ai_vendor import tree_digest, validate
 
 
 class GodotAiVendorTests(unittest.TestCase):
@@ -21,34 +22,45 @@ class GodotAiVendorTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             vendor = Path(temporary)
             sample = vendor / "plugin.cfg"
-            sample.write_bytes(b"[plugin]\r\nversion=\"3.1.2\"\r\n")
+            sample.write_bytes(b"[plugin]\r\nversion=\"3.2.5\"\r\n")
             windows = tree_digest(vendor)
-            sample.write_bytes(b"[plugin]\nversion=\"3.1.2\"\n")
+            sample.write_bytes(b"[plugin]\nversion=\"3.2.5\"\n")
             self.assertEqual(windows, tree_digest(vendor))
 
-    def test_validate_accepts_exact_manifest_and_rejects_drift(self):
+    def test_validate_accepts_minimal_manifest_and_rejects_drift(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             vendor = root / "godot/addons/godot_ai"
             manifest_dir = root / "Tools/migration/manifest"
             vendor.mkdir(parents=True)
             manifest_dir.mkdir(parents=True)
-            (vendor / "plugin.cfg").write_text('version="3.1.2"\n', encoding="utf-8")
+            (vendor / "plugin.cfg").write_text('version="3.2.5"\n', encoding="utf-8")
             (vendor / "LICENSE").write_text("MIT\n", encoding="utf-8")
-            count, digest = tree_digest(vendor)
-            policy = {
-                "godotAi": {
-                    "vendorPath": "godot/addons/godot_ai",
-                    "vendorFileCount": count,
-                    "vendorTreeSha256": digest,
-                    "vendorPluginCfgSha256": hashlib.sha256(canonical_bytes(vendor / "plugin.cfg")).hexdigest(),
-                    "vendorLicenseSha256": hashlib.sha256(canonical_bytes(vendor / "LICENSE")).hexdigest(),
-                }
-            }
+            _, digest = tree_digest(vendor)
+            policy = {"godotAi": {
+                "tag": "v3.2.5",
+                "commit": "abc123",
+                "vendorPath": "godot/addons/godot_ai",
+                "vendorTreeSha256": digest,
+                "licenseSha256": hashlib.sha256(canonical_bytes(vendor / "LICENSE")).hexdigest(),
+            }}
             (manifest_dir / "godot-tooling.json").write_text(json.dumps(policy), encoding="utf-8")
-            validate(root)
+            result = validate(root)
+            self.assertEqual(result["version"], "3.2.5")
             (vendor / "plugin.cfg").write_text("drift", encoding="utf-8")
-            with self.assertRaisesRegex(ValueError, "drifted"):
+            with self.assertRaisesRegex((ValueError, RuntimeError), "version|drifted"):
+                validate(root)
+
+    def test_vendor_path_cannot_escape_repository(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            manifest_dir = root / "Tools/migration/manifest"
+            manifest_dir.mkdir(parents=True)
+            (manifest_dir / "godot-tooling.json").write_text(json.dumps({"godotAi": {
+                "tag": "v3.2.5", "commit": "abc", "vendorPath": "../outside",
+                "vendorTreeSha256": "x", "licenseSha256": "y",
+            }}), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "inside repository"):
                 validate(root)
 
 

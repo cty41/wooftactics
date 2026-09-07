@@ -46,10 +46,12 @@ def collect_vendored(root: Path) -> list[dict[str, str]]:
     if not manifest_path.is_file():
         return []
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    godot_ai = manifest.get("godotAi", {})
+    godot_ai = manifest.get("godotAi")
+    if not isinstance(godot_ai, dict):
+        return []
     vendor_path = root / str(godot_ai.get("vendorPath", ""))
     if not vendor_path.is_dir():
-        return []
+        raise ValueError(f"manifest-pinned godot-ai vendor is missing: {vendor_path}")
     return [{
         "ecosystem": "Vendored",
         "name": "godot-ai",

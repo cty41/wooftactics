@@ -33,6 +33,18 @@ class DependencyInventoryTests(unittest.TestCase):
             self.assertEqual(1, first["dependencyCount"])
             self.assertEqual("Example.Package", first["dependencies"][0]["name"])
 
+    def test_report_rejects_missing_manifest_pinned_vendor(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            manifest = root / "Tools/migration/manifest"
+            manifest.mkdir(parents=True)
+            (manifest / "godot-tooling.json").write_text(
+                json.dumps({"godotAi": {"tag": "v3.2.5", "vendorPath": "godot/addons/godot_ai"}}),
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "vendor is missing"):
+                MODULE.build_report(root)
+
     def test_report_includes_manifest_pinned_vendor(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

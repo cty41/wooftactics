@@ -1,6 +1,6 @@
 # godot-ai 边界
 
-当前只使用 v3.1.2 通用接口。版本、端口、Profile 与精确工具集合以 `Tools/migration/manifest/godot-tooling.json` 为准，项目配置由 `Tools/godot/Sync-GodotAiCodexConfig.ps1` 生成和检查。
+当前只使用 manifest 固定版本的通用接口。版本、端口、Profile 与精确工具集合以 `Tools/migration/manifest/godot-tooling.json` 为准，项目配置由 `Tools/godot/Sync-GodotAiCodexConfig.ps1` 生成和检查。
 
 ## 分阶段白名单
 

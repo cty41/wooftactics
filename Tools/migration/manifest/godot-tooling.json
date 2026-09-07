@@ -10,16 +10,11 @@
     "templateDirectory": "4.7.1.stable.mono"
   },
   "godotAi": {
-    "sourcePath": "D:/codes/godot-ai",
     "tag": "v3.1.2",
     "commit": "678b16a6a0a335cf80cbb7d3f85c183cd3e616de",
-    "pluginCfgSha256": "6290daf20479a1ad215abce7b489f78bd6b43154909fd7317ee3f4551c299514",
     "vendorPath": "godot/addons/godot_ai",
-    "vendorFileCount": 247,
     "vendorTreeSha256": "f0dc883d99b398e90c2a68e3dda5b20eee09aecc93ef9497c596cc0501f3e801",
-    "licenseSha256": "18da5a93464555a5eac06b334940fe935254ecc17da44a0ee778ce2fe14cb7ab",
-    "vendorPluginCfgSha256": "465b6df8403f7a24439966431732f38d3b8879bd4b1a03819bbbb475ef38a9fe",
-    "vendorLicenseSha256": "f2afe4af4ec80c453ca34704bc61d5d24a9bd948d365ca22699cabb8b4a18308",
+    "licenseSha256": "f2afe4af4ec80c453ca34704bc61d5d24a9bd948d365ca22699cabb8b4a18308",
     "runtimePackaging": "excluded",
     "selfUpdate": "unsupported; update only through reviewed vendor refresh",
     "sourceMutation": "forbidden",

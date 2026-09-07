@@ -253,7 +253,9 @@ def apply_profile(
         policy,
         enabled_tools=None,
         check_command_exists=check_command_exists,
+        allow_version_mismatch=True,
     )
+    server = _retarget_launch_version(server, policy)
     rendered = render_project_server(server, policy, enabled_tools)
     new_payload = replace_or_append_server(text, block, rendered).encode("utf-8")
     changed = original != new_payload
@@ -303,8 +305,11 @@ def bootstrap_configuration(
     block = find_server_block(text)
     if block is not None:
         existing = parse_server_table(block.text)
-        _validate_project_server(existing, policy, enabled_tools=None, check_command_exists=check_command_exists)
-        launch_source = existing
+        _validate_project_server(
+            existing, policy, enabled_tools=None, check_command_exists=check_command_exists,
+            allow_version_mismatch=True,
+        )
+        launch_source = _retarget_launch_version(existing, policy)
     new_payload = replace_or_append_server(
         text, block, render_project_server(launch_source, policy, enabled_tools)
     ).encode("utf-8")
@@ -466,13 +471,17 @@ def _validate_project_server(
     *,
     enabled_tools: Sequence[str] | None,
     check_command_exists: bool,
+    allow_version_mismatch: bool = False,
 ) -> None:
     unknown = set(server).difference(_EXPECTED_PROJECT_FIELDS)
     if unknown:
         raise CodexGodotAiConfigError(
             f"project godot-ai entry contains unsupported fields: {sorted(unknown)}"
         )
-    _validate_launch(server, policy, check_command_exists=check_command_exists)
+    _validate_launch(
+        server, policy, check_command_exists=check_command_exists,
+        allow_version_mismatch=allow_version_mismatch,
+    )
     _validate_common_fields(server, policy)
     configured_tools = server.get("enabled_tools")
     if not isinstance(configured_tools, list) or not all(
@@ -493,7 +502,8 @@ def _validate_project_server(
 
 
 def _validate_launch(
-    server: Mapping[str, Any], policy: CodexMcpPolicy, *, check_command_exists: bool
+    server: Mapping[str, Any], policy: CodexMcpPolicy, *, check_command_exists: bool,
+    allow_version_mismatch: bool = False,
 ) -> None:
     command = server.get("command")
     args = server.get("args")
@@ -508,7 +518,12 @@ def _validate_launch(
         raise CodexGodotAiConfigError("godot-ai args must be a string array")
     if "-c" not in args or not any("creationflags=0x08000000" in value for value in args):
         raise CodexGodotAiConfigError("godot-ai command is missing the Windows no-console bootstrap")
-    _require_argument(args, "--from", f"godot-ai=={policy.version}")
+    if allow_version_mismatch:
+        pinned = _argument_value(args, "--from")
+        if not pinned.startswith("godot-ai=="):
+            raise CodexGodotAiConfigError("godot-ai --from must be an exact godot-ai version pin")
+    else:
+        _require_argument(args, "--from", f"godot-ai=={policy.version}")
     if "godot-ai" not in args or "attach" not in args:
         raise CodexGodotAiConfigError("godot-ai command is not the pinned attach launcher")
     _require_argument(args, "--port", str(policy.http_port))
@@ -522,6 +537,25 @@ def _validate_common_fields(server: Mapping[str, Any], policy: CodexMcpPolicy) -
         raise CodexGodotAiConfigError("godot-ai startup timeout does not match the manifest")
     if server.get("tool_timeout_sec") != policy.tool_timeout_sec:
         raise CodexGodotAiConfigError("godot-ai tool timeout does not match the manifest")
+
+
+def _argument_value(args: Sequence[str], name: str) -> str:
+    try:
+        index = args.index(name)
+    except ValueError as error:
+        raise CodexGodotAiConfigError(f"godot-ai args are missing {name}") from error
+    if index + 1 >= len(args):
+        raise CodexGodotAiConfigError(f"godot-ai args are missing a value for {name}")
+    return args[index + 1]
+
+
+def _retarget_launch_version(server: Mapping[str, Any], policy: CodexMcpPolicy) -> dict[str, Any]:
+    updated = dict(server)
+    args = list(updated["args"])
+    index = args.index("--from")
+    args[index + 1] = f"godot-ai=={policy.version}"
+    updated["args"] = args
+    return updated
 
 
 def _require_argument(args: Sequence[str], name: str, expected_value: str) -> None:

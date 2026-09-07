@@ -1,27 +1,18 @@
 param(
+    [Parameter(Mandatory = $true)]
+    [string]$Tag,
     [string]$Source = "D:\codes\godot-ai",
-    [string]$Project = (Join-Path $PSScriptRoot "..\..\godot")
+    [string]$Root = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
 )
 
 $ErrorActionPreference = "Stop"
-$sourcePath = (Resolve-Path $Source).Path
-$projectPath = (Resolve-Path $Project).Path
-python (Join-Path $PSScriptRoot "godot_ai_baseline.py") $sourcePath
+$sourcePath = (Resolve-Path -LiteralPath $Source).Path
+$rootPath = (Resolve-Path -LiteralPath $Root).Path
+$refresh = Join-Path $PSScriptRoot 'refresh_godot_ai_vendor.py'
 
-$pluginSource = Join-Path $sourcePath "plugin\addons\godot_ai"
-$pluginTarget = Join-Path $projectPath "addons\godot_ai"
-if (-not $pluginTarget.StartsWith($projectPath + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) {
-    throw "Refusing to modify a path outside the Godot project: $pluginTarget"
-}
-if (-not (Test-Path $pluginSource)) {
-    throw "godot-ai plugin directory not found: $pluginSource"
+python $refresh --root $rootPath --source $sourcePath --tag $Tag
+if ($LASTEXITCODE -ne 0) {
+    throw "godot-ai vendor refresh failed with exit code $LASTEXITCODE."
 }
 
-New-Item -ItemType Directory -Force -Path $pluginTarget | Out-Null
-Get-ChildItem -LiteralPath $pluginTarget -Force |
-    Where-Object { $_.Name -ne "README.md" } |
-    Remove-Item -Recurse -Force
-Get-ChildItem -LiteralPath $pluginSource -Force |
-    Copy-Item -Destination $pluginTarget -Recurse -Force
-Copy-Item -LiteralPath (Join-Path $sourcePath 'LICENSE') -Destination (Join-Path $pluginTarget 'LICENSE') -Force
-Write-Output "godot-ai v3.1.2 copied to $pluginTarget. Review and commit the exact vendor diff; in-Dock self-update is unsupported."
+Write-Output "Review the complete vendor, manifest, dependency inventory, and notice diff before committing. In-Dock self-update remains unsupported."

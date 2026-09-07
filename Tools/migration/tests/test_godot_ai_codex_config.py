@@ -108,6 +108,21 @@ class GodotAiCodexConfigTests(unittest.TestCase):
             list(resolve_profile_tools(policy, "content-authoring")),
         )
 
+    def test_profile_sync_repins_an_existing_entry_after_manifest_upgrade(self) -> None:
+        bootstrap_configuration(
+            self.root, self.user_config, "phase3-observe",
+            python_executable=Path(r"C:\Tools\python.exe"),
+            uvx_executable=Path(r"C:\Tools\uvx.exe"),
+            check_command_exists=False,
+        )
+        manifest = self._manifest()
+        manifest["godotAi"]["tag"] = "v3.2.5"
+        self.manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+        apply_profile(self.root, self.user_config, "phase3-observe", check_command_exists=False)
+
+        self.assertIn("godot-ai==3.2.5", self._project_server()["args"])
+
     def test_check_rejects_a_remaining_user_level_entry(self) -> None:
         self.user_config.write_text(self._generated_block(), encoding="utf-8")
         import_generated_user_entry(
@@ -439,7 +454,7 @@ class GodotAiCodexRepositoryPolicyTests(unittest.TestCase):
             user_config.write_text("", encoding="utf-8")
 
             policy = load_policy(root)
-            generated = GodotAiCodexConfigTests._generated_block(command=str(pythonw))
+            generated = GodotAiCodexConfigTests._generated_block(command=str(pythonw), version=policy.version)
             server = parse_server_table(find_server_block(generated).text)
             project_config = root / ".codex" / "config.toml"
             project_config.parent.mkdir()

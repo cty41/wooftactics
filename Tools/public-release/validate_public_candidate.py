@@ -26,7 +26,9 @@ SECRET_PATTERNS = (
     re.compile(r"\bsk-[A-Za-z0-9]{20,}\b"),
     re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
 )
-LOCAL_USER_PATH = re.compile(r"(?i)\bC:[\\/]Users[\\/](?!<user>)[^\\/\s\"']+")
+LOCAL_USER_PATH = re.compile(
+    r"(?i)\bC:[\\/]Users[\\/](?!(?:<user>|foo|example)(?:[\\/]))[^\\/\s\"']+"
+)
 
 
 @dataclass

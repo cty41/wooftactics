@@ -50,7 +50,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File `
 
    本 Skill 服务 Agent session 恢复，因此 `-Action Open` 只能委托 `Tools/godot/Open-GodotDev.ps1`，由 prepared 入口完成串行 production Adapter Build、程序集身份校验、worktree 用户数据、bootstrap 参数、互斥锁和 session 记录；禁止 Agent 直接执行 `godot --editor --path`。人工从 Project Manager 直接打开由 GDScript 自恢复 Shell 支持，但不构成本 Skill 的 Agent 恢复证据。若输出没有 `GODOT_EDITOR_STARTED`，恢复失败并停止，不得用裸启动兜底。
 
-   The visible Editor may briefly receive focus; do not activate it and do not inject input. Poll for up to 120 seconds without starting a second process. Require exactly one new MCP session with the canonical path, Godot `4.7.1`, plugin `3.1.2`, and readiness `ready`。如果 MCP 工具在当前会话不可用，只能报告“进程已由正式入口恢复、MCP readiness 未验证”，不能宣称完整恢复。
+   The visible Editor may briefly receive focus; do not activate it and do not inject input. Poll for up to 120 seconds without starting a second process. Require exactly one new MCP session with the canonical path, Godot `4.7.1`, the manifest-pinned plugin version, and readiness `ready`。如果 MCP 工具在当前会话不可用，只能报告“进程已由正式入口恢复、MCP readiness 未验证”，不能宣称完整恢复。
 7. If the restored `current_scene` differs from the snapshot, reopen the recorded `res://` scene through `scene_open`. Read editor/plugin logs without clearing them. Report lifecycle restoration separately from the task's build/test result.
 
 ## Anti-patterns

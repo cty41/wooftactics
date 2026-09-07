@@ -17,8 +17,8 @@ if (Test-Path -LiteralPath $destination) {
 
 Push-Location $source
 try {
-    python Tools/public-release/validate_public_candidate.py --root $source --candidate
-    if ($LASTEXITCODE -ne 0) { throw 'Source tree failed the public candidate policy.' }
+    & (Join-Path $source 'Tools/public-release/Verify-PublicRelease.ps1') -Root $source -Candidate
+    if ($LASTEXITCODE -ne 0) { throw 'Source tree failed public release verification.' }
 
     $tracked = @(git ls-files)
     if ($LASTEXITCODE -ne 0 -or $tracked.Count -eq 0) {
@@ -63,9 +63,9 @@ try {
     if ($LASTEXITCODE -ne 0 -or $candidateTracked.Count -ne $tracked.Count) {
         throw "Public candidate tracked-file inventory drifted: source=$($tracked.Count) candidate=$($candidateTracked.Count)"
     }
-    python (Join-Path $destination 'Tools/public-release/validate_public_candidate.py') `
-        --root $destination --candidate
-    if ($LASTEXITCODE -ne 0) { throw 'Reconstructed public root failed policy validation.' }
+    & (Join-Path $destination 'Tools/public-release/Verify-PublicRelease.ps1') `
+        -Root $destination -Candidate
+    if ($LASTEXITCODE -ne 0) { throw 'Reconstructed public root failed public release verification.' }
     Write-Host "Public root candidate created: $destination"
     Write-Host "Root commit: $(git -C $destination rev-parse HEAD)"
 }
