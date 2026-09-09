@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-1eb33304288f9204",
+  "attemptId": "job-93dbc1ce4eeb846d-a001",
+  "candidateSha256": "34165d6fccb39857c3153221c2da3be6f24902ca8df8ebc70dfa0da3b3e21faa",
+  "reviewer": "cty41",
+  "verdict": "retry",
+  "strengths": [
+    "背负透视、侧缘厚度与七弦身份可读"
+  ],
+  "defects": [
+    "长轴过陡、水平跨度不足；若琴尾放在右肩上方，宽琴首会落在身体中央而不是左下腰后"
+  ],
+  "nextPromptDelta": "Keep narrow tail at upper-right and broad head at lower-left. Make the screen-space diagonal much more horizontal: about 38–42 degrees above horizontal, horizontal endpoint separation 90–105px, vertical separation 70–85px. Preserve compact broad proportions and back-plane foreshortening.",
+  "recordedAt": "2026-08-30T19:22:35.9280429+08:00",
+  "authorType": "human",
+  "categories": [
+    "pose_axis",
+    "occlusion"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "保持窄琴尾右上、宽琴首左下，但将屏幕轴调整得更横向，目标端点水平差约90到105px、垂直差约70到85px"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "equipmentStyleVerdictId": "equipment-style-verdict-a0a626a09b29ec6a",
+  "attemptId": "job-612e5cad5e501d50-a002",
+  "candidateSha256": "d0eeaf815fe5697a664fb65336c567b8d67a5fcc9ff4674884e60f955bd93d07",
+  "reviewSha256": {
+    "equipmentPanel": "8aea33243e5cc7f726aef13c28e380fa1bc5ec59eeba0b560d71aaf7f7b7da6c"
+  },
+  "reviewer": "cty41",
+  "decision": "retry",
+  "reason": "用户本轮未选择唐式扁壶为正式或备用酒器",
+  "decidedAt": "2026-08-30T09:58:18.3709830+08:00"
+}

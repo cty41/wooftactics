@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "attemptId": "job-c92184f48437bd89-a002",
+  "jobId": "job-c92184f48437bd89",
+  "promptDelta": "以批准 Demonbound 母图为强几何锚点，核心轮廓、脚位和前爪位置优先；五红土松特征仅作为贴服毛色与头脸变化，禁止宽胖宠物体",
+  "inputs": [],
+  "target": {
+    "direction": "down-right",
+    "pose": "idle"
+  },
+  "conceptOnly": false,
+  "contractRequirements": null
+}

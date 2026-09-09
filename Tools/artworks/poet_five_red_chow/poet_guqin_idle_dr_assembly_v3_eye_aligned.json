@@ -1,0 +1,13 @@
+{
+  "assetId": "poet-five-red-chow-guqin-idle-dr-v1",
+  "contractId": "contract-e49f1cbfa04007bb",
+  "canvas": [256, 256],
+  "layers": [
+    {"role": "equipment", "attemptId": "job-4d655b953592f8df-a001", "transform": {"scalePercent": 80, "translate": [-12, 36], "flipHorizontal": false}},
+    {"role": "far_foot_overlay", "attemptId": "job-1ea74728add24f4e-a001", "transform": {"scalePercent": 100, "translate": [0, 0], "flipHorizontal": false}},
+    {"role": "far_paw_overlay", "attemptId": "job-c63425d6520d979e-a001", "transform": {"scalePercent": 100, "translate": [0, 0], "flipHorizontal": false}},
+    {"role": "body", "attemptId": "job-29895b081ac940e1-a001", "transform": {"scalePercent": 100, "translate": [0, 0], "flipHorizontal": false}},
+    {"role": "near_foot_overlay", "attemptId": "job-93fe1ce8ccd8acf7-a001", "transform": {"scalePercent": 100, "translate": [0, 0], "flipHorizontal": false}},
+    {"role": "near_paw_overlay", "attemptId": "job-c599f86539757365-a001", "transform": {"scalePercent": 100, "translate": [0, 0], "flipHorizontal": false}}
+  ]
+}

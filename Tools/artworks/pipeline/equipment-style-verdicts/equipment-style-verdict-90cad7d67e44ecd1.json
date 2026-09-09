@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "equipmentStyleVerdictId": "equipment-style-verdict-90cad7d67e44ecd1",
+  "attemptId": "job-43700d5eeac09fb6-a001",
+  "candidateSha256": "3da253f76ab53ba41df304cdd17a6130c99649ab3faa43eee38a5893e04a2a08",
+  "reviewSha256": {
+    "equipmentPanel": "60b89360fd9bb02c48f1686c7756498a31731a89f41071e5242921e7ead359df"
+  },
+  "reviewer": "cty41",
+  "decision": "retry",
+  "reason": "用户认为候选过于像木板且整体过长；应增强古琴首尾、岳山和琴足识别，并缩成可背负旅行比例",
+  "decidedAt": "2026-08-30T09:20:02.1144782+08:00"
+}

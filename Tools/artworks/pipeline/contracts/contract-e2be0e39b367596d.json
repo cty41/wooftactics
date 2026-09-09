@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 4,
+  "contractId": "contract-e2be0e39b367596d",
+  "assetId": "poet-five-red-chow-idle-ul-tang-dao-rotated-component-v2",
+  "approvedAssetId": "poet-five-red-chow-idle-ul-tang-dao-rotated-component-v2",
+  "kind": "tile",
+  "direction": "up-left",
+  "pose": "idle",
+  "anchor": null,
+  "maskRequired": false,
+  "noArms": false,
+  "handSides": {
+    "near_hand": null,
+    "far_hand": null
+  },
+  "occlusion": null,
+  "compositionSpec": null,
+  "identitySpec": null,
+  "requiresInvocation": false,
+  "canvasSpec": {
+    "masterSize": [
+      256,
+      256
+    ]
+  },
+  "tilePlacementSpec": null,
+  "styleSpec": null,
+  "equipmentProductionSpec": null,
+  "tolerances": {
+    "sizePx": 3,
+    "centerPx": 2
+  },
+  "outputs": {
+    "master": "Tools/artworks/poet_five_red_chow/components/migrated/poet_idle_ul_tang_dao_rotated_v03.png",
+    "preview": "Tools/artworks/poet_five_red_chow/components/migrated/poet_idle_ul_tang_dao_rotated_v03_128.png"
+  },
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "approved-equipment-authorized-rigid-rotation"
+  },
+  "assetRole": "component",
+  "componentKind": "equipment",
+  "sourceMode": "pre_v3_import",
+  "runtimeEligible": false,
+  "artDirectionSpec": {
+    "profileId": "pure-run-project-art-direction-v1",
+    "path": "Tools/artworks/pure_run/art_direction/project_art_direction_v1.json",
+    "sha256": "4820888ee25ac6865705ef130abdbec64ed597c6b126d96e6361a01960ec13fb"
+  },
+  "materialLanguageSpec": {
+    "profileId": "pure-run-material-language-v1",
+    "path": "Tools/artworks/pure_run/art_direction/material_language_v1.json",
+    "sha256": "3efa1e523c20c41f407ff142759a0bc18bb874392266006c704c314fd13dfd83"
+  },
+  "familyProfileSpec": {
+    "profileId": "pure-run-equipment-family-v1",
+    "family": "equipment",
+    "path": "Tools/artworks/pure_run/art_direction/families/equipment_v1.json",
+    "sha256": "c1462b6cc71959a3f3ba0685cb022fb1bb08e7c55a1c775ca709ab1e9834a75e"
+  },
+  "briefSpec": {
+    "briefId": "poet-idle-ul-tang-dao-rotated-component-v2",
+    "kind": "asset",
+    "path": "Tools/artworks/poet_five_red_chow/briefs/poet_idle_ul_tang_dao_rotated_component_brief_v2.json",
+    "sha256": "fbf41456dc0b02b792f06d632b40bb431085baf0c9d494f76a17b9146823461f"
+  },
+  "themeProfileSpec": null,
+  "artDirectionManifestSpec": {
+    "manifestId": "pure-run-art-direction-manifest-v1",
+    "path": "Tools/artworks/pure_run/art_direction/art_direction_manifest_v1.json",
+    "sha256": "dfc6e9a0cd517287f5cfa10d7ad36393908eed4c7cb92c2c03ede403f95d71f9"
+  },
+  "anchorVerdictIds": [
+    "anchor-verdict-028dbccd36a5264b"
+  ],
+  "requiredReviewPanels": [
+    "candidate-master"
+  ],
+  "acceptanceCaseIds": [
+    "POET-UL-DAO-ROTATED-COMPONENT-001"
+  ]
+}

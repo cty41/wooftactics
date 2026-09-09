@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 2,
+  "compositionId": "composition-a75b112d6ba3f2ad",
+  "assetId": "poet-five-red-chow-idle-ul-body-component-v3",
+  "spec": {
+    "canvas": [
+      256,
+      256
+    ],
+    "bodyLayer": true,
+    "renderForbiddenRegions": false,
+    "coreBbox": [
+      94,
+      121,
+      160,
+      231
+    ],
+    "coreAxis": {
+      "bottom": [
+        128,
+        231
+      ],
+      "top": [
+        123,
+        121
+      ],
+      "tiltDegrees": [
+        -4.0,
+        -2.0
+      ]
+    },
+    "footCenter": [
+      128,
+      236
+    ],
+    "weapon": {
+      "hiddenGrip": [
+        168,
+        160
+      ],
+      "exitWindow": [
+        168,
+        160,
+        168,
+        160
+      ],
+      "tipRegion": [
+        168,
+        160,
+        168,
+        160
+      ],
+      "maxBladeWidthPx": 0,
+      "maxGemAreaPx": 0
+    },
+    "forbiddenRegions": [],
+    "requiredHiddenLabels": [],
+    "visibleAreaCaps": {},
+    "equipmentState": {
+      "scabbard": "absent",
+      "staticEffects": "absent"
+    },
+    "screenSpaceIntent": {
+      "direction": "upper-left rear three-quarter, 25–35 degrees from straight rear",
+      "core": "narrow capsule with top center 5 px screen-left of foot center",
+      "earPlanes": "screen-left ear visibly reprojected toward profile; screen-right ear smaller and receding",
+      "valuePlanes": "screen-left near plane slightly lighter; screen-right back plane darker, flat values only",
+      "exclusions": "no paws, equipment, full face, second eye or mane seam",
+      "tail": "tail mass must be on screen-right",
+      "faceCue": "one tiny eye and minimal nose/muzzle edge may appear only on screen-left outline"
+    }
+  },
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/compositions/poet_idle_ul_body_component_composition_v3.json",
+    "sha256": "61c16dd5965a43429acd43a8c735d80b54d2e8afcb8fec2a7229a8ef2349e778"
+  },
+  "anchor": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+    "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753"
+  }
+}

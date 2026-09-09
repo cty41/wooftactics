@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-62b3a126c9041ab4",
+  "artifact": {
+    "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v3/art-direction-overview-pending.png",
+    "sha256": "6069aaedbeed60ef23a5211b4a9d727d5876e092b5049e3aa816c8f6c047a2b5"
+  },
+  "role": "review-derived",
+  "note": "Artwork pilot intermediate or review evidence; non-runtime and not an approved generation input"
+}

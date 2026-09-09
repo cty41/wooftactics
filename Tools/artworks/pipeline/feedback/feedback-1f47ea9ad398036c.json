@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-1f47ea9ad398036c",
+  "attemptId": "job-dfbdae10245d7d6c-a003",
+  "candidateSha256": "30f90904a35ad3b23e25c029bfb0c07fb72c420bfafce2c945a6901e284d3516",
+  "reviewer": "agent",
+  "verdict": "retry",
+  "strengths": [
+    "Clean body-only component: no paws, equipment, face or mane seam; exact 110 px core height, centered and stable bands."
+  ],
+  "defects": [
+    "Core width is 57 px versus 66 px anchor, 9 px too narrow."
+  ],
+  "nextPromptDelta": "Keep everything else exact; widen only the smooth central capsule about 15 percent from 57 to 66 pixels after calibration.",
+  "recordedAt": "2026-09-05T00:42:44+08:00",
+  "authorType": "agent",
+  "categories": [
+    "core_geometry"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "body-only isolation, 110 px height, centered core, smooth silhouette, back view, ears, tail, no face or mane"
+  ],
+  "pendingFixes": [
+    "final body component generation round"
+  ]
+}

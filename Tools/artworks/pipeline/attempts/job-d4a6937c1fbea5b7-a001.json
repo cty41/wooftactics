@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 3,
+  "attemptId": "job-d4a6937c1fbea5b7-a001",
+  "jobId": "job-d4a6937c1fbea5b7",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "review_pending",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/components/poet_idle_body_clean_grip_v09.png",
+      "sha256": "862751a8cac580ebda2abc5ae1ad6a27c0c4aa391237c589698e545276820173"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-d4a6937c1fbea5b7/job-d4a6937c1fbea5b7-a001/raw.png",
+      "sha256": "862751a8cac580ebda2abc5ae1ad6a27c0c4aa391237c589698e545276820173"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-d4a6937c1fbea5b7/job-d4a6937c1fbea5b7-a001/prepared.png",
+      "sha256": "862751a8cac580ebda2abc5ae1ad6a27c0c4aa391237c589698e545276820173"
+    },
+    "maskSource": {
+      "path": "Tools/artworks/poet_five_red_chow/components/poet_idle_body_full_silhouette_mask_v07.png",
+      "sha256": "6740abbf70e9b3d6481dea1de75f062a1c4ab5080702e0e636cf7f81148407a5"
+    },
+    "mask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-d4a6937c1fbea5b7/job-d4a6937c1fbea5b7-a001/mask.png",
+      "sha256": "6740abbf70e9b3d6481dea1de75f062a1c4ab5080702e0e636cf7f81148407a5"
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-49c00be3b66e12a3.json",
+    "sha256": "d6f678beae532e4383bbba3cf1a04a89d66b8e0c4183e9798b500c3817834f81"
+  },
+  "approvalId": null,
+  "feedbackId": null,
+  "componentMigrationId": "component-migration-28151beb6a5cccb2",
+  "sourceMode": "pre_v3_import"
+}

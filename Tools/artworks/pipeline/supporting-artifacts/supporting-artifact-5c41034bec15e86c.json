@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-5c41034bec15e86c",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_3d_projection_study_v03.png",
+    "sha256": "87af81afa7086fed7bc381e68e02bfff4520383ad7f27e136bb36c3e8fc585fe"
+  },
+  "role": "review-derived",
+  "note": "Corrected UL 3D projection study with explicit 14 percent screen-space foreshortening and behind-core occlusion; supersedes v01/v02 studies; not a sprite candidate"
+}

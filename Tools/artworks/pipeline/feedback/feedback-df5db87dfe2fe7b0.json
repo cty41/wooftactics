@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-df5db87dfe2fe7b0",
+  "attemptId": "job-c2fb551be9ecdd83-a002",
+  "candidateSha256": "f7c08ce6bcb975298610966edf71a0d56c7f8ccdaaad7c2221836a972bcbd27a",
+  "reviewer": "agent",
+  "verdict": "retry",
+  "strengths": [
+    "Core is now close to target: 74x110 versus 66x110 anchor, with stable narrowing lower band; four paws and back view are present."
+  ],
+  "defects": [
+    "Visible left-upper sheath end and right-side ring/grip read as two disconnected weapon pieces.",
+    "Ring is too frontal and large.",
+    "Core center is 3 px left and width remains 8 px over target."
+  ],
+  "nextPromptDelta": "Keep current body height, narrow width about 10 percent and center 3 px right. Remove every visible upper-left sheath endpoint. Show only one small edge-on ring plus short connected grip at right shoulder, angled so the hidden sheath would continue upper-left entirely behind the body.",
+  "recordedAt": "2026-09-04T23:05:15+08:00",
+  "authorType": "agent",
+  "categories": [
+    "equipment_state",
+    "core_geometry"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "near-correct capsule height and band profile, four paws, back view, no face, no deferred props"
+  ],
+  "pendingFixes": [
+    "final round deterministic report and Reviewer"
+  ]
+}

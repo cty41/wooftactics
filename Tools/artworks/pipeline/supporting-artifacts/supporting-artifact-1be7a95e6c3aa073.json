@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-1be7a95e6c3aa073",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/candidates/poet_idle_dr_v08_clean_grip_pending.png",
+    "sha256": "bcf0f943469e5a41ed2ab1a18862f82fdf0207bd391df6afba7ac0c5be632754"
+  },
+  "role": "review-derived",
+  "note": "Artwork pilot intermediate or review evidence; non-runtime and not an approved generation input"
+}

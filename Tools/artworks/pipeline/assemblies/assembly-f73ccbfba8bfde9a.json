@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 3,
+  "assemblyId": "assembly-f73ccbfba8bfde9a",
+  "assetId": "poet-five-red-chow-ring-pommel-dao-idle-dr-v3",
+  "contractId": "contract-57bf5c0526078c9d",
+  "canvas": [
+    256,
+    256
+  ],
+  "layers": [
+    {
+      "role": "body",
+      "attemptId": "job-d4a6937c1fbea5b7-a001",
+      "transform": {
+        "scalePercent": 100,
+        "translate": [
+          0,
+          0
+        ],
+        "flipHorizontal": false
+      },
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-d4a6937c1fbea5b7/job-d4a6937c1fbea5b7-a001/prepared.png",
+        "sha256": "862751a8cac580ebda2abc5ae1ad6a27c0c4aa391237c589698e545276820173"
+      },
+      "componentContractId": "contract-9401e215fb323eb1"
+    },
+    {
+      "role": "far_foot_overlay",
+      "attemptId": "job-1ea74728add24f4e-a001",
+      "transform": {
+        "scalePercent": 100,
+        "translate": [
+          0,
+          0
+        ],
+        "flipHorizontal": false
+      },
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-1ea74728add24f4e/job-1ea74728add24f4e-a001/prepared.png",
+        "sha256": "36a73f0af19e8a189ef65ef292912518b805337c442104f66f750b5b9e4b4e5f"
+      },
+      "componentContractId": "contract-82a44f77f364ca0d"
+    },
+    {
+      "role": "near_foot_overlay",
+      "attemptId": "job-93fe1ce8ccd8acf7-a001",
+      "transform": {
+        "scalePercent": 100,
+        "translate": [
+          0,
+          0
+        ],
+        "flipHorizontal": false
+      },
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-93fe1ce8ccd8acf7/job-93fe1ce8ccd8acf7-a001/prepared.png",
+        "sha256": "6aaab932cbb581ae851d36b3451533febacb5abdabe7fd0f26e3cb28f6472a76"
+      },
+      "componentContractId": "contract-eef5cd73eece2850"
+    },
+    {
+      "role": "equipment",
+      "attemptId": "job-1814105c6a26c0a4-a001",
+      "transform": {
+        "scalePercent": 75,
+        "translate": [
+          20,
+          56
+        ],
+        "flipHorizontal": false
+      },
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-1814105c6a26c0a4/job-1814105c6a26c0a4-a001/prepared.png",
+        "sha256": "8ecf3de0f6859965cdc08ebae8735bfaa8d134a701e855ba422262fbf71ce0cf"
+      },
+      "componentContractId": "contract-5736c5e73f075f8c"
+    },
+    {
+      "role": "far_paw_overlay",
+      "attemptId": "job-8894f888c899803c-a001",
+      "transform": {
+        "scalePercent": 100,
+        "translate": [
+          0,
+          0
+        ],
+        "flipHorizontal": false
+      },
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-8894f888c899803c/job-8894f888c899803c-a001/prepared.png",
+        "sha256": "fbf03fb212fc71587bc4171f87acd5318f0c1af3949df084ded43c07c8ab30e0"
+      },
+      "componentContractId": "contract-11637d200cf3d03a"
+    },
+    {
+      "role": "near_paw_overlay",
+      "attemptId": "job-c599f86539757365-a001",
+      "transform": {
+        "scalePercent": 100,
+        "translate": [
+          0,
+          0
+        ],
+        "flipHorizontal": false
+      },
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-c599f86539757365/job-c599f86539757365-a001/prepared.png",
+        "sha256": "aae89655c7ebec5b5abf4ac093df8f63cceba8b3e866e1e7945deb5d1ba7bd57"
+      },
+      "componentContractId": "contract-15596ba5931efae9"
+    }
+  ]
+}

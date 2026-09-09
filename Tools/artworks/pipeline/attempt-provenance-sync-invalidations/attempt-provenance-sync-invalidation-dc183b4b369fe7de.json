@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 4,
+  "attemptProvenanceSyncInvalidationId": "attempt-provenance-sync-invalidation-dc183b4b369fe7de",
+  "attemptProvenanceSyncId": "attempt-provenance-sync-5edd36594641ede1",
+  "attemptProvenanceSync": {
+    "path": "Tools/artworks/pipeline/attempt-provenance-syncs/attempt-provenance-sync-5edd36594641ede1.json",
+    "sha256": "06396395baf2f85e9ccdfe3241885a9f04567de88059d1078a0ffa95a37640c4"
+  },
+  "reviewer": "cty41",
+  "reason": "Historical failed synchronization receipt included a non-pipeline artifact and preceded a manifest conflict; mark it invalid so it cannot imply successful provenance synchronization.",
+  "invalidatedAt": "2026-09-08T22:30:00+08:00"
+}

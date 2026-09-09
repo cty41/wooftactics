@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-653a716d2dd626fd-a001",
+  "jobId": "job-653a716d2dd626fd",
+  "ordinal": 1,
+  "generationRound": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "prepared",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_ring_pommel_tang_dao_sheathed_diagonal_ul_raw_v01.png",
+      "sha256": "5ad78c9b121986e9abcd875037a7a9c380147b888e6053dbacceb1d5b7c1263f"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-653a716d2dd626fd/job-653a716d2dd626fd-a001/raw.png",
+      "sha256": "5ad78c9b121986e9abcd875037a7a9c380147b888e6053dbacceb1d5b7c1263f"
+    },
+    "prepared": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_sheathed_diagonal_ul_v01.png",
+      "sha256": "e84283eb59207c1335981f2072748b4ef89062cdac6da91e94a1078485121923"
+    },
+    "equipmentPreview": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_sheathed_diagonal_ul_v01_128.png",
+      "sha256": "01a194e2924c2a356ea2e72b4d9cd42961673eb9b8fd2df1554e44022be8b14a"
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/style-reports/equipment-style-report-66c89ec067efa7d4.json",
+    "sha256": "f429f184d535387bb019528696655131feffec5ea57b57cfa0c77c4e26edd69a"
+  },
+  "approvalId": null,
+  "feedbackId": "feedback-bc95184e3d5d37c5",
+  "generationInvocationId": "generation-invocation-874ce977fc0eb3ed",
+  "generationDeliveryId": "generation-delivery-5b79d4ce061daa71",
+  "equipmentStyleReportId": "equipment-style-report-66c89ec067efa7d4"
+}

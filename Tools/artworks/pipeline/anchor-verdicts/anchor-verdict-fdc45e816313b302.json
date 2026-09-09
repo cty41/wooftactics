@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 4,
+  "anchorVerdictId": "anchor-verdict-fdc45e816313b302",
+  "candidate": {
+    "path": "Tools/artworks/doge/calibrated/doge_capsule_demonbound_idle_dr_v01.png",
+    "sha256": "21559ca7aedd3e146feb2b93c5a6633affc6ce544122628c960972a982b0b5e7"
+  },
+  "family": "actor",
+  "responsibilities": [
+    "mounted-melee-cartoon-abstraction",
+    "actor-equipment-detail-balance"
+  ],
+  "excludedUses": [
+    "poet-identity",
+    "tang-dao-shape"
+  ],
+  "review": {
+    "path": "Tools/artworks/pure_run/art_direction/reviews/actor_anchor_candidate_board_v1.png",
+    "sha256": "2afd9e5a520692d46101f1bd710af12eb9bee190a84516453339c1acbad74bb3"
+  },
+  "decision": "approved-anchor",
+  "reviewer": "cty41",
+  "reason": "用户明确批准本次诗人试点最小职责：只指导角色实装近战装备的卡通化、细节预算和轮廓重量",
+  "decidedAt": "2026-09-03T14:00:00+08:00"
+}

@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-407a464b1c170ce7",
+  "artifact": {
+    "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v3/equipment-inspection.png",
+    "sha256": "00888e09e1e398984d7328f41ec5f62bd67c14cafc873d672da08d03e86e783f"
+  },
+  "role": "review-derived",
+  "note": "Artwork pilot intermediate or review evidence; non-runtime and not an approved generation input"
+}

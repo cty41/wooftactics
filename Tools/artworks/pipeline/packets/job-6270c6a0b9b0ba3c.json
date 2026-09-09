@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 2,
+  "jobId": "job-6270c6a0b9b0ba3c",
+  "state": "ready",
+  "contractId": "contract-c2c82d123c08c7e7",
+  "contractSha256": "3a53a62dc3b00358b914e039bbcb096be794bfe53ab26a2fb0703e40f02ea249",
+  "prompt": {
+    "path": "Tools/artworks/poet_five_red_chow/idle_down_right_generation_prompt_v3_breed.md",
+    "sha256": "2a420d29c769f09daf92c9b70895cdc020a58e99fa303d68f3cc0da815aa190a"
+  },
+  "inputs": [],
+  "target": {
+    "direction": "down-right",
+    "pose": "idle"
+  },
+  "series": {
+    "seriesId": "poet-five-red-chow-v1",
+    "poseId": "idle-dr"
+  },
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": false,
+  "poseGuide": null,
+  "localReferences": []
+}

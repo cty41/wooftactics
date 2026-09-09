@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "compiledPromptId": "compiled-prompt-fe39022418db97d0",
+  "jobId": "job-dfbdae10245d7d6c",
+  "poseGuideId": "pose-guide-354cc7f9010d462c",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/compiled/poet_idle_ul_body_component_a001.md",
+    "sha256": "1a247cf34c4545cdda57808c120bd7464f60d842b3a17ddd51730c6771dab64b"
+  }
+}

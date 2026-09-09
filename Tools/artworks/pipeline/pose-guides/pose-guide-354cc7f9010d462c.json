@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 2,
+  "poseGuideId": "pose-guide-354cc7f9010d462c",
+  "compositionId": "composition-214f0aa25d7c72b9",
+  "compositionSha256": "2deeaca5d9b224f83ae3145a91c4cb91c887cf9add9536270c06962416c48e16",
+  "anchorSha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/guides/poet_idle_ul_body_component_guide_v1.png",
+    "sha256": "ab4accb14fca61fb7a87abbf01da56221e8c76cce493cfab5fea1faf6aee6e24"
+  },
+  "role": "supporting-derived"
+}

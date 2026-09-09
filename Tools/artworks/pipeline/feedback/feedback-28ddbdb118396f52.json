@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-28ddbdb118396f52",
+  "attemptId": "job-7603439437c554d0-a001",
+  "candidateSha256": "1990af1c1a97cd9d5c2bf9395e794b80c6de32187c916763eca6c238a4dfbf56",
+  "reviewer": "cty41",
+  "verdict": "retry",
+  "strengths": [
+    "Preserves the approved straight fully sheathed ring-pommel Tang dao identity and isolated review scope."
+  ],
+  "defects": [
+    "The candidate still reads like a DR-view weapon laid on the ground rather than a weapon turned into UL 3D space.",
+    "The axis is too shallow; the UL carried weapon should stand more vertically in screen space.",
+    "The ring pommel incorrectly exposes its front circular face; from the requested view the ring should be seen mostly edge-on from the side."
+  ],
+  "nextPromptDelta": "Redraw as a genuinely carried UL-view object: rotate the weapon farther around its vertical/world relationship so the screen axis is substantially steeper and more upright, not laid along the ground plane. Show the ring pommel nearly edge-on as a narrow thick oval/side profile with only a slim opening, never its full circular face. Reproject grip, guard, throat, fittings and scabbard consistently with that side-on ring view. Keep one isolated fully sheathed straight Tang dao and preserve approved palette and cartoon abstraction.",
+  "recordedAt": "2026-09-03T18:00:00+08:00",
+  "authorType": "human",
+  "categories": [
+    "pose_axis",
+    "equipment_state"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "same approved Tang dao identity, straight complete scabbard, fully sheathed state, palette, cartoon detail budget, isolated no-character scope"
+  ],
+  "pendingFixes": [
+    "more upright UL screen axis, correct carried-space projection, edge-on side view of ring pommel, grip/guard/throat perspective consistent with ring side view"
+  ]
+}

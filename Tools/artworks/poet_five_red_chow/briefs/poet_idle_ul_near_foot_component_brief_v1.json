@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "briefKind": "asset",
+  "briefId": "poet-idle-ul-near-foot-component-v1",
+  "assetId": "poet-five-red-chow-idle-ul-near-foot-component-v1",
+  "family": "actor",
+  "purpose": "Deterministically derive the near_foot component from the approved poet DR semantic source for offline UL assembly.",
+  "firstRead": [
+    "approved_poet_paw_identity",
+    "semantic-pure-derived-overlay"
+  ],
+  "targetContexts": [
+    "component-assembly"
+  ],
+  "identityInvariants": [
+    "approved poet paw color and outline",
+    "compact paw mass",
+    "no connecting limb"
+  ],
+  "shapeStrategy": "Preserve exact approved source pixels; assembly may apply only allowed deterministic scale, flip and integer translation.",
+  "colorStrategy": "Preserve source bytes.",
+  "materialStrategy": "Preserve source bytes.",
+  "attentionRole": "supporting",
+  "allowedVariation": [
+    "deterministic assembly transform only"
+  ],
+  "forbidden": [
+    "generated replacement",
+    "body pixels",
+    "equipment pixels",
+    "arm",
+    "leg",
+    "manual paint edit"
+  ],
+  "referenceResponsibilities": [
+    {
+      "role": "derived-source-identity",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+      "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753",
+      "responsibility": "Exact approved near_foot pixels and semantic label only."
+    }
+  ],
+  "requiredReviewPanels": [
+    "candidate-master"
+  ],
+  "acceptanceCases": [
+    {
+      "caseId": "POET-UL-NEAR-FOOT-DERIVED-001",
+      "evidence": [
+        "candidate-master"
+      ],
+      "automatedFacts": [
+        "source attempt approval, candidate SHA, mask SHA and semantic label are bound by derivation receipt"
+      ],
+      "humanChecks": [
+        "none; deterministic derivation from approved source"
+      ],
+      "passCriteria": "Derived overlay is nonempty and semantically pure."
+    }
+  ]
+}

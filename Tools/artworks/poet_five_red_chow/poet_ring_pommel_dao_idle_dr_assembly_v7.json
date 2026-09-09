@@ -1,0 +1,13 @@
+{
+  "assetId": "poet-five-red-chow-ring-pommel-dao-idle-dr-v3",
+  "contractId": "contract-57bf5c0526078c9d",
+  "canvas": [256, 256],
+  "layers": [
+    {"role": "body", "attemptId": "job-454ecd81203dd150-a001", "transform": {"scalePercent": 100, "translate": [0, 0], "flipHorizontal": false}},
+    {"role": "far_foot_overlay", "attemptId": "job-1ea74728add24f4e-a001", "transform": {"scalePercent": 100, "translate": [0, 0], "flipHorizontal": false}},
+    {"role": "near_foot_overlay", "attemptId": "job-93fe1ce8ccd8acf7-a001", "transform": {"scalePercent": 100, "translate": [0, 0], "flipHorizontal": false}},
+    {"role": "equipment", "attemptId": "job-1814105c6a26c0a4-a001", "transform": {"scalePercent": 75, "translate": [20, 56], "flipHorizontal": false}},
+    {"role": "far_paw_overlay", "attemptId": "job-8894f888c899803c-a001", "transform": {"scalePercent": 100, "translate": [0, 0], "flipHorizontal": false}},
+    {"role": "near_paw_overlay", "attemptId": "job-c599f86539757365-a001", "transform": {"scalePercent": 100, "translate": [0, 0], "flipHorizontal": false}}
+  ]
+}

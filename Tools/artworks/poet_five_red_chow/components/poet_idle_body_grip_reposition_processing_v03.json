@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "operation": "deterministic-selected-study-partition",
+  "source": "Tools/artworks/poet_five_red_chow/concepts/poet_tang_dao_75_grip_reposition_03.png",
+  "selectedBy": "cty41",
+  "selection": "C: lower relaxed grip",
+  "steps": [
+    "start from the previously approved derived poet body component",
+    "remove only the old screen-left circular paw outline by replacing dark outline pixels with neighboring approved body colors",
+    "leave face, ears, five-red identity, core silhouette, tail, near paw, and foot apertures unchanged",
+    "keep equipment and repositioned far paw out of this body component"
+  ],
+  "runtimeEligible": false
+}

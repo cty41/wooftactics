@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-bba5caed1b9c33cc",
+  "attemptId": "job-f47b524a48de2ded-a005",
+  "candidateSha256": "8eb22b6a92835766b48345966da7962a39f358e34604035874d7a45d0d447cac",
+  "reviewer": "agent",
+  "verdict": "exhausted",
+  "strengths": [
+    "Small edge-on connected ring is preserved; lower sheath remains truthfully hidden; back view has no face or deferred props."
+  ],
+  "defects": [
+    "Final automatic round still fails compact capsule geometry: core is roughly twice the approved anchor width and reads as a tall broad column.",
+    "Side front paws remain vertically elongated relative to the approved compact paw topology."
+  ],
+  "nextPromptDelta": "Human-authorized later attempt should use a body-only native UL anchor or stronger narrow-capsule silhouette control; preserve the successful ring and sheath occlusion.",
+  "recordedAt": "2026-09-04T21:30:23+08:00",
+  "authorType": "agent",
+  "categories": [
+    "core_geometry"
+  ],
+  "disposition": "exhausted",
+  "frozenInvariants": [
+    "small edge-on connected ring, hidden lower sheath, back view, no face, no guqin, no wineskin or gourd"
+  ],
+  "pendingFixes": [
+    "cty41 decides whether to authorize a later attempt or stop"
+  ]
+}

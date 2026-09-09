@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 2,
+  "regions": {
+    "eyeRegion": [126, 142, 158, 156],
+    "weaponExit": [120, 210, 122, 212],
+    "weaponTip": [120, 210, 122, 212],
+    "gemRegion": [120, 210, 122, 212]
+  }
+}

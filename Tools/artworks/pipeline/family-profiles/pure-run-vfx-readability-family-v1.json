@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "registryId": "family-profile-88a5bc9a04c4df52",
+  "sourceId": "pure-run-vfx-readability-family-v1",
+  "sourceType": "family",
+  "artifact": {
+    "path": "Tools/artworks/pure_run/art_direction/families/vfx_readability_v1.json",
+    "sha256": "6b5dcd62deb456b0749387615ba7adcb858171593c88b5dc9466e3bc697aebf6"
+  }
+}

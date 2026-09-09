@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-6e00e0a6950a383e",
+  "artifact": {
+    "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v09/style-context.png",
+    "sha256": "3bc5f0868dec6ab17a1a004d9feacbb33f9c286f1ec557f661ffdc11b0dd111f"
+  },
+  "role": "review-derived",
+  "note": "Poet Idle DR v09 hash-bound Art Direction review evidence; non-runtime"
+}

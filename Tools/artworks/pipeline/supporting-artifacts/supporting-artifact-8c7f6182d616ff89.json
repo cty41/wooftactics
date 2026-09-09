@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-8c7f6182d616ff89",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/supporting/equipped_idle_dr_composite_preview_v2.png",
+    "sha256": "6c22d9d6b773d211ad0fb81cde04139015488b192fdb2d6a89ef0b95f067218f"
+  },
+  "role": "supporting-derived",
+  "note": "装备版Idle DR确定性构图预览，不是可晋升Sprite；v4为当前人工布局审核稿"
+}

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "briefKind": "asset",
+  "briefId": "poet-ring-pommel-tang-dao-sheathed-v2-audit",
+  "assetId": "poet-ring-pommel-tang-dao-sheathed-dr-v2",
+  "family": "equipment",
+  "purpose": "Provide the approved completely sheathed straight ring-pommel Tang dao identity for the poet and establish the Pure Run near-melee equipment style baseline.",
+  "firstRead": ["completely_sheathed_straight_dao", "thick_empty_ring_pommel", "cartoon_pixel_equipment"],
+  "targetContexts": ["isolated-inventory-review", "poet-idle-dr-mounted-review", "preview-128"],
+  "identityInvariants": ["straight narrow scabbard", "blade fully enclosed", "thick empty ring pommel", "dark red-brown scabbard", "simple throat guard band and end cap"],
+  "shapeStrategy": "One long straight diagonal silhouette with the empty ring as the only signature secondary shape.",
+  "colorStrategy": "Dark red-brown body, dark outline, and restrained muted metal fittings.",
+  "materialStrategy": "Flat two-to-three value cartoon abstraction; no engraved panels, texture noise, realistic reflections, or continuous highlights.",
+  "attentionRole": "secondary",
+  "allowedVariation": ["controlled simplification for mounted target size", "minor integer placement adjustment"],
+  "forbidden": ["exposed blade", "curved Japanese-sword silhouette", "double-edged sword", "dragon or animal carving", "dense fittings", "photorealistic material", "glow", "second weapon"],
+  "referenceResponsibilities": [
+    {"role": "equipment-style-context", "path": "Tools/artworks/doge/calibrated/doge_capsule_demonbound_idle_dr_v01.png", "sha256": "21559ca7aedd3e146feb2b93c5a6633affc6ce544122628c960972a982b0b5e7", "responsibility": "Actor-mounted outline weight and equipment detail budget only."},
+    {"role": "target-actor-context", "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png", "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753", "responsibility": "Poet target scale and media context only."}
+  ],
+  "requiredReviewPanels": ["isolated-master", "preview-128", "poet-mounted-context", "demonbound-style-context", "pixel-inspection"],
+  "acceptanceCases": ["POET-STYLE-001", "POET-EQUIPMENT-001", "POET-REGRESSION-001"]
+}

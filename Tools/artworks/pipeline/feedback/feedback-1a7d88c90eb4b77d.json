@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-1a7d88c90eb4b77d",
+  "attemptId": "job-43b34a4685f71ca2-a003",
+  "candidateSha256": "39a4128111b5e05a1e1f1be1b41676585e82446432fb51f0617a24f24d93ecb4",
+  "reviewer": "agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "核心中心、宽度趋势和倾角已进入容差；视觉图未改变"
+  ],
+  "defects": [
+    "按 subject alpha 裁切 core 仍产生内部断行；近侧脚完全落入 core 区而未获得独立标签"
+  ],
+  "nextPromptDelta": "保持同一 raw；使用完全连续且位于主体内的矩形 core，近侧脚仅从 core 右下边缘切出连续标签，远侧脚标记 core 下方",
+  "recordedAt": "2026-08-29T21:40:49.9230446+08:00",
+  "authorType": "agent",
+  "categories": [
+    "core_geometry",
+    "topology"
+  ],
+  "disposition": "technical_failed",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "按 subject alpha 裁切 core 仍产生内部断行；近侧脚完全落入 core 区而未获得独立标签"
+  ]
+}

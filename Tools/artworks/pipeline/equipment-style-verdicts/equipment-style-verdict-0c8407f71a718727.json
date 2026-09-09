@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "equipmentStyleVerdictId": "equipment-style-verdict-0c8407f71a718727",
+  "attemptId": "job-823050db4231b9ae-a002",
+  "candidateSha256": "b677fa5977ea35454bf24238bbf8a9f10833bb37c95454abe7d0b46fac1cd926",
+  "reviewSha256": {
+    "equipmentPanel": "00cbb647a6885637e970c3aa6a318cd6a0976295e94bb2cbaafd80655f854106"
+  },
+  "reviewer": "cty41",
+  "decision": "approved",
+  "reason": "用户选择皮革酒囊作为当前正式酒器；接受平涂风格、水滴轮廓、缝边与菱形压纹",
+  "decidedAt": "2026-08-30T09:58:18.3709830+08:00"
+}

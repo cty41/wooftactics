@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-f8e1860788369119",
+  "artifact": {
+    "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v09/red-shiba-amazon-poet-tilemap-compare.png",
+    "sha256": "bfca3829c8572e2cbb1addea034120158ffbdd0e434e61a2d3c31b34ff49137a"
+  },
+  "role": "review-derived",
+  "note": "Corrected standalone comparison: canonical red-shiba Amazon/Hunter DR versus approved equipped poet; replaces erroneous humanoid Amazon comparison"
+}

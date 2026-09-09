@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "compiledPromptId": "compiled-prompt-8da876a1a7e8d390",
+  "jobId": "job-612e5cad5e501d50",
+  "equipmentProfileSha256": "e23e540c790a57432967d944c82bdad9721f109d2cb6352b3288c0c2c7d7bbb1",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/pipeline/wine_flask_tang_compiled_v2_flat.md",
+    "sha256": "6febf62924b4b897e5defb2875ba9bab5ecc2cca708887742ad7445830094e02"
+  }
+}

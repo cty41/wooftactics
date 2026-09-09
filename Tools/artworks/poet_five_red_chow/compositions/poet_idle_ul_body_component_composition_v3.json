@@ -1,0 +1,68 @@
+{
+  "canvas": [
+    256,
+    256
+  ],
+  "bodyLayer": true,
+  "renderForbiddenRegions": false,
+  "coreBbox": [
+    94,
+    121,
+    160,
+    231
+  ],
+  "coreAxis": {
+    "bottom": [
+      128,
+      231
+    ],
+    "top": [
+      123,
+      121
+    ],
+    "tiltDegrees": [
+      -4.0,
+      -2.0
+    ]
+  },
+  "footCenter": [
+    128,
+    236
+  ],
+  "weapon": {
+    "hiddenGrip": [
+      168,
+      160
+    ],
+    "exitWindow": [
+      168,
+      160,
+      168,
+      160
+    ],
+    "tipRegion": [
+      168,
+      160,
+      168,
+      160
+    ],
+    "maxBladeWidthPx": 0,
+    "maxGemAreaPx": 0
+  },
+  "forbiddenRegions": [],
+  "requiredHiddenLabels": [],
+  "visibleAreaCaps": {},
+  "equipmentState": {
+    "scabbard": "absent",
+    "staticEffects": "absent"
+  },
+  "screenSpaceIntent": {
+    "direction": "upper-left rear three-quarter, 25–35 degrees from straight rear",
+    "core": "narrow capsule with top center 5 px screen-left of foot center",
+    "earPlanes": "screen-left ear visibly reprojected toward profile; screen-right ear smaller and receding",
+    "valuePlanes": "screen-left near plane slightly lighter; screen-right back plane darker, flat values only",
+    "exclusions": "no paws, equipment, full face, second eye or mane seam",
+    "tail": "tail mass must be on screen-right",
+    "faceCue": "one tiny eye and minimal nose/muzzle edge may appear only on screen-left outline"
+  }
+}

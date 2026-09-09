@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "retirementId": "retirement-human-pixel-amazon-20260903",
+  "status": "retired-and-deleted",
+  "assetFamily": "human-pixel-amazon",
+  "authorizedBy": "cty41",
+  "authorizedAt": "2026-09-03",
+  "reason": "Deprecated humanoid Amazon repeatedly caused selection errors; Git history is the historical source of truth.",
+  "replacement": {
+    "downRight": "Tools/artworks/doge/calibrated/doge_capsule_hunter_color_calibrated_v01.png",
+    "downRightPreview": "Tools/artworks/doge/calibrated/doge_capsule_hunter_color_calibrated_v01_128.png",
+    "upLeft": "Tools/artworks/doge/calibrated/doge_capsule_hunter_color_ul_v02.png",
+    "upLeftPreview": "Tools/artworks/doge/calibrated/doge_capsule_hunter_color_ul_v02_128.png"
+  },
+  "retiredFiles": [
+    {
+      "path": "Tools/artworks/amazon/attack_prompts.md",
+      "sha256": "86a0c1f684a56280ff27039d9c097b548449dc21f348f61279a1a9d6da8db197"
+    },
+    {
+      "path": "Tools/artworks/amazon/base_style_prompt.md",
+      "sha256": "903e5fe3c25b6731fd1ad5b21fefba2765f77dd6069cfc292d2c041cd350715a"
+    },
+    {
+      "path": "Tools/artworks/amazon/character_prompt.md",
+      "sha256": "0a63a1acb9f31570ac4394582c6a12de95e1c74ca147750c2555d8a237fa3e1a"
+    },
+    {
+      "path": "Tools/artworks/amazon/concepts/amazon_lineart_v01.png",
+      "sha256": "2f0baed6e4b30ff4f93d296018230b6ee92ae6d74acf51cfdf70feaa1c37176d"
+    },
+    {
+      "path": "Tools/artworks/amazon/concepts/amazon_lineart_v01_128.png",
+      "sha256": "cd5746a120b54a1820132e6ddfe757ded697e3aa94778d3af9c700a5b66ab16c"
+    },
+    {
+      "path": "Tools/artworks/amazon/concepts/amazon_lineart_v02.png",
+      "sha256": "34782f332b97ae7b8dfca1143f2e300890e10d58dbb5d885b1641e45eebc65ef"
+    },
+    {
+      "path": "Tools/artworks/amazon/concepts/amazon_lineart_v02_128.png",
+      "sha256": "2342b57998e0ae701780dabb1f0936782fa3aafb7d60f9d4afecd68d1ec938cf"
+    },
+    {
+      "path": "Tools/artworks/amazon/concepts/amazon_lineart_v03.png",
+      "sha256": "4c8d339c0886d929611bdaec60f3b8bfb715f8a91889846d90ecd922d592bbc7"
+    },
+    {
+      "path": "Tools/artworks/amazon/concepts/amazon_lineart_v03_128.png",
+      "sha256": "bc2c1a39722835111bad3a4a1ae7f0882d1a75d97220962abf1adab14e501c4b"
+    },
+    {
+      "path": "Tools/artworks/amazon/concepts/amazon_lineart_v04.png",
+      "sha256": "31c1f4f8d73baa1ce211390487cf4aa3363a3ff0cfd2bee588a109885f12e916"
+    },
+    {
+      "path": "Tools/artworks/amazon/concepts/amazon_lineart_v04_128.png",
+      "sha256": "ff3856d6bab006001c11131d255c1d2186e04ce236101d44aa6dccef6d50d945"
+    },
+    {
+      "path": "Tools/artworks/amazon/concepts/amazon_lineart_v05.png",
+      "sha256": "f126e2d534c7328c2b8c72c9daf3e42446a9d66c5be9e53ad9439849b0631dfb"
+    },
+    {
+      "path": "Tools/artworks/amazon/concepts/amazon_lineart_v05_128.png",
+      "sha256": "451a67b9546e30d65a1ba91839fb3368e41edfaf790c63b9728390919304b0c4"
+    },
+    {
+      "path": "Tools/artworks/amazon/deprecated-assets.json",
+      "sha256": "4790688a86d12f05b0e4ec4bacc19d271982791731b166067fd8169d0e43e201"
+    },
+    {
+      "path": "Tools/artworks/amazon/DEPRECATED.md",
+      "sha256": "812550a564041b8c2fc5212fdad159858998f4fbdf2b2b85809511d118b41190"
+    },
+    {
+      "path": "Tools/artworks/amazon/idle.png",
+      "sha256": "90c7f3c0662a24bdd87d2b583f67f0d35d79120d20b1dc69920d2475abbcbef2"
+    },
+    {
+      "path": "Tools/artworks/amazon/idle_prompts.md",
+      "sha256": "0147bc244ab9b90cd4283aaf71680652e00fb930c7567046f364d284be6777c3"
+    },
+    {
+      "path": "Tools/artworks/amazon/imgs/idle/dr/idle_f01.png",
+      "sha256": "94cfe28ad238a3dc3dd91f12436c9c748ea83fa246138d6e355c625edc004c15"
+    },
+    {
+      "path": "Tools/artworks/amazon/imgs/idle/dr/idle_f02.png",
+      "sha256": "b595b48d6fac04a8b859c7d583271af17b4c0cd40609ea961163e16b5c5fba7d"
+    },
+    {
+      "path": "Tools/artworks/amazon/imgs/idle/dr/idle_f03.png",
+      "sha256": "aab7905ec32d5739576725eef9228309d7c5090656af61c8eca89bd3e621fa7f"
+    },
+    {
+      "path": "Tools/artworks/amazon/imgs/idle/dr/idle_f04.png",
+      "sha256": "ee6e65739cc123723edff160d29cb64b18dbdccfbcd5e755c2cc10dbd10615cc"
+    },
+    {
+      "path": "Tools/artworks/amazon/imgs/idle/dr/idle_f05.png",
+      "sha256": "2652076d49adf3d5b270f93ba794a84e793aca69ba8139cf6cd08f453f0ab290"
+    },
+    {
+      "path": "Tools/artworks/amazon/imgs/idle/dr/idle_f06.png",
+      "sha256": "6da11c37995af63d4c0d1f039d49b72186c1b7559cdc07894a8ace007bb2a1fe"
+    },
+    {
+      "path": "Tools/artworks/amazon/imgs/idle/dr/idle_f07.png",
+      "sha256": "4080797d6990b8378d431962f221f581f3c2fd0186a4aed17bdf218f8820d165"
+    },
+    {
+      "path": "Tools/artworks/amazon/imgs/idle/dr/idle_f08.png",
+      "sha256": "5df65b184d3745bb8ec6d8402343b7ea1263fe228f4cc23745c39e490768ce3c"
+    },
+    {
+      "path": "Tools/artworks/amazon/imgs/idle/dr/source/idle_sheet_3x3.png",
+      "sha256": "ed22383911b1bc84838e6255de5ab565258655d7e106c33fef0c60957a83889d"
+    },
+    {
+      "path": "Tools/artworks/amazon/imgs/idle/dr/source/idle_sheet_3x3_chromakey.png",
+      "sha256": "314daa036af94524c045693d9ba1c2a37c6cd595543a6023e267f4b13a489ece"
+    },
+    {
+      "path": "Tools/artworks/amazon/imgs/idle.png",
+      "sha256": "90c7f3c0662a24bdd87d2b583f67f0d35d79120d20b1dc69920d2475abbcbef2"
+    },
+    {
+      "path": "Tools/artworks/amazon/output_spec.md",
+      "sha256": "2fc758c7070dfac57d49f74eb89e9d31375707456094f6b2fe5ad40a1246ad80"
+    },
+    {
+      "path": "Tools/artworks/amazon/reference_notes.md",
+      "sha256": "eb637120adf140d831145fed700371359107d9db36833dfff396ded2505ce789"
+    },
+    {
+      "path": "Tools/artworks/amazon/walk_prompts.md",
+      "sha256": "52613350e52e13eafedd65a7539f96c39ba8d0b8622937edb55c7ccf8a3ade39"
+    }
+  ],
+  "preservedHistoricalPipelineRecords": [
+    "Tools/artworks/pipeline/jobs/job-b62cc7f9ef78fcf0.json",
+    "Tools/artworks/pipeline/packets/job-b62cc7f9ef78fcf0.json"
+  ],
+  "historicalRecordPolicy": "Preserved because completed attempts bind these immutable records; the retired path guard prevents their reuse.",
+  "forbiddenAliases": [
+    "Tools/artworks/amazon/**",
+    "human-pixel-amazon"
+  ],
+  "canonicalMeaning": {
+    "amazon": "red-shiba hunter profession"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 2,
+  "jobId": "job-43700d5eeac09fb6",
+  "state": "ready",
+  "contractId": "contract-08a2566ad099c9ba",
+  "contractSha256": "08368b1454ae478650e6e2e63cb3bd07a025dddf892cf0bff953100c72a2e026",
+  "prompt": {
+    "path": "Tools/artworks/poet_five_red_chow/guqin_generation_prompt_v1.md",
+    "sha256": "862af19be7e29a6fc44923ea83c31a39fbff84388d6dafffb9cbd83e0c22d0ce"
+  },
+  "inputs": [
+    {
+      "role": "poet_identity",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+      "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753"
+    }
+  ],
+  "target": {
+    "direction": "non_directional",
+    "pose": "inventory"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": true,
+  "poseGuide": null,
+  "localReferences": []
+}

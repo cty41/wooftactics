@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "profileKind": "family",
+  "profileId": "pure-run-world-environment-family-v1",
+  "family": "world_environment",
+  "rules": [
+    "Show walkable space, blocking, height, exits, and danger boundaries before material detail.",
+    "Keep principal combat ground as a low-frequency quiet zone.",
+    "Build architecture from readable masses, entrances, and function before thematic ornament.",
+    "Background contrast and contour strength remain below actors and immediate threats."
+  ],
+  "requiredReviewPanels": ["environment-only", "gameplay-overlay", "complete-composition", "target-size"],
+  "advisories": ["ground-frequency-risk", "path-boundary-contrast", "actor-background-separation", "focus-hotspot-count"]
+}

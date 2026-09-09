@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "attemptId": "job-83839806868cdd1f-a001",
+  "jobId": "job-83839806868cdd1f",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "promoted",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_tang_sword_raw_v01.png",
+      "sha256": "7bfc851ed05e47ef7a6563d1b45cbc43f1129646f46d6096639fa6f488a3c931"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-83839806868cdd1f/job-83839806868cdd1f-a001/raw.png",
+      "sha256": "7bfc851ed05e47ef7a6563d1b45cbc43f1129646f46d6096639fa6f488a3c931"
+    },
+    "prepared": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_tang_sword_v01.png",
+      "sha256": "d4a4198fb47a3d84a0c5f6656d1cef0e66af369c3f85a0ae6692d5ae299164bd"
+    },
+    "equipmentPreview": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_tang_sword_v01_128.png",
+      "sha256": "d1732f9a23fdd32b6758a89a54b87c9bb0921bca8f7802b5ea8d083846e1d866"
+    },
+    "review": {
+      "equipmentPanel": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_tang_sword_review_v01.png",
+        "sha256": "52463ac8a92af12d613a63238ef605999a9588c9febf58467d5f0e91ba35c2a3"
+      }
+    },
+    "promoted": {
+      "master": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_tang_sword_v01.png",
+        "sha256": "d4a4198fb47a3d84a0c5f6656d1cef0e66af369c3f85a0ae6692d5ae299164bd"
+      },
+      "preview": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_tang_sword_v01_128.png",
+        "sha256": "d1732f9a23fdd32b6758a89a54b87c9bb0921bca8f7802b5ea8d083846e1d866"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/style-reports/equipment-style-report-09d51b7fe7986ddc.json",
+    "sha256": "3d006d26b219c8d49d3cdb010c01457a288d97f83472b9dfe3d695e460247309"
+  },
+  "approvalId": "approval-598209729dc00b80",
+  "feedbackId": null,
+  "generationInvocationId": "generation-invocation-09fe5b191db3a641",
+  "generationDeliveryId": "generation-delivery-e329b6c85cb16318",
+  "equipmentStyleReportId": "equipment-style-report-09d51b7fe7986ddc",
+  "equipmentStyleVerdictId": "equipment-style-verdict-a6b60f73f5c5f380",
+  "equipmentStyleVerdictIds": [
+    "equipment-style-verdict-a6b60f73f5c5f380"
+  ]
+}

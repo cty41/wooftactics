@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "profileKind": "project-art-direction",
+  "profileId": "pure-run-project-art-direction-v1",
+  "status": "active",
+  "tagline": "cute-dark heroic cartoon with tactics-first readability and aesthetic restraint",
+  "rules": [
+    {"ruleId": "PR-AD-001", "statement": "Use cute-dark heroic cartoon styling; express danger through silhouette, pose, rhythm, color, narrative, and behavior rather than realistic flesh or materials."},
+    {"ruleId": "PR-AD-002", "statement": "Tactical readability takes precedence over atmospheric decoration."},
+    {"ruleId": "PR-AD-003", "statement": "Prioritize a bold controlled dark silhouette, large flat color regions, and usually two to three hard-edged value steps over interior micro-detail."},
+    {"ruleId": "PR-AD-004", "statement": "Each complete view has one primary focal point and at most two secondary focal points."},
+    {"ruleId": "PR-AD-005", "statement": "Actors, immediate threats, and interactables lead; terrain and background reduce contrast, saturation, and high-frequency texture."},
+    {"ruleId": "PR-AD-006", "statement": "Use intentional hand-drawn asymmetry and exaggeration; reject random noise, mechanical repetition, and collage-like media mismatch."}
+  ],
+  "precedence": ["project", "material", "family", "theme", "brief", "feedback"],
+  "screenInformationLevels": {
+    "primary": ["category", "facing", "weapon_type", "interaction", "immediate_threat"],
+    "secondary": ["species", "profession", "identity", "key_material", "primary_shape_motif"],
+    "tertiary": ["small_ornament", "wear", "minor_pattern"]
+  },
+  "focusBudget": {"primaryMax": 1, "secondaryMax": 2},
+  "colorPolicy": {
+    "foreground": "Actors and interactables may use stronger local saturation.",
+    "background": "Terrain and background use controlled lower contrast and saturation.",
+    "semanticFirst": true,
+    "factionColorIsNotDisposition": true
+  },
+  "rendering": {
+    "medium": "2d-isometric-cartoon-sprite",
+    "outline": "bold controlled dark outer contour stronger than interior lines",
+    "shading": "usually two to three hard-edged value regions",
+    "baseLighting": "baked into 2D artwork",
+    "dynamicLighting": "limited local emphasis only"
+  },
+  "negativeConstraints": [
+    "no photorealistic or semi-realistic material rendering",
+    "no dense engraving, fittings, micro-highlights, texture noise, or continuous reflection strips",
+    "no uniform high contrast, saturation, motion, or detail across the complete view",
+    "no higher rarity or boss importance expressed through unbounded ornament density",
+    "no isolated asset approval used as a substitute for in-context style approval",
+    "no automatic metric, agent review, or technical pass treated as human style approval"
+  ],
+  "deferred": ["theme-profiles-until-repeated-evidence", "formal-ui-skin-font-icons-motion", "complete-vfx-language", "boss-event-camera-language"]
+}

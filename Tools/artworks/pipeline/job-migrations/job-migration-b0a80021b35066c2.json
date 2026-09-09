@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 2,
+  "migrationId": "job-migration-b0a80021b35066c2",
+  "oldJobId": "job-1ecbb1d8a2c991dd",
+  "oldJobSha256": "9afb0a82eaf50afa0eae40789859dbe71df513092a0dc51fbc6b0af769fd668d",
+  "newJobId": "job-69b46b9b315f4f77",
+  "newJobSha256": "fa640508215438dd0f7f160e4b5a8738d49f31068c7ec7f95e27ba0a482b369e",
+  "changes": [
+    {
+      "path": "Tools/artworks/pure_run/equipment/prompt_mage_oak_staff.md",
+      "previousSha256": "b9e4ab13d67a6719c81acd7991583756cb0a3f6a36e6761fecd07b2811dd3437",
+      "currentSha256": "580d1ff34b15a67df5c164393cd17c7fba731c030590c1653a0a6cdcc8b50367"
+    }
+  ],
+  "historicalAttempts": [
+    {
+      "attemptId": "job-1ecbb1d8a2c991dd-a001",
+      "state": "prepared",
+      "sha256": "4a3c979eeec2437234e5e2fad80e3fbf902e4688d714a153a5dd971fe8371fa7"
+    }
+  ],
+  "reason": "Direct user authorized migration of committed equipment prompt bindings blocking unified verification.",
+  "authorizedBy": "direct-user-confirmation"
+}

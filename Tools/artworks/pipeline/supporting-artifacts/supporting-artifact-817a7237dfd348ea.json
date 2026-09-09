@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-817a7237dfd348ea",
+  "artifact": {
+    "path": "Tools/artworks/pipeline/artifacts/job-157a2d72cc121170/job-157a2d72cc121170-a001/raw.png",
+    "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753"
+  },
+  "role": "review-derived",
+  "note": "Artwork pilot intermediate or review evidence; non-runtime and not an approved generation input"
+}

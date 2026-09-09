@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-63d553f8be216a5a",
+  "attemptId": "job-16985014758beabb-a003",
+  "candidateSha256": "e02899ac4cf6c9ee5d964346fec057d355d96d744a1ba950b04da79e26bb764a",
+  "reviewer": "agent",
+  "verdict": "exhausted",
+  "strengths": [
+    "Exactly four attached paws returned and the old ring-pommel visual language remained recognizable."
+  ],
+  "defects": [
+    "The target regressed to a near side profile with a broad body, and the weapon again used the DR endpoint axis: ring upper-right and sheath down-left rather than sheath upper-left."
+  ],
+  "nextPromptDelta": "Stop uncontrolled whole-sprite generation after the third formal round. Present evidence and return to deterministic assembly from the confirmed approved DR components plus approved UL body.",
+  "recordedAt": "2026-09-08T10:36:04+08:00",
+  "authorType": "agent",
+  "categories": [
+    "pose_axis",
+    "core_geometry"
+  ],
+  "disposition": "exhausted",
+  "frozenInvariants": [
+    "confirmed source responsibilities and approved component assets"
+  ],
+  "pendingFixes": [
+    "human decision between best whole candidate and deterministic component assembly"
+  ]
+}

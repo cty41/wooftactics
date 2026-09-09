@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-8defc759f6ace5da",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/components/poet_ring_pommel_tang_dao_sheathed_equipment_mask_v02.png",
+    "sha256": "a06409a9af05a2b8791d546d05474f7ab5324706701d2a186e3c59232e0bad27"
+  },
+  "role": "semantic-mask",
+  "note": "卡通像素风入鞘环首唐刀v2组件的equipment语义蒙版"
+}

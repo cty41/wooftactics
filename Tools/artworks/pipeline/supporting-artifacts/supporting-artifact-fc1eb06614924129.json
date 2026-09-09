@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-fc1eb06614924129",
+  "artifact": {
+    "path": "Tools/artworks/pipeline/artifacts/job-7ec0a3e4a4d2661d/job-7ec0a3e4a4d2661d-a001/raw.png",
+    "sha256": "a4c81bfbdfca9a7faa5002685eb1b6751376b9cce3d99c9d81309483c90cc4ca"
+  },
+  "role": "migration-bound-copy",
+  "note": "失败返回前已落成记录的古琴pre-v3迁移raw绑定副本；恢复记录所声明哈希，不用于新环首刀目标"
+}

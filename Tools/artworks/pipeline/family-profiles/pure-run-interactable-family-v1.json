@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "registryId": "family-profile-8062fc555ca743f0",
+  "sourceId": "pure-run-interactable-family-v1",
+  "sourceType": "family",
+  "artifact": {
+    "path": "Tools/artworks/pure_run/art_direction/families/interactable_v1.json",
+    "sha256": "847633b8dc53601d828cc7a5a2c42b32c30f42b08f07328e9f774939dfbbb38b"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 4,
+  "reviewCaseRecordId": "review-case-634d000b3da27072",
+  "case": {
+    "schemaVersion": 1,
+    "caseId": "CASE-POET-IDLE-UL-V01-VISIBLE-LIMBS-v1",
+    "version": 1,
+    "ruleIds": [
+      "CAPSULE-NO-LIMBS-v1"
+    ],
+    "polarity": "negative",
+    "status": "shadow-only",
+    "scope": {
+      "project": [
+        "pure-run"
+      ],
+      "family": [
+        "actor"
+      ],
+      "topology": [
+        "capsule"
+      ],
+      "direction": [
+        "up-left"
+      ],
+      "pose": [
+        "idle"
+      ]
+    },
+    "artifact": {
+      "path": "Tools/artworks/pipeline/artifacts/job-69a7e239bb73eef5/job-69a7e239bb73eef5-a001/prepared.png",
+      "sha256": "c95884c2a5bb5bfa2de50dba944f26d2bd1e4c864b41ff098c9a1bb7055ef5d9"
+    },
+    "source": {
+      "attemptId": "job-69a7e239bb73eef5-a001",
+      "feedbackId": "feedback-2ce2bbdf35d14dcc",
+      "humanDecision": "retry",
+      "reviewer": "cty41"
+    },
+    "reviewOnly": true,
+    "generationInputAllowed": false,
+    "comparable": true,
+    "observableAtReviewSize": true,
+    "artifactExists": true,
+    "hashVerified": true,
+    "defectIds": [
+      "visible-limb-drift"
+    ],
+    "atomicEvidenceRegion": true,
+    "evidenceRegion": {
+      "x": 0.24,
+      "y": 0.34,
+      "width": 0.53,
+      "height": 0.57
+    }
+  },
+  "source": {
+    "path": "Tools/artworks/pure_run/art_direction/review/case_poet_idle_ul_v01_visible_limbs_v1.json",
+    "sha256": "ec4af4ec34e4a697086ac01d9421bcc0695cd3f6583242328113a54b4bfab35a"
+  },
+  "fitness": {
+    "status": "shadow-only",
+    "eligibleForActivePolicy": false,
+    "reasons": []
+  }
+}

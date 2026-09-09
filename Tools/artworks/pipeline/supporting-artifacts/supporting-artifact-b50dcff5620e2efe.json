@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-b50dcff5620e2efe",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/idle_dr_three_style_comparison_v01.png",
+    "sha256": "0609475d04c384ba9e1c58c15da4afbb1a38d9d930a87641b81b497ce5f9bb2d"
+  },
+  "role": "review-derived",
+  "note": "诗人美术人工审核辅助对比图，不是运行时Sprite"
+}

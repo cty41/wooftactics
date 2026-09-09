@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 4,
+  "approvalId": "approval-dec0462fb13537e6",
+  "attemptId": "job-7603439437c554d0-a003",
+  "candidateSha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4",
+  "maskSha256": null,
+  "reviewer": "cty41",
+  "reviewSha256": {
+    "equipmentPanel": "9308a07e41ab39bd729f2c64624b6cd45f7031d2d26c53a9da9fd113742aea2c"
+  },
+  "decision": "approved",
+  "reason": "UL环首唐刀v03独立投影五项Acceptance Cases、equipment style verdict与Art Direction verdict均由用户明确通过",
+  "decidedAt": "2026-09-03T18:38:00+08:00",
+  "annotation": null,
+  "reportSha256": "3dc0cc35588efcb8ef53e9b44db9eb6f4c016593c923dd6fd6d5855c577e8abc",
+  "artDirectionVerdict": {
+    "artDirectionVerdictId": "art-direction-verdict-2b0d73aabdb445ce",
+    "sha256": "5637f183342bb38ece7351804e805b4ff3b5fae0142d7a17233ead29da811c75"
+  }
+}

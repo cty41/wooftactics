@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "attemptId": "job-52353908c08e6df6-a003",
+  "inputSha256": "c2be8e4b67217f47cb07ebf1aaddbb3e9589f029b0768c5c8e8247f07c7c35ea",
+  "maskSha256": "0fb3894b4810aed7093d6dc4b20a1f51ce122d81880e1d8b429f0ca316eea295",
+  "technical": {
+    "size": [
+      256,
+      256
+    ],
+    "alphaBbox": [
+      64,
+      108,
+      173,
+      239
+    ]
+  },
+  "geometry": {
+    "boxes": {
+      "core": [
+        87,
+        119,
+        167,
+        230
+      ],
+      "head_appendage": [
+        66,
+        104,
+        156,
+        183
+      ],
+      "near_hand": [
+        156,
+        183,
+        171,
+        205
+      ],
+      "far_hand": [
+        99,
+        185,
+        119,
+        205
+      ],
+      "near_foot": [
+        136,
+        220,
+        160,
+        236
+      ],
+      "far_foot": [
+        100,
+        220,
+        123,
+        236
+      ],
+      "equipment": null,
+      "wings": null,
+      "effect": null,
+      "near_arm": null,
+      "far_arm": null,
+      "near_leg": null,
+      "far_leg": null
+    },
+    "core": {
+      "bbox": [
+        87,
+        119,
+        167,
+        230
+      ],
+      "center": [
+        127.0,
+        174.5
+      ],
+      "bandMaxWidths": [
+        59,
+        73,
+        68
+      ]
+    },
+    "composition": {
+      "coreTiltDegrees": 0.0
+    }
+  },
+  "issues": [
+    "anchor_mask_missing",
+    "chroma_fringe",
+    "core_row_disconnected",
+    "exact_chroma_residue",
+    "semantic_mask_outside_subject",
+    "weapon_exit_outside_window",
+    "weapon_tip_outside_region"
+  ],
+  "passed": false
+}

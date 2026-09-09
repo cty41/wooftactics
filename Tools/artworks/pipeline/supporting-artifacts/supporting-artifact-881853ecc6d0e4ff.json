@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-881853ecc6d0e4ff",
+  "artifact": {
+    "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v3/pose-axis.png",
+    "sha256": "1f6f5acae4ddad3e481a67d42cb1ddd23de0ce235155b0c4ddfeae00de01639a"
+  },
+  "role": "review-derived",
+  "note": "Artwork pilot intermediate or review evidence; non-runtime and not an approved generation input"
+}

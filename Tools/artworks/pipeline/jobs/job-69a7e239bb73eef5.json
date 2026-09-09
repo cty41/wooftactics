@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 4,
+  "jobId": "job-69a7e239bb73eef5",
+  "state": "ready",
+  "contractId": "contract-8cfb066aab230727",
+  "contractSha256": "1833ba8cf30eb1692126d6e303e7f8d66297a3cfbf920d8ff4943d9fb189ce13",
+  "prompt": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/poet_ring_pommel_tang_dao_idle_ul_prompt_v1.md",
+    "sha256": "4f5153d8514661fe9882cb73ca82e3710dbcabba487fa7fc3e378ddf968cb346"
+  },
+  "inputs": [
+    {
+      "role": "equipment_reference",
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_ul_v01.png",
+      "sha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4"
+    },
+    {
+      "role": "mother",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+      "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753"
+    }
+  ],
+  "target": {
+    "direction": "up-left",
+    "pose": "idle"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": {
+    "occlusion": {
+      "layerRules": {
+        "near_hand": "behind-core",
+        "far_hand": "behind-core",
+        "equipment": "behind-core"
+      },
+      "visibilityCaps": {
+        "near_hand": 0.35,
+        "far_hand": 0.35,
+        "equipment": 0.45
+      }
+    },
+    "imageGenDirective": "Draw behind-core equipment and both hand paws first, then draw the capsule body over their inner portions; only outer arcs may remain visible."
+  },
+  "requiresInvocation": true,
+  "poseGuide": {
+    "poseGuideId": "pose-guide-035cf10b6366d087",
+    "sha256": "2fa8b72e4dff3094c4e83442384919eb032e3ded8b09ef35134830188ec72e2d"
+  },
+  "localReferences": []
+}

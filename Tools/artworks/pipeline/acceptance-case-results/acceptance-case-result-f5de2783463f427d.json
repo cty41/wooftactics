@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 4,
+  "acceptanceCaseResultId": "acceptance-case-result-f5de2783463f427d",
+  "attemptId": "job-34f6747e5a1f30d0-a001",
+  "caseId": "POET-IDENTITY-001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-34f6747e5a1f30d0/job-34f6747e5a1f30d0-a001/prepared.png",
+    "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+  },
+  "contractId": "contract-57bf5c0526078c9d",
+  "contractSha256": "0af903e867b06faffc66bfa9456a31396051bc3ce1746f17d2fd2227d4593df1",
+  "evidence": {
+    "identity-overlay": {
+      "path": "Tools/artworks/pipeline/reviews/job-34f6747e5a1f30d0-a001/overlay.png",
+      "sha256": "3de3a8fa79a7b18f117cc20e117c5e05432dbfecb3fdb34f5670be93a8c7be4a"
+    },
+    "candidate-master": {
+      "path": "Tools/artworks/pipeline/artifacts/job-34f6747e5a1f30d0/job-34f6747e5a1f30d0-a001/prepared.png",
+      "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+    }
+  },
+  "automatedFacts": [
+    "approved poet mother binding and core geometry passed"
+  ],
+  "automatedResult": "passed",
+  "humanChecks": [
+    "cty41 must confirm identity and restored complete silhouette"
+  ],
+  "humanDecision": "pending",
+  "reviewer": "agent",
+  "reason": "Identity evidence ready; human confirmation pending",
+  "decidedAt": "2026-09-03T16:00:00+08:00"
+}

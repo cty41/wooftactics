@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 4,
+  "jobId": "job-4affd0d3e702d0d0",
+  "state": "ready",
+  "contractId": "contract-ba466365ddf2fc89",
+  "contractSha256": "3878db536635c4afcc28a1ca099ffe56e847ce9451d3e3d12921ebd7486bb7c4",
+  "prompt": null,
+  "inputs": [
+    {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_ring_pommel_tang_dao_idle_ul_v6_a010_chroma_clean.png",
+      "sha256": "58f623c413a010b66e14c2a2c3d9503a18d4d0b2326540c21969c55eed40aa36"
+    }
+  ],
+  "target": {
+    "direction": "up-left",
+    "pose": "idle"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": false,
+  "sourceMode": "reviewed_recontract",
+  "reviewedRecontractId": "reviewed-recontract-e0a8ea898b930b75"
+}

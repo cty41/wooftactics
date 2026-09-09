@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-2af2989e6f5e75cd",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/components/poet_ring_pommel_tang_dao_sheathed_equipment_mask_v01.png",
+    "sha256": "9ed2cba476d7dbfda7f45d6646a78c9e29761ac007be3914eb6d1805224ddd23"
+  },
+  "role": "semantic-mask",
+  "note": "入鞘环首刀组件的纯equipment语义蒙版，供角色Assembly使用"
+}

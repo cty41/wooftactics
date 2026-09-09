@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-c25653c7bbe98a30",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_wine_vessels_comparison_v01.png",
+    "sha256": "eb364b3a9e3ba836a45ac4229a4bb385a829a192a38229137fa5775b711432b0"
+  },
+  "role": "review-derived",
+  "note": "诗人美术人工审核辅助对比图，不是运行时Sprite"
+}

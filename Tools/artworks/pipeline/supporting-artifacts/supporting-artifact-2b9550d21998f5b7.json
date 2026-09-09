@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-2b9550d21998f5b7",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_tang_dao_demonbound_scale_axis_study_v02.png",
+    "sha256": "a6e6baaab805d28d551268e8ec1f43c3d65216fbf1c254ccdc095ddde2d3f670"
+  },
+  "role": "review-derived",
+  "note": "根据用户反馈，以已批准魔剑士实装为正向锚点，比较70/75/80%唐刀长度与现有远侧左爪接触目标；不含正式握爪覆盖，均为PENDING比例研究"
+}

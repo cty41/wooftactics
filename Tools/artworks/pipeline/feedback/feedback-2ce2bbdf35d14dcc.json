@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-2ce2bbdf35d14dcc",
+  "attemptId": "job-69a7e239bb73eef5-a001",
+  "candidateSha256": "c95884c2a5bb5bfa2de50dba944f26d2bd1e4c864b41ff098c9a1bb7055ef5d9",
+  "reviewer": "cty41",
+  "verdict": "retry",
+  "strengths": [
+    "Native back-facing intent and absence of a copied front face are directionally useful."
+  ],
+  "defects": [
+    "The Tang dao reads as two broken pieces because the generation tries to expose both upper and lower segments around the body.",
+    "The body drifts away from the approved compact capsule topology.",
+    "The mounted ring-pommel viewing angle is too frontal for the final actor-space relation."
+  ],
+  "nextPromptDelta": "Prioritize truthful restrained occlusion over weapon visibility. The Tang dao is one intact object behind the body, but it is acceptable and preferred for most of it to be invisible. Show only the ring pommel, a short grip/guard cue and at most one tiny connected scabbard edge near the screen-right shoulder; do not expose a separate lower scabbard segment or end cap. Rotate the mounted ring slightly farther edge-on than the isolated v03 view. Restore the compact rounded capsule topology and compare against approved red-shiba Hunter UL, Demonbound UL and Necromancer UL body proportions; never copy their identity or equipment.",
+  "recordedAt": "2026-09-03T19:10:00+08:00",
+  "authorType": "human",
+  "categories": [
+    "equipment_state",
+    "core_geometry",
+    "pose_axis"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "native UL back view, approved poet identity source, approved isolated UL Tang dao source, both front paws behind body, no guqin wineskin exposed blade or second weapon"
+  ],
+  "pendingFixes": [
+    "compact capsule body matching canonical UL actors; more side-biased mounted ring; restrained occlusion that may hide nearly all of the scabbard; no requirement to expose the lower end cap"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-4ec476ad8b3934e1",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_wineskin_only_right_waist_review_v01.png",
+    "sha256": "b1db1ce5c723bdda8836a3b850d2b72b64180d2d51ce52a1bb9f28354f852455"
+  },
+  "role": "review-derived",
+  "note": "仅角色与右腰酒囊的单项位置、悬垂和遮挡审核图，不是可晋升Sprite"
+}

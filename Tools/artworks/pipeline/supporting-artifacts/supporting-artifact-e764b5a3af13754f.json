@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-e764b5a3af13754f",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/concepts/poet_ring_pommel_tang_dao_idle_dr_pose_guide_v02.png",
+    "sha256": "849bcf1cc81585281d4e2c49b53fbb142f438a5babc3dac9d46e5a1e48b54c7b"
+  },
+  "role": "pose-guide",
+  "note": "诗人环首唐刀v2低位斜持构图导引：只固定批准诗人身份与批准唐刀轴线，覆盖关系和远爪握持必须由新候选解决"
+}

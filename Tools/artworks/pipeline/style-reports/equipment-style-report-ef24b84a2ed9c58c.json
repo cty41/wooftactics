@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "styleReportId": "equipment-style-report-ef24b84a2ed9c58c",
+  "contractId": "contract-09c5beab8374106f",
+  "contractSha256": "6d9d5bc95963970677f398aec152d19a714b5cd9c1ac86083ea0c49482a7ef42",
+  "profile": {
+    "path": "Tools/artworks/pure_run/equipment/equipment_production_profile_v2.json",
+    "sha256": "e23e540c790a57432967d944c82bdad9721f109d2cb6352b3288c0c2c7d7bbb1"
+  },
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_ring_pommel_tang_dao_sheathed_ul_projection_raw_v02.png",
+    "sha256": "94cf452329b1b836a08addf0ceabb57fe52fc3b10b11e2b3615b0e76363aa504"
+  },
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_sheathed_ul_projection_v02.png",
+    "sha256": "5362880fe6f4cd931ef4518ce295cdb93ddb5b0f3151158bdbabcbc80b64e26c"
+  },
+  "preview": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_sheathed_ul_projection_v02_128.png",
+    "sha256": "d5f4305dc78391ba31ffc8d02e49248a8c502ff8a26fbefa6e95415c80445630"
+  },
+  "metrics": {
+    "interiorPixels": 0,
+    "interiorColorBins": 0,
+    "smoothGradientRatio": 0.0,
+    "visibleBbox": [
+      118,
+      163,
+      138,
+      237
+    ],
+    "visibleSize": [
+      20,
+      74
+    ],
+    "baseline": 236
+  },
+  "processingMode": "preserve-fidelity",
+  "quantized": false,
+  "remediation": null,
+  "hardIssues": [],
+  "advisories": [],
+  "issues": [],
+  "passed": true
+}

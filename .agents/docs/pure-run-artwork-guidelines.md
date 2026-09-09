@@ -6,7 +6,7 @@ verified_revision: c68dbebe
 
 # Pure Run 角色美术指南
 
-这份文档是 Pure Run 角色 Sprite 的稳定设计契约。它记录可复用的尺寸、目录和验收规则，不复制完整生成提示词或一次性候选讨论；实际 PNG 仍是外观真相源。
+这份文档是 Pure Run 角色 Sprite 的稳定设计契约。项目级视觉宪法、资产家族关系、材质抽象与审美克制由 [Pure Run 项目美术圣经](pure-run-art-direction-bible.md) 统领；本文件记录可复用的角色尺寸、目录和验收规则，不复制完整生成提示词或一次性候选讨论，实际 PNG 仍是外观真相源。项目级哈希绑定、职责锚点、Acceptance Case 与人工风格 verdict 见 [Pure Run 项目级美术方向状态机设计](pure-run-art-direction-state-machine-design.md)。
 
 ## 合同状态机
 

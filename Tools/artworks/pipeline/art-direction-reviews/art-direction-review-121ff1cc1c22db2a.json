@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 4,
+  "artDirectionReviewId": "art-direction-review-121ff1cc1c22db2a",
+  "attemptId": "job-9a531767f319b957-a001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-9a531767f319b957/job-9a531767f319b957-a001/calibrated.png",
+    "sha256": "9c37f61930aefd4aac08ad6f82a2e1ff6282faf90ca5f0ed42dbfb3e4d29a387"
+  },
+  "contractId": "contract-53ac5c9a2831366a",
+  "contractSha256": "ffb15557fc850c60225b617b8ec79bfa5fdad15565fdbfa7c870cbb63f828c4b",
+  "sourcePanels": {
+    "candidate-master": {
+      "path": "Tools/artworks/pipeline/artifacts/job-9a531767f319b957/job-9a531767f319b957-a001/calibrated.png",
+      "sha256": "9c37f61930aefd4aac08ad6f82a2e1ff6282faf90ca5f0ed42dbfb3e4d29a387"
+    },
+    "preview-128": {
+      "path": "Tools/artworks/pipeline/reviews/job-9a531767f319b957-a001/preview128.png",
+      "sha256": "33e1f63723d23989e1f9932c80c26fba42fd08eaacbedae24fe2d3c85f04aee8"
+    },
+    "identity-context": {
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+      "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753"
+    },
+    "core-anchor-overlay": {
+      "path": "Tools/artworks/pipeline/reviews/job-9a531767f319b957-a001/overlay.png",
+      "sha256": "ff48db8dfdead8c407a51be0c99826e739d5da143f08e17c4839463292e95dc1"
+    },
+    "back-view-inspection": {
+      "path": "Tools/artworks/pipeline/artifacts/job-9a531767f319b957/job-9a531767f319b957-a001/calibrated.png",
+      "sha256": "9c37f61930aefd4aac08ad6f82a2e1ff6282faf90ca5f0ed42dbfb3e4d29a387"
+    },
+    "direction-reference": {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_body_v3_direction_compare_v01.png",
+      "sha256": "15ed2cd450c30c077aa0c84fb0517e7cfd38dc80d00f785364cb0e54f1ccef2a"
+    },
+    "style-context": {
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+      "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753"
+    }
+  },
+  "acceptanceCaseResultIds": [
+    "acceptance-case-result-df1d189d8576ccb9",
+    "acceptance-case-result-710cf1929e548ab4",
+    "acceptance-case-result-0026f41d306279fb"
+  ],
+  "overview": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_body_component_art_direction_v03.png",
+    "sha256": "7f0567ab32875b3f6147b6d10e6603b9efd2fd8f89dbe7f4fcb14bef0997d871"
+  }
+}

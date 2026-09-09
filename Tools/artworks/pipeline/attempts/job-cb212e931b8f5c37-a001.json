@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "attemptId": "job-cb212e931b8f5c37-a001",
+  "jobId": "job-cb212e931b8f5c37",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "promoted",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_guqin_compact_raw_v03.png",
+      "sha256": "9ecad302218498cb9ae7e9f623061b36f3caddb143d193ea6ab9aea488c71992"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-cb212e931b8f5c37/job-cb212e931b8f5c37-a001/raw.png",
+      "sha256": "9ecad302218498cb9ae7e9f623061b36f3caddb143d193ea6ab9aea488c71992"
+    },
+    "prepared": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_guqin_compact_v03.png",
+      "sha256": "1abc09cbedfee504d9f3ad33fc71f44f5996cf5d0ba1eab07091b1c7b0cf7cb7"
+    },
+    "equipmentPreview": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_guqin_compact_v03_128.png",
+      "sha256": "78b0deb092fbaa7eab83741c617db28fa5607eb7df531a3af3c1b01fa20ebee1"
+    },
+    "review": {
+      "equipmentPanel": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_guqin_compact_review_v03.png",
+        "sha256": "6f592ce5b89bce8094fb78278f8f8bb7d8e768b5d2ca3a1279520ab9763e5e64"
+      }
+    },
+    "promoted": {
+      "master": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_guqin_compact_v03.png",
+        "sha256": "1abc09cbedfee504d9f3ad33fc71f44f5996cf5d0ba1eab07091b1c7b0cf7cb7"
+      },
+      "preview": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_guqin_compact_v03_128.png",
+        "sha256": "78b0deb092fbaa7eab83741c617db28fa5607eb7df531a3af3c1b01fa20ebee1"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/style-reports/equipment-style-report-a9d340c2a014b9e1.json",
+    "sha256": "8f4c93fba2363a7f411d7693ca090f6d69a33900d1e1c621e3ee172cb764113d"
+  },
+  "approvalId": "approval-80a1018c0d14ae8c",
+  "feedbackId": null,
+  "generationInvocationId": "generation-invocation-f6579dcff00b848e",
+  "generationDeliveryId": "generation-delivery-78e6000310f034fa",
+  "equipmentStyleReportId": "equipment-style-report-a9d340c2a014b9e1",
+  "equipmentStyleVerdictId": "equipment-style-verdict-cb88866427589b81",
+  "equipmentStyleVerdictIds": [
+    "equipment-style-verdict-cb88866427589b81"
+  ]
+}

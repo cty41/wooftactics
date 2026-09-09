@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 4,
+  "acceptanceCaseResultId": "acceptance-case-result-b6aeb4cb575fa9da",
+  "attemptId": "job-392eb89806af5b42-a001",
+  "caseId": "POET-EQUIPMENT-001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-392eb89806af5b42/job-392eb89806af5b42-a001/prepared.png",
+    "sha256": "940606701f0cdf56a0ccd41db3486849197f699c4cab0483fc52889fea203456"
+  },
+  "contractId": "contract-57bf5c0526078c9d",
+  "contractSha256": "0af903e867b06faffc66bfa9456a31396051bc3ce1746f17d2fd2227d4593df1",
+  "evidence": {
+    "equipment-inspection": {
+      "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v3/equipment-inspection.png",
+      "sha256": "00888e09e1e398984d7328f41ec5f62bd67c14cafc873d672da08d03e86e783f"
+    },
+    "candidate-master": {
+      "path": "Tools/artworks/pipeline/artifacts/job-392eb89806af5b42/job-392eb89806af5b42-a001/prepared.png",
+      "sha256": "940606701f0cdf56a0ccd41db3486849197f699c4cab0483fc52889fea203456"
+    }
+  },
+  "automatedFacts": [
+    "assembly binds approved v2 equipment component SHA at integer 75 percent scale"
+  ],
+  "automatedResult": "passed",
+  "humanChecks": [
+    "cty41 must confirm fully sheathed straight ring-pommel Tang dao"
+  ],
+  "humanDecision": "pending",
+  "reviewer": "agent",
+  "reason": "Equipment binding passed; visual equipment verdict pending",
+  "decidedAt": "2026-09-03T14:45:00+08:00"
+}

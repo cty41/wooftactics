@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 3,
+  "jobId": "job-653c0afd75df4daf",
+  "state": "ready",
+  "contractId": "contract-a3844e9479d35323",
+  "contractSha256": "7d3d5c45caf8654af63993c40a93b2443d33e184b8a3afb429c2463553064ffc",
+  "prompt": null,
+  "inputs": [
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a010/calibrated.png",
+      "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a010/calibrated-mask.png",
+      "sha256": "3e0db7ae51d77d8578a926e1f2db6224124381f15a16a4c215ea872ddbdd50fa"
+    }
+  ],
+  "target": {
+    "direction": "up-left",
+    "pose": "idle"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": false,
+  "sourceMode": "derived"
+}

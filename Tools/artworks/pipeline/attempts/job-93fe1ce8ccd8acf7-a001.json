@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 3,
+  "attemptId": "job-93fe1ce8ccd8acf7-a001",
+  "jobId": "job-93fe1ce8ccd8acf7",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "review_pending",
+  "artifacts": {
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-93fe1ce8ccd8acf7/job-93fe1ce8ccd8acf7-a001/prepared.png",
+      "sha256": "6aaab932cbb581ae851d36b3451533febacb5abdabe7fd0f26e3cb28f6472a76"
+    },
+    "mask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-93fe1ce8ccd8acf7/job-93fe1ce8ccd8acf7-a001/mask.png",
+      "sha256": "e6eba36fbc45f85e0459e8dbc7b3b22a10f83986c71ab46cd4f9022fa6dca605"
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-25455b02a1410100.json",
+    "sha256": "eaeabaedb5a8d8d39fd7eeaa59ab52f55e23a08379cbd4fa7868b8fc3214cc19"
+  },
+  "approvalId": null,
+  "feedbackId": null,
+  "componentDerivationId": "component-derivation-93fe1ce8ccd8acf7",
+  "sourceMode": "derived"
+}

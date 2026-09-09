@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-dbdec482720d4488",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_guqin_only_back_spatial_review_v03.png",
+    "sha256": "196693344b071e84b411f1bd34959df71535d725f0fe9ff5080e696d3a1b40c7"
+  },
+  "role": "review-derived",
+  "note": "按用户参考改为琴背贴身、宽琴首左肩上方、窄琴尾右下隐藏的角色加古琴单项审核图，不是可晋升Sprite"
+}

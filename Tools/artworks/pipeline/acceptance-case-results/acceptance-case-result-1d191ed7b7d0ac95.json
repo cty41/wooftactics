@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 4,
+  "acceptanceCaseResultId": "acceptance-case-result-1d191ed7b7d0ac95",
+  "attemptId": "job-7603439437c554d0-a003",
+  "caseId": "POET-DAO-UL-EXCLUSION-001",
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_sheathed_ul_projection_v03.png",
+    "sha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4"
+  },
+  "contractId": "contract-09c5beab8374106f",
+  "contractSha256": "6d9d5bc95963970677f398aec152d19a714b5cd9c1ac86083ea0c49482a7ef42",
+  "evidence": {
+    "candidate-master": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_sheathed_ul_projection_v03.png",
+      "sha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4"
+    },
+    "negative-mirror-regression": {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_ring_pommel_tang_dao_ul_projection_review_v03.png",
+      "sha256": "ba5268303ad1593515c2eee98550f36d2fdc422ff5ab741d91692f74ed86b40e"
+    }
+  },
+  "automatedFacts": [
+    "job input contains no actor paw guqin wineskin or second weapon"
+  ],
+  "automatedResult": "passed",
+  "humanChecks": [
+    "isolated native projection only; rejected flat v01 not reused"
+  ],
+  "humanDecision": "passed",
+  "reviewer": "cty41",
+  "reason": "用户明确确认v03可以",
+  "decidedAt": "2026-09-03T18:36:00+08:00"
+}

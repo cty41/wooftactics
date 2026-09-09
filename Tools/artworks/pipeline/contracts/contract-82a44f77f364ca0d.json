@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 3,
+  "contractId": "contract-82a44f77f364ca0d",
+  "assetId": "poet-idle-dr-far-foot-component-v1",
+  "approvedAssetId": "poet-idle-dr-far-foot-component-v1",
+  "kind": "ground_character",
+  "direction": "down-right",
+  "pose": "idle",
+  "anchor": null,
+  "maskRequired": true,
+  "noArms": false,
+  "handSides": {
+    "near_hand": null,
+    "far_hand": null
+  },
+  "occlusion": null,
+  "compositionSpec": null,
+  "identitySpec": null,
+  "requiresInvocation": false,
+  "canvasSpec": {
+    "masterSize": [
+      256,
+      256
+    ]
+  },
+  "tilePlacementSpec": null,
+  "styleSpec": null,
+  "equipmentProductionSpec": null,
+  "tolerances": {
+    "sizePx": 3,
+    "centerPx": 2
+  },
+  "outputs": {
+    "master": "Tools/artworks/poet_five_red_chow/components/poet_idle_dr_far_foot_v01.png",
+    "preview": "Tools/artworks/poet_five_red_chow/components/poet_idle_dr_far_foot_v01_128.png"
+  },
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "deterministic-derived"
+  },
+  "assetRole": "component",
+  "componentKind": "foot_overlay",
+  "sourceMode": "derived",
+  "runtimeEligible": false
+}

@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 4,
+  "recordType": "projection-study-status",
+  "assetId": "poet-five-red-chow-ring-pommel-dao-idle-ul",
+  "pendingCandidate": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_3d_projection_study_v04.png",
+    "sha256": "228f85766445701d6c36c420e186b24dc96fd502f44b8ec63068e7b09684b9f1",
+    "role": "PENDING PROJECTION STUDY — NOT A SPRITE INPUT"
+  },
+  "rejectedStudies": [
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_direction_occlusion_board_v01.png",
+      "sha256": "83c41253ea9ca0b3e57b086e7b3720d04e65d2383f708911ee558ac1550196bd",
+      "reason": "Used a two-dimensional horizontal mirror instead of a three-dimensional turn and reprojection."
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_3d_projection_study_v02.png",
+      "sha256": "cb29653617e5ec252bf15fc9d6734d499b43ddcf1306d359c7fb95181e796a96",
+      "reason": "Claimed foreshortening while the displayed schematic vector was longer than the approved DR vector."
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_3d_projection_study_v03.png",
+      "sha256": "87af81afa7086fed7bc381e68e02bfff4520383ad7f27e136bb36c3e8fc585fe",
+      "reason": "The free near paw visually contacted the scabbard tip and could imply a forbidden second grip."
+    }
+  ],
+  "inputPolicy": "Rejected studies are review-only negative evidence. No projection study is a mother image, pose reference, or ImageGen input."
+}

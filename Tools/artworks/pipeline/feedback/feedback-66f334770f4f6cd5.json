@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-66f334770f4f6cd5",
+  "attemptId": "job-f47b524a48de2ded-a002",
+  "candidateSha256": "6889bff22b05574e3fb5f33fa4cc9f272efbd9f1ec15bd785a429fb110088b38",
+  "reviewer": "agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "Canonical semantic label colors and all four paw labels are present."
+  ],
+  "defects": [
+    "Mask background alpha was accidentally opaque, invalidating subject isolation and geometry checks."
+  ],
+  "nextPromptDelta": "No visual regeneration; set all mask background pixels to transparent while preserving semantic labels.",
+  "recordedAt": "2026-09-04T21:25:32+08:00",
+  "authorType": "agent",
+  "categories": [
+    "processing"
+  ],
+  "disposition": "technical_failed",
+  "frozenInvariants": [
+    "raw generation bytes"
+  ],
+  "pendingFixes": [
+    "Mask background alpha was accidentally opaque, invalidating subject isolation and geometry checks."
+  ]
+}

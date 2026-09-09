@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "briefKind": "asset",
+  "briefId": "poet-ring-pommel-tang-dao-sheathed-diagonal-ul-source-v1",
+  "assetId": "poet-ring-pommel-tang-dao-sheathed-diagonal-ul-source-v1",
+  "family": "equipment",
+  "purpose": "Create one isolated fully sheathed Tang dao already projected on the final assembly axis: ring/grip at screen-right-lower and sheath tip at screen-left-upper.",
+  "firstRead": ["single fully sheathed Tang dao", "right-lower ring pommel", "connected axis toward upper-left", "edge-on oblique ring"],
+  "targetContexts": ["offline component assembly"],
+  "identityInvariants": ["approved ring-pommel Tang dao identity", "one connected weapon", "fully sheathed", "small oblique ring"],
+  "shapeStrategy": "One straight diagonal object from upper-left sheath tip to lower-right ring/grip. No body and no occlusion in the isolated source.",
+  "colorStrategy": "Preserve approved dark red grip, bronze fittings and dark sheath.",
+  "materialStrategy": "Bold outline, flat low-detail Pure Run equipment style.",
+  "attentionRole": "supporting",
+  "allowedVariation": ["native reprojection onto the corrected diagonal assembly axis"],
+  "forbidden": ["vertical axis", "lower-left tip", "frontal donut ring", "exposed blade", "second weapon", "disconnected fragment", "character pixels"],
+  "referenceResponsibilities": [{"role": "approved-equipment-identity", "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_ul_v01.png", "sha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4", "responsibility": "Tang dao identity, materials and ring treatment; target axis is replaced by this brief."}],
+  "requiredReviewPanels": ["candidate-master", "preview-128", "equipment-inspection", "pose-axis", "style-context"],
+  "acceptanceCases": [
+    {"caseId": "POET-UL-DAO-DIAGONAL-AXIS-001", "evidence": ["candidate-master", "pose-axis"], "automatedFacts": ["isolated alpha bounds and visible height are measured"], "humanChecks": ["ring at lower-right", "sheath tip at upper-left", "single connected object"], "passCriteria": "Correct assembly-ready axis."},
+    {"caseId": "POET-UL-DAO-DIAGONAL-STYLE-001", "evidence": ["equipment-inspection", "style-context"], "automatedFacts": ["approved style anchors and source hash are bound"], "humanChecks": ["fully sheathed Tang dao identity", "small oblique ring", "Pure Run style"], "passCriteria": "Identity and style preserved."}
+  ]
+}

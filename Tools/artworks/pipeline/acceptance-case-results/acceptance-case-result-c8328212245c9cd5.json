@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 4,
+  "acceptanceCaseResultId": "acceptance-case-result-c8328212245c9cd5",
+  "attemptId": "job-4affd0d3e702d0d0-a001",
+  "caseId": "POET-UL-V3-DIRECTION-001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-4affd0d3e702d0d0/job-4affd0d3e702d0d0-a001/calibrated.png",
+    "sha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512"
+  },
+  "contractId": "contract-ba466365ddf2fc89",
+  "contractSha256": "3878db536635c4afcc28a1ca099ffe56e847ce9451d3e3d12921ebd7486bb7c4",
+  "evidence": {
+    "CALIBRATED_256": {
+      "path": "Tools/artworks/pipeline/artifacts/job-4affd0d3e702d0d0/job-4affd0d3e702d0d0-a001/calibrated.png",
+      "sha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512"
+    }
+  },
+  "automatedFacts": [
+    "Native UL tail-right face-left direction is bound by the calibrated candidate and review panel."
+  ],
+  "automatedResult": "passed",
+  "humanChecks": [
+    "UL direction and limited face cue are approved."
+  ],
+  "humanDecision": "passed",
+  "reviewer": "cty41",
+  "reason": "cty41 explicitly approved final offline promotion after reviewing the clean calibrated image.",
+  "decidedAt": "2026-09-08T19:09:23+08:00"
+}

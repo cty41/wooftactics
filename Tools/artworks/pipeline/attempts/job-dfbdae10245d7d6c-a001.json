@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-dfbdae10245d7d6c-a001",
+  "jobId": "job-dfbdae10245d7d6c",
+  "ordinal": 1,
+  "generationRound": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "technical_failed",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/components/concepts/poet_idle_ul_body_raw_v01.png",
+      "sha256": "f4e1871bf787f661becdad8b14e13c7333433fb103411709d67a07bae4a68913"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-dfbdae10245d7d6c/job-dfbdae10245d7d6c-a001/raw.png",
+      "sha256": "f4e1871bf787f661becdad8b14e13c7333433fb103411709d67a07bae4a68913"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-dfbdae10245d7d6c/job-dfbdae10245d7d6c-a001/prepared.png",
+      "sha256": "eb6de82aaa9c81a7c80e0450d61c2481e7fc56cf25078152177931d5fe5dcba6"
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-4d97716b669ad005.json",
+    "sha256": "0864dfd9c6ecbb91ee5c9fa408ebdf47895f601c8e9f3deecdca2913d0632f73"
+  },
+  "approvalId": null,
+  "feedbackId": "feedback-4f4eb82b79c652fb",
+  "generationInvocationId": "generation-invocation-7710083d4841436b",
+  "generationDeliveryId": "generation-delivery-65eba0827f0c8086",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 120
+  }
+}

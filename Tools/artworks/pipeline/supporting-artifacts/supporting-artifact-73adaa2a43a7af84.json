@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-73adaa2a43a7af84",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/concepts/poet_tang_dao_75_grip_reposition_02.png",
+    "sha256": "05337bcf84b065b75370553b3b82fff3aed3a594fd935908ffc7ac52dcc6b8ff"
+  },
+  "role": "review-derived",
+  "note": "Artwork pilot intermediate or review evidence; non-runtime and not an approved generation input"
+}

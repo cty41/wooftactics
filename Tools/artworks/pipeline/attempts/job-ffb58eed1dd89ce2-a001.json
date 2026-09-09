@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "attemptId": "job-ffb58eed1dd89ce2-a001",
+  "jobId": "job-ffb58eed1dd89ce2",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "promoted",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_ring_pommel_tang_dao_sheathed_dr_raw_v01.png",
+      "sha256": "bb7abf6120ec3a9afb17bac565f7fc247f464e06bf128d9e821c93f66dcf1f8f"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-ffb58eed1dd89ce2/job-ffb58eed1dd89ce2-a001/raw.png",
+      "sha256": "bb7abf6120ec3a9afb17bac565f7fc247f464e06bf128d9e821c93f66dcf1f8f"
+    },
+    "prepared": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_sheathed_dr_v01.png",
+      "sha256": "363df76dbec446d1ece5d46d2857ef8e7de4164030053f1b8a8a67f456b3b3c6"
+    },
+    "equipmentPreview": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_sheathed_dr_v01_128.png",
+      "sha256": "907bfd9b271cb2a91f5f0adefafeaac23be6e1d024e7ae9bfbb0fa2b02e30611"
+    },
+    "review": {
+      "equipmentPanel": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_ring_pommel_tang_dao_sheathed_review_v01.png",
+        "sha256": "c4fb6b1fd3150ca94d874030ca0a745143c7f4532304b561f0c924c2af948525"
+      }
+    },
+    "promoted": {
+      "master": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_dr_v01.png",
+        "sha256": "363df76dbec446d1ece5d46d2857ef8e7de4164030053f1b8a8a67f456b3b3c6"
+      },
+      "preview": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_dr_v01_128.png",
+        "sha256": "907bfd9b271cb2a91f5f0adefafeaac23be6e1d024e7ae9bfbb0fa2b02e30611"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/style-reports/equipment-style-report-3838463054f1bca0.json",
+    "sha256": "ed2c21abfe168edad2afccce368714f29bd779b90c09490c3a3bf6d500be3c9c"
+  },
+  "approvalId": "approval-510e68d0cbf259ac",
+  "feedbackId": null,
+  "generationInvocationId": "generation-invocation-1c5e657661632feb",
+  "generationDeliveryId": "generation-delivery-298d2c7dae51c7bd",
+  "equipmentStyleReportId": "equipment-style-report-3838463054f1bca0",
+  "equipmentStyleVerdictId": "equipment-style-verdict-3120be408203c7c8",
+  "equipmentStyleVerdictIds": [
+    "equipment-style-verdict-3120be408203c7c8"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 2,
+  "jobId": "job-a23d495fca781338",
+  "state": "ready",
+  "contractId": "contract-c6ede6599e535281",
+  "contractSha256": "cbc6b5c512b1c7e32feb29cabca1fa0ecf1da33ed88f01492be862c6deebf040",
+  "prompt": {
+    "path": "Tools/artworks/poet_five_red_chow/ring_pommel_tang_dao_sheathed_prompt_v2.md",
+    "sha256": "7494bf2602596daf20eb59cc878a97e177f6bd4512834c3d120fc7cb679ce9e7"
+  },
+  "inputs": [
+    {
+      "role": "demonbound_style_reference",
+      "path": "Tools/artworks/doge/calibrated/doge_capsule_demonbound_idle_dr_v01.png",
+      "sha256": "21559ca7aedd3e146feb2b93c5a6633affc6ce544122628c960972a982b0b5e7"
+    },
+    {
+      "role": "poet_style_context",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+      "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753"
+    },
+    {
+      "role": "rejected_realism_reference",
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_dr_v01.png",
+      "sha256": "363df76dbec446d1ece5d46d2857ef8e7de4164030053f1b8a8a67f456b3b3c6"
+    },
+    {
+      "role": "shape_reference_01",
+      "path": "Tools/artworks/poet_five_red_chow/references/ring_pommel_dao_reference_01.json",
+      "sha256": "2ff16c0fb747fd3120fd6e6a4a35faff29123d3ea411e3e454e739f7bc965cb2"
+    },
+    {
+      "role": "shape_reference_02",
+      "path": "Tools/artworks/poet_five_red_chow/references/ring_pommel_dao_reference_02.json",
+      "sha256": "3b567ea826b2a78436924f7c6c4460cad4dfb8e5434f84610525f142ffe3db3c"
+    }
+  ],
+  "target": {
+    "direction": "non_directional",
+    "pose": "inventory"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": true,
+  "poseGuide": null,
+  "localReferences": []
+}

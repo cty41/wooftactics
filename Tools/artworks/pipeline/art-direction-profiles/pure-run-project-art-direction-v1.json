@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "registryId": "art-direction-profile-de653356b104093d",
+  "sourceId": "pure-run-project-art-direction-v1",
+  "sourceType": "project-art-direction",
+  "artifact": {
+    "path": "Tools/artworks/pure_run/art_direction/project_art_direction_v1.json",
+    "sha256": "4820888ee25ac6865705ef130abdbec64ed597c6b126d96e6361a01960ec13fb"
+  }
+}

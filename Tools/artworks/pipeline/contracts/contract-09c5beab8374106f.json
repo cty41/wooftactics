@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 4,
+  "contractId": "contract-09c5beab8374106f",
+  "assetId": "poet-ring-pommel-tang-dao-sheathed-ul-projection-v1",
+  "approvedAssetId": "poet-ring-pommel-tang-dao-sheathed-ul-projection-v1",
+  "kind": "tile",
+  "direction": "non_directional",
+  "pose": "inventory",
+  "anchor": null,
+  "maskRequired": false,
+  "noArms": false,
+  "handSides": {
+    "near_hand": null,
+    "far_hand": null
+  },
+  "occlusion": null,
+  "compositionSpec": null,
+  "identitySpec": null,
+  "requiresInvocation": true,
+  "canvasSpec": {
+    "masterSize": [
+      256,
+      256
+    ]
+  },
+  "tilePlacementSpec": null,
+  "styleSpec": null,
+  "equipmentProductionSpec": {
+    "profileId": "pure-run-equipment-production-v2",
+    "profilePath": "Tools/artworks/pure_run/equipment/equipment_production_profile_v2.json",
+    "profileSha256": "e23e540c790a57432967d944c82bdad9721f109d2cb6352b3288c0c2c7d7bbb1",
+    "category": "weapon",
+    "anchors": [
+      {
+        "role": "character-style-anchor",
+        "path": "Tools/artworks/doge/calibrated/doge_capsule_hunter_color_calibrated_v01.png",
+        "sha256": "68a35da9d5d646d497ae7bf99eebc5871bcc5be26a893441d9fcece57877ac07"
+      },
+      {
+        "role": "weapon-category-anchor",
+        "path": "Tools/artworks/pure_run/equipment/approved/pure_run_equipment_necromancer_dagger_v01.png",
+        "sha256": "7b5854a12e2515cabab1f8e263e444e2407d2e77fcfd7c808fb4314b1e837123"
+      }
+    ],
+    "targetVisibleHeight": 74,
+    "visibleHeightRange": [
+      60,
+      90
+    ]
+  },
+  "tolerances": {
+    "sizePx": 3,
+    "centerPx": 2
+  },
+  "outputs": {
+    "master": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_ul_v01.png",
+    "preview": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_ul_v01_128.png"
+  },
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "gpt-generated-native-3d-projection"
+  },
+  "artDirectionSpec": {
+    "profileId": "pure-run-project-art-direction-v1",
+    "path": "Tools/artworks/pure_run/art_direction/project_art_direction_v1.json",
+    "sha256": "4820888ee25ac6865705ef130abdbec64ed597c6b126d96e6361a01960ec13fb"
+  },
+  "materialLanguageSpec": {
+    "profileId": "pure-run-material-language-v1",
+    "path": "Tools/artworks/pure_run/art_direction/material_language_v1.json",
+    "sha256": "3efa1e523c20c41f407ff142759a0bc18bb874392266006c704c314fd13dfd83"
+  },
+  "familyProfileSpec": {
+    "profileId": "pure-run-equipment-family-v1",
+    "family": "equipment",
+    "path": "Tools/artworks/pure_run/art_direction/families/equipment_v1.json",
+    "sha256": "c1462b6cc71959a3f3ba0685cb022fb1bb08e7c55a1c775ca709ab1e9834a75e"
+  },
+  "briefSpec": {
+    "briefId": "poet-ring-pommel-tang-dao-sheathed-ul-projection-v1",
+    "kind": "asset",
+    "path": "Tools/artworks/poet_five_red_chow/briefs/poet_ring_pommel_tang_dao_sheathed_ul_projection_asset_brief_v1.json",
+    "sha256": "aa1947f5e0f466b6d55905a113764b6b6ab8bde5de26e8203a128e6052924abc"
+  },
+  "themeProfileSpec": null,
+  "artDirectionManifestSpec": {
+    "manifestId": "pure-run-art-direction-manifest-v1",
+    "path": "Tools/artworks/pure_run/art_direction/art_direction_manifest_v1.json",
+    "sha256": "dfc6e9a0cd517287f5cfa10d7ad36393908eed4c7cb92c2c03ede403f95d71f9"
+  },
+  "anchorVerdictIds": [
+    "anchor-verdict-028dbccd36a5264b",
+    "anchor-verdict-fdc45e816313b302"
+  ],
+  "requiredReviewPanels": [
+    "candidate-master",
+    "actual-size",
+    "dr-ul-side-by-side",
+    "ring-grip-inspection",
+    "scabbard-inspection",
+    "projection-axis",
+    "negative-mirror-regression"
+  ],
+  "acceptanceCaseIds": [
+    "POET-DAO-UL-IDENTITY-001",
+    "POET-DAO-UL-PROJECTION-001",
+    "POET-DAO-UL-SHEATHED-001",
+    "POET-DAO-UL-SCALE-001",
+    "POET-DAO-UL-EXCLUSION-001"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "equipmentStyleVerdictId": "equipment-style-verdict-3120be408203c7c8",
+  "attemptId": "job-ffb58eed1dd89ce2-a001",
+  "candidateSha256": "363df76dbec446d1ece5d46d2857ef8e7de4164030053f1b8a8a67f456b3b3c6",
+  "reviewSha256": {
+    "equipmentPanel": "c4fb6b1fd3150ca94d874030ca0a745143c7f4532304b561f0c924c2af948525"
+  },
+  "reviewer": "cty41",
+  "decision": "approved",
+  "reason": "用户明确确认完全入鞘环首刀与刀鞘版本OK；环首、直鞘、装具和Pure Run缩小效果通过",
+  "decidedAt": "2026-09-03T00:54:26.7964078+08:00"
+}

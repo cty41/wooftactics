@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-7d7a1f28bc0b76a3",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/components/migrated/poet_idle_ul_tang_dao_cleaned_v02.png",
+    "sha256": "c183790b46d7df7bb5249bc34a2660e232ae57be2c56220794a6c6fac2dd9472"
+  },
+  "role": "historical-review-only",
+  "note": "Historical Idle UL construction or review evidence; never a runtime Sprite or generation authority."
+}

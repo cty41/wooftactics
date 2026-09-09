@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 4,
+  "acceptanceCaseResultId": "acceptance-case-result-96cbc4565e2b896a",
+  "attemptId": "job-392eb89806af5b42-a001",
+  "caseId": "POET-POSE-001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-392eb89806af5b42/job-392eb89806af5b42-a001/prepared.png",
+    "sha256": "940606701f0cdf56a0ccd41db3486849197f699c4cab0483fc52889fea203456"
+  },
+  "contractId": "contract-57bf5c0526078c9d",
+  "contractSha256": "0af903e867b06faffc66bfa9456a31396051bc3ce1746f17d2fd2227d4593df1",
+  "evidence": {
+    "pose-axis": {
+      "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v3/pose-axis.png",
+      "sha256": "1f6f5acae4ddad3e481a67d42cb1ddd23de0ce235155b0c4ddfeae00de01639a"
+    },
+    "candidate-master": {
+      "path": "Tools/artworks/pipeline/artifacts/job-392eb89806af5b42/job-392eb89806af5b42-a001/prepared.png",
+      "sha256": "940606701f0cdf56a0ccd41db3486849197f699c4cab0483fc52889fea203456"
+    }
+  },
+  "automatedFacts": [
+    "equipment bbox 83,162 to 149,233 and axis runs upper-left to lower-right"
+  ],
+  "automatedResult": "passed",
+  "humanChecks": [
+    "cty41 must confirm selected low relaxed C pose"
+  ],
+  "humanDecision": "pending",
+  "reviewer": "agent",
+  "reason": "Selected 75 percent low axis implemented; final visual confirmation pending",
+  "decidedAt": "2026-09-03T14:45:00+08:00"
+}

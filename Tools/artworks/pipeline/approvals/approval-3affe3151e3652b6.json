@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 4,
+  "approvalId": "approval-3affe3151e3652b6",
+  "attemptId": "job-34f6747e5a1f30d0-a001",
+  "candidateSha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3",
+  "maskSha256": "30350db22426bd078b09d9095ad797d69eceb3ccd7c83f8f4bb960193e440fa0",
+  "reviewer": "cty41",
+  "reviewSha256": {
+    "assemblyLayerReview": "17108898be23a65a03f9dc915c336529b69da59c052dac25d24f1a92938256b2",
+    "overlay": "3de3a8fa79a7b18f117cc20e117c5e05432dbfecb3fdb34f5670be93a8c7be4a",
+    "preview128": "0535842582f41fb8afb578a570a03ea5cde819e2f2318c96522014be8222adae",
+    "tile64x32": "e0b12458fb43bd1022ae67152df673c9efd4b1eaef0537a0e0f58723219797a3"
+  },
+  "decision": "approved",
+  "reason": "v09十项Acceptance Case全部由用户明确通过，Art Direction Review与Verdict哈希匹配",
+  "decidedAt": "2026-09-03T16:26:00+08:00",
+  "annotation": null,
+  "reportSha256": "e3259385a270d84e81a05ce1cabc931be1d258066673c16d2bfdc6c7e0f05bf0",
+  "artDirectionVerdict": {
+    "artDirectionVerdictId": "art-direction-verdict-c53b61dc2d7da984",
+    "sha256": "511abdd7c91395cd0d5660445b280ceb01d0b3ef0f61c2db0cf840d18baccddc"
+  }
+}

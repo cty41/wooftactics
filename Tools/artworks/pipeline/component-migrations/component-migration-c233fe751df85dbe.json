@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 3,
+  "componentMigrationId": "component-migration-c233fe751df85dbe",
+  "contractId": "contract-0bf853d0333c6865",
+  "contractSha256": "e85d221e31a0bd497053fc4206ee8cae71b1e9c8084225b89f44349f516ca123",
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_ring_pommel_tang_dao_sheathed_ul_projection_raw_v03.png",
+    "sha256": "0fbdf4fce3a8b2ddfcc0f23e73e578c1059713af722631cf3087026a90d1e025"
+  },
+  "prepared": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_ul_v01.png",
+    "sha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4"
+  },
+  "processing": {
+    "operation": "exact-approved-prepared-byte-migration",
+    "sourceAttemptId": "job-7603439437c554d0-a003",
+    "sourceApprovalId": "approval-dec0462fb13537e6",
+    "transform": "none",
+    "alpha": "preserved",
+    "color": "preserved"
+  },
+  "reviewer": "cty41",
+  "reason": "Reuse the already approved project-owned fully sheathed Tang dao as an exact offline assembly component.",
+  "acceptedAt": "2026-09-05T11:42:37+08:00",
+  "invocationStatus": "missing-pre-v3"
+}

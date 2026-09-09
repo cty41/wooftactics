@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 4,
+  "acceptanceCaseResultId": "acceptance-case-result-9898086d9b0caaf4",
+  "attemptId": "job-dfbdae10245d7d6c-a003",
+  "caseId": "POET-UL-BODY-CORE-001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-dfbdae10245d7d6c/job-dfbdae10245d7d6c-a003/calibrated.png",
+    "sha256": "30f90904a35ad3b23e25c029bfb0c07fb72c420bfafce2c945a6901e284d3516"
+  },
+  "contractId": "contract-54fa481aba0912ab",
+  "contractSha256": "61bdeed019e9a6653973d16f8f9e1fb8ad2bdf21be92aac1f65aa781102ec985",
+  "evidence": {
+    "overlay": {
+      "path": "Tools/artworks/pipeline/reviews/job-dfbdae10245d7d6c-a003/overlay.png",
+      "sha256": "6f83cc9ecf938c053607a86595d3481ce431cdf246430a625e4269f1cac0f76a"
+    }
+  },
+  "automatedFacts": [
+    "Core centered, 110 px high, stable 57/57/55 bands; width 9 px under anchor."
+  ],
+  "automatedResult": "warning",
+  "humanChecks": [
+    "Selected narrow clean capsule over broad alternative."
+  ],
+  "humanDecision": "passed",
+  "reviewer": "cty41",
+  "reason": "Narrow capsule deliberately preferred; size delta remains explicit.",
+  "decidedAt": "2026-09-05T01:07:59+08:00"
+}

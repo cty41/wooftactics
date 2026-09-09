@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "attemptId": "job-43b34a4685f71ca2-a009",
+  "inputSha256": "17fe59933be94e79c1023d463943dae992c020acdbfa82469c9b32104cc2db3f",
+  "maskSha256": "561bdd43086580ced4c9a7ba44122aae306ba6cae8281e18a4aee9cc6495f8b1",
+  "technical": {
+    "size": [
+      256,
+      256
+    ],
+    "alphaBbox": [
+      80,
+      118,
+      164,
+      244
+    ]
+  },
+  "geometry": {
+    "boxes": {
+      "core": [
+        96,
+        121,
+        158,
+        231
+      ],
+      "head_appendage": [
+        83,
+        120,
+        144,
+        218
+      ],
+      "near_hand": [
+        156,
+        181,
+        159,
+        201
+      ],
+      "far_hand": [
+        96,
+        185,
+        99,
+        204
+      ],
+      "near_foot": [
+        141,
+        229,
+        154,
+        236
+      ],
+      "far_foot": [
+        105,
+        232,
+        118,
+        236
+      ],
+      "equipment": null,
+      "wings": null,
+      "effect": null,
+      "near_arm": null,
+      "far_arm": null,
+      "near_leg": null,
+      "far_leg": null
+    },
+    "core": {
+      "bbox": [
+        96,
+        121,
+        158,
+        231
+      ],
+      "center": [
+        127.0,
+        176.0
+      ],
+      "bandMaxWidths": [
+        61,
+        61,
+        62
+      ]
+    },
+    "occlusion": {
+      "intrusionPixels": {},
+      "visibleAreaRatios": {}
+    },
+    "composition": {
+      "coreTiltDegrees": 8.242520351518872,
+      "bladeWidthPx": 1,
+      "bladeLengthPx": 1
+    }
+  },
+  "issues": [
+    "core_lower_wider_than_middle",
+    "pose_axis_out_of_range"
+  ],
+  "passed": false
+}

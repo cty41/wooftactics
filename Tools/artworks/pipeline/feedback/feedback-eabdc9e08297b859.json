@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-eabdc9e08297b859",
+  "attemptId": "job-c2fb551be9ecdd83-a004",
+  "candidateSha256": "e46d52ddf351ebfd956252ae49128b4cf6dba710fa6c0685ed955e8b891aea31",
+  "reviewer": "agent",
+  "verdict": "exhausted",
+  "strengths": [
+    "Body core is now 69x110 against the 66x110 anchor, lower band is stable, one connected right-shoulder weapon cue remains, and no lower fragment is visible."
+  ],
+  "defects": [
+    "Ring still reads as a frontal circle instead of an edge-on ellipse.",
+    "Calibrated core vertical center remains 3 px below anchor; tolerance is 2 px."
+  ],
+  "nextPromptDelta": "Human decides whether the near-target body and continuous hidden-sheath solution merit another attempt focused only on an edge-on ring and exact center.",
+  "recordedAt": "2026-09-04T23:11:12+08:00",
+  "authorType": "agent",
+  "categories": [
+    "equipment_scale",
+    "processing"
+  ],
+  "disposition": "exhausted",
+  "frozenInvariants": [
+    "near-target narrow core, one continuous right-shoulder cue, hidden sheath, four paws, back view, no face or deferred props"
+  ],
+  "pendingFixes": [
+    "cty41 visual decision"
+  ]
+}

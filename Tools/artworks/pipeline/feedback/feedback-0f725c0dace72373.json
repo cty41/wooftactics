@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-0f725c0dace72373",
+  "attemptId": "job-9a531767f319b957-a001",
+  "candidateSha256": "9c37f61930aefd4aac08ad6f82a2e1ff6282faf90ca5f0ed42dbfb3e4d29a387",
+  "reviewer": "cty41",
+  "verdict": "selected",
+  "strengths": [
+    "cty41 confirms tail-right, face-left upper-left three-quarter direction, limited face cue, asymmetric ears and 68x110 capsule are appropriate."
+  ],
+  "defects": [],
+  "nextPromptDelta": "Freeze body component exactly for deterministic assembly.",
+  "recordedAt": "2026-09-05T11:31:34+08:00",
+  "authorType": "human",
+  "categories": [
+    "pose_axis",
+    "identity"
+  ],
+  "disposition": "selected",
+  "frozenInvariants": [
+    "candidate bytes, semantic mask, UL direction, tail-right, tiny left eye/nose cue, ears, core geometry"
+  ],
+  "pendingFixes": [
+    "acceptance receipts and component promotion"
+  ]
+}

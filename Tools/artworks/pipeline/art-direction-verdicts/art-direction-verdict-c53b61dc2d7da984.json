@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 4,
+  "artDirectionVerdictId": "art-direction-verdict-c53b61dc2d7da984",
+  "attemptId": "job-34f6747e5a1f30d0-a001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-34f6747e5a1f30d0/job-34f6747e5a1f30d0-a001/prepared.png",
+    "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+  },
+  "artDirectionReviewId": "art-direction-review-29148590528bcd84",
+  "reviewSha256": "ff8f326e8ff6575f8b0a340858cc8c3215ef8e4615d407ba8cd080029b995027",
+  "decision": "approved",
+  "acceptedWarnings": [
+    "POET-STYLE-001"
+  ],
+  "reviewer": "cty41",
+  "reason": "用户审阅v09正式候选与十项证据后明确选择十项全部通过并正式批准；STYLE自动项仅为非绑定人工warning",
+  "decidedAt": "2026-09-03T16:25:00+08:00"
+}

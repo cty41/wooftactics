@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-56cfc938410aa74a",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/components/poet_idle_body_grip_reposition_component_v03.png",
+    "sha256": "adccfc2c04a6637f8b7c102381dbbb2cb6bbcac05e4af225965912972b4c7999"
+  },
+  "role": "review-derived",
+  "note": "Artwork pilot intermediate or review evidence; non-runtime and not an approved generation input"
+}

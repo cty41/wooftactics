@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "compiledPromptId": "compiled-prompt-d880a4ab0911173c",
+  "jobId": "job-823050db4231b9ae",
+  "equipmentProfileSha256": "e23e540c790a57432967d944c82bdad9721f109d2cb6352b3288c0c2c7d7bbb1",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/pipeline/wine_wineskin_compiled_v2_flat.md",
+    "sha256": "13cdac224b0df062b7fddf609a932550b65f345f8d2cd7e7084cf07abdc5d925"
+  }
+}

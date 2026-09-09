@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "profileKind": "family",
+  "profileId": "pure-run-actor-family-v1",
+  "family": "actor",
+  "identityOrder": ["species_topology", "individual_personality", "profession_ability", "faction_culture", "current_state"],
+  "rules": [
+    "Treat player, ally, neutral, hostile, boss, merchant, quest-giver, dialogue, and negotiable as composable presentation tags.",
+    "Keep face direction, gaze, static attitude, species silhouette, and tactical footprint readable.",
+    "Express threat through pose, silhouette tension, weapon direction, expression, restrained VFX, ground marks, and UI rather than realism.",
+    "A boss may use more screen area and secondary information but must preserve face, intent, occupancy, and dialogue viability."
+  ],
+  "requiredReviewPanels": ["candidate-master", "target-size", "identity-overlay", "direction-action", "equipment-occlusion", "tile-review", "style-anchor-context"],
+  "advisories": ["identity-feature-survival", "face-occlusion-risk", "actor-equipment-complexity-balance"]
+}

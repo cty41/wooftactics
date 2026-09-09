@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 2,
+  "generationFailureId": "generation-failure-2288026fbdeecda9",
+  "invocationId": "generation-invocation-9f3f188f97bc9f35",
+  "attemptId": "job-c2fb551be9ecdd83-a005",
+  "reason": "image generated but output path was malformed and artifact was not written",
+  "failedAt": "2026-09-05T00:27:44+08:00"
+}

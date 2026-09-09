@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-7603439437c554d0-a003",
+  "jobId": "job-7603439437c554d0",
+  "ordinal": 3,
+  "parentAttemptId": "job-7603439437c554d0-a002",
+  "retryFeedbackId": "feedback-00f6b79c5fbc2a0f",
+  "promptDelta": "Keep the approved V02 steep upright UL carried axis and all proportions. Rotate only the viewing azimuth modestly so the ring pommel exposes a little more of its front face: a narrow but clearly readable oblique oval opening, midway between V01 broad donut and V02 almost edge-on slit. The ring must still read side-biased, not frontal. Reproject grip, guard and throat consistently; do not flatten the weapon or change the straight fully sheathed scabbard.",
+  "technicalRemediation": false,
+  "state": "promoted",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_ring_pommel_tang_dao_sheathed_ul_projection_raw_v03.png",
+      "sha256": "0fbdf4fce3a8b2ddfcc0f23e73e578c1059713af722631cf3087026a90d1e025"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-7603439437c554d0/job-7603439437c554d0-a003/raw.png",
+      "sha256": "0fbdf4fce3a8b2ddfcc0f23e73e578c1059713af722631cf3087026a90d1e025"
+    },
+    "prepared": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_sheathed_ul_projection_v03.png",
+      "sha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4"
+    },
+    "equipmentPreview": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_sheathed_ul_projection_v03_128.png",
+      "sha256": "b361373d8bdc9763dd3604f9dc8b44c0482cbde806c663746582c9d6809fb479"
+    },
+    "review": {
+      "equipmentPanel": {
+        "path": "Tools/artworks/poet_five_red_chow/reviews/poet_ring_pommel_tang_dao_ul_equipment_style_review_v03.png",
+        "sha256": "9308a07e41ab39bd729f2c64624b6cd45f7031d2d26c53a9da9fd113742aea2c"
+      }
+    },
+    "promoted": {
+      "master": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_ul_v01.png",
+        "sha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4"
+      },
+      "preview": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_ul_v01_128.png",
+        "sha256": "b361373d8bdc9763dd3604f9dc8b44c0482cbde806c663746582c9d6809fb479"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/style-reports/equipment-style-report-038be3ee4deb8698.json",
+    "sha256": "3dc0cc35588efcb8ef53e9b44db9eb6f4c016593c923dd6fd6d5855c577e8abc"
+  },
+  "approvalId": "approval-dec0462fb13537e6",
+  "feedbackId": null,
+  "generationInvocationId": "generation-invocation-6b52ee9ace260f4f",
+  "generationDeliveryId": "generation-delivery-157f43abcff59053",
+  "equipmentStyleReportId": "equipment-style-report-038be3ee4deb8698",
+  "equipmentStyleVerdictId": "equipment-style-verdict-226c73b855e9212b",
+  "equipmentStyleVerdictIds": [
+    "equipment-style-verdict-226c73b855e9212b"
+  ],
+  "acceptanceCaseResultIds": [
+    "acceptance-case-result-21eaa4e1831ba69e",
+    "acceptance-case-result-41ef43781fcc8426",
+    "acceptance-case-result-e8d6441c7f6c6cf1",
+    "acceptance-case-result-7482647a84acf3b6",
+    "acceptance-case-result-1d191ed7b7d0ac95"
+  ],
+  "artDirectionReviewIds": [
+    "art-direction-review-3376ad7715046e7c"
+  ],
+  "artDirectionReviewId": "art-direction-review-3376ad7715046e7c",
+  "artDirectionVerdictIds": [
+    "art-direction-verdict-2b0d73aabdb445ce"
+  ],
+  "artDirectionVerdictId": "art-direction-verdict-2b0d73aabdb445ce"
+}

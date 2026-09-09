@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 2,
+  "attemptId": "job-43b34a4685f71ca2-a007",
+  "jobId": "job-43b34a4685f71ca2",
+  "ordinal": 7,
+  "parentAttemptId": "job-43b34a4685f71ca2-a006",
+  "retryFeedbackId": "feedback-1513ff53256de9ed",
+  "promptDelta": "以猎人、法师、死灵与 Demonbound 正式 DR 母图共同确定视觉宽度；中央躯干加宽约10%-15%，中段近似平行、下段持平或内收；不得把尾巴计入核心或单轴拉伸",
+  "technicalRemediation": false,
+  "state": "prepared",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/concepts/poet_five_red_chow_idle_dr_raw_v09_width.png",
+      "sha256": "c4eb8d2a35284931050d2796b6c260ab25b19555f8609c6b90d0241a4c3320cf"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a007/raw.png",
+      "sha256": "c4eb8d2a35284931050d2796b6c260ab25b19555f8609c6b90d0241a4c3320cf"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a007/prepared.png",
+      "sha256": "418da2dff0c5a62fea56adf174e7c3a365f0b33c5630a86bd44dc8b18c41e665"
+    }
+  },
+  "report": null,
+  "approvalId": null,
+  "feedbackId": "feedback-ee6503e839d0e9b8",
+  "generationInvocationId": "generation-invocation-6483af0b3100d3e9",
+  "generationDeliveryId": "generation-delivery-cd0aa8cc2a6ac17a",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 90
+  }
+}

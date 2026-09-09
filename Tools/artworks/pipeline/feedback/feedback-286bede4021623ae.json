@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-286bede4021623ae",
+  "attemptId": "job-4cf6c491a251bcf1-a001",
+  "candidateSha256": "f4f6678037ff8050a94d3ffaa62f94f568dfca575f8d64faed0e4689bbe6562e",
+  "reviewer": "agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "正式 invocation、去幕、anchor mask 绑定和 256 校准链均已建立"
+  ],
+  "defects": [
+    "首版语义 core mask 顶部不对称导致伪倾斜，核心宽度/中心偏差；Idle 高风险 schema 还缺 guard 与 blade 占位注释"
+  ],
+  "nextPromptDelta": "保持同一 raw，使用对称连续 core mask 与完整无装备占位注释重新校准",
+  "recordedAt": "2026-08-29T21:30:55.2117090+08:00",
+  "authorType": "agent",
+  "categories": [
+    "core_geometry",
+    "processing"
+  ],
+  "disposition": "technical_failed",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "首版语义 core mask 顶部不对称导致伪倾斜，核心宽度/中心偏差；Idle 高风险 schema 还缺 guard 与 blade 占位注释"
+  ]
+}

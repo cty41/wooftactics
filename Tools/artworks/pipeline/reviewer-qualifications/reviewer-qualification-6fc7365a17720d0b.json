@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 4,
+  "reviewerQualificationId": "reviewer-qualification-6fc7365a17720d0b",
+  "state": "auto-retry-qualified",
+  "reviewer": "cty41",
+  "ruleId": "CAPSULE-NO-LIMBS-v1",
+  "ruleVersion": 1,
+  "model": "gpt-5.6-sol",
+  "effort": "xhigh",
+  "reviewerPromptId": "pure-run-reviewer-prompt-v1",
+  "reviewerPromptSha256": "ea9a86b3e7e4ee724090fe0c520a4271ce4f38a34184335f865189bcf259a850",
+  "compiledPolicyId": "compiled-review-policy-9300e3319ae32600",
+  "compiledPolicySha256": "9300e3319ae326002ecf5988696284793ae6f518ca4b6e48bd62e5426e16bc53",
+  "caseSetVersion": "capsule-no-limbs-v1-neg-pos-boundary",
+  "reviewRule": {
+    "path": "Tools/artworks/pipeline/review-rules/review-rule-605b2ca5679a5fb1.json",
+    "sha256": "1e4f304c1e73aada9a3d8b8f8782cb15f1af05d92ca23a7ecb55b4ce3bd428ed"
+  },
+  "compiledPolicy": {
+    "path": "Tools/artworks/pipeline/compiled-review-policies/compiled-review-policy-record-9f25ed911f518547.json",
+    "sha256": "3518c128a1592fca3f20bdbbb98676cb6accc4cc929c30480a770e3bbd4cbd58"
+  },
+  "reviewerPrompt": {
+    "path": "Tools/artworks/pure_run/art_direction/review/reviewer_prompt_v1.md",
+    "sha256": "ea9a86b3e7e4ee724090fe0c520a4271ce4f38a34184335f865189bcf259a850"
+  },
+  "qualificationAudits": [
+    {
+      "modelReviewAuditId": "model-review-audit-47f4b085457229bf",
+      "path": "Tools/artworks/pipeline/model-review-audits/model-review-audit-47f4b085457229bf.json",
+      "sha256": "956e2310098ca545113832d73ac278f71d0fd6a8a217843b311387ec4bb167b3"
+    },
+    {
+      "modelReviewAuditId": "model-review-audit-61d29cad3249a0be",
+      "path": "Tools/artworks/pipeline/model-review-audits/model-review-audit-61d29cad3249a0be.json",
+      "sha256": "dece3696023d2131535faa39da34afe9b3173d11ac0169b6ebed8c1ceee0b462"
+    },
+    {
+      "modelReviewAuditId": "model-review-audit-eeb5cd4992951476",
+      "path": "Tools/artworks/pipeline/model-review-audits/model-review-audit-eeb5cd4992951476.json",
+      "sha256": "4e959f702f2776101bb83236b778249adb18c48f641b9f878187f774554c58ed"
+    }
+  ],
+  "qualifiedAt": "2026-09-04T21:10:10+08:00"
+}

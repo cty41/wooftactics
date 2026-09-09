@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 4,
+  "acceptanceCaseResultId": "acceptance-case-result-d080ca71df7d8dad",
+  "attemptId": "job-392eb89806af5b42-a001",
+  "caseId": "POET-FREE-PAW-001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-392eb89806af5b42/job-392eb89806af5b42-a001/prepared.png",
+    "sha256": "940606701f0cdf56a0ccd41db3486849197f699c4cab0483fc52889fea203456"
+  },
+  "contractId": "contract-57bf5c0526078c9d",
+  "contractSha256": "0af903e867b06faffc66bfa9456a31396051bc3ce1746f17d2fd2227d4593df1",
+  "evidence": {
+    "free-paw": {
+      "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v3/free-paw.png",
+      "sha256": "4a63fda4853ec35a9ce90ae6262281cc9f7fef91996ad58367e95d9bf0a2c318"
+    },
+    "candidate-master": {
+      "path": "Tools/artworks/pipeline/artifacts/job-392eb89806af5b42/job-392eb89806af5b42-a001/prepared.png",
+      "sha256": "940606701f0cdf56a0ccd41db3486849197f699c4cab0483fc52889fea203456"
+    }
+  },
+  "automatedFacts": [
+    "near-hand bbox has no overlap with equipment bbox"
+  ],
+  "automatedResult": "passed",
+  "humanChecks": [
+    "cty41 must confirm near paw reads relaxed"
+  ],
+  "humanDecision": "pending",
+  "reviewer": "agent",
+  "reason": "No second contact detected; visual relaxation pending",
+  "decidedAt": "2026-09-03T14:45:00+08:00"
+}

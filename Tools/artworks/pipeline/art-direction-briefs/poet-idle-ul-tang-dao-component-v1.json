@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "registryId": "asset-brief-1b81edafd7e4c3b4",
+  "sourceId": "poet-idle-ul-tang-dao-component-v1",
+  "sourceType": "asset",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/briefs/poet_idle_ul_tang_dao_component_brief_v1.json",
+    "sha256": "0e666053dd8c66323a61bf424d9b73380c2627c802f47fe541b6053ae36e4a34"
+  }
+}

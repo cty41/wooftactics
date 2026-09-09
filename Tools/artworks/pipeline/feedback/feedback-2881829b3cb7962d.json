@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-2881829b3cb7962d",
+  "attemptId": "job-653a716d2dd626fd-a002",
+  "candidateSha256": "9d8f83ac509bfb4aed0646bd15936e47cf5852df4e5cb06c699afdc64ae4177e",
+  "reviewer": "cty41",
+  "verdict": "exhausted",
+  "strengths": [
+    "Generated candidate has the corrected diagonal axis."
+  ],
+  "defects": [
+    "Spiral grip texture is disliked; reuse the previously approved Tang dao artwork instead of regenerating its design."
+  ],
+  "nextPromptDelta": "Stop equipment generation. Rotate the exact approved old Tang dao offline as a controlled component preprocessing step.",
+  "recordedAt": "2026-09-07T11:10:30+08:00",
+  "authorType": "human",
+  "categories": [
+    "identity"
+  ],
+  "disposition": "exhausted",
+  "frozenInvariants": [
+    "correct upper-left-tip to lower-right-ring axis"
+  ],
+  "pendingFixes": [
+    "controlled migration of rotated approved bytes"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "arm": "prompt-only",
+  "contract": {"contractId": "contract-8cfb066aab230727", "sha256": "1833ba8cf30eb1692126d6e303e7f8d66297a3cfbf920d8ff4943d9fb189ce13"},
+  "anchors": [
+    {"path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png", "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753"},
+    {"path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_ul_v01.png", "sha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4"}
+  ],
+  "context": {"mode": "historical-replay", "compiledPolicyId": "compiled-review-policy-9300e3319ae32600", "caseSetVersion": "capsule-no-limbs-v1-neg-pos-boundary"},
+  "imageGenBudget": 3,
+  "rawCounts": [{"ruleId": "CAPSULE-NO-LIMBS-v1", "context": {"asset": "poet-idle-ul", "direction": "up-left"}, "knownHardErrorsReachedHuman": 1, "repeatedHardErrors": 1, "reviewerMisses": 0, "falsePositives": 0, "repeatedHumanFeedback": 1, "imageGenRounds": 1, "escalations": 0}]
+}

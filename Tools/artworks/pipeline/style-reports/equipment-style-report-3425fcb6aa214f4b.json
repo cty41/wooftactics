@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "styleReportId": "equipment-style-report-3425fcb6aa214f4b",
+  "contractId": "contract-4d70c9055d8a34a6",
+  "contractSha256": "3d49c45ed11bba812393c468af14f851bd4e4634baa7206c4531eef2ccc95e86",
+  "profile": {
+    "path": "Tools/artworks/pure_run/equipment/equipment_production_profile_v2.json",
+    "sha256": "e23e540c790a57432967d944c82bdad9721f109d2cb6352b3288c0c2c7d7bbb1"
+  },
+  "source": {
+    "path": "Tools/artworks/pipeline/artifacts/job-823050db4231b9ae/job-823050db4231b9ae-a002/raw.png",
+    "sha256": "208ecb79e272caade1e808d02cb66138aa06604ddea68cc60e4eda75ffb9c105"
+  },
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_wine_wineskin_v02_flat.png",
+    "sha256": "b677fa5977ea35454bf24238bbf8a9f10833bb37c95454abe7d0b46fac1cd926"
+  },
+  "preview": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_wine_wineskin_v02_flat_128.png",
+    "sha256": "58196dc7ff48631d68cfc50e09bb13560efa2d402d28cb97ff4908c9e8ee318e"
+  },
+  "metrics": {
+    "interiorPixels": 1812,
+    "interiorColorBins": 32,
+    "smoothGradientRatio": 0.0,
+    "visibleBbox": [
+      100,
+      169,
+      155,
+      237
+    ],
+    "visibleSize": [
+      55,
+      68
+    ],
+    "baseline": 236
+  },
+  "processingMode": "preserve-fidelity",
+  "quantized": false,
+  "remediation": null,
+  "hardIssues": [],
+  "advisories": [],
+  "issues": [],
+  "passed": true
+}

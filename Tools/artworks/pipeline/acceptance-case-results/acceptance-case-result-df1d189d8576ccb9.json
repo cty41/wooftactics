@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 4,
+  "acceptanceCaseResultId": "acceptance-case-result-df1d189d8576ccb9",
+  "attemptId": "job-9a531767f319b957-a001",
+  "caseId": "POET-UL-BODY-V2-CORE-001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-9a531767f319b957/job-9a531767f319b957-a001/calibrated.png",
+    "sha256": "9c37f61930aefd4aac08ad6f82a2e1ff6282faf90ca5f0ed42dbfb3e4d29a387"
+  },
+  "contractId": "contract-53ac5c9a2831366a",
+  "contractSha256": "ffb15557fc850c60225b617b8ec79bfa5fdad15565fdbfa7c870cbb63f828c4b",
+  "evidence": {
+    "overlay": {
+      "path": "Tools/artworks/pipeline/reviews/job-9a531767f319b957-a001/overlay.png",
+      "sha256": "ff48db8dfdead8c407a51be0c99826e739d5da143f08e17c4839463292e95dc1"
+    }
+  },
+  "automatedFacts": [
+    "Core is 68x110 against 66x110 anchor and all geometry gates pass."
+  ],
+  "automatedResult": "passed",
+  "humanChecks": [
+    "Narrow compact capsule accepted."
+  ],
+  "humanDecision": "passed",
+  "reviewer": "cty41",
+  "reason": "Core is within contract tolerance.",
+  "decidedAt": "2026-09-05T11:32:53+08:00"
+}

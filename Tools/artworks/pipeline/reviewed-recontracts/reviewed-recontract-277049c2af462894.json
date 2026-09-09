@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 4,
+  "reviewedRecontractId": "reviewed-recontract-277049c2af462894",
+  "sourceAttemptId": "job-16985014758beabb-a010",
+  "sourceJobId": "job-16985014758beabb",
+  "sourceContractId": "contract-1752555cb96e6fa4",
+  "generationInvocationId": "generation-invocation-9f0ebe85c95da57f",
+  "generationDeliveryId": "generation-delivery-22b56c5fb7065aa2",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-16985014758beabb/job-16985014758beabb-a010/prepared.png",
+    "sha256": "675bbd8cec8c55c50db589f0f5219749d051f37cb45a431fdaa17f71d9bdf2d2"
+  },
+  "targetContractId": "contract-006ab2f8f7e5b899",
+  "targetContractSha256": "06330f27d7307293c23bd77ba27a5f3663271d13788494018e2b4a80b93e0e24",
+  "reviewer": "cty41",
+  "reason": "cty41 locked a010 visual layers and explicitly accepted the current almost-fully-occluded sheathed Tang dao presentation; preserve original invocation lineage under the corrected immutable contract.",
+  "acceptedAt": "2026-09-08T15:03:11+08:00"
+}

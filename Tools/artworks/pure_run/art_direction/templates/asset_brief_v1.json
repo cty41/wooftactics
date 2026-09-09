@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "templateKind": "asset-brief-schema",
+  "templateId": "pure-run-asset-brief-v1",
+  "required": ["briefId", "assetId", "family", "purpose", "firstRead", "targetContexts", "identityInvariants", "shapeStrategy", "colorStrategy", "materialStrategy", "attentionRole", "allowedVariation", "forbidden", "referenceResponsibilities", "requiredReviewPanels", "acceptanceCases"],
+  "enums": {"family": ["actor", "equipment", "world_environment", "interactable", "prop", "vfx_readability"], "attentionRole": ["primary", "secondary", "ordinary-information", "background-support"]},
+  "constraints": {"referenceResponsibilities": "Each reference has one explicit responsibility and sha256.", "acceptanceCases": "Each case declares evidence, automated facts, human checks, and pass criteria."}
+}

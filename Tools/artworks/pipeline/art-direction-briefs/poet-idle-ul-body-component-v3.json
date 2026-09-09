@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "registryId": "asset-brief-2db52c691d8b6477",
+  "sourceId": "poet-idle-ul-body-component-v3",
+  "sourceType": "asset",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/briefs/poet_idle_ul_body_component_brief_v3.json",
+    "sha256": "d556c62a31c135140447f33169c14a10330f6f94aa888af770103128a3d83cd8"
+  }
+}

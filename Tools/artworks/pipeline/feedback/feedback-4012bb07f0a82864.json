@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-4012bb07f0a82864",
+  "attemptId": "job-ffaa562f76730ec3-a002",
+  "candidateSha256": "57eb6c16ca72d386a0bd700b51edcad2cfd15a08f9360ee8b8a5f3d0eae8874b",
+  "reviewer": "cty41",
+  "verdict": "retry",
+  "strengths": [
+    "三件装备身份均可读，剑尖改为右上后不再遮脸"
+  ],
+  "defects": [
+    "用户明确认为整体比例差异过大；不能把正投影古琴和酒囊直接贴到背后或腰间，必须先按down-right三维空间重新生成背负古琴与腰挂酒囊的专用朝向单图"
+  ],
+  "nextPromptDelta": "Do not generate the complete character yet. First create dedicated isometric back-carried guqin and waist-hung wineskin orientation assets matching the approved DR character camera.",
+  "recordedAt": "2026-08-30T12:49:35.2073213+08:00",
+  "authorType": "human",
+  "categories": [
+    "core_geometry",
+    "occlusion",
+    "equipment_state"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "暂停完整角色生成；先分别制作背负朝向古琴单图与腰挂朝向皮革酒囊单图并逐项人工审核"
+  ]
+}

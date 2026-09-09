@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-cf8491c5fd684bee",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_component_context_preview_v01.png",
+    "sha256": "55815ed2f34dd6386101ee6182838fd8981dcffe54641859c223d6089b06e6ec"
+  },
+  "role": "historical-review-only",
+  "note": "Historical Idle UL construction or review evidence; never a runtime Sprite or generation authority."
+}

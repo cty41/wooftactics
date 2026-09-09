@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-eaf565f09d100c69",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_far_paw_source_crop_v01.png",
+    "sha256": "0d9f66455961eb43a58d8b3e19048614f36d1261a6d7cbb86da6cf0389e54c86"
+  },
+  "role": "review-derived",
+  "note": "Artwork pilot intermediate or review evidence; non-runtime and not an approved generation input"
+}

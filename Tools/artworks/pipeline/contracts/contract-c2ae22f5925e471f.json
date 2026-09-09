@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 3,
+  "contractId": "contract-c2ae22f5925e471f",
+  "assetId": "poet-ring-pommel-tang-dao-sheathed-component-v1",
+  "approvedAssetId": "poet-ring-pommel-tang-dao-sheathed-component-v1",
+  "kind": "ground_character",
+  "direction": "down-right",
+  "pose": "idle",
+  "anchor": null,
+  "maskRequired": true,
+  "noArms": false,
+  "handSides": {
+    "near_hand": null,
+    "far_hand": null
+  },
+  "occlusion": null,
+  "compositionSpec": null,
+  "identitySpec": null,
+  "requiresInvocation": false,
+  "canvasSpec": {
+    "masterSize": [
+      256,
+      256
+    ]
+  },
+  "tilePlacementSpec": null,
+  "styleSpec": null,
+  "equipmentProductionSpec": null,
+  "tolerances": {
+    "sizePx": 3,
+    "centerPx": 2
+  },
+  "outputs": {
+    "master": "Tools/artworks/poet_five_red_chow/components/poet_ring_pommel_tang_dao_sheathed_equipment_v01.png",
+    "preview": "Tools/artworks/poet_five_red_chow/components/poet_ring_pommel_tang_dao_sheathed_equipment_v01_128.png"
+  },
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "approved-v2-component-migration"
+  },
+  "assetRole": "component",
+  "componentKind": "equipment",
+  "sourceMode": "pre_v3_import",
+  "runtimeEligible": false
+}

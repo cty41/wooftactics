@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "equipmentStyleVerdictId": "equipment-style-verdict-226c73b855e9212b",
+  "attemptId": "job-7603439437c554d0-a003",
+  "candidateSha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4",
+  "reviewSha256": {
+    "equipmentPanel": "9308a07e41ab39bd729f2c64624b6cd45f7031d2d26c53a9da9fd113742aea2c"
+  },
+  "reviewer": "cty41",
+  "decision": "approved",
+  "reason": "用户审核v03独立唐刀投影后明确回复可以，并要求结合角色继续生成UL；确认竖直UL空间轴与环首正面可见度可用",
+  "decidedAt": "2026-09-03T18:35:00+08:00"
+}

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-00f6b79c5fbc2a0f",
+  "attemptId": "job-7603439437c554d0-a002",
+  "candidateSha256": "5362880fe6f4cd931ef4518ce295cdb93ddb5b0f3151158bdbabcbc80b64e26c",
+  "reviewer": "cty41",
+  "verdict": "retry",
+  "strengths": [
+    "The steeper carried UL axis and overall side-on equipment projection are directionally correct."
+  ],
+  "defects": [
+    "The ring pommel is too edge-on and hides too much of its circular front opening."
+  ],
+  "nextPromptDelta": "Keep the approved V02 steep upright UL carried axis and all proportions. Rotate only the viewing azimuth modestly so the ring pommel exposes a little more of its front face: a narrow but clearly readable oblique oval opening, midway between V01 broad donut and V02 almost edge-on slit. The ring must still read side-biased, not frontal. Reproject grip, guard and throat consistently; do not flatten the weapon or change the straight fully sheathed scabbard.",
+  "recordedAt": "2026-09-03T18:20:00+08:00",
+  "authorType": "human",
+  "categories": [
+    "equipment_state"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "steep upright UL carried axis, ring upper-right, scabbard lower-left, fully sheathed straight dao, approved palette and isolated scope"
+  ],
+  "pendingFixes": [
+    "show slightly more of the ring pommel front face while retaining a clearly oblique side view; keep all connected fittings in the same perspective"
+  ]
+}

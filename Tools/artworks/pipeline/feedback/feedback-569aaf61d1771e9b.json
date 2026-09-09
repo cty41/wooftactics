@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-569aaf61d1771e9b",
+  "attemptId": "job-16985014758beabb-a005",
+  "candidateSha256": "9ce60eecdf5a312cd8aaea84b616fa63c2ea4e066b1e180551d858869020add1",
+  "reviewer": "cty41",
+  "verdict": "retry",
+  "strengths": [
+    "The local edit preserved the selected candidate and moved the screen-right paw toward the intended rear layer."
+  ],
+  "defects": [
+    "Visual depth is still wrong: the screen-right paw must remain behind the body, while the tail must be in front of the body."
+  ],
+  "nextPromptDelta": "Preserve a005 entirely. Keep the screen-right side/front paw behind the body with body contour in front. Change only tail occlusion: tail and its root draw in front of the body, matching the selected a003 foreground tail.",
+  "recordedAt": "2026-09-08T11:03:55+08:00",
+  "authorType": "human",
+  "categories": [
+    "occlusion"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "all body, face, weapon, paw shapes and current screen-right paw rear-layer relationship"
+  ],
+  "pendingFixes": [
+    "move tail to the visual foreground without changing shape or position"
+  ]
+}

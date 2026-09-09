@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-9d3a1b41c1875205",
+  "artifact": {
+    "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v09/base-character-tilemap-compare.png",
+    "sha256": "43dfe2cbbc22bcd37b36203eeefeddc538f8097820f3837dd0095e8b6b10612e"
+  },
+  "role": "review-derived",
+  "note": "Post-approval standalone same-scale 64x32 Tilemap comparison: approved base poet v03 versus approved equipped Idle DR v03; both use identical 128 preview transform and tile center"
+}

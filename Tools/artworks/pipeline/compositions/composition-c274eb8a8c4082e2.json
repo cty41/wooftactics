@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 2,
+  "compositionId": "composition-c274eb8a8c4082e2",
+  "assetId": "poet-five-red-chow-ring-pommel-tang-dao-idle-ul-v3",
+  "spec": {
+    "canvas": [
+      256,
+      256
+    ],
+    "bodyLayer": false,
+    "coreAxis": {
+      "bottom": [
+        128,
+        231
+      ],
+      "top": [
+        128,
+        121
+      ],
+      "tiltDegrees": [
+        -2.0,
+        2.0
+      ]
+    },
+    "footCenter": [
+      128,
+      236
+    ],
+    "weapon": {
+      "hiddenGrip": [
+        166,
+        160
+      ],
+      "exitWindow": [
+        146,
+        136,
+        177,
+        173
+      ],
+      "tipRegion": [
+        88,
+        108,
+        126,
+        145
+      ],
+      "guardWindow": [
+        151,
+        145,
+        174,
+        174
+      ],
+      "bladeCenterline": [
+        96,
+        116,
+        169,
+        168
+      ],
+      "maxBladeWidthPx": 13,
+      "maxGemAreaPx": 0
+    },
+    "forbiddenRegions": [
+      {
+        "name": "face-on-back",
+        "rect": [
+          98,
+          116,
+          160,
+          176
+        ]
+      },
+      {
+        "name": "front-layer-left-free-paw",
+        "rect": [
+          78,
+          149,
+          111,
+          211
+        ]
+      },
+      {
+        "name": "front-layer-right-holding-paw",
+        "rect": [
+          145,
+          149,
+          181,
+          211
+        ]
+      },
+      {
+        "name": "vertical-or-lower-scabbard-fragment",
+        "rect": [
+          150,
+          176,
+          184,
+          232
+        ]
+      }
+    ],
+    "requiredHiddenLabels": [
+      "near_hand",
+      "far_hand",
+      "equipment"
+    ],
+    "visibleAreaCaps": {
+      "near_hand": 0.22,
+      "far_hand": 0.22,
+      "equipment": 0.22
+    },
+    "equipmentState": {
+      "scabbard": "present",
+      "staticEffects": "absent"
+    },
+    "screenSpaceIntent": {
+      "direction": "native upper-left back view",
+      "ringPommel": "small edge-on ring at the screen-right shoulder",
+      "scabbard": "from the right-shoulder ring and grip, the fully sheathed connected axis points diagonally toward screen upper-left behind the body",
+      "continuity": "ring grip and any visible throat or sheath cue form one connected object; most sheath may remain hidden",
+      "holdingPaw": "tiny screen-right far paw arc behind core",
+      "freePaw": "tiny screen-left near paw arc behind core and not touching equipment",
+      "feet": "two compact directly attached rear paws at baseline"
+    }
+  },
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/compositions/poet_ring_pommel_tang_dao_idle_ul_composition_v4.json",
+    "sha256": "43230b3e74904773c2a8dbf3108f7ad725efe78041bf99688e032ee6d6f2d927"
+  },
+  "anchor": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+    "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753"
+  }
+}

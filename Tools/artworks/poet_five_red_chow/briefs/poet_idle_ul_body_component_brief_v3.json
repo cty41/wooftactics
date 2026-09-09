@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "briefKind": "asset",
+  "briefId": "poet-idle-ul-body-component-v3",
+  "assetId": "poet-five-red-chow-idle-ul-body-component-v3",
+  "family": "actor",
+  "purpose": "Generate the body-only component as the corrected upper-left three-quarter rear view: face turns toward screen-left, tail appears on screen-right, and only a tiny near eye/nose profile is visible.",
+  "firstRead": [
+    "five_red_chow_identity",
+    "narrow_compact_capsule",
+    "upper_left_three_quarter_back_direction"
+  ],
+  "targetContexts": [
+    "master-256",
+    "component-assembly"
+  ],
+  "identityInvariants": [
+    "approved orange five-red chow palette",
+    "two triangular ears",
+    "modest fluffy tail",
+    "narrow compact capsule",
+    "no mane seam",
+    "only a tiny screen-left eye and nose/muzzle edge"
+  ],
+  "shapeStrategy": "Use a 25–35 degree upper-left rear three-quarter turn. Tail is on screen-right. The screen-left side of the head turns enough to expose one tiny near eye and a minimal nose/muzzle edge; the left ear is reprojected in three-quarter profile while the right ear recedes. Core remains 66x110 and smooth.",
+  "colorStrategy": "Preserve approved poet colors; slightly lighter screen-left near plane and darker screen-right receding plane, without gradients.",
+  "materialStrategy": "Bold outline, flat values, low detail.",
+  "attentionRole": "primary",
+  "allowedVariation": [
+    "native three-quarter back re-projection of ears, side planes and tail"
+  ],
+  "forbidden": [
+    "straight rear symmetry",
+    "any paw",
+    "arm",
+    "leg",
+    "weapon",
+    "guqin",
+    "wineskin",
+    "gourd",
+    "mane seam",
+    "wide column",
+    "full front face",
+    "full side profile",
+    "tail on screen-left",
+    "symmetric upright ears",
+    "second eye",
+    "large muzzle"
+  ],
+  "referenceResponsibilities": [
+    {
+      "role": "identity-and-volume-anchor",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+      "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753",
+      "responsibility": "Identity, palette and volume only."
+    },
+    {
+      "role": "approved-ul-direction-review-only",
+      "path": "Tools/artworks/doge/calibrated/doge_capsule_demonbound_idle_ul_v01.png",
+      "sha256": "ef9fd7521afafc4f46ef8fd355fc90337b493e268de61eaebfcd8d2ea3e529f4",
+      "responsibility": "Review-only example of UL three-quarter asymmetry; never an ImageGen input and never transfer doge identity, horns, cape or pixels."
+    }
+  ],
+  "requiredReviewPanels": [
+    "candidate-master",
+    "preview-128",
+    "identity-context",
+    "core-anchor-overlay",
+    "back-view-inspection",
+    "direction-reference",
+    "style-context"
+  ],
+  "acceptanceCases": [
+    {
+      "caseId": "POET-UL-BODY-V2-DIRECTION-001",
+      "evidence": [
+        "candidate-master",
+        "direction-reference"
+      ],
+      "automatedFacts": [
+        "core top is shifted screen-left with bounded tilt"
+      ],
+      "humanChecks": [
+        "tail on screen-right",
+        "tiny eye/nose cue only at screen-left contour",
+        "left ear visibly reprojected",
+        "still primarily a rear three-quarter view"
+      ],
+      "passCriteria": "Direction reads like the approved UL reference without identity transfer."
+    },
+    {
+      "caseId": "POET-UL-BODY-V2-CORE-001",
+      "evidence": [
+        "core-anchor-overlay"
+      ],
+      "automatedFacts": [
+        "core dimensions bands and center compared to anchor"
+      ],
+      "humanChecks": [
+        "narrow compact capsule"
+      ],
+      "passCriteria": "Core volume remains approved."
+    },
+    {
+      "caseId": "POET-UL-BODY-V2-ISOLATION-001",
+      "evidence": [
+        "candidate-master"
+      ],
+      "automatedFacts": [
+        "body-only semantic labels"
+      ],
+      "humanChecks": [
+        "no paws equipment face or mane seam"
+      ],
+      "passCriteria": "Clean body component."
+    }
+  ]
+}

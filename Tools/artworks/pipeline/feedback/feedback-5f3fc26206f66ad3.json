@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-5f3fc26206f66ad3",
+  "attemptId": "job-16985014758beabb-a010",
+  "candidateSha256": "675bbd8cec8c55c50db589f0f5219749d051f37cb45a431fdaa17f71d9bdf2d2",
+  "reviewer": "cty41",
+  "verdict": "selected",
+  "strengths": [
+    "cty41 confirmed the tail is in the visual foreground while the screen-right side paw and screen-right bottom foot are behind the body."
+  ],
+  "defects": [],
+  "nextPromptDelta": "No further visual generation. Lock a010 and proceed to deterministic preparation, semantic mask, calibration and validation.",
+  "recordedAt": "2026-09-08T14:30:35+08:00",
+  "authorType": "human",
+  "categories": [
+    "occlusion"
+  ],
+  "disposition": "selected",
+  "frozenInvariants": [
+    "entire a010 visual candidate"
+  ],
+  "pendingFixes": []
+}

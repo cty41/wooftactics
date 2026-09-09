@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 4,
+  "modelReviewResultRecordId": "model-review-result-record-364e585421719744",
+  "invocationId": "model-review-invocation-45450a6b3d72bdec",
+  "attemptId": "job-69a7e239bb73eef5-a001",
+  "packetId": "model-review-packet-6919a656898ce661",
+  "packetSha256": "ed43f141ceaadcca3767876674694f60dd8a8625cb2c2264e48aca6128f70179",
+  "qualificationMode": true,
+  "provider": "dsh-subagent-current-session",
+  "model": "gpt-5.6-sol",
+  "effort": "xhigh",
+  "freshSession": true,
+  "freshSessionId": "233e9ba2-d989-4ce6-9a2c-f655c8080047",
+  "promptSource": {
+    "path": "Tools/artworks/pure_run/art_direction/review/reviewer_prompt_v1.md",
+    "sha256": "ea9a86b3e7e4ee724090fe0c520a4271ce4f38a34184335f865189bcf259a850"
+  },
+  "rawResult": {
+    "path": "Tools/artworks/pure_run/art_direction/review/shadow_results/final_capsule_no_limbs_negative_xhigh_raw.json",
+    "sha256": "e98e9194949459830bb0369265f8bb14b7c7be7a812060f6f3f0de8216b9f470"
+  },
+  "result": {
+    "resultId": "model-review-result-c1967232c19d4718",
+    "schemaVersion": 1,
+    "packetId": "model-review-packet-6919a656898ce661",
+    "packetSha256": "ed43f141ceaadcca3767876674694f60dd8a8625cb2c2264e48aca6128f70179",
+    "decision": "retry",
+    "summary": "The bound historical artifact violates CAPSULE-NO-LIMBS-v1: both lateral forepaw forms read as elongated arm-like limb segments projecting from the capsule rather than compact paws directly attached to its edge. This shadow qualification result does not approve, reject, change attempt state, or trigger a retry.",
+    "strengths": [
+      "The rear capsule silhouette remains clearly readable.",
+      "Both bottom hind paws attach directly at the capsule base without visible leg segments."
+    ],
+    "defects": [
+      {
+        "defectId": "visible-limb-drift",
+        "ruleId": "CAPSULE-NO-LIMBS-v1",
+        "acceptanceCaseId": "CASE-POET-IDLE-UL-V01-VISIBLE-LIMBS-v1",
+        "severity": "hard",
+        "certainty": "certain",
+        "observed": "Within the bound evidence region, the lateral orange appendages extend vertically from narrowed body junctions and visibly read as arm-like segments ending in paw masses; the semantic mask labels these areas but cannot override that visible topology.",
+        "expected": "Only compact paw masses should attach directly to and overlap the capsule edge with a stable multi-pixel contact surface; no arm, forearm, leg, lower-leg, or thin connecting limb may be visible.",
+        "evidenceRoles": [
+          "HISTORICAL_CASE_ARTIFACT",
+          "SEMANTIC_MASK",
+          "NEGATIVE_REVIEW_ONLY"
+        ],
+        "region": {
+          "x": 0.24,
+          "y": 0.34,
+          "width": 0.53,
+          "height": 0.57
+        }
+      }
+    ],
+    "frozenInvariants": [
+      "Shadow-final-policy-no-state-change"
+    ],
+    "operations": [
+      {
+        "operation": "remove",
+        "target": "lateral visible limb segments",
+        "instruction": "Remove the elongated arm-like segments on both sides while retaining two distinct compact forepaws.",
+        "defectId": "visible-limb-drift"
+      },
+      {
+        "operation": "enforce",
+        "target": "forepaw-to-capsule attachment",
+        "instruction": "Attach each forepaw directly to the capsule edge with broad multi-pixel overlap and no intervening limb segment.",
+        "defectId": "visible-limb-drift"
+      }
+    ]
+  },
+  "outcome": "model_reviewed",
+  "validationError": null
+}

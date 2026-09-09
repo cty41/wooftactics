@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 4,
+  "anchorVerdictId": "anchor-verdict-63ef30ee5fd875b6",
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+    "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+  },
+  "family": "actor",
+  "responsibilities": [
+    "Primary equipped-poet identity, four-paw topology, original Tang dao design and carried Idle relationship for UL reprojection."
+  ],
+  "excludedUses": [
+    "Do not copy DR screen direction, face direction, tail side or weapon endpoint orientation into UL."
+  ],
+  "review": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_from_approved_dr_components_review_v01.png",
+    "sha256": "8c6dc84025bf3c9f60aafd7c46866c62ef835ab658364d5b1a5febeca3ad04a9"
+  },
+  "decision": "approved-anchor",
+  "reviewer": "cty41",
+  "reason": "cty41 explicitly confirmed this already successful equipped Idle DR is the correct source for continued UL regeneration.",
+  "decidedAt": "2026-09-08T10:19:03+08:00"
+}

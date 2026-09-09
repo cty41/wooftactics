@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "reviewerRuleSuspensionId": "reviewer-rule-suspension-e604ee412d4a8fd4",
+  "reviewerQualificationId": "reviewer-qualification-6fc7365a17720d0b",
+  "ruleId": "CAPSULE-NO-LIMBS-v1",
+  "ruleVersion": 1,
+  "reviewer": "cty41",
+  "reason": "superseded-by-prompt-only-comparison-bound-qualification",
+  "suspendedAt": "2026-09-04T21:15:00+08:00"
+}

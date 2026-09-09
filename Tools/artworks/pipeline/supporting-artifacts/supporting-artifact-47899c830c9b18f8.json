@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-47899c830c9b18f8",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/components/poet_ring_pommel_tang_dao_sheathed_component_clean_v01.png",
+    "sha256": "80b331c8d06c0f6894b277db0db3be015905f7f70fe17cd122cdeab5d8d6ba2e"
+  },
+  "role": "technical-remediation",
+  "note": "用户已批准入鞘环首刀的确定性色幕边缘规范化中间件，仅供schema v3迁移"
+}

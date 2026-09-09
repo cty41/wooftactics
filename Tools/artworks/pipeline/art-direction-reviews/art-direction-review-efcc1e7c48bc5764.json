@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 4,
+  "artDirectionReviewId": "art-direction-review-efcc1e7c48bc5764",
+  "attemptId": "job-4affd0d3e702d0d0-a001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-4affd0d3e702d0d0/job-4affd0d3e702d0d0-a001/calibrated.png",
+    "sha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512"
+  },
+  "contractId": "contract-ba466365ddf2fc89",
+  "contractSha256": "3878db536635c4afcc28a1ca099ffe56e847ce9451d3e3d12921ebd7486bb7c4",
+  "sourcePanels": {
+    "candidate-master": {
+      "path": "Tools/artworks/pipeline/artifacts/job-4affd0d3e702d0d0/job-4affd0d3e702d0d0-a001/calibrated.png",
+      "sha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512"
+    },
+    "preview-128": {
+      "path": "Tools/artworks/pipeline/reviews/job-4affd0d3e702d0d0-a001/preview128.png",
+      "sha256": "b06382fd59b3d4e16b2c26fde0ee138d4b883d963b3a7820db3d652fa233eaeb"
+    },
+    "identity-context": {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_v7_final_human_review_v01.png",
+      "sha256": "fe5d7f920a0e271b9b404257bb482238d9c3f4e020de7b968cf2236a2ba0101b"
+    },
+    "core-anchor-overlay": {
+      "path": "Tools/artworks/pipeline/reviews/job-4affd0d3e702d0d0-a001/overlay.png",
+      "sha256": "8a980d018673926280746a4acc0e83391d593ea119f2aee75c146c7971e42d17"
+    },
+    "back-view-inspection": {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_v7_final_human_review_v01.png",
+      "sha256": "fe5d7f920a0e271b9b404257bb482238d9c3f4e020de7b968cf2236a2ba0101b"
+    },
+    "equipment-inspection": {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_v7_final_human_review_v01.png",
+      "sha256": "fe5d7f920a0e271b9b404257bb482238d9c3f4e020de7b968cf2236a2ba0101b"
+    },
+    "pose-axis": {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_v7_final_human_review_v01.png",
+      "sha256": "fe5d7f920a0e271b9b404257bb482238d9c3f4e020de7b968cf2236a2ba0101b"
+    },
+    "paw-depth": {
+      "path": "Tools/artworks/pipeline/reviews/job-4affd0d3e702d0d0-a001/depthReview.png",
+      "sha256": "bff7bdd11732dc507707edc3b421ec80643d5b4a3726a937d3ee69a3e503a6af"
+    },
+    "occlusion-depth": {
+      "path": "Tools/artworks/pipeline/reviews/job-4affd0d3e702d0d0-a001/depthReview.png",
+      "sha256": "bff7bdd11732dc507707edc3b421ec80643d5b4a3726a937d3ee69a3e503a6af"
+    },
+    "semantic-overlay": {
+      "path": "Tools/artworks/pipeline/reviews/job-4affd0d3e702d0d0-a001/overlay.png",
+      "sha256": "8a980d018673926280746a4acc0e83391d593ea119f2aee75c146c7971e42d17"
+    },
+    "tile-review": {
+      "path": "Tools/artworks/pipeline/reviews/job-4affd0d3e702d0d0-a001/tile64x32.png",
+      "sha256": "28d3b725bdf81b84811821c39b2fa54c89b21465014b92e776c9e0b3441331d1"
+    },
+    "amazon-tile-compare": {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_v7_final_human_review_v01.png",
+      "sha256": "fe5d7f920a0e271b9b404257bb482238d9c3f4e020de7b968cf2236a2ba0101b"
+    },
+    "style-context": {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_v7_final_human_review_v01.png",
+      "sha256": "fe5d7f920a0e271b9b404257bb482238d9c3f4e020de7b968cf2236a2ba0101b"
+    },
+    "rejected-regression": {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_confirmed_source_generation_rounds_v01.png",
+      "sha256": "e1befae80e1673ffa9e6bd1a045d253653f06140c0c466380849712b70180064"
+    }
+  },
+  "acceptanceCaseResultIds": [
+    "acceptance-case-result-9f2401844ed6d569",
+    "acceptance-case-result-436641c6b0b26b38",
+    "acceptance-case-result-c8328212245c9cd5",
+    "acceptance-case-result-030b8a1b16c90216",
+    "acceptance-case-result-bb732aa3ee4da77b",
+    "acceptance-case-result-caca658c621e725e"
+  ],
+  "overview": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_v7_art_direction_review_v01.png",
+    "sha256": "2f3b601b50d5e009c45afa67a44324613ca7b7543289a76970286da296b684c9"
+  }
+}

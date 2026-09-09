@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "operation": "deterministic-selected-study-partition",
+  "source": "Tools/artworks/poet_five_red_chow/concepts/poet_tang_dao_75_grip_reposition_03.png",
+  "selectedBy": "cty41",
+  "selection": "C: lower relaxed grip",
+  "steps": [
+    "preserve only the newly positioned screen-left far-paw ellipse",
+    "bind the paw center to the selected 75 percent Tang dao handle-to-scabbard contact zone",
+    "use the approved poet outline, base orange, and one-pixel restrained highlight colors",
+    "exclude body, equipment, near paw, feet, guqin, wineskin, and exposed blade pixels"
+  ],
+  "runtimeEligible": false
+}

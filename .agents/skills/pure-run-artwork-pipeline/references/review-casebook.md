@@ -38,7 +38,8 @@
 
 ## 使用边界
 
-- `approved_source` 可以作为身份、比例或方向母图。
-- `rejected_source` 只能用于识别错误；即使某个局部正确，也禁止继续编辑。
+- `approved_source` 可以承担已登记的身份、比例或方向职责，但不会因此自动成为项目级风格锚点；风格锚点还必须具有明确职责的 `approved-anchor` verdict。
+- `rejected_source`、`superseded`、历史 retry 和 negative regression descriptor 只能用于识别错误；即使某个局部正确，也禁止继续编辑或进入 prompt/Assembly 输入。
+- 所有混合正反例的 Review 必须把每一栏明确标为 `POSITIVE ANCHOR`、`APPROVED COMPONENT`、`PENDING CANDIDATE` 或 `NEGATIVE / REJECTED — DO NOT USE AS INPUT`，不能只靠文件名或排列位置暗示职责。
 - `correct_128.png` 和 `incorrect_128.png` 只用于快速 Review，不是正式 Sprite。
 - 完整历史保存在 `rejected/superseded`，但不会逐张扩写进本页。

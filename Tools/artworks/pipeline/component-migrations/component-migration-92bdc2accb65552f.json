@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 3,
+  "componentMigrationId": "component-migration-92bdc2accb65552f",
+  "contractId": "contract-11637d200cf3d03a",
+  "contractSha256": "751a511097342a7585d4a9a0438908cef397508b926af11e44175da43fdb893d",
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/concepts/poet_tang_dao_75_grip_reposition_03.png",
+    "sha256": "773dfc24bb9bac40b76a5fc1fefa14ae307c6584958f25600a2f73ddb0c63c06"
+  },
+  "prepared": {
+    "path": "Tools/artworks/poet_five_red_chow/components/poet_far_paw_low_grip_component_v03.png",
+    "sha256": "fbf03fb212fc71587bc4171f87acd5318f0c1af3949df084ded43c07c8ab30e0"
+  },
+  "processing": {
+    "schemaVersion": 1,
+    "operation": "deterministic-selected-study-partition",
+    "source": "Tools/artworks/poet_five_red_chow/concepts/poet_tang_dao_75_grip_reposition_03.png",
+    "selectedBy": "cty41",
+    "selection": "C: lower relaxed grip",
+    "steps": [
+      "preserve only the newly positioned screen-left far-paw ellipse",
+      "bind the paw center to the selected 75 percent Tang dao handle-to-scabbard contact zone",
+      "use the approved poet outline, base orange, and one-pixel restrained highlight colors",
+      "exclude body, equipment, near paw, feet, guqin, wineskin, and exposed blade pixels"
+    ],
+    "runtimeEligible": false
+  },
+  "reviewer": "cty41",
+  "reason": "用户明确选择C低位放松握爪；该组件只保留新远侧左爪并绑定75%唐刀握柄鞘口接触区",
+  "acceptedAt": "2026-09-03T14:25:00+08:00",
+  "invocationStatus": "missing-pre-v3"
+}

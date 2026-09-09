@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "operation": "deterministic-green-fringe-cleanup",
+  "sourceAttemptId": "job-16985014758beabb-a010",
+  "sourcePreparedSha256": "675bbd8cec8c55c50db589f0f5219749d051f37cb45a431fdaa17f71d9bdf2d2",
+  "transparentRule": "alpha=0 becomes transparent black; otherwise green>=64 and green>red+15 and green>blue+15 becomes transparent black",
+  "decontaminationRule": "remaining green channel is capped at max(red,blue)+4",
+  "geometryChange": "none other than removal of chroma/fringe pixels",
+  "authorizedVisual": "cty41-locked a010",
+  "colorAdjustment": "edge chroma decontamination only"
+}

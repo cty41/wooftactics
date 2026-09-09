@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-16985014758beabb-a004",
+  "jobId": "job-16985014758beabb",
+  "ordinal": 4,
+  "generationRound": 4,
+  "parentAttemptId": "job-16985014758beabb-a003",
+  "retryFeedbackId": "feedback-63d553f8be216a5a",
+  "promptDelta": "Stop uncontrolled whole-sprite generation after the third formal round. Present evidence and return to deterministic assembly from the confirmed approved DR components plus approved UL body.",
+  "technicalRemediation": false,
+  "state": "ready",
+  "artifacts": {},
+  "report": null,
+  "approvalId": null,
+  "feedbackId": null
+}

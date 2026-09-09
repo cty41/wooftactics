@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "descriptorKind": "negative-regression-evidence",
+  "descriptorId": "poet-ring-pommel-dao-idle-negative-regression-v1",
+  "usage": "review-only",
+  "labels": ["NEGATIVE", "REJECTED", "DO NOT USE AS INPUT"],
+  "forbiddenUses": ["identity-anchor", "style-anchor", "positive-reference", "prompt-input", "assembly-input", "promotion-source"],
+  "records": [
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_dr_v01.png",
+      "sha256": "363df76dbec446d1ece5d46d2857ef8e7de4164030053f1b8a8a67f456b3b3c6",
+      "failures": ["weapon rendering is more realistic than the actor", "dense fittings and gradients", "superseded by user-approved cartoon v2"]
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-3094052b8342329b/job-3094052b8342329b-a001/prepared.png",
+      "sha256": "9430ab50fde95ef9bac02c26a5b03a6e8e4580be3032c5daa3dae0a21ec4642a",
+      "failures": ["incorrect weapon-body relationship", "unnatural far-paw grip", "mounted media mismatch"]
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_ring_pommel_dao_idle_dr_grip_inspection_v01.png",
+      "sha256": "7c99df5f2680c92a2ca9b0639365f726987cd26ee063c9c75a74fb99579eab5d",
+      "failures": ["review evidence of the rejected grip and old realistic dao only"]
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_ring_pommel_dao_idle_dr_far_paw_overlay_test_v01.png",
+      "sha256": "edee559d126ef994008654310eff6da9da4d679adf494b3a70d8bf9c6a66cf8b",
+      "failures": ["full far-paw overlay reads as pasted on", "does not form a believable relaxed grip"]
+    }
+  ]
+}

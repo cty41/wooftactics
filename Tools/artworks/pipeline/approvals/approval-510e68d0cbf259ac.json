@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 2,
+  "approvalId": "approval-510e68d0cbf259ac",
+  "attemptId": "job-ffb58eed1dd89ce2-a001",
+  "candidateSha256": "363df76dbec446d1ece5d46d2857ef8e7de4164030053f1b8a8a67f456b3b3c6",
+  "maskSha256": null,
+  "reviewer": "cty41",
+  "reviewSha256": {
+    "equipmentPanel": "c4fb6b1fd3150ca94d874030ca0a745143c7f4532304b561f0c924c2af948525"
+  },
+  "decision": "approved",
+  "reason": "用户明确确认环首刀加刀鞘版本OK，固定Equipment Review与技术门禁通过",
+  "decidedAt": "2026-09-03T00:54:26.7964078+08:00",
+  "annotation": null,
+  "reportSha256": "ed2c21abfe168edad2afccce368714f29bd779b90c09490c3a3bf6d500be3c9c"
+}

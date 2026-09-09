@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 4,
+  "acceptanceCaseResultId": "acceptance-case-result-90818e45a7ba54f1",
+  "attemptId": "job-34f6747e5a1f30d0-a001",
+  "caseId": "POET-OCCLUSION-001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-34f6747e5a1f30d0/job-34f6747e5a1f30d0-a001/prepared.png",
+    "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+  },
+  "contractId": "contract-57bf5c0526078c9d",
+  "contractSha256": "0af903e867b06faffc66bfa9456a31396051bc3ce1746f17d2fd2227d4593df1",
+  "evidence": {
+    "assembly-layers": {
+      "path": "Tools/artworks/pipeline/reviews/job-34f6747e5a1f30d0-a001/assemblyLayerReview.png",
+      "sha256": "17108898be23a65a03f9dc915c336529b69da59c052dac25d24f1a92938256b2"
+    },
+    "grip-nearest": {
+      "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v09/grip-nearest.png",
+      "sha256": "10ed3157e45f09f40939e467cbf54c0d6a136003d71fd531fd6add2eb29b9022"
+    }
+  },
+  "automatedFacts": [
+    "six roles occur once and assembly validation passed"
+  ],
+  "automatedResult": "passed",
+  "humanChecks": [
+    "plausible clean DR overlap confirmed"
+  ],
+  "humanDecision": "passed",
+  "reviewer": "cty41",
+  "reason": "用户明确确认十项全部通过",
+  "decidedAt": "2026-09-03T16:20:00+08:00"
+}

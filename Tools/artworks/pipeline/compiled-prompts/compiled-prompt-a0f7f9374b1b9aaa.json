@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "compiledPromptId": "compiled-prompt-a0f7f9374b1b9aaa",
+  "jobId": "job-4bf298a02b636a9d",
+  "equipmentProfileSha256": "e23e540c790a57432967d944c82bdad9721f109d2cb6352b3288c0c2c7d7bbb1",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/pipeline/wineskin_waist_hung_compiled_v1.md",
+    "sha256": "bfcd1091febb8a3e48e2d31324cfdc5da303bcfac4346cca71a8cbd15f6c6494"
+  }
+}

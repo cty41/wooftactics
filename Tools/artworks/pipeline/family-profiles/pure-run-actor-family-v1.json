@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "registryId": "family-profile-589dc888b971e5d5",
+  "sourceId": "pure-run-actor-family-v1",
+  "sourceType": "family",
+  "artifact": {
+    "path": "Tools/artworks/pure_run/art_direction/families/actor_v1.json",
+    "sha256": "a5214ad32ea193569198cac822ddac860adcdf8f4e03f24d455d9aee3099f95d"
+  }
+}

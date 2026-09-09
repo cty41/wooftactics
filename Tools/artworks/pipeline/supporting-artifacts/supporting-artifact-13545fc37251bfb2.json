@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-13545fc37251bfb2",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_ring_pommel_tang_dao_sheathed_pixel_inspection_v02.png",
+    "sha256": "6978115875eb6c509db1b7152b9302146ab7c56be0297ee1a401cf0217a1b51b"
+  },
+  "role": "review-derived",
+  "note": "卡通像素风环首唐刀v2最近邻像素检查，仅供人工检查轮廓、色阶与细节密度，不可晋升"
+}

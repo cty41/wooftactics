@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-07c9f93fde0fd27a",
+  "attemptId": "job-43b34a4685f71ca2-a005",
+  "candidateSha256": "b5b53c1d6cdb122a1de514ab86e7d56aa363921dbaab18538534764e66b85738",
+  "reviewer": "agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "所有几何指标已通过，越界已定位为 core 底部 437 像素"
+  ],
+  "defects": [
+    "core 延伸到主体在 y965 后的脚间透明区"
+  ],
+  "nextPromptDelta": "保持同一 raw；core 改为 x500..769/y497..964，并把双脚语义底调整到 y984，维持校准后 core 121..231 与脚底236",
+  "recordedAt": "2026-08-29T21:42:45.7626545+08:00",
+  "authorType": "agent",
+  "categories": [
+    "processing"
+  ],
+  "disposition": "technical_failed",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "core 延伸到主体在 y965 后的脚间透明区"
+  ]
+}

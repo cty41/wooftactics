@@ -1,0 +1,3712 @@
+{
+  "schemaVersion": 4,
+  "reviewHistoryIndexId": "review-history-index-1782a1158429e992",
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-e04d1bdabab3f9f7",
+      "feedbackId": "feedback-00a7bab82ce94f32",
+      "attemptId": "job-897833991fd2f552-a005",
+      "jobId": "job-897833991fd2f552",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-897833991fd2f552/job-897833991fd2f552-a005/prepared.png",
+        "sha256": "86feacaead84250178533429c93421ba9ac721a10bb56eb93205366c83f8aa4e"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-00a7bab82ce94f32.json",
+        "sha256": "58c5e43d504b7a0fea9390371974f98a325b4665a437b2e57c572b0ed241154d"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-897833991fd2f552-a005.json",
+        "sha256": "7c87af8545659c79b66c1ecf2cc34bda817c07b3c0bfbb8e2c5993b12b1fc535"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-8255ef5f072ad618",
+      "feedbackId": "feedback-00f6b79c5fbc2a0f",
+      "attemptId": "job-7603439437c554d0-a002",
+      "jobId": "job-7603439437c554d0",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "equipment_state"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_sheathed_ul_projection_v02.png",
+        "sha256": "5362880fe6f4cd931ef4518ce295cdb93ddb5b0f3151158bdbabcbc80b64e26c"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-00f6b79c5fbc2a0f.json",
+        "sha256": "0a32d19834a0d87fc8107994ee91e6a83eba7221d95bb13ddfe4614c8e6c5620"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-7603439437c554d0-a002.json",
+        "sha256": "b7ba6ed468649fdafb7e81e69c2e1ddf7f04001e32321cef2f2fa4c1624ed0bb"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-b43c5e87d14bb333",
+      "feedbackId": "feedback-02c87c2b8e4a9db4",
+      "attemptId": "job-a95411a55ccd0bbe-a002",
+      "jobId": "job-a95411a55ccd0bbe",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "selected",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-a95411a55ccd0bbe/job-a95411a55ccd0bbe-a002/prepared.png",
+        "sha256": "4ad1514ac8e4cdf2162675da0243cb409b5b80b11e2ae73f06c2c46ba1241cb5"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-02c87c2b8e4a9db4.json",
+        "sha256": "daf0c9904ed925c3b5728fb818f0b9cdcf48f6d1033d5ba3548b89f63bca2908"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-a95411a55ccd0bbe-a002.json",
+        "sha256": "084a78e6d8d9ba2eea9c73986b50d2e5f52ac89e8219b3f78e584b2dbbf879bb"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-44caa4b67a5e93fe",
+      "feedbackId": "feedback-04a985546b72eefc",
+      "attemptId": "job-50ee228ca9e56495-a002",
+      "jobId": "job-50ee228ca9e56495",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "selected",
+      "categories": [
+        "occlusion"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-50ee228ca9e56495/job-50ee228ca9e56495-a002/prepared.png",
+        "sha256": "6f857fadbe71ce53c124803d465b63f66ca9672695bdd65a3764cebe7f9b0b2d"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-04a985546b72eefc.json",
+        "sha256": "b2279ca7a2320a0b603312f64cbacec5f4ba0a01157a1028c506d4f4986b20d5"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-50ee228ca9e56495-a002.json",
+        "sha256": "905ff3a3acf84df0e37fe5096a79da31723921a3b0f873afda5f56d60ea18212"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-ce170bcc7c15cd50",
+      "feedbackId": "feedback-0713b25866425452",
+      "attemptId": "job-f0d6fcf9375ff1ae-a001",
+      "jobId": "job-f0d6fcf9375ff1ae",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-f0d6fcf9375ff1ae/job-f0d6fcf9375ff1ae-a001/calibrated.png",
+        "sha256": "dc1512fe0b74a65678498e01fd1698967192710a34d837610dd1a04bf1db8802"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-0713b25866425452.json",
+        "sha256": "805de95e13d2db5018fc8538477e4e227d61f5ac9fbdcc81914ec4274c09cebf"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-f0d6fcf9375ff1ae-a001.json",
+        "sha256": "b62d0cd815bbc3f5e5a4f179eee3625167754002efa1275ec2bce2cd66d79c44"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-38845571dd76362a",
+      "feedbackId": "feedback-075ce89dccf9a8b6",
+      "attemptId": "job-1b243a2bdfee22b1-a004",
+      "jobId": "job-1b243a2bdfee22b1",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-1b243a2bdfee22b1/job-1b243a2bdfee22b1-a004/prepared.png",
+        "sha256": "ce49f6e63b34e72a6f25ec78d995db595368aec6b4855520e41d7741fc1a8dd5"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-075ce89dccf9a8b6.json",
+        "sha256": "b0250c2708a8bda1bca2af7a94738f97ac6a62f32316fa38ab5ab8ad7e75857c"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-1b243a2bdfee22b1-a004.json",
+        "sha256": "329d2a61cb01297fd64500ca617cf8ed8cc28d8323cb776e65723fef6e1429e8"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-eea753122f34cd9d",
+      "feedbackId": "feedback-07c9f93fde0fd27a",
+      "attemptId": "job-43b34a4685f71ca2-a005",
+      "jobId": "job-43b34a4685f71ca2",
+      "authorType": "agent",
+      "reviewer": "agent",
+      "disposition": "technical_failed",
+      "categories": [
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a005/calibrated.png",
+        "sha256": "b5b53c1d6cdb122a1de514ab86e7d56aa363921dbaab18538534764e66b85738"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-07c9f93fde0fd27a.json",
+        "sha256": "b14fe0445a78b7323b3cf7d7c2df7a84c4cc2c7f31ccf867db53299931d5e6c0"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-43b34a4685f71ca2-a005.json",
+        "sha256": "136869af807ec8a6984f15a49656bbb4c630790831a9fbf397178259edc562e8"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-6b5457a704013ab0",
+      "feedbackId": "feedback-0c98ddb3f734573b",
+      "attemptId": "job-d5e63cb8798a9488-a001",
+      "jobId": "job-d5e63cb8798a9488",
+      "reviewer": "cty41",
+      "disposition": "technical_failed",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-d5e63cb8798a9488/job-d5e63cb8798a9488-a001/prepared.png",
+        "sha256": "00274a0f6385f2d6da8a69105e02c989a2ead75a1572fa532604654f4fc93075"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-0c98ddb3f734573b.json",
+        "sha256": "281dce0720bb3a4575789c5266e66d88af911743325ad12f9c7fd4ffe1f780c5"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-d5e63cb8798a9488-a001.json",
+        "sha256": "21ee7e59b95bb94b3fbaa1e8d1efa45b4090a7d3cb75650382bd72f061fc2186"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-01c6375e946d6625",
+      "feedbackId": "feedback-0e000fcba9901d3d",
+      "attemptId": "job-d8c37ffa3a568007-a003",
+      "jobId": "job-d8c37ffa3a568007",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-d8c37ffa3a568007/job-d8c37ffa3a568007-a003/calibrated.png",
+        "sha256": "dcb720038c8d0e8187f7579bc161c39049ae67080c6acd4f1dfdb689489c62f1"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-0e000fcba9901d3d.json",
+        "sha256": "d943e34d2153de2a6f02ce3631fa379108d61215052521004b5e114392721fc9"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-d8c37ffa3a568007-a003.json",
+        "sha256": "c49a4c9904db07e694ee5140a55f14c83ceffae762653a8108fb04aeb5cb59fb"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-b7c48e4c0c2cdfb5",
+      "feedbackId": "feedback-10c576bac14601e7",
+      "attemptId": "job-f40816b1c2e8b36c-a002",
+      "jobId": "job-f40816b1c2e8b36c",
+      "reviewer": "cty41",
+      "disposition": "technical_failed",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-f40816b1c2e8b36c/job-f40816b1c2e8b36c-a002/calibrated.png",
+        "sha256": "66a410596d4341ddb075b50df0c14daf3cf66779fc508d8b8e44b3e1d260d503"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-10c576bac14601e7.json",
+        "sha256": "b3445db8d1b2a200517e5329dccab86deb3910ae897647f92ddf4c73b6af6ef1"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-f40816b1c2e8b36c-a002.json",
+        "sha256": "bb9281a81b325784a567709096147440a7db2941dde6d2ca6738dc04c199b7a4"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-12df52a296c18457",
+      "feedbackId": "feedback-13eeaf1c40091bc5",
+      "attemptId": "job-ac50821e216fe188-a001",
+      "jobId": "job-ac50821e216fe188",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "equipment_scale"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-ac50821e216fe188/job-ac50821e216fe188-a001/prepared.png",
+        "sha256": "897b70efa9b42acd23a9f58bc8a6196e5829f844e1c6ff1a97aeb4457247c151"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-13eeaf1c40091bc5.json",
+        "sha256": "7379d73effea661fd2309d9ce1d3ed5fedc0eb7ac7fbd0ee114b4f7f0028aa31"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-ac50821e216fe188-a001.json",
+        "sha256": "58f47a10743baa7bbb11b3fff74ba3a3ecd981bb38365d5d495a9b98e8ae1bcd"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-9fddb07e47c7b76d",
+      "feedbackId": "feedback-14bef190721e09cd",
+      "attemptId": "job-8511c38401ba2a99-a006",
+      "jobId": "job-8511c38401ba2a99",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-8511c38401ba2a99/job-8511c38401ba2a99-a006/calibrated.png",
+        "sha256": "519f0eef8199625b3336dafafb2cecb45182ba0af5e384a5757b6f5dd94b9ea0"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-14bef190721e09cd.json",
+        "sha256": "5c0cda7d4b774550e06de0639888094946aa876d11019bccdf441243102c15e4"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-8511c38401ba2a99-a006.json",
+        "sha256": "91a20cb0e8f309a04e6e9eae04d9f99c831529d3564095424a8e162819315d5f"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-302de22e0b306c58",
+      "feedbackId": "feedback-1513ff53256de9ed",
+      "attemptId": "job-43b34a4685f71ca2-a006",
+      "jobId": "job-43b34a4685f71ca2",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "core_geometry",
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a006/calibrated.png",
+        "sha256": "d5f1be52561aa87099b61dbe638827928610fd586319fce662a941e17ceda6e0"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-1513ff53256de9ed.json",
+        "sha256": "d441dbf4d0880ce9ecacab98b6b589147c63b875fd008a59bc400f53d9970ec0"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-43b34a4685f71ca2-a006.json",
+        "sha256": "d143ae94609d8116e0daff26ada44b5af969b6f454baca6505e37195554c9de8"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-a6a3c16e255a9dd0",
+      "feedbackId": "feedback-15f1fae52b4039db",
+      "attemptId": "job-9c1b93e8a987e7b1-a005",
+      "jobId": "job-9c1b93e8a987e7b1",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [
+        "chroma",
+        "processing",
+        "topology"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-9c1b93e8a987e7b1/job-9c1b93e8a987e7b1-a005/calibrated.png",
+        "sha256": "e0aa70d3d93190e2013db0d03107ab558fcbc5f9496a45346e804551499ac7a3"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-15f1fae52b4039db.json",
+        "sha256": "8a4f090874356e363bb30a8bde198523759737f6167986e58c1a06fb222e480d"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-9c1b93e8a987e7b1-a005.json",
+        "sha256": "0e229641d3535943e38dc6ca9f4a6a84e36d72301989f0e38f57cd250ccb8886"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-be65b71ae1fdd68e",
+      "feedbackId": "feedback-1a7d88c90eb4b77d",
+      "attemptId": "job-43b34a4685f71ca2-a003",
+      "jobId": "job-43b34a4685f71ca2",
+      "authorType": "agent",
+      "reviewer": "agent",
+      "disposition": "technical_failed",
+      "categories": [
+        "core_geometry",
+        "topology"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a003/calibrated.png",
+        "sha256": "39a4128111b5e05a1e1f1be1b41676585e82446432fb51f0617a24f24d93ecb4"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-1a7d88c90eb4b77d.json",
+        "sha256": "8b8eed7e8893e70d07a1418e216d157d7f946466969a44b3ebbea60ce8e4ea4b"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-43b34a4685f71ca2-a003.json",
+        "sha256": "e38ed654022f5e37ebabf0e92a810957097ed44a078d976e2980fdc3939c9f94"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-a082e4e70e185c74",
+      "feedbackId": "feedback-1a9bbf2d9555a9f1",
+      "attemptId": "job-9c1b93e8a987e7b1-a007",
+      "jobId": "job-9c1b93e8a987e7b1",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [
+        "processing",
+        "topology"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-9c1b93e8a987e7b1/job-9c1b93e8a987e7b1-a007/calibrated.png",
+        "sha256": "f4ec3c378bd293f0c51000060c2d4253a4eacc29a509ade41c3d55dd9149644f"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-1a9bbf2d9555a9f1.json",
+        "sha256": "513d2b49e3e1ae8fc6d77429f369454a0e32cbaebd1b884fe7cd9e9e31bbf550"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-9c1b93e8a987e7b1-a007.json",
+        "sha256": "0455a2381688bb8d8bdbf341cbf2644413b67f7c859a3855af10bb41c46e5afa"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-a8ddec1b086f1c9d",
+      "feedbackId": "feedback-1adfcd712356d0c8",
+      "attemptId": "job-1ba4cbd209ecf161-a001",
+      "jobId": "job-1ba4cbd209ecf161",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [
+        "equipment_scale",
+        "processing",
+        "topology"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-1ba4cbd209ecf161/job-1ba4cbd209ecf161-a001/prepared.png",
+        "sha256": "d7e6e6a2dc3503d0c0c61965c4e688e4cfcd912b72d4ea8e13b1115080dbb550"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-1adfcd712356d0c8.json",
+        "sha256": "2338a4ebda872ae597795518c4113f21b20e81afeb2199fb19985d5a33c4ee9a"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-1ba4cbd209ecf161-a001.json",
+        "sha256": "200befde2d5be39b5af488c8a1ff200338a3ab83f073d4025a628811758f96f2"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-f304e1bb6302d98f",
+      "feedbackId": "feedback-1eb33304288f9204",
+      "attemptId": "job-93dbc1ce4eeb846d-a001",
+      "jobId": "job-93dbc1ce4eeb846d",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "occlusion",
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_guqin_back_carried_dr_v01.png",
+        "sha256": "34165d6fccb39857c3153221c2da3be6f24902ca8df8ebc70dfa0da3b3e21faa"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-1eb33304288f9204.json",
+        "sha256": "ab9d6634f88b91c927fb2937299461c351590e6b115cd81507c373c907ec2f9f"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-93dbc1ce4eeb846d-a001.json",
+        "sha256": "a415baeef47bcb112a0e7445f8244fa7ffb2b3ad4a1207ae596d20e1becc790d"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-b8c5c41e92ffdea5",
+      "feedbackId": "feedback-1edafd4d65bfd956",
+      "attemptId": "job-3094052b8342329b-a001",
+      "jobId": "job-3094052b8342329b",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "equipment_state",
+        "occlusion"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-3094052b8342329b/job-3094052b8342329b-a001/prepared.png",
+        "sha256": "9430ab50fde95ef9bac02c26a5b03a6e8e4580be3032c5daa3dae0a21ec4642a"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-1edafd4d65bfd956.json",
+        "sha256": "fae1d83fafe9b7a83a2eb3a15164034854e205a033f2a946508c3f87b2196995"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-3094052b8342329b-a001.json",
+        "sha256": "7c4cdc96ce7104371cc8c134a3ea98b71f13533b39f10bd39ad5e93273660a4c"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-91a4eed17aa83b54",
+      "feedbackId": "feedback-2718d9c4b7a09162",
+      "attemptId": "job-348d71e797321e77-a002",
+      "jobId": "job-348d71e797321e77",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "selected",
+      "categories": [
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-348d71e797321e77/job-348d71e797321e77-a002/calibrated.png",
+        "sha256": "7759ee609ee9e66cb68511e5dd253287ebf3c3ce04608bc18a507145872776d3"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-2718d9c4b7a09162.json",
+        "sha256": "38601b0713299fa481e50c159b0d4df7e3fd9d221cd7435a4fb1bd8ad62e2cc0"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-348d71e797321e77-a002.json",
+        "sha256": "a1e18780cc7cc500180333cdb4217d329d73f6776d395cd5896818c6a69efcfb"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-5c0b09c29aa4fb2a",
+      "feedbackId": "feedback-286bede4021623ae",
+      "attemptId": "job-4cf6c491a251bcf1-a001",
+      "jobId": "job-4cf6c491a251bcf1",
+      "authorType": "agent",
+      "reviewer": "agent",
+      "disposition": "technical_failed",
+      "categories": [
+        "core_geometry",
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-4cf6c491a251bcf1/job-4cf6c491a251bcf1-a001/calibrated.png",
+        "sha256": "f4f6678037ff8050a94d3ffaa62f94f568dfca575f8d64faed0e4689bbe6562e"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-286bede4021623ae.json",
+        "sha256": "c40347eda9c966218fbb31db22f890f393b24d462e5c4e19f920b083e5100aa8"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-4cf6c491a251bcf1-a001.json",
+        "sha256": "14d10f9cf222194d48b3f2dcdacf6725b1473dfcf16dc13b5727cd967531edfa"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-22618f481c5b72d7",
+      "feedbackId": "feedback-28ddbdb118396f52",
+      "attemptId": "job-7603439437c554d0-a001",
+      "jobId": "job-7603439437c554d0",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "equipment_state",
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_sheathed_ul_projection_v01.png",
+        "sha256": "1990af1c1a97cd9d5c2bf9395e794b80c6de32187c916763eca6c238a4dfbf56"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-28ddbdb118396f52.json",
+        "sha256": "2d621438fa86db1f61fd7047db127e3b19b52763c198986abf8ae9144c11b55f"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-7603439437c554d0-a001.json",
+        "sha256": "1586660d5173c3abe5df309b4d0eeedab6f4c8d247ce1ea88153d3451c74d5a2"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-d35abfe5860b6805",
+      "feedbackId": "feedback-295267786b3d07a8",
+      "attemptId": "job-43b34a4685f71ca2-a004",
+      "jobId": "job-43b34a4685f71ca2",
+      "authorType": "agent",
+      "reviewer": "agent",
+      "disposition": "technical_failed",
+      "categories": [
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a004/calibrated.png",
+        "sha256": "4dd2c055a45bfe45dea2db62d0c6bf00398a4d975eb72b94aaf59f5e72ef3a9d"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-295267786b3d07a8.json",
+        "sha256": "05b7119b077ff46f0c151233e030f471bdb6accde842580e28b8f40399f22d52"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-43b34a4685f71ca2-a004.json",
+        "sha256": "b603098c300fa041fc0a5fce408b8cbed1741b908c8f522e167bd8d36ef40597"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-31ffae3d76b53ad1",
+      "feedbackId": "feedback-2a260f4caa1f9f47",
+      "attemptId": "job-f40816b1c2e8b36c-a005",
+      "jobId": "job-f40816b1c2e8b36c",
+      "reviewer": "cty41",
+      "disposition": "selected",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-f40816b1c2e8b36c/job-f40816b1c2e8b36c-a005/calibrated.png",
+        "sha256": "ef9fd7521afafc4f46ef8fd355fc90337b493e268de61eaebfcd8d2ea3e529f4"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-2a260f4caa1f9f47.json",
+        "sha256": "a33131eb65bffcde55f0b062a0da7d308128837998427175aabeb4eb6d3cd041"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-f40816b1c2e8b36c-a005.json",
+        "sha256": "c39b897e7f5393dd1be1c1506655f2837201feb132d37d7a939a70017eee3e7d"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-ad77934be9e334e5",
+      "feedbackId": "feedback-2ce2bbdf35d14dcc",
+      "attemptId": "job-69a7e239bb73eef5-a001",
+      "jobId": "job-69a7e239bb73eef5",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "core_geometry",
+        "equipment_state",
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-69a7e239bb73eef5/job-69a7e239bb73eef5-a001/prepared.png",
+        "sha256": "c95884c2a5bb5bfa2de50dba944f26d2bd1e4c864b41ff098c9a1bb7055ef5d9"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-2ce2bbdf35d14dcc.json",
+        "sha256": "4a23381f2a51992f2f4823f53921f064015d4a2fe02ae1611b0ae3959dc2aa44"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-69a7e239bb73eef5-a001.json",
+        "sha256": "7d54f8bf7642d768b55f72f43fcb4d1a2385ab337daeb482860bdc7b99f6dfd9"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-6a09679f89186562",
+      "feedbackId": "feedback-2e4ab19df173d6af",
+      "attemptId": "job-f40816b1c2e8b36c-a003",
+      "jobId": "job-f40816b1c2e8b36c",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-f40816b1c2e8b36c/job-f40816b1c2e8b36c-a003/calibrated.png",
+        "sha256": "337a3dbc3d3055c650619840f98efc390fa11d15b47f0201f5fa3e81323552f7"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-2e4ab19df173d6af.json",
+        "sha256": "823f458d9fca409feaf122ee51d38b82c7f6c1c5cfea1b68fa102f0afd784eff"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-f40816b1c2e8b36c-a003.json",
+        "sha256": "26b7eb75239d206a64610a2de0b1542b9eaf52fa1e16e61a3c2e6bfa70ee2e6f"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-224e5cbc46508ef5",
+      "feedbackId": "feedback-31643a22a8ed0faf",
+      "attemptId": "job-ab10eb2d176f2495-a001",
+      "jobId": "job-ab10eb2d176f2495",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "equipment_scale"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-ab10eb2d176f2495/job-ab10eb2d176f2495-a001/prepared.png",
+        "sha256": "62ad2974c80457b5ece44ad155422ab4cc7ab894f5f9095f916393781c8b9bf6"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-31643a22a8ed0faf.json",
+        "sha256": "ca7e5cca4eb1da0d9edcb46072098bb5ddf79ee45cd997cc0ead4ee92a62ee2c"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-ab10eb2d176f2495-a001.json",
+        "sha256": "f71e1c1919e96d9039b7cd3c19fa485808a419f7698d01c8faaf607e1a664a29"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-deb3398a1ef6c9fe",
+      "feedbackId": "feedback-368a7b6295602211",
+      "attemptId": "job-8511c38401ba2a99-a005",
+      "jobId": "job-8511c38401ba2a99",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-8511c38401ba2a99/job-8511c38401ba2a99-a005/calibrated.png",
+        "sha256": "07dfa1283594dee72efb9d28929ea011de04159ce2cf58e9edbf43f582896c2d"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-368a7b6295602211.json",
+        "sha256": "a0cedb41ac418ed55bfecc74e57d95b7a85384672362b034810bfc6e11fe8aa3"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-8511c38401ba2a99-a005.json",
+        "sha256": "d4a38eba956383e533fea6138095c74163da6a47e1e07c810118440cb2083d5c"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-921cafac6dc6fd8f",
+      "feedbackId": "feedback-37e6ffc7ed28670e",
+      "attemptId": "job-8511c38401ba2a99-a003",
+      "jobId": "job-8511c38401ba2a99",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-8511c38401ba2a99/job-8511c38401ba2a99-a003/calibrated.png",
+        "sha256": "f51b15d706d251ffc5e03e07aa42154cf4b19bb685a52cc5d276a9968d38462a"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-37e6ffc7ed28670e.json",
+        "sha256": "3ae79e90dd16355ac78ea2f47fe05822ed97f1f4beb116cf65faa6939ff4847a"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-8511c38401ba2a99-a003.json",
+        "sha256": "e345d3188e1ba2cd36ee24a89fb723e42dc50008160475877c8b53ddb2c7e997"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-ad69345fb010022c",
+      "feedbackId": "feedback-3889d29b10f4a80f",
+      "attemptId": "job-897833991fd2f552-a010",
+      "jobId": "job-897833991fd2f552",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-897833991fd2f552/job-897833991fd2f552-a010/prepared.png",
+        "sha256": "9cbed15b75152d998dfa257bbc3bf391ae4a21fc7d3cdfc915ec0e2f3d562d0a"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-3889d29b10f4a80f.json",
+        "sha256": "710a37aa897a72b1e30e210abe57343a3ce0468cc5744cf8a8b71c5cb84ef16e"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-897833991fd2f552-a010.json",
+        "sha256": "25f93cd2b912a72b6dc8ae33d45c7287b987af5eae92ccbded056b174df53dcb"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-5523fc4dc675183b",
+      "feedbackId": "feedback-38afe0a8bdd483ff",
+      "attemptId": "job-897833991fd2f552-a009",
+      "jobId": "job-897833991fd2f552",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-897833991fd2f552/job-897833991fd2f552-a009/prepared.png",
+        "sha256": "a31c4a064734ba688111a73cc95de13c8345db6722c95794338af5b758ba0053"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-38afe0a8bdd483ff.json",
+        "sha256": "f025b8faf927aebc0788b7b62ae2941f98e448b92000af18b47281139a79d4be"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-897833991fd2f552-a009.json",
+        "sha256": "9c7ce0d01e2d475f883a7f570c0dc29f264f97682ba7e8363789fdc6d17a4136"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-244eb4353c76ca6b",
+      "feedbackId": "feedback-38e0378ad7535fb0",
+      "attemptId": "job-50ee228ca9e56495-a003",
+      "jobId": "job-50ee228ca9e56495",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-50ee228ca9e56495/job-50ee228ca9e56495-a003/prepared.png",
+        "sha256": "e7c56a71054ab2b1d86af08a87ae4e435fbde5d576fe0cc1bc55f17c7b824913"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-38e0378ad7535fb0.json",
+        "sha256": "b8d3b7725283b827c8d85bd1cdffed3c54911093d869aef2bf934ba1931d87ca"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-50ee228ca9e56495-a003.json",
+        "sha256": "56b94c43b7a8a7f429381dac765c7118abf9658e445dee91917c8c3a9e69bd64"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-3eec6d02f30378b4",
+      "feedbackId": "feedback-392cc5495dced877",
+      "attemptId": "job-9c1b93e8a987e7b1-a001",
+      "jobId": "job-9c1b93e8a987e7b1",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "topology"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-9c1b93e8a987e7b1/job-9c1b93e8a987e7b1-a001/prepared.png",
+        "sha256": "044d7faf1cba8884b566d3ed4666fc0a3f3b088e75e288cf4552d23dc0f7697d"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-392cc5495dced877.json",
+        "sha256": "e4e3a5af6ec31b1f9c2938061b7c0cc553e5fed3da9c24857d24a8ac07761b2f"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-9c1b93e8a987e7b1-a001.json",
+        "sha256": "18dbbe7d1c93c050dd7ce089e9abedb107131085f83ac2e2c73cae0d3f33fc9e"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-e2a25c6b43e32634",
+      "feedbackId": "feedback-3aa7b1421956b11a",
+      "attemptId": "job-612e5cad5e501d50-a002",
+      "jobId": "job-612e5cad5e501d50",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "identity"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_wine_flask_tang_v02_flat.png",
+        "sha256": "d0eeaf815fe5697a664fb65336c567b8d67a5fcc9ff4674884e60f955bd93d07"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-3aa7b1421956b11a.json",
+        "sha256": "22d7a1b909c778d37abb97e8271ff06ad35fa47d34a130bf2d7817753f7ed4af"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-612e5cad5e501d50-a002.json",
+        "sha256": "5a6eba44681cd2a3d9b704f944deb94612eb18e0f23bc2c2577e7ad7fe134e49"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-f3c50af09b827f8a",
+      "feedbackId": "feedback-3dd7fd32300f0118",
+      "attemptId": "job-f40816b1c2e8b36c-a004",
+      "jobId": "job-f40816b1c2e8b36c",
+      "reviewer": "cty41",
+      "disposition": "exhausted",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-f40816b1c2e8b36c/job-f40816b1c2e8b36c-a004/calibrated.png",
+        "sha256": "ef9fd7521afafc4f46ef8fd355fc90337b493e268de61eaebfcd8d2ea3e529f4"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-3dd7fd32300f0118.json",
+        "sha256": "ba1eac115262ea01360cbd1f00384de0f96908d16d843bc6ffcaa702818ef9c3"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-f40816b1c2e8b36c-a004.json",
+        "sha256": "85eaf12982a228c821067d540271d53c0d1039df9d154bdfc29e2738e2f84d2d"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-57afe8cabe4186cf",
+      "feedbackId": "feedback-4012bb07f0a82864",
+      "attemptId": "job-ffaa562f76730ec3-a002",
+      "jobId": "job-ffaa562f76730ec3",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "core_geometry",
+        "equipment_state",
+        "occlusion"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-ffaa562f76730ec3/job-ffaa562f76730ec3-a002/prepared.png",
+        "sha256": "57eb6c16ca72d386a0bd700b51edcad2cfd15a08f9360ee8b8a5f3d0eae8874b"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-4012bb07f0a82864.json",
+        "sha256": "53e6d6e20ccc02dec1ab8d490345e7c1769df25afa7e5a4bb08190768ed47917"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-ffaa562f76730ec3-a002.json",
+        "sha256": "7a2cf37877dfdfe44864ca300aa99e89e63a36b4a3af700a35128af50a6770aa"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-03640ced9b30879f",
+      "feedbackId": "feedback-4064356e963a4a9c",
+      "attemptId": "job-7a32a988b5b56657-a006",
+      "jobId": "job-7a32a988b5b56657",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "selected",
+      "categories": [
+        "core_geometry"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-7a32a988b5b56657/job-7a32a988b5b56657-a006/prepared.png",
+        "sha256": "e87562a8f3184d0f6a9ead468abf9d35b4a740a356ac79c8a6a054603fb7ffef"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-4064356e963a4a9c.json",
+        "sha256": "fc752b0fa74973a499cec3443634b15a33b394a7074bd15536a4a9bf9ee1b7e6"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-7a32a988b5b56657-a006.json",
+        "sha256": "82dc9d2d74d77ff589acdcd51dc77ce590e802c79a6bc7ae8fbedc00b0bb5e5b"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-a6c70e0d195c3d65",
+      "feedbackId": "feedback-418915e8e9400e7c",
+      "attemptId": "job-8511c38401ba2a99-a008",
+      "jobId": "job-8511c38401ba2a99",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-8511c38401ba2a99/job-8511c38401ba2a99-a008/prepared.png",
+        "sha256": "a0fee8512cf8578f57b8b3d3c5e2b74a1f68ac3afdcbefd15a87c82f5a85eaf5"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-418915e8e9400e7c.json",
+        "sha256": "1ed3d427c8c6065aae5ecf4ddc5e0d86bb159a6886f0477c66d31b57a964ec5c"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-8511c38401ba2a99-a008.json",
+        "sha256": "c1da957e9847b3e5012cc16c4a2af313429b8a3dd737d1d68a395d47a2849668"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-48aae146b3ed5d17",
+      "feedbackId": "feedback-4207e296b1f737ac",
+      "attemptId": "job-4b305eeeb547c4db-a001",
+      "jobId": "job-4b305eeeb547c4db",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-4b305eeeb547c4db/job-4b305eeeb547c4db-a001/prepared.png",
+        "sha256": "2d1a5f242971aba6b3b31c76e73e67c8e1591ad689ad3770395e35c84b010823"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-4207e296b1f737ac.json",
+        "sha256": "d08f66d21a62048830132722e2a54e46b08591832434dd9ba9c47d020ed97468"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-4b305eeeb547c4db-a001.json",
+        "sha256": "345663c8dece3e11cf5439aa1ee3093c29a03754a3e6365d6b15e3cfd20bde03"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-4f4ff1b1e4e72015",
+      "feedbackId": "feedback-4280a58992f3e29c",
+      "attemptId": "job-612e5cad5e501d50-a001",
+      "jobId": "job-612e5cad5e501d50",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_wine_flask_tang_v01.png",
+        "sha256": "f0f74ca1545a4bdb14b8d36ef60463931da97d03c83f9ceb9f31dc3cb7a7e397"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-4280a58992f3e29c.json",
+        "sha256": "61ff2fdcf18b0630d39cc058402fe12a06eda93f7705a346a8bcb30ecab0897f"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-612e5cad5e501d50-a001.json",
+        "sha256": "d3dabf5c5fc9eef69d48f8923fe8c9a1e3087c669e4f7259db5b6fbec9d01908"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-70ea1f9a1feeceb9",
+      "feedbackId": "feedback-42d105b7ba78d447",
+      "attemptId": "job-52353908c08e6df6-a003",
+      "jobId": "job-52353908c08e6df6",
+      "authorType": "agent",
+      "reviewer": "agent",
+      "disposition": "technical_failed",
+      "categories": [
+        "chroma",
+        "core_geometry",
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-52353908c08e6df6/job-52353908c08e6df6-a003/prepared.png",
+        "sha256": "c2be8e4b67217f47cb07ebf1aaddbb3e9589f029b0768c5c8e8247f07c7c35ea"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-42d105b7ba78d447.json",
+        "sha256": "205051cab13fa84c5055e5142882cf14947b4801bcaea1be22f2dcd36bc17e1e"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-52353908c08e6df6-a003.json",
+        "sha256": "d3b183bf0b6fa9ec461580df378d73611b3ebbefc69c36c79e0c94c0881dbcc7"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-4ada6da05ea76a8e",
+      "feedbackId": "feedback-44f11dc825b895a2",
+      "attemptId": "job-6d22f48938cd05e4-a007",
+      "jobId": "job-6d22f48938cd05e4",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "selected",
+      "categories": [
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-6d22f48938cd05e4/job-6d22f48938cd05e4-a007/calibrated.png",
+        "sha256": "a62bef402f80a4eb30957e2f6884ac0f3c29db7fd51e1faa375a83abc8c43f5a"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-44f11dc825b895a2.json",
+        "sha256": "650d28de3fd6f388c80ff0282f19723196db1ea5c48e4b1c7ec8a190d2e30465"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-6d22f48938cd05e4-a007.json",
+        "sha256": "e0b1b08c9ecc25d8fa6318b14f23ff0cddd8b71f43b7bba44cdd9b75775efc45"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-bf3756139f77c42e",
+      "feedbackId": "feedback-4d59e22a2c8ca5f5",
+      "attemptId": "job-1b243a2bdfee22b1-a001",
+      "jobId": "job-1b243a2bdfee22b1",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-1b243a2bdfee22b1/job-1b243a2bdfee22b1-a001/prepared.png",
+        "sha256": "7275e221e62047a24e3ca9b92b30034fc461ba14a07fd3381e8674619fc447e2"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-4d59e22a2c8ca5f5.json",
+        "sha256": "1e12d62829c9170379749edf9dc98100761870a5c3a3b900576eff692a5cc257"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-1b243a2bdfee22b1-a001.json",
+        "sha256": "6725276238973c8434d3be64282454b46b044bc07e263a76f4220fc217fc679f"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-7f47761cca1eb353",
+      "feedbackId": "feedback-50d350cecda9d453",
+      "attemptId": "job-897833991fd2f552-a014",
+      "jobId": "job-897833991fd2f552",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-897833991fd2f552/job-897833991fd2f552-a014/prepared.png",
+        "sha256": "9cbed15b75152d998dfa257bbc3bf391ae4a21fc7d3cdfc915ec0e2f3d562d0a"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-50d350cecda9d453.json",
+        "sha256": "7577e0cea447a96840d67483fcd383fdecf59dba521d82f1c2c40cde3d5ac1c2"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-897833991fd2f552-a014.json",
+        "sha256": "f6bdb0972a47060b8dd2d8b90e3d7673d37e804ab0a579da7f9586f61248c780"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-6806708fca5bfe81",
+      "feedbackId": "feedback-5103317034203023",
+      "attemptId": "job-b62cc7f9ef78fcf0-a002",
+      "jobId": "job-b62cc7f9ef78fcf0",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "occlusion",
+        "topology"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-b62cc7f9ef78fcf0/job-b62cc7f9ef78fcf0-a002/prepared.png",
+        "sha256": "854e7d3711f3a23102925dced3684794e157058536a5fa66f70e3d4551a3866f"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-5103317034203023.json",
+        "sha256": "55449e564d9d6a120d8c50ba60afceb30d2b5d4937376b91513bb0091047ba96"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-b62cc7f9ef78fcf0-a002.json",
+        "sha256": "2be9025d2c548ffd1a3e31c35c346341141ebaa2e4bee5e2b788b667aea59315"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-144285b4d30a7cdc",
+      "feedbackId": "feedback-5129acda12c45d1a",
+      "attemptId": "job-8511c38401ba2a99-a004",
+      "jobId": "job-8511c38401ba2a99",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-8511c38401ba2a99/job-8511c38401ba2a99-a004/calibrated.png",
+        "sha256": "04d63b982a28ffd89970e8f67762319cfe616da9779fa00a60b759bf52c735b6"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-5129acda12c45d1a.json",
+        "sha256": "ef5d17ce619c96addebed76888e779b4d1d074ba181e88ae82b740799a794de0"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-8511c38401ba2a99-a004.json",
+        "sha256": "e3b098b49425223d3f5d0fbdf5645d7732e6d930cc62e9b7d53338411d84a082"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-103e914a3a35715a",
+      "feedbackId": "feedback-5248f4bba161515b",
+      "attemptId": "job-7a32a988b5b56657-a003",
+      "jobId": "job-7a32a988b5b56657",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-7a32a988b5b56657/job-7a32a988b5b56657-a003/prepared.png",
+        "sha256": "e87562a8f3184d0f6a9ead468abf9d35b4a740a356ac79c8a6a054603fb7ffef"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-5248f4bba161515b.json",
+        "sha256": "32b4de4fce159aec2951362180d61df48ee9e9eb316058068f4dd8e1df412df7"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-7a32a988b5b56657-a003.json",
+        "sha256": "91f5c356b121984966afdfa3f3b83afaddee876c31a543987dc268f441f5cb9c"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-a57dfb96af43f712",
+      "feedbackId": "feedback-5426a50be41119c1",
+      "attemptId": "job-38caaa8120d4a303-a004",
+      "jobId": "job-38caaa8120d4a303",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-38caaa8120d4a303/job-38caaa8120d4a303-a004/calibrated.png",
+        "sha256": "7907f127a10b02fd0c72849be39a42383999b848bd041b6741fee2bda0626c17"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-5426a50be41119c1.json",
+        "sha256": "4594a4f007ed28a5f2ef0252023f379b7d98dfddb9d1ba1801ec8f2e4dc94a7a"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-38caaa8120d4a303-a004.json",
+        "sha256": "73b22adb247c6f7891e68366841d1a124ab7fc02392a13500baf38f66dfb73f9"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-0a9e19a0dccb7475",
+      "feedbackId": "feedback-5603e12f789e0b3d",
+      "attemptId": "job-e2f0b006eb756a24-a001",
+      "jobId": "job-e2f0b006eb756a24",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "core_geometry"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_guqin_travel_v02.png",
+        "sha256": "6333b766b9d72915780f62f6af1dbc82a40ae40052d2431f9ad8318c92d1c4f5"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-5603e12f789e0b3d.json",
+        "sha256": "e90c11e80f842a276f0c03ac2fff3b2158b098b6f739b1eebf0d75830ecc51ca"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-e2f0b006eb756a24-a001.json",
+        "sha256": "cc1b995db53065f874de26aedece16a43be0cbd7eef2780a49aa46a5a4659a8f"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-12bb2636ae4cb8f5",
+      "feedbackId": "feedback-569de0fb76efbc7a",
+      "attemptId": "job-c92184f48437bd89-a002",
+      "jobId": "job-c92184f48437bd89",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "selected",
+      "categories": [
+        "core_geometry",
+        "identity"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-c92184f48437bd89/job-c92184f48437bd89-a002/prepared.png",
+        "sha256": "eaf1815fb7e791410d5ef328cde02227e192e953e88581544fecc05d78fa8a21"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-569de0fb76efbc7a.json",
+        "sha256": "bdff45cfbc640f6344c807d7d0293c7da1415900c853342b2c75768847b55cb3"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-c92184f48437bd89-a002.json",
+        "sha256": "0ec3ef57d2ddc1842a2ad023cfe5aaa179fca133a13e84a61c27f1592b488c18"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-c5ad0e74dce0eb9a",
+      "feedbackId": "feedback-5846dcc9d91f3006",
+      "attemptId": "job-38caaa8120d4a303-a002",
+      "jobId": "job-38caaa8120d4a303",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-38caaa8120d4a303/job-38caaa8120d4a303-a002/prepared.png",
+        "sha256": "793a0b4a6863f1822f5b6e80bcecbbd777daf4689e372ae96815955eeb58c45a"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-5846dcc9d91f3006.json",
+        "sha256": "0b90b7f9685db136244c1061f18fb992b224bd6460db9c6798abc14637d69e1e"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-38caaa8120d4a303-a002.json",
+        "sha256": "f9709bfc014fa3cea964bb13920bca79db1dc3b74e8c4578b072e85625712f8a"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-d76883d0c2b60165",
+      "feedbackId": "feedback-5901559152d5f018",
+      "attemptId": "job-897833991fd2f552-a002",
+      "jobId": "job-897833991fd2f552",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "gaze",
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-897833991fd2f552/job-897833991fd2f552-a002/prepared.png",
+        "sha256": "c1d6e21c9fd5618e20f6e5dcafc508ee65cfeb3f8fa71498297982a1de25d7d5"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-5901559152d5f018.json",
+        "sha256": "585e21414fe738568f5e7e4aea8d9223c5078733ab16af8064af9525d21d9c75"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-897833991fd2f552-a002.json",
+        "sha256": "fc05ae94a84d04c25be3d743c6ee3566ac81fd00d6f71721a3deec7fa25e26fb"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-3c875191a69d6d1b",
+      "feedbackId": "feedback-5ad5484e31d83990",
+      "attemptId": "job-06be9bd09be64664-a001",
+      "jobId": "job-06be9bd09be64664",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_wine_gourd_v01.png",
+        "sha256": "063de26db67cbf4f11118b115462d8406f3fb689ef1b372ef40603b4224fe37c"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-5ad5484e31d83990.json",
+        "sha256": "6a3b83d2fedd0240151c66df1329cb89e9d5b0db79d91983688bdd86e603311d"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-06be9bd09be64664-a001.json",
+        "sha256": "4b17867a13651c4b6b4b8e6bd81979f814aae285c6e1af5671ac0da847f58180"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-a352cc3186a4834a",
+      "feedbackId": "feedback-5ad81bb811a0d08b",
+      "attemptId": "job-136c73125d89e5de-a001",
+      "jobId": "job-136c73125d89e5de",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-136c73125d89e5de/job-136c73125d89e5de-a001/calibrated.png",
+        "sha256": "31eec5adc6403820daa110223e05b4df4767e383ebb46e186b63e3cde251322c"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-5ad81bb811a0d08b.json",
+        "sha256": "c2dae5c7eff0205fc855e712b7a95e6960c9881b02d9c4c228ae112e5e25dd56"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-136c73125d89e5de-a001.json",
+        "sha256": "88108b3b192115c7117e6ba1aa214415fc0e2fefe87010392c25528db9954463"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-e7838fcb36d75d60",
+      "feedbackId": "feedback-5ba6a5f6e482300c",
+      "attemptId": "job-1b243a2bdfee22b1-a002",
+      "jobId": "job-1b243a2bdfee22b1",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-1b243a2bdfee22b1/job-1b243a2bdfee22b1-a002/prepared.png",
+        "sha256": "3e54fdbd850cbdd31cc1bc0bb17b9576d80c0f01777e4e4dd94a58007752807b"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-5ba6a5f6e482300c.json",
+        "sha256": "2cbf11d1b42da67d9c1617214e0f584df3abb023991ee54982827be2bfb76301"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-1b243a2bdfee22b1-a002.json",
+        "sha256": "6bf768e88e2803cad942615046e22b978bd6e8564c116163c0bfaec7603483c8"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-72a14d367e7f4c67",
+      "feedbackId": "feedback-5baae321e1d7e6b7",
+      "attemptId": "job-d8c37ffa3a568007-a002",
+      "jobId": "job-d8c37ffa3a568007",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-d8c37ffa3a568007/job-d8c37ffa3a568007-a002/prepared.png",
+        "sha256": "871a683e2a7ae2601f65de93902cc3047e5ef8691661d8492c7d716437fb5dbd"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-5baae321e1d7e6b7.json",
+        "sha256": "5a770eb38a5cd3d1790d9bf34cd9d0ea59ef4fe82de580f53ec453ca67f18ab5"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-d8c37ffa3a568007-a002.json",
+        "sha256": "f2a300901ce274959a634c1e872ed71d59adce187f5dd72738c4b7f8b41d5dc4"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-73a0cf805b348db7",
+      "feedbackId": "feedback-5ceceff5e8296d9a",
+      "attemptId": "job-392eb89806af5b42-a001",
+      "jobId": "job-392eb89806af5b42",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "processing",
+        "topology"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-392eb89806af5b42/job-392eb89806af5b42-a001/prepared.png",
+        "sha256": "940606701f0cdf56a0ccd41db3486849197f699c4cab0483fc52889fea203456"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-5ceceff5e8296d9a.json",
+        "sha256": "0cfaec5d31d0d9d572c039897fc5c5f81a4e63dbf886d37aa6f01fa477331d37"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-392eb89806af5b42-a001.json",
+        "sha256": "fd1aee75d6ef6b42fda5573b413fa050106a4082fd33e01088d78cd5f86d1256"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-441af402452f85da",
+      "feedbackId": "feedback-5e3964fa3cf2be40",
+      "attemptId": "job-823050db4231b9ae-a001",
+      "jobId": "job-823050db4231b9ae",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_wine_wineskin_v01.png",
+        "sha256": "940f604b9841c9d0b1cbcdc011c6869d6c7e9f6e70739074d706df3464ac884b"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-5e3964fa3cf2be40.json",
+        "sha256": "ba61c785adae609404c761e4ba6d812d574b9fe5955e16d9ee4be163fa3090eb"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-823050db4231b9ae-a001.json",
+        "sha256": "2546b15cdea908ba842bbfef3f7dde3b99e8b9afc3b439526831f2260dd00803"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-74412547eeb903f1",
+      "feedbackId": "feedback-5f3e99c226ef5c06",
+      "attemptId": "job-d94ae6b36ac49852-a001",
+      "jobId": "job-d94ae6b36ac49852",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [
+        "core_geometry",
+        "equipment_state"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-d94ae6b36ac49852/job-d94ae6b36ac49852-a001/prepared.png",
+        "sha256": "2b01b6149ff290b015d90ce3d48e43d75b9f906dcb969de115f2bd9c7d9d0664"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-5f3e99c226ef5c06.json",
+        "sha256": "e1557c202394d7371070c754feb6ad00e8166b8f38d5eb297051e2664da434c1"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-d94ae6b36ac49852-a001.json",
+        "sha256": "8e71521e7a8217c7f678cfacd658f180f2050e23a40d5eaa02f01d9555e40876"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-06a13fc4539664a7",
+      "feedbackId": "feedback-5fa0c0a0c053293e",
+      "attemptId": "job-d5e63cb8798a9488-a002",
+      "jobId": "job-d5e63cb8798a9488",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-d5e63cb8798a9488/job-d5e63cb8798a9488-a002/prepared.png",
+        "sha256": "ed22534ed915d38c82c34e3c7be43f72aeab56e1d1cd3e0f0b7622b9ac2d1df9"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-5fa0c0a0c053293e.json",
+        "sha256": "52edf5aa4a970985ba8057d4b541660e5f43a07b923c222babe3641e699b30e5"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-d5e63cb8798a9488-a002.json",
+        "sha256": "cf31e7efd46530b0d1982325964c7adde561606b5896f63360cbfaaed1c14c25"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-d24a020a3c074a20",
+      "feedbackId": "feedback-60c0bc03f631a194",
+      "attemptId": "job-b62cc7f9ef78fcf0-a001",
+      "jobId": "job-b62cc7f9ef78fcf0",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "core_geometry",
+        "occlusion",
+        "pose_axis",
+        "topology"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-b62cc7f9ef78fcf0/job-b62cc7f9ef78fcf0-a001/prepared.png",
+        "sha256": "7f01849529a3c10e7c9e67bf707b852e0b7ccf1a721720f3df294026647858aa"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-60c0bc03f631a194.json",
+        "sha256": "bea2e085202b9d53976f19ce17421038b073286cb0328478dcbc5e4166ba15ed"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-b62cc7f9ef78fcf0-a001.json",
+        "sha256": "f429861b28544108e7c391d93044aa51da1aa6c04ce546d3e343efa10e908eb0"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-dea9b19f13e12636",
+      "feedbackId": "feedback-62aaae497a7dc2da",
+      "attemptId": "job-24e3deddf28b48bd-a001",
+      "jobId": "job-24e3deddf28b48bd",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "identity"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-24e3deddf28b48bd/job-24e3deddf28b48bd-a001/prepared.png",
+        "sha256": "33efd00b582dfda3e139d3672f820e0acb3e5a47bda6f88fe7f3c330aeb719df"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-62aaae497a7dc2da.json",
+        "sha256": "53794a4ae9dd4a8bc8bd1503d709c5656f3d6a6b9a9f4229e811908e78276a8c"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-24e3deddf28b48bd-a001.json",
+        "sha256": "833779437d0d567277012a58d84517d0c34f07a86f28121e15dcf71f411c39fc"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-740c218f3d9b240a",
+      "feedbackId": "feedback-65487ce364a66acb",
+      "attemptId": "job-4cf6c491a251bcf1-a002",
+      "jobId": "job-4cf6c491a251bcf1",
+      "authorType": "agent",
+      "reviewer": "agent",
+      "disposition": "technical_failed",
+      "categories": [
+        "core_geometry",
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-4cf6c491a251bcf1/job-4cf6c491a251bcf1-a002/calibrated.png",
+        "sha256": "99a764f746d3dac006022a727b0c17dffa84c3b9aee7dea0e6fcfcae67fdc281"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-65487ce364a66acb.json",
+        "sha256": "04f835a35a7430b4bbb049c2736b77d4ecc48489b3f31799b44111f12bdc1a03"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-4cf6c491a251bcf1-a002.json",
+        "sha256": "eef86a997fd319792a6b5ecc11d8b9e6d27bdb1dcf27bcb0765400630d4409e1"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-69468a445f07ff83",
+      "feedbackId": "feedback-657e9c0ee7a46948",
+      "attemptId": "job-a3130635f06ad42d-a002",
+      "jobId": "job-a3130635f06ad42d",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-a3130635f06ad42d/job-a3130635f06ad42d-a002/prepared.png",
+        "sha256": "7c55297aa2e802b08ef4d2c447820e448dc0c0fb5de602cd96014d476fd0f19f"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-657e9c0ee7a46948.json",
+        "sha256": "1245abba76fd48cf1f3920787c8e034159988627b3045add799954706190fafa"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-a3130635f06ad42d-a002.json",
+        "sha256": "68261fd7a885fde808665429c7abaacfc233f850fbd1ba3d3be3e80505c8539d"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-9e37e87a788e30e4",
+      "feedbackId": "feedback-697ae6f4903d5400",
+      "attemptId": "job-43b34a4685f71ca2-a001",
+      "jobId": "job-43b34a4685f71ca2",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "identity",
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a001/calibrated.png",
+        "sha256": "8214283a5efde35c07835e581192c1777f8ac54d7ac56c54fdd365da83b934e2"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-697ae6f4903d5400.json",
+        "sha256": "dd5231a54300a24b3ddfe9b649c15669033d0430d25683bf67e810050cba04b9"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-43b34a4685f71ca2-a001.json",
+        "sha256": "c2c78dc257559578fd6b4f3c2982bc6264a6b54b3fe4cd73d1f77607ff3fa25c"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-bde33da985710e87",
+      "feedbackId": "feedback-69af101ee49efb33",
+      "attemptId": "job-fcd2010d14e8bee6-a004",
+      "jobId": "job-fcd2010d14e8bee6",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-fcd2010d14e8bee6/job-fcd2010d14e8bee6-a004/calibrated.png",
+        "sha256": "453831b1f5b678c2641707ee3600f5a5d427cdb9cfdf492c19b4c0dc94a6c746"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-69af101ee49efb33.json",
+        "sha256": "ee3eef5820b0b8d56c6c182b67798174af23f8b26dd2195c3000bafc4201bd4a"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-fcd2010d14e8bee6-a004.json",
+        "sha256": "f2a17ffbd55517aaf78570928b17348b74d8c6c78a83f6b51a8a37c0cbaa2a25"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-7f949647095deafe",
+      "feedbackId": "feedback-6a3aa1399829caf4",
+      "attemptId": "job-9c1b93e8a987e7b1-a006",
+      "jobId": "job-9c1b93e8a987e7b1",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [
+        "processing",
+        "topology"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-9c1b93e8a987e7b1/job-9c1b93e8a987e7b1-a006/calibrated.png",
+        "sha256": "f4ec3c378bd293f0c51000060c2d4253a4eacc29a509ade41c3d55dd9149644f"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-6a3aa1399829caf4.json",
+        "sha256": "c23eeaf60f20598ae6cca2536958639745dc7567c26b86d60428b147c72baa2a"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-9c1b93e8a987e7b1-a006.json",
+        "sha256": "ebf8134a7f03eee9f4e75b9ebccf484edb3a6d51b3c293deef8b9bc53119c3d0"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-4209a715f09c9297",
+      "feedbackId": "feedback-6a69b38785a0ef0a",
+      "attemptId": "job-6270c6a0b9b0ba3c-a001",
+      "jobId": "job-6270c6a0b9b0ba3c",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "backup",
+      "categories": [
+        "identity",
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-6270c6a0b9b0ba3c/job-6270c6a0b9b0ba3c-a001/prepared.png",
+        "sha256": "1bcaa569958cfc11b855c204500daaafd9837cf4f9598e7c95b878c7a890c610"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-6a69b38785a0ef0a.json",
+        "sha256": "40d9e9f0f95ab46b97e6a16847ac8cd975b951505c79da4050bd58e6e842a17d"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-6270c6a0b9b0ba3c-a001.json",
+        "sha256": "62aa9e6dca16f3a77d863e975d04248ac07ed28e81ab7604287b341d8c3e96c7"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-7ed4efc27406dce4",
+      "feedbackId": "feedback-6fbac6b3747aa182",
+      "attemptId": "job-9c8a49b12ae5683e-a001",
+      "jobId": "job-9c8a49b12ae5683e",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [
+        "equipment_scale",
+        "equipment_state",
+        "identity"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-9c8a49b12ae5683e/job-9c8a49b12ae5683e-a001/prepared.png",
+        "sha256": "effcd97cb0dc39d91cbf396909ade7bf266086ef4c4301acd1a9e13df5452d1d"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-6fbac6b3747aa182.json",
+        "sha256": "2da0dc9cf722bcc7d1031f196a16d3319ab3e3c592b9d80b58cb23c29b14b27c"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-9c8a49b12ae5683e-a001.json",
+        "sha256": "646955662c4d92cd2d2d575cfd30a4799d490a014090ab29fa9f34a7bc2bf106"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-908ef8d73d94f0e4",
+      "feedbackId": "feedback-6fe405aa266f84cb",
+      "attemptId": "job-50ee228ca9e56495-a001",
+      "jobId": "job-50ee228ca9e56495",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [
+        "identity",
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-50ee228ca9e56495/job-50ee228ca9e56495-a001/prepared.png",
+        "sha256": "ac58cf2fda9d23127ff8fad9f8b33a5c67c35f1154490349e4e9c20a3bcf87a4"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-6fe405aa266f84cb.json",
+        "sha256": "a84a4489a08261bedbba7c910a51aabc72b2df6a1254b8a06636e404c0ba84f4"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-50ee228ca9e56495-a001.json",
+        "sha256": "d9a58599e38d410cafd389fb405ed711e5a12005fb8635ed2b425816027bf715"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-7386ff595ef9e551",
+      "feedbackId": "feedback-729620f3d781230e",
+      "attemptId": "job-897833991fd2f552-a015",
+      "jobId": "job-897833991fd2f552",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-897833991fd2f552/job-897833991fd2f552-a015/prepared.png",
+        "sha256": "9cbed15b75152d998dfa257bbc3bf391ae4a21fc7d3cdfc915ec0e2f3d562d0a"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-729620f3d781230e.json",
+        "sha256": "c5b1d7ae1d1ec94566385028146658236bc4187c07194afaccd794832a946ab3"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-897833991fd2f552-a015.json",
+        "sha256": "751abfc15d5505eb249818db2a3f37b609da7ae9db5709bf999eb1e8641c20fa"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-b79f2f2a7dd4ac1d",
+      "feedbackId": "feedback-73c35d3f2319b88a",
+      "attemptId": "job-d3e64d0255927458-a001",
+      "jobId": "job-d3e64d0255927458",
+      "authorType": "agent",
+      "reviewer": "codex-agent",
+      "disposition": "technical_failed",
+      "categories": [
+        "pose_axis",
+        "processing",
+        "topology"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-d3e64d0255927458/job-d3e64d0255927458-a001/calibrated.png",
+        "sha256": "47a0b5061b68bd9e5a3da0b93f1b83ca9f4c7a86c10372219a2b5ac806c22808"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-73c35d3f2319b88a.json",
+        "sha256": "3771a9ce6911fbdb242995108ed59595cfb8317b0e0358a5a487ae5e282c1db7"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-d3e64d0255927458-a001.json",
+        "sha256": "141ac9a9114662fabe66b5c87773438d30504245260330d4872328b386090628"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-11e2bf3ce1126e9d",
+      "feedbackId": "feedback-74399dbcfc226c91",
+      "attemptId": "job-52353908c08e6df6-a002",
+      "jobId": "job-52353908c08e6df6",
+      "authorType": "agent",
+      "reviewer": "agent",
+      "disposition": "technical_failed",
+      "categories": [
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-52353908c08e6df6/job-52353908c08e6df6-a002/prepared.png",
+        "sha256": "3a45d4c937a6b7368b5e0f2db30218cea10b25a6860cde63286ca4033b4a1a7b"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-74399dbcfc226c91.json",
+        "sha256": "c5082a3bb810764c6d395b05566cb6095edbc7a266f0b9bfea14f684772946fa"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-52353908c08e6df6-a002.json",
+        "sha256": "027df7c648427b5e4ac6eda2ec97f72bd9cccb669284a91cf91b4a8a85780c1b"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-5f1dd8703f32b7b8",
+      "feedbackId": "feedback-748cb678ec3a7843",
+      "attemptId": "job-bcbd77a57ecbea0b-a001",
+      "jobId": "job-bcbd77a57ecbea0b",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "identity"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-bcbd77a57ecbea0b/job-bcbd77a57ecbea0b-a001/prepared.png",
+        "sha256": "3b6492fe7b935ff1df4c4d154abf1c32e866e1e47e9115f80b3c2bd2a9545edf"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-748cb678ec3a7843.json",
+        "sha256": "b4ea355f5ecc5a5fcb87672d1f202d9840e4714fd9f2787ca22541690751bb0a"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-bcbd77a57ecbea0b-a001.json",
+        "sha256": "2a227ae9b0368453edc9f2b900d14e261c454af9816dbb1f79e4a25581ac8e58"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-84bcba496600408e",
+      "feedbackId": "feedback-75786ee113f9f0bc",
+      "attemptId": "job-94179e71f9db3ed5-a001",
+      "jobId": "job-94179e71f9db3ed5",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [
+        "equipment_scale",
+        "equipment_state",
+        "identity"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-94179e71f9db3ed5/job-94179e71f9db3ed5-a001/prepared.png",
+        "sha256": "8889786cdec6134bdae14eaa24924890fc287914be4d4f6b6665f1a90b1de5e0"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-75786ee113f9f0bc.json",
+        "sha256": "58bb037c8f697d16d77855d3d037be9c0df0f7f27babb0285855319b65353013"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-94179e71f9db3ed5-a001.json",
+        "sha256": "c1e4026d89862b4914a19b4f6e9bfed7ee4b7a8d951324a4e8b374eb0192d818"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-42b716c200341c90",
+      "feedbackId": "feedback-7731890491bd247b",
+      "attemptId": "job-871408b81417ce24-a002",
+      "jobId": "job-871408b81417ce24",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-871408b81417ce24/job-871408b81417ce24-a002/calibrated.png",
+        "sha256": "33639ed90070330945bd75e03d091c424813bd5c6a59c11aeb236ec872599248"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-7731890491bd247b.json",
+        "sha256": "a309ffbe783a1f14cd684ae2194e019aa9790c5f6e7276ccf385ca6e415107c7"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-871408b81417ce24-a002.json",
+        "sha256": "c2cf9f28ed9f56703b3d4e096505a5c30481b18b59f902ef0cfd6b33cc739b8a"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-a5029bc5be52162c",
+      "feedbackId": "feedback-77931c5a25ce8ae9",
+      "attemptId": "job-168fd4b2f49ff6ca-a001",
+      "jobId": "job-168fd4b2f49ff6ca",
+      "reviewer": "cty41",
+      "disposition": "selected",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-168fd4b2f49ff6ca/job-168fd4b2f49ff6ca-a001/prepared.png",
+        "sha256": "21559ca7aedd3e146feb2b93c5a6633affc6ce544122628c960972a982b0b5e7"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-77931c5a25ce8ae9.json",
+        "sha256": "6cd45d0b9098300f0c5df0a2074b3505d125e43c18f8cf98c9f30845917c3a81"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-168fd4b2f49ff6ca-a001.json",
+        "sha256": "b704024198b122f9f7cf11f7b8bcf2ffedec6c4d1dc83f5ebe4b2beec4aa4579"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-4376323b29e77c87",
+      "feedbackId": "feedback-7ad36f3df82affc1",
+      "attemptId": "job-871408b81417ce24-a001",
+      "jobId": "job-871408b81417ce24",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-871408b81417ce24/job-871408b81417ce24-a001/prepared.png",
+        "sha256": "6fea99320acb27d47a46a8cff08bb4fe69e67cb9ed0c71717c28ff2ed892c9c0"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-7ad36f3df82affc1.json",
+        "sha256": "4f0437902b08506e32b94e87d6e9fbaa8c730e083db117d2f3cdce52b7d1a08c"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-871408b81417ce24-a001.json",
+        "sha256": "c423fa1239a3c3b6495976a72872be82e03efaf97c921eb0fec576adf7680aef"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-27ae3c56ed726a3b",
+      "feedbackId": "feedback-7b05263902dae901",
+      "attemptId": "job-8ea704ad390748f2-a001",
+      "jobId": "job-8ea704ad390748f2",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [
+        "equipment_scale",
+        "equipment_state",
+        "identity"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-8ea704ad390748f2/job-8ea704ad390748f2-a001/prepared.png",
+        "sha256": "73577c59116aa86b25575ee57bd644bcc6f9fcac682bb719f6f38515b4d46365"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-7b05263902dae901.json",
+        "sha256": "e1f70dfe863f2ff2710ee1c5546379d5b273fdb930808140c11bc6c1edfd142a"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-8ea704ad390748f2-a001.json",
+        "sha256": "1f8b336072bbe035ff8982344c422b044f102749da8be3449a163b5e700d8763"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-2de955b2bf678390",
+      "feedbackId": "feedback-7b0d779b70c890c1",
+      "attemptId": "job-9c1b93e8a987e7b1-a002",
+      "jobId": "job-9c1b93e8a987e7b1",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "topology"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-9c1b93e8a987e7b1/job-9c1b93e8a987e7b1-a002/prepared.png",
+        "sha256": "788441cb36999faba1f1d4636714f4db0a408a6fa5c20b2593c428cbe4768c67"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-7b0d779b70c890c1.json",
+        "sha256": "a3b614afdc32c8a043ccb666d123c3b9fcc17d1ebb2bc07732aac8962136c9f6"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-9c1b93e8a987e7b1-a002.json",
+        "sha256": "88cf352d67e224c9e4ce1934a4ed7aebdf77ae4111ee80580d4a793e24d1bf3e"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-aa7d6a4e4605f7f2",
+      "feedbackId": "feedback-7c229d49a917e6c4",
+      "attemptId": "job-c92184f48437bd89-a001",
+      "jobId": "job-c92184f48437bd89",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "core_geometry",
+        "identity"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-c92184f48437bd89/job-c92184f48437bd89-a001/prepared.png",
+        "sha256": "72e98f6e0980f6ed3b6e43b15ef603154fbabd7a22b88a60f090ddffe29eddf0"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-7c229d49a917e6c4.json",
+        "sha256": "2924a265121b2bb21f3af61b5b6909da2dfd08e3cd4cee25b95bd25e04a36230"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-c92184f48437bd89-a001.json",
+        "sha256": "de53a6568eaf4c1f0f64196ba5dca2ff2aab62986505227d93287f7f260ce00b"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-972451a94534134d",
+      "feedbackId": "feedback-7c9c88fffc102260",
+      "attemptId": "job-f40816b1c2e8b36c-a001",
+      "jobId": "job-f40816b1c2e8b36c",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-f40816b1c2e8b36c/job-f40816b1c2e8b36c-a001/calibrated.png",
+        "sha256": "16d71544cb76d4030eced32850203b50a20a47f03d633d402c3bba770197ea48"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-7c9c88fffc102260.json",
+        "sha256": "f2ce647d92bd1846a873b7d9ed9166f15c8302d5558003b274458b27fe8185c6"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-f40816b1c2e8b36c-a001.json",
+        "sha256": "7333e3e9866480f7d3bbb8fe6e641e7a2788b17242d5c727e0c509c5b8688e67"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-9f178e617ddc5679",
+      "feedbackId": "feedback-804938497483176c",
+      "attemptId": "job-55f7fcdd8b8fd484-a001",
+      "jobId": "job-55f7fcdd8b8fd484",
+      "reviewer": "cty41",
+      "disposition": "technical_failed",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-55f7fcdd8b8fd484/job-55f7fcdd8b8fd484-a001/prepared.png",
+        "sha256": "63235c886ae1d04d0459d94003168bc40afeac75f396054f1e9f971b9576f952"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-804938497483176c.json",
+        "sha256": "93d71994e374096470ba32a7f9707b32b627bdfd15a4ffb52f4c1a94cc10c18a"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-55f7fcdd8b8fd484-a001.json",
+        "sha256": "fe9cbc41f8057e29e4367bb11388cb3b811e79ff43f85c3eb9376cb2021ae3b1"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-061a474a9fe011ec",
+      "feedbackId": "feedback-832d9ca7ba411ce5",
+      "attemptId": "job-7a32a988b5b56657-a004",
+      "jobId": "job-7a32a988b5b56657",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-7a32a988b5b56657/job-7a32a988b5b56657-a004/prepared.png",
+        "sha256": "e87562a8f3184d0f6a9ead468abf9d35b4a740a356ac79c8a6a054603fb7ffef"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-832d9ca7ba411ce5.json",
+        "sha256": "78580ac09b47891618b0d3a927002617ef93f079a2eeb9f00a06651386156953"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-7a32a988b5b56657-a004.json",
+        "sha256": "8e83e5bb361ba472236de01752920500bdca991203871b49ac588491133a9ff4"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-9976e900f483711b",
+      "feedbackId": "feedback-83377588ef80f0db",
+      "attemptId": "job-9c1b93e8a987e7b1-a003",
+      "jobId": "job-9c1b93e8a987e7b1",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "topology"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-9c1b93e8a987e7b1/job-9c1b93e8a987e7b1-a003/prepared.png",
+        "sha256": "0d9884d42690c8080b3faf0839d5cdd760fa4d82b556382417c467b955daff5c"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-83377588ef80f0db.json",
+        "sha256": "11feee33c3c2e45def141245c819a62964731d329dbb7352380dec60c1cea286"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-9c1b93e8a987e7b1-a003.json",
+        "sha256": "d8341bf13063afa370fc53553347deb471116fcd77c184f2ca9dc336b173e04a"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-069a86dfd6ea68cb",
+      "feedbackId": "feedback-84137f6b0ef854ec",
+      "attemptId": "job-3d0573f3f442934f-a001",
+      "jobId": "job-3d0573f3f442934f",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-3d0573f3f442934f/job-3d0573f3f442934f-a001/calibrated.png",
+        "sha256": "4c819f3813e2627689fd1ec888622c1768ee186bcd44ca11187bd3a1d0efda3b"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-84137f6b0ef854ec.json",
+        "sha256": "8af798f67ef1d68c996702716c2e790517e3d979260e1a67707c0ecd355e5189"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-3d0573f3f442934f-a001.json",
+        "sha256": "5ac0f8977618a196c3649fb32b14b0831ba882309c152aa695d307624afffa43"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-d49863134a4e3d23",
+      "feedbackId": "feedback-894884190a5aacb1",
+      "attemptId": "job-bd7438c8b3d43bbb-a001",
+      "jobId": "job-bd7438c8b3d43bbb",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "backup",
+      "categories": [
+        "identity",
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-bd7438c8b3d43bbb/job-bd7438c8b3d43bbb-a001/prepared.png",
+        "sha256": "ff82f658119f224fe1ae9ac05eb3554e218f8d7997bbce08d4139968b53e85b1"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-894884190a5aacb1.json",
+        "sha256": "7e9e0c422d838212b273a43b8888d007949f655c530339e47e0fda9060ce3f76"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-bd7438c8b3d43bbb-a001.json",
+        "sha256": "d4c2a77b6336d67bd02329cb1b1d9616546379206a2e18a7f491be347c8ed59b"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-c5c5fa993b4cf2a6",
+      "feedbackId": "feedback-8d1b72d97ff016b4",
+      "attemptId": "job-d1d20f1acf426ee0-a001",
+      "jobId": "job-d1d20f1acf426ee0",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [
+        "identity",
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-d1d20f1acf426ee0/job-d1d20f1acf426ee0-a001/prepared.png",
+        "sha256": "9f1167115284aa5bca5da8e58c61ec62a4d008683bc85049ba652658058a66b3"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-8d1b72d97ff016b4.json",
+        "sha256": "b6fa763d79ff2d7bba4b34ccb9c4e19a2abc7b4ac6e6990c1f0949421bfc91b9"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-d1d20f1acf426ee0-a001.json",
+        "sha256": "bba366ed0011decb7a78b67603d40c64e7c2fdfc7a0f36c0fbf528e3bed8bf3b"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-29b53260783e4feb",
+      "feedbackId": "feedback-9260368e6d39a084",
+      "attemptId": "job-293b5e094110786d-a002",
+      "jobId": "job-293b5e094110786d",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "selected",
+      "categories": [
+        "equipment_state",
+        "identity",
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-293b5e094110786d/job-293b5e094110786d-a002/prepared.png",
+        "sha256": "f91bd46a434461edc3b4c6de90152dd84e28987b565cf0d599a92f9c29f017aa"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-9260368e6d39a084.json",
+        "sha256": "84f3780530f2b2a79ec68a945b0b484513f14c11e33f841307a3876dd419b057"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-293b5e094110786d-a002.json",
+        "sha256": "4bd462b96e1d6666b9889deeca6472a78189f773cc7723d22345a211d84b5122"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-18a5e1cd42464835",
+      "feedbackId": "feedback-92845063b9736e56",
+      "attemptId": "job-897833991fd2f552-a012",
+      "jobId": "job-897833991fd2f552",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-897833991fd2f552/job-897833991fd2f552-a012/prepared.png",
+        "sha256": "9cbed15b75152d998dfa257bbc3bf391ae4a21fc7d3cdfc915ec0e2f3d562d0a"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-92845063b9736e56.json",
+        "sha256": "c6a64deeacc8d9b90a13978a23613086f05af314c0baee0fdeced36e95907645"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-897833991fd2f552-a012.json",
+        "sha256": "15416172dc0bdeb4ff0484b0afe4db65d18583cf5da1e7c3644f445fb5235d50"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-80205064f339ee8b",
+      "feedbackId": "feedback-95b2508d3672ac17",
+      "attemptId": "job-96bbe2ae0fc73102-a001",
+      "jobId": "job-96bbe2ae0fc73102",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "selected",
+      "categories": [
+        "equipment_scale",
+        "occlusion",
+        "topology"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-96bbe2ae0fc73102/job-96bbe2ae0fc73102-a001/prepared.png",
+        "sha256": "d7e6e6a2dc3503d0c0c61965c4e688e4cfcd912b72d4ea8e13b1115080dbb550"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-95b2508d3672ac17.json",
+        "sha256": "ebcc65aa2da9a9b920fd9f20616e6cc453c293544b123af07fc87b430b7a5118"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-96bbe2ae0fc73102-a001.json",
+        "sha256": "b7b3d48ab801b59e2a828b1cd887412cc162d7db806de51ec20d1ee42fd69cc9"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-29b294270a74956d",
+      "feedbackId": "feedback-95d3627c695ce743",
+      "attemptId": "job-ed5f76ac4fb68184-a002",
+      "jobId": "job-ed5f76ac4fb68184",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "core_geometry",
+        "identity"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-ed5f76ac4fb68184/job-ed5f76ac4fb68184-a002/prepared.png",
+        "sha256": "a19046dd4b6a63a2ffb7ccbe7a6513121b27d0d29a120d03832d79247bc24195"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-95d3627c695ce743.json",
+        "sha256": "7b707ef56b9698c6fc680e9a4def964b43006334ba6361f2c02575adf339b76f"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-ed5f76ac4fb68184-a002.json",
+        "sha256": "39272091db8fc04e17eec43bc43d076b3090c2d08c8e0aff803c77303f832d4a"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-69604cce2ac5dd4c",
+      "feedbackId": "feedback-97bf6cbd8f5a76cf",
+      "attemptId": "job-52353908c08e6df6-a001",
+      "jobId": "job-52353908c08e6df6",
+      "authorType": "agent",
+      "reviewer": "agent",
+      "disposition": "technical_failed",
+      "categories": [
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-52353908c08e6df6/job-52353908c08e6df6-a001/prepared.png",
+        "sha256": "3a45d4c937a6b7368b5e0f2db30218cea10b25a6860cde63286ca4033b4a1a7b"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-97bf6cbd8f5a76cf.json",
+        "sha256": "1b43e1def387e9013ba05b98dc00eeddeaf65fca9873b4014468a15ab9e7b371"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-52353908c08e6df6-a001.json",
+        "sha256": "8de75671cf0c2c564c39df530be52363bec97c0ec3b5c8dd4ba9959eccd9c6e8"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-734c31001b68a7a6",
+      "feedbackId": "feedback-9918f5218185b487",
+      "attemptId": "job-43700d5eeac09fb6-a001",
+      "jobId": "job-43700d5eeac09fb6",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "core_geometry",
+        "identity"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_guqin_v01.png",
+        "sha256": "3da253f76ab53ba41df304cdd17a6130c99649ab3faa43eee38a5893e04a2a08"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-9918f5218185b487.json",
+        "sha256": "ce80d6225a6a8c0d58fd5298ddef0010ccf7492cd018fe3a459e8e4ca4910624"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-43700d5eeac09fb6-a001.json",
+        "sha256": "239c94751cf73413ea2b8a54fdb2fa12eacc6e1d3b88c63d57588903775b229d"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-d6e9209b91808054",
+      "feedbackId": "feedback-9d45a6546086faa9",
+      "attemptId": "job-ce5a38dfdcdcb04b-a001",
+      "jobId": "job-ce5a38dfdcdcb04b",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [
+        "chroma",
+        "equipment_scale",
+        "identity",
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-ce5a38dfdcdcb04b/job-ce5a38dfdcdcb04b-a001/prepared.png",
+        "sha256": "a043b8db3863a7f1c79896dcbd68e155f5a8752da42e08509b61694cf0684ed5"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-9d45a6546086faa9.json",
+        "sha256": "243323867fcf9d6cc43d2b2ebf681e9c91a68e48aa52d70840e74c70af9525f6"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-ce5a38dfdcdcb04b-a001.json",
+        "sha256": "62a543a46bc32b25f183559da0a0fc83284401d798b55c5eef99c9cb288d4f7b"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-cb7007da8897b9c8",
+      "feedbackId": "feedback-9e8669086c8b157c",
+      "attemptId": "job-d8c37ffa3a568007-a004",
+      "jobId": "job-d8c37ffa3a568007",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [
+        "core_geometry",
+        "topology"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-d8c37ffa3a568007/job-d8c37ffa3a568007-a004/calibrated.png",
+        "sha256": "08d853c9dccaab2abbde68101bd6c9a668a10cc98a6d5472a5d7ed9742518018"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-9e8669086c8b157c.json",
+        "sha256": "8b0fd92a8850afe1d44daf2f7475c42bef1d1d20c8bd6b1b0873bc0ac3be5cf3"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-d8c37ffa3a568007-a004.json",
+        "sha256": "fc5ae79d2075959de888831a10a5d3e48011c61fed9b6e8bc5eeb9cf299149d0"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-105878909d794cd0",
+      "feedbackId": "feedback-9f11bc62116e5c92",
+      "attemptId": "job-8d5c9871c64e9e4b-a001",
+      "jobId": "job-8d5c9871c64e9e4b",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [
+        "equipment_scale",
+        "identity",
+        "topology"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-8d5c9871c64e9e4b/job-8d5c9871c64e9e4b-a001/prepared.png",
+        "sha256": "47e2448c6bd4f40ec9bd0ef3d9ddb8ad9a4be13c461f66473e855fd49238a71b"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-9f11bc62116e5c92.json",
+        "sha256": "947e92212aa7d31a6cc3054bd59329b6b5a4c337d4c68d8dba5719941972bf17"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-8d5c9871c64e9e4b-a001.json",
+        "sha256": "d8a5241f211a6bd836a86483ce05098ac1d5eb5236a784682934aa4e4cb1a71c"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-64e7c9cafe28a0c7",
+      "feedbackId": "feedback-9f3a8705954fafca",
+      "attemptId": "job-897833991fd2f552-a008",
+      "jobId": "job-897833991fd2f552",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-897833991fd2f552/job-897833991fd2f552-a008/prepared.png",
+        "sha256": "4db5c6c08b58aca9d3382600c818d4cc6e7bef24719701a507a52a090b6a3ea7"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-9f3a8705954fafca.json",
+        "sha256": "717b23559e2389c5e2123e51629560a0b8bbc780ed10fd30f106a73d79e3948d"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-897833991fd2f552-a008.json",
+        "sha256": "ed90d746f830b6d3d4b40fd20edc465d0f672805261b6bb70e66aa8990657cc7"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-d7d83957e35b6f4f",
+      "feedbackId": "feedback-a0b31118da805412",
+      "attemptId": "job-e635163e7b36bbe4-a001",
+      "jobId": "job-e635163e7b36bbe4",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-e635163e7b36bbe4/job-e635163e7b36bbe4-a001/calibrated.png",
+        "sha256": "0e0b802014c81635bffd70b15a1b29877d8b2de26a3d0b7a85fcb3d1d7229133"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-a0b31118da805412.json",
+        "sha256": "8381bd5305874f40f766cef209eb3c97d8e4dd70e8518a6434a8ec6439e68cb6"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-e635163e7b36bbe4-a001.json",
+        "sha256": "7b02004d14bdbdaa9ed9c5a6c3355558a2c0a0301502d1bb6cc98af54a652da7"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-7eec6b9513e498c3",
+      "feedbackId": "feedback-a0e2de51188776f4",
+      "attemptId": "job-b00e513c68225856-a006",
+      "jobId": "job-b00e513c68225856",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "selected",
+      "categories": [
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-b00e513c68225856/job-b00e513c68225856-a006/calibrated.png",
+        "sha256": "b6998f498ac0b70fec797163d56b7f4d6f3c8df0e09f4302f7edec1173701245"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-a0e2de51188776f4.json",
+        "sha256": "8c2a1cfe2225d83caaa46b93e350414467ab1126fa28a6999f86aa52c262ec9e"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-b00e513c68225856-a006.json",
+        "sha256": "6c7745ae13bab1e2964c669ddbd1804eef6425a31c7ed4a5234a63333b47d68e"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-6fa9c2a2ab20a699",
+      "feedbackId": "feedback-a4979cb1d76fe540",
+      "attemptId": "job-897833991fd2f552-a006",
+      "jobId": "job-897833991fd2f552",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-897833991fd2f552/job-897833991fd2f552-a006/prepared.png",
+        "sha256": "4bd23986ac21e5978ffdb74a82f41f1aed6ccc75734f92e1e1d0a1c4d2547b5c"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-a4979cb1d76fe540.json",
+        "sha256": "73035a4066db9734c0160a692f994781fa4c085eeeeb81e903ee29cebb46abd5"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-897833991fd2f552-a006.json",
+        "sha256": "13fda28f956194f21f51f4f257421495274fc5a7efc6c2e01e85b55161f301e5"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-3356f1e4e4c98ad1",
+      "feedbackId": "feedback-a65295bdb1c341af",
+      "attemptId": "job-897833991fd2f552-a013",
+      "jobId": "job-897833991fd2f552",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-897833991fd2f552/job-897833991fd2f552-a013/prepared.png",
+        "sha256": "9cbed15b75152d998dfa257bbc3bf391ae4a21fc7d3cdfc915ec0e2f3d562d0a"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-a65295bdb1c341af.json",
+        "sha256": "aff7202d15d56655d070a94d1f79b92d41b68830febfa98431509a66e67543c0"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-897833991fd2f552-a013.json",
+        "sha256": "636b4e5852aa7d2c896b971cb28aa267836adbf79f1a5507e2efa12383c4c113"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-78dbbd4187c5f898",
+      "feedbackId": "feedback-a73e432bc5f03984",
+      "attemptId": "job-293b5e094110786d-a001",
+      "jobId": "job-293b5e094110786d",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [
+        "equipment_state",
+        "identity"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-293b5e094110786d/job-293b5e094110786d-a001/prepared.png",
+        "sha256": "e4b16e27b55972ef3b30bcd6a4d63285f1a03bd037518437ea9cb259a7e33b94"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-a73e432bc5f03984.json",
+        "sha256": "9d0ef70d1355ffbf4e77243d9f0c54e58795700e477b7068de0e9b52bf528d95"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-293b5e094110786d-a001.json",
+        "sha256": "06aa177f3a92fcfa8d925f961a93d4d0750e7df2c38575f52a93ac61edccc930"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-c0ce248dee68d8f4",
+      "feedbackId": "feedback-a7654a56c042913c",
+      "attemptId": "job-a3130635f06ad42d-a003",
+      "jobId": "job-a3130635f06ad42d",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-a3130635f06ad42d/job-a3130635f06ad42d-a003/prepared.png",
+        "sha256": "ad01502b682a273d65b2cb90334b7574289bfeb6d4d0b1676ddfc9f5e30354d2"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-a7654a56c042913c.json",
+        "sha256": "535dc0d68278e210cd8f0dd1c164b32897e875fec4bed77a9747ae0685e8ce89"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-a3130635f06ad42d-a003.json",
+        "sha256": "6885b71abc347d9d60094d11372313e1ea98dddb569ff43e5d490744bcfee4b8"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-71e2f3addbb59e1e",
+      "feedbackId": "feedback-a82d9ff2a13cdbf8",
+      "attemptId": "job-93dbc1ce4eeb846d-a002",
+      "jobId": "job-93dbc1ce4eeb846d",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "equipment_state",
+        "occlusion",
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_guqin_back_carried_dr_v02.png",
+        "sha256": "f87b0ccfd6d22bc50ed4c11e8c7a8f11bfe5a46b6f9f2bcddd05ef4a773dba5c"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-a82d9ff2a13cdbf8.json",
+        "sha256": "658e4ce630e3380a8d520b26bce3eb5c9ea9bee7a7b9ae30e5a3a56da705acaa"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-93dbc1ce4eeb846d-a002.json",
+        "sha256": "f9fc85d28a0db386420ac7225249d798b203a44456d0ae39e3495e033915b325"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-b0949ebe4fefbb58",
+      "feedbackId": "feedback-a853baa8b17a1a9c",
+      "attemptId": "job-cbb1950d8d0c175c-a001",
+      "jobId": "job-cbb1950d8d0c175c",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-cbb1950d8d0c175c/job-cbb1950d8d0c175c-a001/prepared.png",
+        "sha256": "97920d4d76a58fa9fe36184c75a21ff17e1c4cddf6cd204e52106430a2f3dd6f"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-a853baa8b17a1a9c.json",
+        "sha256": "c7a1f4b776abe84893aca5425173df75ff05b51e417ab91388ec59caeca627ea"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-cbb1950d8d0c175c-a001.json",
+        "sha256": "28c147aaa4b10906afa17d79178f2307829360170a3ad78722b8782cb0e8559a"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-40d47a634f2d6c09",
+      "feedbackId": "feedback-aa24728a6aff644e",
+      "attemptId": "job-43b34a4685f71ca2-a008",
+      "jobId": "job-43b34a4685f71ca2",
+      "authorType": "agent",
+      "reviewer": "agent",
+      "disposition": "technical_failed",
+      "categories": [
+        "chroma",
+        "core_geometry"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a008/calibrated.png",
+        "sha256": "17fe59933be94e79c1023d463943dae992c020acdbfa82469c9b32104cc2db3f"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-aa24728a6aff644e.json",
+        "sha256": "cf0b615c78601cb29f19e37ff75ed747e24da83d89e19c3ade531dbe1ec51b38"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-43b34a4685f71ca2-a008.json",
+        "sha256": "a24c5dae9e650190cae409504eed2119ca0852c98949076f82654b903e882e68"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-42fcadf9577a0918",
+      "feedbackId": "feedback-aba57b5407af90eb",
+      "attemptId": "job-43b34a4685f71ca2-a009",
+      "jobId": "job-43b34a4685f71ca2",
+      "authorType": "agent",
+      "reviewer": "agent",
+      "disposition": "technical_failed",
+      "categories": [
+        "core_geometry"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a009/calibrated.png",
+        "sha256": "17fe59933be94e79c1023d463943dae992c020acdbfa82469c9b32104cc2db3f"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-aba57b5407af90eb.json",
+        "sha256": "0c5ced4c0905df19be6ce465b24ed2e5e4642061d1cadcdc4d6cd2ef0a8f9a61"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-43b34a4685f71ca2-a009.json",
+        "sha256": "a8c749033386d90de41146bc9ed94b101c72758ca90d8bb26fceeface7dc291f"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-ee32359013fa3f97",
+      "feedbackId": "feedback-ad711362d204ea2f",
+      "attemptId": "job-f8c3ac316cfe7021-a001",
+      "jobId": "job-f8c3ac316cfe7021",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [
+        "equipment_state",
+        "identity"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-f8c3ac316cfe7021/job-f8c3ac316cfe7021-a001/prepared.png",
+        "sha256": "af642bb694bc1f984a2062d611363397e2f5c1f4cd097b13fa0ca35871401f84"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-ad711362d204ea2f.json",
+        "sha256": "e8bf76e0b21e2d793c01d8f2934addd5e5ac13f8fa88a6f5da347c62fa3ee31f"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-f8c3ac316cfe7021-a001.json",
+        "sha256": "bf6edf3ce8fc433c4b00c4a2582cf9104521a039f8745817c77851be10670f91"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-29f9575dca8e8508",
+      "feedbackId": "feedback-adcd19d451fc8655",
+      "attemptId": "job-9c1b93e8a987e7b1-a008",
+      "jobId": "job-9c1b93e8a987e7b1",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "selected",
+      "categories": [
+        "topology"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-9c1b93e8a987e7b1/job-9c1b93e8a987e7b1-a008/calibrated.png",
+        "sha256": "fe16c7f4cbc65ddb6f5522d1f7aa5d91b396e9ce55bf5f146b4f153f726e29b1"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-adcd19d451fc8655.json",
+        "sha256": "ec9cad4a86c80d4a4bd62e7b50c44b8cc39e156899d23f1d5c25e347c1f2cc5c"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-9c1b93e8a987e7b1-a008.json",
+        "sha256": "2f136095075fbf22dd561aa74e79cc1485dc37295f91bd811655c66b3c6dc884"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-ad224f470c91ca23",
+      "feedbackId": "feedback-ae59c279bbb9e960",
+      "attemptId": "job-7a32a988b5b56657-a001",
+      "jobId": "job-7a32a988b5b56657",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [
+        "identity",
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-7a32a988b5b56657/job-7a32a988b5b56657-a001/prepared.png",
+        "sha256": "b21b7b4c5e5a094ae296e3ef87b398d1e2b5324471579ab579408acc9d06470b"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-ae59c279bbb9e960.json",
+        "sha256": "7c4c91df2d0fb27786d3dffdb6faedf93a05569a808e7e153446cb4f05fb33a2"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-7a32a988b5b56657-a001.json",
+        "sha256": "3f13dff3829243c83725fb9b70bdba7ee43701f98ef3cd9b2068e82f9221e2c7"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-fb3cba1bfee3561a",
+      "feedbackId": "feedback-b0a86ad7881afdd5",
+      "attemptId": "job-06be9bd09be64664-a002",
+      "jobId": "job-06be9bd09be64664",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "backup",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_wine_gourd_v02_flat.png",
+        "sha256": "406a76267d7c4146a5c810a0e9c529b33e39088674059532dca098ce9ab9b13e"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-b0a86ad7881afdd5.json",
+        "sha256": "70f0579caf4d8f7565bcd0bd3e423200756049dc6f92da0c9d94fa5d15825ad4"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-06be9bd09be64664-a002.json",
+        "sha256": "9cd21af765a71763beba19e4ceeb1101c200e7b7958cdbb622a802cd25eada43"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-8d69911fced962a7",
+      "feedbackId": "feedback-b4178b4a469fe9a3",
+      "attemptId": "job-9c1b93e8a987e7b1-a004",
+      "jobId": "job-9c1b93e8a987e7b1",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "topology"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-9c1b93e8a987e7b1/job-9c1b93e8a987e7b1-a004/prepared.png",
+        "sha256": "8bb434c7ab4b294232b2e4e46cc35b8f4d292f406128031b2cf57852d7e25f8a"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-b4178b4a469fe9a3.json",
+        "sha256": "9acf60ac9cc91f2a5aa200e5bb665fe958435f7850068290f46f512bff85b209"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-9c1b93e8a987e7b1-a004.json",
+        "sha256": "8b1495c280533996a30e9314060bc15563acc7492e0b8a1616bc81a8a40abebb"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-540b12b4fb3c8716",
+      "feedbackId": "feedback-b5972b67feee10ea",
+      "attemptId": "job-7423a5fc8cd94098-a001",
+      "jobId": "job-7423a5fc8cd94098",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [
+        "equipment_scale",
+        "equipment_state",
+        "identity"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-7423a5fc8cd94098/job-7423a5fc8cd94098-a001/prepared.png",
+        "sha256": "df567c281ac1519f854ddde13c53ff1b3ad4fababd89ecffb981d29a933564dc"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-b5972b67feee10ea.json",
+        "sha256": "66a5076f41e789e01669fef585829a59f4e3cb105b6654a00e59b0583cd5425c"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-7423a5fc8cd94098-a001.json",
+        "sha256": "518e07cd9de7b58cab7ea6a9b2a280df9a0c8694e15856ce6903c8176de831ba"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-33647ad68075d176",
+      "feedbackId": "feedback-b5ccca5c48fa4894",
+      "attemptId": "job-ffaa562f76730ec3-a001",
+      "jobId": "job-ffaa562f76730ec3",
+      "authorType": "agent",
+      "reviewer": "agent",
+      "disposition": "retry",
+      "categories": [
+        "core_geometry",
+        "equipment_scale",
+        "occlusion",
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-ffaa562f76730ec3/job-ffaa562f76730ec3-a001/prepared.png",
+        "sha256": "02f2ff614ff8c9afb34d6e983a047adb1f358a7b33230b23698037cbaa534f67"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-b5ccca5c48fa4894.json",
+        "sha256": "bda484f485538c53c29a29fb344fda35752241a51c4ef05a43c20f9cedf76732"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-ffaa562f76730ec3-a001.json",
+        "sha256": "62ebbad138468f094a4a1c51e87805e8e8950199d9ab4405e618969878739214"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-6826b3b887e0838f",
+      "feedbackId": "feedback-b726c72d70d6916c",
+      "attemptId": "job-33b591a0de916181-a001",
+      "jobId": "job-33b591a0de916181",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [
+        "equipment_state",
+        "identity",
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-33b591a0de916181/job-33b591a0de916181-a001/prepared.png",
+        "sha256": "9b0ea16e8def2a555a9d97e80b64302fdbc15a7bc4a0b50f120bdeccd54d698d"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-b726c72d70d6916c.json",
+        "sha256": "b300bba2ecf5852890024a3f097814d7d638a89d20fa70f3039d9c38ed84e0fa"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-33b591a0de916181-a001.json",
+        "sha256": "ac9ddb0106fcbf92f893d9a52ffc0728b8a7d44daae991fac48e75b4458ee554"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-1f6f04113652a41f",
+      "feedbackId": "feedback-b865086790fe8925",
+      "attemptId": "job-c7efd19e371e1b8b-a001",
+      "jobId": "job-c7efd19e371e1b8b",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-c7efd19e371e1b8b/job-c7efd19e371e1b8b-a001/prepared.png",
+        "sha256": "9be06f91e0d75e0e75965321e34368a8edd083d02ccbc1f1ff794cee09aa159f"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-b865086790fe8925.json",
+        "sha256": "5af1e724b8164ac3b2bdf6f398a131ccf0860f184eb0f069f8377ad301988bfe"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-c7efd19e371e1b8b-a001.json",
+        "sha256": "05e817fe3eeb2990833f88af9a01d6eaa395fca0856222481f9af6aad7b5fff1"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-f1bc2d87d9d61a03",
+      "feedbackId": "feedback-b9b64204e2a60696",
+      "attemptId": "job-2fc0deb3ce46c873-a001",
+      "jobId": "job-2fc0deb3ce46c873",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "core_geometry",
+        "identity",
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-2fc0deb3ce46c873/job-2fc0deb3ce46c873-a001/prepared.png",
+        "sha256": "b3c79d88484e90589921178641e793ea4b603d2967cc90c59f9108452719ed6e"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-b9b64204e2a60696.json",
+        "sha256": "fca0aed9f3ade1de2817f6b022f5acd9682d61b5ac6b336d20e5e06e551bf187"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-2fc0deb3ce46c873-a001.json",
+        "sha256": "c56e5ea13b3cce0eb1a4a86f66bce5639e8e1bf459ef8f942f1b91b11747676a"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-6ebd793bc56c3420",
+      "feedbackId": "feedback-baf505cabf7743c0",
+      "attemptId": "job-a95411a55ccd0bbe-a001",
+      "jobId": "job-a95411a55ccd0bbe",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-a95411a55ccd0bbe/job-a95411a55ccd0bbe-a001/prepared.png",
+        "sha256": "faa620130d8dee5339b705f39b26beedf959713884d9d1d64bc93b23fbe3c7cd"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-baf505cabf7743c0.json",
+        "sha256": "50f6ff38596c244ca80c55072be4fb508d0ca9203c04212d9a175f11669d2c68"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-a95411a55ccd0bbe-a001.json",
+        "sha256": "2fd32554220d78678b0918dae791d032f89953fb76d021b06f01f609bc6c9904"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-de005b4d8c2898fb",
+      "feedbackId": "feedback-bfe7e984b3d553d7",
+      "attemptId": "job-38caaa8120d4a303-a001",
+      "jobId": "job-38caaa8120d4a303",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-38caaa8120d4a303/job-38caaa8120d4a303-a001/prepared.png",
+        "sha256": "366d6b7e2dc4b655544af3778a46015593ece1cc967d0579453867898efd3072"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-bfe7e984b3d553d7.json",
+        "sha256": "b8add8d84d256e3ca94e96cb1f38a538ab0028803b58cfa7d362236e87374b20"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-38caaa8120d4a303-a001.json",
+        "sha256": "bd3e9cfd7bb6845478150be1f7448709d14c1638f6d732ff766ebcb323c1e4af"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-84c41c3e4a8cafcd",
+      "feedbackId": "feedback-c4270f321ad53571",
+      "attemptId": "job-ff0004c252fc0691-a001",
+      "jobId": "job-ff0004c252fc0691",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "occlusion",
+        "topology"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-ff0004c252fc0691/job-ff0004c252fc0691-a001/prepared.png",
+        "sha256": "a80385a293b136c8cd93c24a111d8dd23b523923d63ba671ffda379bd19a77c7"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-c4270f321ad53571.json",
+        "sha256": "0b6648fd96c5c8c09ad539c0b51ed31001fddc128ca214b3d06ede95deda0367"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-ff0004c252fc0691-a001.json",
+        "sha256": "08860fafe1a772c763f24b6911a5b094d4d5c39f1d2c64865d5f905b2831437c"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-cc46630604f3d7e1",
+      "feedbackId": "feedback-c5c522dbe17580ce",
+      "attemptId": "job-fcd2010d14e8bee6-a003",
+      "jobId": "job-fcd2010d14e8bee6",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-fcd2010d14e8bee6/job-fcd2010d14e8bee6-a003/calibrated.png",
+        "sha256": "3f1a1e2454e3daafad4add5455a26258140755e40f0df52abf3125a7a13da1a1"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-c5c522dbe17580ce.json",
+        "sha256": "49aff5a6ea0aa9ab554d46a8044ca7ec372dd5475d39944bef8a3f04ef846d60"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-fcd2010d14e8bee6-a003.json",
+        "sha256": "adf046492265c87c0b6e2c05a16d5710f02f772a301f4e9cc524fba853c4c693"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-03d20eed850505b7",
+      "feedbackId": "feedback-c759281bea4c656c",
+      "attemptId": "job-286ebcf8fc9cb532-a001",
+      "jobId": "job-286ebcf8fc9cb532",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "selected",
+      "categories": [
+        "equipment_state"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-286ebcf8fc9cb532/job-286ebcf8fc9cb532-a001/prepared.png",
+        "sha256": "653bcd5db01831e54e1615ae6a7713d4666ea690a27491dff159090cc33e8cd5"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-c759281bea4c656c.json",
+        "sha256": "c2e6cc1296ecd2dea661c98fbd604a82c4c46117354ccc774c67d5e41587f6f7"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-286ebcf8fc9cb532-a001.json",
+        "sha256": "b13b251f77826ac087121b565f5d582ed1c0e89866e0ad3c2bb3be88fe0894e2"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-6c40a4cdbc297f01",
+      "feedbackId": "feedback-cfbda20b57c15af6",
+      "attemptId": "job-8511c38401ba2a99-a001",
+      "jobId": "job-8511c38401ba2a99",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-8511c38401ba2a99/job-8511c38401ba2a99-a001/calibrated.png",
+        "sha256": "9eebd1c3fb240109b37da337d440a672d2ec9c590a0ba84b7007affe16a27201"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-cfbda20b57c15af6.json",
+        "sha256": "0034bd7981bc820adb6d78faeb312725fe0fea1bab1aed73af593d807a87173f"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-8511c38401ba2a99-a001.json",
+        "sha256": "b181bc1fc454915483b643f37ac9be574ae836b93e6968b07045c57457bed78c"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-fcc78077ceff02f9",
+      "feedbackId": "feedback-d262d291dfc5ff95",
+      "attemptId": "job-fcd2010d14e8bee6-a002",
+      "jobId": "job-fcd2010d14e8bee6",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-fcd2010d14e8bee6/job-fcd2010d14e8bee6-a002/calibrated.png",
+        "sha256": "fd0019c1a30fbb46af9f89f1f13ce7a6e1e921cddf6307bb9e4491decb399f1c"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-d262d291dfc5ff95.json",
+        "sha256": "7f29af40752f881717cdbc4d702d07c301a4e950259252721e94b93d19416d62"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-fcd2010d14e8bee6-a002.json",
+        "sha256": "e6a0172adb3aeba946fa72ca60afd996f144df736ac1965fd8d9b351adc72f08"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-3f8db8c9716edb0c",
+      "feedbackId": "feedback-d6ab564e43708376",
+      "attemptId": "job-a3130635f06ad42d-a001",
+      "jobId": "job-a3130635f06ad42d",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [
+        "identity",
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-a3130635f06ad42d/job-a3130635f06ad42d-a001/prepared.png",
+        "sha256": "b13f3b60b452444e76835b9ef4ba8fdf94381431cbd87c3592a802b420401f3e"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-d6ab564e43708376.json",
+        "sha256": "4c7a41ae1ed2d5e61a6da7e4d92250c4d9d181f22d9c383978cb5245d0583d0d"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-a3130635f06ad42d-a001.json",
+        "sha256": "5837bc036b24fef7f0442b3cf24653e274130fd13a7bdc6bdda76ca779d30184"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-116e0f33b5ee2ab2",
+      "feedbackId": "feedback-d77575e1d95ea30d",
+      "attemptId": "job-897833991fd2f552-a011",
+      "jobId": "job-897833991fd2f552",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-897833991fd2f552/job-897833991fd2f552-a011/prepared.png",
+        "sha256": "9cbed15b75152d998dfa257bbc3bf391ae4a21fc7d3cdfc915ec0e2f3d562d0a"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-d77575e1d95ea30d.json",
+        "sha256": "efe6d80a8447476e031df5007934c750cd1e804abad55241331a6679e6307d2b"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-897833991fd2f552-a011.json",
+        "sha256": "4c379c4f93f731374b23d50e4efdd15903fc186b9aa664192dea6eccd77daccb"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-271262aeffa1182f",
+      "feedbackId": "feedback-d834613100e7a004",
+      "attemptId": "job-7a32a988b5b56657-a002",
+      "jobId": "job-7a32a988b5b56657",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "core_geometry"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-7a32a988b5b56657/job-7a32a988b5b56657-a002/prepared.png",
+        "sha256": "932db1b65b9a40c673b874d5bc0dfc6e3cea1ca274a31742c7ee6ab61a703931"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-d834613100e7a004.json",
+        "sha256": "a17469d87c063ffedc27886970adbec969d0fff012dd74622d31029c93de1dbf"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-7a32a988b5b56657-a002.json",
+        "sha256": "e08a4c353103626a099c4bb460c647915a4b5307b00560553f54167031f755c7"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-12a0de7380de7e2c",
+      "feedbackId": "feedback-d935c38802145d8d",
+      "attemptId": "job-d8c37ffa3a568007-a005",
+      "jobId": "job-d8c37ffa3a568007",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "selected",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-d8c37ffa3a568007/job-d8c37ffa3a568007-a005/calibrated.png",
+        "sha256": "58832df28847fae29f75309b8574a104860f4fa9befa04c2de9357806013d43e"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-d935c38802145d8d.json",
+        "sha256": "3e830741fc39b21039ece436c2f37ac86b86f80a31d04603df12b0d8e6e81943"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-d8c37ffa3a568007-a005.json",
+        "sha256": "1e6900c486d2904a9fdacad2c21f60a198fface7aebca165844cce300ea55ee1"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-bf0dbf9a0ee4950c",
+      "feedbackId": "feedback-d9885a87ee5d93aa",
+      "attemptId": "job-55f7fcdd8b8fd484-a002",
+      "jobId": "job-55f7fcdd8b8fd484",
+      "reviewer": "cty41",
+      "disposition": "selected",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-55f7fcdd8b8fd484/job-55f7fcdd8b8fd484-a002/prepared.png",
+        "sha256": "21559ca7aedd3e146feb2b93c5a6633affc6ce544122628c960972a982b0b5e7"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-d9885a87ee5d93aa.json",
+        "sha256": "128bc4a3a230af03c393a70e30bf28af2d181feac48b353253817548ff4d57d1"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-55f7fcdd8b8fd484-a002.json",
+        "sha256": "62e30f158d426e050abaee61e3fe9fa0a33f61d59428fc00e106791598d3dde9"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-7a2fc44aecb111d8",
+      "feedbackId": "feedback-daa34dae0c4992ee",
+      "attemptId": "job-897833991fd2f552-a007",
+      "jobId": "job-897833991fd2f552",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-897833991fd2f552/job-897833991fd2f552-a007/prepared.png",
+        "sha256": "e38f15050c55fad5c3f80966acbcf1f78fbced5c0c5e0a8f6141b5a434330a3b"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-daa34dae0c4992ee.json",
+        "sha256": "32c6f2f114a327df0461cf9e916464424372ccc0c8ae9252ac29ad7ef92d7ce9"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-897833991fd2f552-a007.json",
+        "sha256": "f0898a3bb7c43c357b9f9bd512ef371d6a2c00d0f11d333162a5287bcef78f83"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-74a19ed98e960690",
+      "feedbackId": "feedback-db51c4009875360d",
+      "attemptId": "job-b82a70ea2f262416-a001",
+      "jobId": "job-b82a70ea2f262416",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-b82a70ea2f262416/job-b82a70ea2f262416-a001/prepared.png",
+        "sha256": "31eca2140a991ab4e9c3c2b2007920ebda9eeee7e9a7694c327903f477e765c3"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-db51c4009875360d.json",
+        "sha256": "885bea7aeb68f57d2c0a9f7f81d893d47a9f3fd9daaeea66be4bd9a509ef87d5"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-b82a70ea2f262416-a001.json",
+        "sha256": "952ed50862ebaae5765d60cf4fc0266ffac42d3fa458d70bd7d16173aa29542f"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-e6cc735b604b9e39",
+      "feedbackId": "feedback-ddb76f743690eef6",
+      "attemptId": "job-8511c38401ba2a99-a007",
+      "jobId": "job-8511c38401ba2a99",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-8511c38401ba2a99/job-8511c38401ba2a99-a007/prepared.png",
+        "sha256": "a0fee8512cf8578f57b8b3d3c5e2b74a1f68ac3afdcbefd15a87c82f5a85eaf5"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-ddb76f743690eef6.json",
+        "sha256": "bc0382d4c622d294beba9cbc46d7b3663b1b28e3b4b7b9693fda18b61b52bbb2"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-8511c38401ba2a99-a007.json",
+        "sha256": "74c35483666cb7983d1fa12c48eecc5fd7fea951f99d82abb32bcbc69a6f1c5c"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-ce84c0d6310a663e",
+      "feedbackId": "feedback-dde45601fd065db8",
+      "attemptId": "job-3adba83fc2881bb0-a002",
+      "jobId": "job-3adba83fc2881bb0",
+      "authorType": "agent",
+      "reviewer": "codex-agent",
+      "disposition": "retry",
+      "categories": [
+        "identity",
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-3adba83fc2881bb0/job-3adba83fc2881bb0-a002/prepared.png",
+        "sha256": "a88e223cf7090dd0765ed5c26a13e0cf9669c6d8942ba8f91101ffa37b116bdb"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-dde45601fd065db8.json",
+        "sha256": "e701cff68eee87a821af833da0433597b08f098445f89a75450ace4e7a15e822"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-3adba83fc2881bb0-a002.json",
+        "sha256": "22c859a2c7dd8685351b7d96c66ef4a5f5125e0bca6e27d19cc647d7f3c6e925"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-e5d204e4be54e54e",
+      "feedbackId": "feedback-dfaf18b95f08b00d",
+      "attemptId": "job-fcd2010d14e8bee6-a005",
+      "jobId": "job-fcd2010d14e8bee6",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "selected",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-fcd2010d14e8bee6/job-fcd2010d14e8bee6-a005/calibrated.png",
+        "sha256": "275e36c12c1ff77f9c26d76cdebad6500a81419f56b8d50971053e17c1fbb585"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-dfaf18b95f08b00d.json",
+        "sha256": "72d277fc5bd2258f3ee256587244eb08df7068531636cafacb2aeebc7c269038"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-fcd2010d14e8bee6-a005.json",
+        "sha256": "736f0213f9dcce49f5e5febc2a3a59f59e6d05b9dc8b08249f67f854c55be991"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-e3a074bdf9039fd8",
+      "feedbackId": "feedback-e10aed2c4c2c6c0c",
+      "attemptId": "job-ed5f76ac4fb68184-a003",
+      "jobId": "job-ed5f76ac4fb68184",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "gaze"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-ed5f76ac4fb68184/job-ed5f76ac4fb68184-a003/prepared.png",
+        "sha256": "a9de5b0c2fa3657aa08044d54d1cadd35b21af6f2cc256fd090db074bfddfae7"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-e10aed2c4c2c6c0c.json",
+        "sha256": "7c9dddc7b5cb14579c303c513c9ae4463f03367e8543f187af2d8f9009baf955"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-ed5f76ac4fb68184-a003.json",
+        "sha256": "f2de337ef07683554fa54d0e3d6a075d7cc0c4bf90ec3272a971e2581cdbea33"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-ba3f93befe1bd937",
+      "feedbackId": "feedback-e6881fa1ad069136",
+      "attemptId": "job-3adba83fc2881bb0-a001",
+      "jobId": "job-3adba83fc2881bb0",
+      "authorType": "agent",
+      "reviewer": "codex-agent",
+      "disposition": "retry",
+      "categories": [
+        "identity",
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-3adba83fc2881bb0/job-3adba83fc2881bb0-a001/prepared.png",
+        "sha256": "f64cffdd2c24bb678592534c117ccf8e994fe9fc7494d882470d59ecc143f930"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-e6881fa1ad069136.json",
+        "sha256": "e2d67ab83a4f20fd85780b417d1d17be9561ab1e54e9fc29aed515dcd48f830b"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-3adba83fc2881bb0-a001.json",
+        "sha256": "f37b1b6000343684284fec68ac69d5d3104e89f6f95e0a9e3a700106c05fafeb"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-6bdb2ee51017c18c",
+      "feedbackId": "feedback-e7f40250083dc54a",
+      "attemptId": "job-a3130635f06ad42d-a004",
+      "jobId": "job-a3130635f06ad42d",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-a3130635f06ad42d/job-a3130635f06ad42d-a004/prepared.png",
+        "sha256": "5d26b3879fd7247633db9b0425e789cdf24e34235e67578e2d4bdd308803fe3f"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-e7f40250083dc54a.json",
+        "sha256": "2e5b12e26501b881d19c0acb75ea3f2b03c5e19a3b48ab874a568dda8b15d8b8"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-a3130635f06ad42d-a004.json",
+        "sha256": "2beb8392a1a40cca00386c6ccf50620a461912f50169b40fbc0c8b1e76871848"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-f9b97592aac34686",
+      "feedbackId": "feedback-ec0bd7b9e4f64dbc",
+      "attemptId": "job-43b34a4685f71ca2-a002",
+      "jobId": "job-43b34a4685f71ca2",
+      "authorType": "agent",
+      "reviewer": "agent",
+      "disposition": "technical_failed",
+      "categories": [
+        "core_geometry",
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a002/calibrated.png",
+        "sha256": "4dd2c055a45bfe45dea2db62d0c6bf00398a4d975eb72b94aaf59f5e72ef3a9d"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-ec0bd7b9e4f64dbc.json",
+        "sha256": "015b0fed3caaeba89fac5a9ef720e7fac8e09cb8e312bb334b7c2a48eb0d4c1e"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-43b34a4685f71ca2-a002.json",
+        "sha256": "1f036d483abcfc350da907e20f8ac267efd3ab5bbdefca476f9d9eef413be764"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-73553ba7d8188ddd",
+      "feedbackId": "feedback-eccfe850ec9fe6b6",
+      "attemptId": "job-897833991fd2f552-a004",
+      "jobId": "job-897833991fd2f552",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "pose_axis"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-897833991fd2f552/job-897833991fd2f552-a004/prepared.png",
+        "sha256": "9f28e4a917bf4fc96da1f4e8aca509b843999c8d45d8fa383cae4e2d4fba65c4"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-eccfe850ec9fe6b6.json",
+        "sha256": "aea1a1917e50b88473bb2ad3b461092c33f518574d50f2b7d3dc86a17f8e8852"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-897833991fd2f552-a004.json",
+        "sha256": "a0d39fc5600defc4042aaa8a301ee2959616d14d33357aedab4340d12f9480f2"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-e4b41318dd91c70a",
+      "feedbackId": "feedback-ed6b6ed3fd73ff62",
+      "attemptId": "job-897833991fd2f552-a003",
+      "jobId": "job-897833991fd2f552",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-897833991fd2f552/job-897833991fd2f552-a003/prepared.png",
+        "sha256": "2b7e5cc6e3e166370f52e43f9043980c9bb826bdd170001d97793a389c19b4d7"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-ed6b6ed3fd73ff62.json",
+        "sha256": "12d1556dea9bc3e19f2e01472bcc56787288aa15dc3bba6c3629cc243585ff22"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-897833991fd2f552-a003.json",
+        "sha256": "131010b31b172abccce54b24f46ca59a4145dbf7da4ecbe0e4040c452742619b"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-8e352b7a9cb534da",
+      "feedbackId": "feedback-ee6503e839d0e9b8",
+      "attemptId": "job-43b34a4685f71ca2-a007",
+      "jobId": "job-43b34a4685f71ca2",
+      "authorType": "agent",
+      "reviewer": "agent",
+      "disposition": "technical_failed",
+      "categories": [
+        "chroma",
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a007/prepared.png",
+        "sha256": "418da2dff0c5a62fea56adf174e7c3a365f0b33c5630a86bd44dc8b18c41e665"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-ee6503e839d0e9b8.json",
+        "sha256": "672f3c3d15600b5c8c7902e6a287db0143d7853249e50767641356486a75f9b0"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-43b34a4685f71ca2-a007.json",
+        "sha256": "6e3bf2321df163d49d3cc5b272b6eb98d626858ce2eb85818398c5084b0a25a5"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-9b7c5f7198a1b850",
+      "feedbackId": "feedback-ee84d78f243e5cbf",
+      "attemptId": "job-8511c38401ba2a99-a002",
+      "jobId": "job-8511c38401ba2a99",
+      "reviewer": "codex",
+      "disposition": "retry",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-8511c38401ba2a99/job-8511c38401ba2a99-a002/calibrated.png",
+        "sha256": "aa627f541ae2eb78fe178eba772f407394f96ce7d188930d4d2b75d81f922d63"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-ee84d78f243e5cbf.json",
+        "sha256": "6c09faa35777ef197c753b019eafd58834272e847a55910ee7cfa5ba9b36b9b5"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-8511c38401ba2a99-a002.json",
+        "sha256": "47022a3ee0419a76e20019212bef08c0ce6235dd75f62d0f2d3d76c3ad2e44a3"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-dee5187672d8a204",
+      "feedbackId": "feedback-f013be4d32354720",
+      "attemptId": "job-1b243a2bdfee22b1-a003",
+      "jobId": "job-1b243a2bdfee22b1",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-1b243a2bdfee22b1/job-1b243a2bdfee22b1-a003/prepared.png",
+        "sha256": "9e93c7e812e4371e2894cb667ecbbbed59bd331396ee53d810ad97bc628dd631"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-f013be4d32354720.json",
+        "sha256": "0393158ec3d9a6b512f31dbb2bdfef3c8a6077e227e7a8c759ba677f6a102459"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-1b243a2bdfee22b1-a003.json",
+        "sha256": "e067479130c7cd62e9e7ea81f116ce2c57a8efad2939788f8ad702457c04ef10"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-46b7b35a12de2eb8",
+      "feedbackId": "feedback-f0a08f7fab6a35ae",
+      "attemptId": "job-ff0004c252fc0691-a002",
+      "jobId": "job-ff0004c252fc0691",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "retry",
+      "categories": [
+        "core_geometry",
+        "equipment_state",
+        "topology"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-ff0004c252fc0691/job-ff0004c252fc0691-a002/prepared.png",
+        "sha256": "fd1871aa369badcdbcc38119285612f4b4028c27fcbc71fcd42aafb76f461d9d"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-f0a08f7fab6a35ae.json",
+        "sha256": "cdac2a22d9374fea24f939ab173cd1b3edc68b9d5a9094cb1326cf5e8cdca5a7"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-ff0004c252fc0691-a002.json",
+        "sha256": "29ae6de90313c7b839aacf4f40d861fce012f754b73168cd15b8c0cd33cec7ce"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-8ccecf21fbcb50bd",
+      "feedbackId": "feedback-f0a6826af8d08167",
+      "attemptId": "job-d8c37ffa3a568007-a001",
+      "jobId": "job-d8c37ffa3a568007",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [
+        "chroma"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-d8c37ffa3a568007/job-d8c37ffa3a568007-a001/prepared.png",
+        "sha256": "43783a4bc418fa0989723d97fb996b12770325b6ff692d8bb1015207970b05bc"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-f0a6826af8d08167.json",
+        "sha256": "a9995a10d992c9414139af51c9e043488beac44f11c67a52f6ca1e609908c447"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-d8c37ffa3a568007-a001.json",
+        "sha256": "2b14e65f2023f85f4fd0f5f877d9da76d193a4bc523a0854ab9bccd0c392bba9"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-68eecc3766ca6eb7",
+      "feedbackId": "feedback-f13210f8cf91ad9f",
+      "attemptId": "job-7a32a988b5b56657-a005",
+      "jobId": "job-7a32a988b5b56657",
+      "authorType": "agent",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [
+        "processing"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-7a32a988b5b56657/job-7a32a988b5b56657-a005/prepared.png",
+        "sha256": "e87562a8f3184d0f6a9ead468abf9d35b4a740a356ac79c8a6a054603fb7ffef"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-f13210f8cf91ad9f.json",
+        "sha256": "1bfd8709c6abbc6dab54a56e428a66cb2145f259e679657e488e563b1cc00737"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-7a32a988b5b56657-a005.json",
+        "sha256": "a14a89bb22f3760bd69903e9e77822f3cd66d0a624414bb24aa163c3db742daa"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-24ae6eabc263b435",
+      "feedbackId": "feedback-f428e023c2dc135e",
+      "attemptId": "job-38caaa8120d4a303-a005",
+      "jobId": "job-38caaa8120d4a303",
+      "reviewer": "codex",
+      "disposition": "technical_failed",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-38caaa8120d4a303/job-38caaa8120d4a303-a005/calibrated.png",
+        "sha256": "1c71c3fc515c3604e262c7b242025985859c8786544406b15a62d1e4e3e6a79b"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-f428e023c2dc135e.json",
+        "sha256": "564465cdc54ae403c202ed1b9ab21b97a878624e7a340e9d67ef9b42ecd62e29"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-38caaa8120d4a303-a005.json",
+        "sha256": "ac64856b10999df2986c423e12192346137bb64ef177d2635db8cb05fdb81f1c"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-1d4916e73da50a8d",
+      "feedbackId": "feedback-f72602ec4d99607e",
+      "attemptId": "job-38caaa8120d4a303-a003",
+      "jobId": "job-38caaa8120d4a303",
+      "reviewer": "cty41",
+      "disposition": "selected",
+      "categories": [],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-38caaa8120d4a303/job-38caaa8120d4a303-a003/calibrated.png",
+        "sha256": "eb73ea2ac4bef2366b371a59aa9fdee754529cbbc2ca54a40260a601432e1cc5"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-f72602ec4d99607e.json",
+        "sha256": "15159abf0709597c1d57ac461be9437c432eda53a96d9f3b6ccc6d8cb36be6e0"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-38caaa8120d4a303-a003.json",
+        "sha256": "d23fe92f8c4fef0fec8296462b13784bbfa5ee527efc7f4613ba6dd73efd85de"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "historyEntryId": "review-history-311fb1617c6d5944",
+      "feedbackId": "feedback-f81805db04fbfde8",
+      "attemptId": "job-38caaa8120d4a303-a006",
+      "jobId": "job-38caaa8120d4a303",
+      "authorType": "human",
+      "reviewer": "cty41",
+      "disposition": "selected",
+      "categories": [
+        "core_geometry"
+      ],
+      "artifact": {
+        "path": "Tools/artworks/pipeline/artifacts/job-38caaa8120d4a303/job-38caaa8120d4a303-a006/calibrated.png",
+        "sha256": "4519d643cecce40130d92f00e4bbef9c3cd628f6b34953763a7cbbdda4d0e82b"
+      },
+      "feedback": {
+        "path": "Tools/artworks/pipeline/feedback/feedback-f81805db04fbfde8.json",
+        "sha256": "8ebc7b5db33a748031fb5672df0528e3630681f636255e485de2025c75e7d6bb"
+      },
+      "attemptRecord": {
+        "path": "Tools/artworks/pipeline/attempts/job-38caaa8120d4a303-a006.json",
+        "sha256": "27caaa1e0013dd0f5531f9e87e942dbb2e1b7ae5284ee9dc521df05a88805b0b"
+      }
+    }
+  ],
+  "sourceCount": 150
+}

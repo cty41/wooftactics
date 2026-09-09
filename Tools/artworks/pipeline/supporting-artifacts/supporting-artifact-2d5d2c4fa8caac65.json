@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-2d5d2c4fa8caac65",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_ring_pommel_tang_dao_sheathed_pixel_inspection_v01.png",
+    "sha256": "6c6980127f61c0f0510710ef811e7918ea7b2560966898d60e718dc1aa0aba10"
+  },
+  "role": "review-derived",
+  "note": "完全入鞘环首刀v1目标画布与最近邻像素放大审核图，仅辅助人工审核，不可晋升"
+}

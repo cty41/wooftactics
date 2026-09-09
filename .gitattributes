@@ -27,6 +27,11 @@ Tests/gameplay-specs/godot/*.plan.json text eol=lf
 # Frozen source snapshots are preserved byte-for-byte for migration archaeology.
 src/Tactics.FrozenOracle.Tests/FrozenSources/** -whitespace
 
+# Immutable compiled artwork prompts preserve generator-emitted trailing separators.
+Tools/artworks/**/prompts/compiled/*.md whitespace=-blank-at-eof
+Tools/artworks/**/pipeline/*compiled*.md whitespace=-blank-at-eof
+Tools/artworks/**/equipment/prompts/*compiled*.md whitespace=-blank-at-eof
+
 # lfs rules
 *.png filter=lfs diff=lfs merge=lfs -text
 *.tga filter=lfs diff=lfs merge=lfs -text

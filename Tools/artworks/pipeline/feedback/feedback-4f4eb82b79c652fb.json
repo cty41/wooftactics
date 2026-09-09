@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-4f4eb82b79c652fb",
+  "attemptId": "job-dfbdae10245d7d6c-a001",
+  "candidateSha256": "eb6de82aaa9c81a7c80e0450d61c2481e7fc56cf25078152177931d5fe5dcba6",
+  "reviewer": "agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "Raw body-only generation was delivered."
+  ],
+  "defects": [
+    "Mask output directory was absent, so the first validation ran before mask attachment."
+  ],
+  "nextPromptDelta": "No regeneration; attach the already-created mask in a technical child.",
+  "recordedAt": "2026-09-05T00:38:16+08:00",
+  "authorType": "agent",
+  "categories": [
+    "processing"
+  ],
+  "disposition": "technical_failed",
+  "frozenInvariants": [
+    "raw body bytes"
+  ],
+  "pendingFixes": [
+    "Mask output directory was absent, so the first validation ran before mask attachment."
+  ]
+}

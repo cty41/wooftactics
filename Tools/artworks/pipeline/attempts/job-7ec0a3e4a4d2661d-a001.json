@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 3,
+  "attemptId": "job-7ec0a3e4a4d2661d-a001",
+  "jobId": "job-7ec0a3e4a4d2661d",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "prepared",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_guqin_back_carried_dr_v01.png",
+      "sha256": "a4c81bfbdfca9a7faa5002685eb1b6751376b9cce3d99c9d81309483c90cc4ca"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-7ec0a3e4a4d2661d/job-7ec0a3e4a4d2661d-a001/raw.png",
+      "sha256": "a4c81bfbdfca9a7faa5002685eb1b6751376b9cce3d99c9d81309483c90cc4ca"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-7ec0a3e4a4d2661d/job-7ec0a3e4a4d2661d-a001/prepared.png",
+      "sha256": "a4c81bfbdfca9a7faa5002685eb1b6751376b9cce3d99c9d81309483c90cc4ca"
+    }
+  },
+  "report": null,
+  "approvalId": null,
+  "feedbackId": null,
+  "componentMigrationId": "component-migration-b522cc2a71b0b6c0",
+  "sourceMode": "pre_v3_import"
+}

@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "registryId": "family-profile-121da306959fa93b",
+  "sourceId": "pure-run-world-environment-family-v1",
+  "sourceType": "family",
+  "artifact": {
+    "path": "Tools/artworks/pure_run/art_direction/families/world_environment_v1.json",
+    "sha256": "582accb62fcb2d1086353cd98ccc848ad05318db74905758e9f725df4e7045b9"
+  }
+}

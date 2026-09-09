@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-7c229d49a917e6c4",
+  "attemptId": "job-c92184f48437bd89-a001",
+  "candidateSha256": "72e98f6e0980f6ed3b6e43b15ef603154fbabd7a22b88a60f090ddffe29eddf0",
+  "reviewer": "cty41",
+  "verdict": "retry",
+  "strengths": [
+    "B 简化画风与 C 宽头短吻方向得到保留"
+  ],
+  "defects": [
+    "与项目批准母图差异仍过大；主体过宽、头身分界过强、鬃毛外扩，未形成标准窄直胶囊核心"
+  ],
+  "nextPromptDelta": "以批准 Demonbound 母图为强几何锚点，核心轮廓、脚位和前爪位置优先；五红土松特征仅作为贴服毛色与头脸变化，禁止宽胖宠物体",
+  "recordedAt": "2026-08-29T21:24:06.2032912+08:00",
+  "authorType": "human",
+  "categories": [
+    "core_geometry",
+    "identity"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "简化平涂、五红土松宽头短吻、小黑眼、红棕毛色和卷尾"
+  ],
+  "pendingFixes": [
+    "严格匹配批准 Demonbound 的窄直胶囊核心高度、宽度和头身连续轮廓；鬃毛贴服核心，不扩大主体"
+  ]
+}

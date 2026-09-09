@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 4,
+  "contractId": "contract-4eab952557ff283a",
+  "assetId": "poet-five-red-chow-idle-ul-near-hand-component-v1",
+  "approvedAssetId": "poet-five-red-chow-idle-ul-near-hand-component-v1",
+  "kind": "ground_character",
+  "direction": "up-left",
+  "pose": "idle",
+  "anchor": null,
+  "maskRequired": true,
+  "noArms": false,
+  "handSides": {
+    "near_hand": null,
+    "far_hand": null
+  },
+  "occlusion": null,
+  "compositionSpec": null,
+  "identitySpec": null,
+  "requiresInvocation": false,
+  "canvasSpec": {
+    "masterSize": [
+      256,
+      256
+    ]
+  },
+  "tilePlacementSpec": null,
+  "styleSpec": null,
+  "equipmentProductionSpec": null,
+  "tolerances": {
+    "sizePx": 3,
+    "centerPx": 2
+  },
+  "outputs": {
+    "master": "Tools/artworks/poet_five_red_chow/components/derived/poet_idle_ul_near_hand_v01.png",
+    "preview": "Tools/artworks/poet_five_red_chow/components/derived/poet_idle_ul_near_hand_v01_128.png"
+  },
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "approved-pose-derived"
+  },
+  "assetRole": "component",
+  "componentKind": "paw_overlay",
+  "sourceMode": "derived",
+  "runtimeEligible": false,
+  "artDirectionSpec": {
+    "profileId": "pure-run-project-art-direction-v1",
+    "path": "Tools/artworks/pure_run/art_direction/project_art_direction_v1.json",
+    "sha256": "4820888ee25ac6865705ef130abdbec64ed597c6b126d96e6361a01960ec13fb"
+  },
+  "materialLanguageSpec": {
+    "profileId": "pure-run-material-language-v1",
+    "path": "Tools/artworks/pure_run/art_direction/material_language_v1.json",
+    "sha256": "3efa1e523c20c41f407ff142759a0bc18bb874392266006c704c314fd13dfd83"
+  },
+  "familyProfileSpec": {
+    "profileId": "pure-run-actor-family-v1",
+    "family": "actor",
+    "path": "Tools/artworks/pure_run/art_direction/families/actor_v1.json",
+    "sha256": "a5214ad32ea193569198cac822ddac860adcdf8f4e03f24d455d9aee3099f95d"
+  },
+  "briefSpec": {
+    "briefId": "poet-idle-ul-near-hand-component-v1",
+    "kind": "asset",
+    "path": "Tools/artworks/poet_five_red_chow/briefs/poet_idle_ul_near_hand_component_brief_v1.json",
+    "sha256": "7a298af83e73275fadf4a3f09f3644da13b5cb3b86529e7dad536e1121b9de12"
+  },
+  "themeProfileSpec": null,
+  "artDirectionManifestSpec": {
+    "manifestId": "pure-run-art-direction-manifest-v1",
+    "path": "Tools/artworks/pure_run/art_direction/art_direction_manifest_v1.json",
+    "sha256": "dfc6e9a0cd517287f5cfa10d7ad36393908eed4c7cb92c2c03ede403f95d71f9"
+  },
+  "anchorVerdictIds": [
+    "anchor-verdict-b451919e0d61b117"
+  ],
+  "requiredReviewPanels": [
+    "candidate-master"
+  ],
+  "acceptanceCaseIds": [
+    "POET-UL-NEAR-HAND-DERIVED-001"
+  ]
+}

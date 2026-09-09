@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "attemptId": "job-4cf6c491a251bcf1-a002",
+  "inputSha256": "99a764f746d3dac006022a727b0c17dffa84c3b9aee7dea0e6fcfcae67fdc281",
+  "maskSha256": "fe2a91fc21c864e8541079a58a2de204f123890e5998f7f0c4d24059cf5fdaaa",
+  "technical": {
+    "size": [
+      256,
+      256
+    ],
+    "alphaBbox": [
+      76,
+      90,
+      168,
+      240
+    ]
+  },
+  "geometry": {
+    "boxes": {
+      "core": [
+        96,
+        113,
+        160,
+        223
+      ],
+      "head_appendage": [
+        78,
+        92,
+        157,
+        208
+      ],
+      "near_hand": [
+        149,
+        171,
+        164,
+        194
+      ],
+      "far_hand": [
+        96,
+        171,
+        109,
+        194
+      ],
+      "near_foot": [
+        138,
+        221,
+        157,
+        236
+      ],
+      "far_foot": [
+        98,
+        221,
+        120,
+        236
+      ],
+      "equipment": null,
+      "wings": null,
+      "effect": null,
+      "near_arm": null,
+      "far_arm": null,
+      "near_leg": null,
+      "far_leg": null
+    },
+    "core": {
+      "bbox": [
+        96,
+        113,
+        160,
+        223
+      ],
+      "center": [
+        128.0,
+        168.0
+      ],
+      "bandMaxWidths": [
+        65,
+        65,
+        65
+      ]
+    },
+    "occlusion": {
+      "intrusionPixels": {},
+      "visibleAreaRatios": {}
+    },
+    "composition": {
+      "coreTiltDegrees": 0.0,
+      "bladeWidthPx": 3,
+      "bladeLengthPx": 3
+    }
+  },
+  "issues": [
+    "core_center_out_of_tolerance",
+    "semantic_mask_unknown_color",
+    "weapon_blade_too_wide"
+  ],
+  "passed": false
+}

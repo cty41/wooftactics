@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-167f004d7caf4a73",
+  "attemptId": "job-f47b524a48de2ded-a004",
+  "candidateSha256": "939caa4c260495d28d7e347a66c54b0bd965b3853a927711f42573d357711b11",
+  "reviewer": "agent",
+  "verdict": "retry",
+  "strengths": [
+    "Ring pommel is now small, oblique, edge-on, and connected to one short shoulder-side grip; no lower sheath fragment appears."
+  ],
+  "defects": [
+    "Core is much wider than the approved poet anchor and becomes wider at the lower band.",
+    "Large mane-like head/body seam changes the approved poet identity.",
+    "Both side front paws remain large vertical ovals instead of tiny compact outer arcs."
+  ],
+  "nextPromptDelta": "Restore the narrower approved capsule width and simple continuous head-body silhouette; remove the large mane seam; reduce both side paws to tiny round nubs no taller than rear paws; preserve the successful small edge-on connected ring and fully hidden lower sheath.",
+  "recordedAt": "2026-09-04T21:28:33+08:00",
+  "authorType": "agent",
+  "categories": [
+    "core_geometry",
+    "identity",
+    "topology"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "small edge-on ring, connected short grip, all lower sheath hidden, back view, no face, no deferred props"
+  ],
+  "pendingFixes": [
+    "final automatic image generation round"
+  ]
+}

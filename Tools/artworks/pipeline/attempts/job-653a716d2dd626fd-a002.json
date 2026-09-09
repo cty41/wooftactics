@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-653a716d2dd626fd-a002",
+  "jobId": "job-653a716d2dd626fd",
+  "ordinal": 2,
+  "generationRound": 1,
+  "parentAttemptId": "job-653a716d2dd626fd-a001",
+  "retryFeedbackId": "feedback-bc95184e3d5d37c5",
+  "promptDelta": "No regeneration; retain only the largest connected alpha component before equipment preparation.",
+  "technicalRemediation": true,
+  "state": "review_pending",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/pipeline/artifacts/job-653a716d2dd626fd/job-653a716d2dd626fd-a001/raw.png",
+      "sha256": "5ad78c9b121986e9abcd875037a7a9c380147b888e6053dbacceb1d5b7c1263f"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-653a716d2dd626fd/job-653a716d2dd626fd-a002/raw.png",
+      "sha256": "5ad78c9b121986e9abcd875037a7a9c380147b888e6053dbacceb1d5b7c1263f"
+    },
+    "remediatedSource": {
+      "path": "Tools/artworks/pipeline/artifacts/job-653a716d2dd626fd/job-653a716d2dd626fd-a002/remediated-alpha-islands.png",
+      "sha256": "9f3f3b4b7778170706cb54e658f30b9279f8ec44d2e599910101319109106169"
+    },
+    "prepared": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_sheathed_diagonal_ul_v01_alpha_clean.png",
+      "sha256": "9d8f83ac509bfb4aed0646bd15936e47cf5852df4e5cb06c699afdc64ae4177e"
+    },
+    "equipmentPreview": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_sheathed_diagonal_ul_v01_alpha_clean_128.png",
+      "sha256": "f78e50ff7a051992d4edeee4ef69eb7c2944f6ab1d9fb4429beee3a0aa6c007e"
+    },
+    "review": {
+      "equipmentPanel": {
+        "path": "Tools/artworks/poet_five_red_chow/reviews/poet_ring_pommel_tang_dao_diagonal_equipment_review_v01.png",
+        "sha256": "e03a743748bfc24c8d0cdfa6a9a4e85f44255281be3f211a416780972c0adf50"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/style-reports/equipment-style-report-90c08e3d8f2bc74a.json",
+    "sha256": "ecd2967b1571d131983fa46abde44edd60ae71dd3535bdd0340d1a5aacbfc500"
+  },
+  "approvalId": null,
+  "feedbackId": "feedback-2881829b3cb7962d",
+  "generationInvocationId": "generation-invocation-874ce977fc0eb3ed",
+  "generationDeliveryId": "generation-delivery-5b79d4ce061daa71",
+  "remediation": {
+    "mode": "alpha-islands",
+    "parentAttemptId": "job-653a716d2dd626fd-a001",
+    "originalSha256": "5ad78c9b121986e9abcd875037a7a9c380147b888e6053dbacceb1d5b7c1263f",
+    "derived": {
+      "path": "Tools/artworks/pipeline/artifacts/job-653a716d2dd626fd/job-653a716d2dd626fd-a002/remediated-alpha-islands.png",
+      "sha256": "9f3f3b4b7778170706cb54e658f30b9279f8ec44d2e599910101319109106169"
+    }
+  },
+  "equipmentStyleReportId": "equipment-style-report-90c08e3d8f2bc74a"
+}

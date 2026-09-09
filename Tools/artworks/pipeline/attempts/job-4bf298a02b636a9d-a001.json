@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 2,
+  "attemptId": "job-4bf298a02b636a9d-a001",
+  "jobId": "job-4bf298a02b636a9d",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "review_pending",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_wineskin_waist_hung_dr_raw_v01.png",
+      "sha256": "18864911ed476d530c6340d8832fcdeae0b08d8fbf47c7000b9b7e11bb71931b"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-4bf298a02b636a9d/job-4bf298a02b636a9d-a001/raw.png",
+      "sha256": "18864911ed476d530c6340d8832fcdeae0b08d8fbf47c7000b9b7e11bb71931b"
+    },
+    "prepared": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_wineskin_waist_hung_dr_v01.png",
+      "sha256": "83889cadcd16f7a6f09f1c0bf184b2d4bc81a9597d3712f3ae57b7eace114cf4"
+    },
+    "equipmentPreview": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_wineskin_waist_hung_dr_v01_128.png",
+      "sha256": "3790bc49a7e6d87c583b92e883f3d279d557773b57673ed2a64fdc80d641c68b"
+    },
+    "review": {
+      "equipmentPanel": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_wineskin_waist_hung_review_v01.png",
+        "sha256": "de80039c573e8e2cd615b26c7da02a6c8d585733a80e6fb9e3120e79403f570f"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/style-reports/equipment-style-report-5bba2ec60913d9a8.json",
+    "sha256": "6bebf05762cc2e7c338fdca9bf0939c21dc1ab2158c43e553dcb9012b2cd4119"
+  },
+  "approvalId": null,
+  "feedbackId": null,
+  "generationInvocationId": "generation-invocation-dd6999b54768aba6",
+  "generationDeliveryId": "generation-delivery-9a6c11ee4164e2e6",
+  "equipmentStyleReportId": "equipment-style-report-5bba2ec60913d9a8"
+}

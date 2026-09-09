@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-afe559961ddc6e96",
+  "artifact": {
+    "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v09/grip-original.png",
+    "sha256": "5bd08074928609c78b7450e24ef641da19288e96aef3a66a8c404cf41eea63cf"
+  },
+  "role": "review-derived",
+  "note": "Poet Idle DR v09 hash-bound Art Direction review evidence; non-runtime"
+}

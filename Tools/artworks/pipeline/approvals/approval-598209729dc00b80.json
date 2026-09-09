@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 2,
+  "approvalId": "approval-598209729dc00b80",
+  "attemptId": "job-83839806868cdd1f-a001",
+  "candidateSha256": "d4a4198fb47a3d84a0c5f6656d1cef0e66af369c3f85a0ae6692d5ae299164bd",
+  "maskSha256": null,
+  "reviewer": "cty41",
+  "reviewSha256": {
+    "equipmentPanel": "52463ac8a92af12d613a63238ef605999a9588c9febf58467d5f0e91ba35c2a3"
+  },
+  "decision": "approved",
+  "reason": "用户明确接受唐剑v1，装备尺寸门禁与固定Review通过",
+  "decidedAt": "2026-08-30T03:16:48.4104444+08:00",
+  "annotation": null,
+  "reportSha256": "3d006d26b219c8d49d3cdb010c01457a288d97f83472b9dfe3d695e460247309"
+}

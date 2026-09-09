@@ -1,0 +1,190 @@
+{
+  "schemaVersion": 1,
+  "briefKind": "asset",
+  "briefId": "poet-ring-pommel-tang-dao-idle-ul-v7",
+  "assetId": "poet-five-red-chow-ring-pommel-tang-dao-idle-ul-v7",
+  "family": "actor",
+  "purpose": "Bind the human-locked a010 visual: foreground tail, screen-right side paw and foot behind the body, and a fully sheathed Tang dao almost completely occluded with only its small right-shoulder ring/grip visible.",
+  "firstRead": [
+    "approved equipped Idle DR identity/equipment authority",
+    "approved tail-right face-left UL body direction",
+    "single connected sheathed dao toward upper-left"
+  ],
+  "targetContexts": [
+    "master-256",
+    "preview-128",
+    "tile-64x32",
+    "battle-actor"
+  ],
+  "identityInvariants": [
+    "same approved equipped poet as Idle DR v03",
+    "tail on screen-right",
+    "tiny screen-left eye/nose cue only",
+    "narrow 68x110 capsule",
+    "exactly four compact attached paws",
+    "same old approved Tang dao ring/grip design; scabbard may remain fully occluded behind body"
+  ],
+  "shapeStrategy": "Redraw natively from behind. Keep the body visibly narrower than the exhausted v2 candidate. Place the small edge-on ring at the screen-right shoulder; from that ring and grip, the connected sheathed weapon axis points diagonally toward screen upper-left behind the body. Most of the sheath remains hidden.",
+  "colorStrategy": "Preserve approved poet and dao colors with flat restrained back lighting.",
+  "materialStrategy": "Use the same bold-outline, flat-value, low-detail Pure Run cartoon language.",
+  "attentionRole": "primary",
+  "allowedVariation": [
+    "No visual variation from human-locked a010; contract migration only."
+  ],
+  "forbidden": [
+    "body outside explicit narrow core guide",
+    "disconnected weapon pieces",
+    "elongated side paws",
+    "exposed blade",
+    "gourd",
+    "guqin",
+    "large frontal ring",
+    "mane or beard seam",
+    "pear-shaped or squat body",
+    "ring on screen-left shoulder",
+    "second weapon",
+    "vertical or lower-left weapon axis",
+    "visible arms or legs",
+    "wide column body",
+    "wineskin",
+    "straight rear view",
+    "tail on screen-left",
+    "full face",
+    "second visible eye",
+    "regenerated grip ornament",
+    "spiral grip pattern"
+  ],
+  "referenceResponsibilities": [
+    {
+      "role": "approved-equipped-dr-authority",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+      "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3",
+      "responsibility": "Primary ImageGen source for character identity, exact four-paw topology, original Tang dao design and carried Idle relationship; reproject direction only."
+    },
+    {
+      "role": "approved-ul-body-direction",
+      "path": "Tools/artworks/pipeline/artifacts/job-9a531767f319b957/job-9a531767f319b957-a001/calibrated.png",
+      "sha256": "9c37f61930aefd4aac08ad6f82a2e1ff6282faf90ca5f0ed42dbfb3e4d29a387",
+      "responsibility": "ImageGen source for tail-right face-left UL direction and core volume; no equipment or paw pixels."
+    },
+    {
+      "role": "approved-isolated-dao-identity-review-only",
+      "path": "Tools/artworks/pipeline/artifacts/job-1814105c6a26c0a4/job-1814105c6a26c0a4-a001/prepared.png",
+      "sha256": "8ecf3de0f6859965cdc08ebae8735bfaa8d134a701e855ba422262fbf71ce0cf",
+      "responsibility": "Review-only exact weapon component extracted from approved DR Assembly; do not use as a separate ImageGen input because the full equipped DR already carries it."
+    }
+  ],
+  "requiredReviewPanels": [
+    "candidate-master",
+    "preview-128",
+    "identity-context",
+    "core-anchor-overlay",
+    "back-view-inspection",
+    "equipment-inspection",
+    "pose-axis",
+    "paw-depth",
+    "occlusion-depth",
+    "semantic-overlay",
+    "tile-review",
+    "amazon-tile-compare",
+    "style-context",
+    "rejected-regression"
+  ],
+  "acceptanceCases": [
+    {
+      "caseId": "POET-UL-V3-CORE-001",
+      "evidence": [
+        "core-anchor-overlay",
+        "preview-128"
+      ],
+      "automatedFacts": [
+        "core dimensions and row profiles are reported against the approved anchor"
+      ],
+      "humanChecks": [
+        "body is a narrow compact capsule rather than a broad column",
+        "identity has no mane seam"
+      ],
+      "passCriteria": "Approved poet volume survives the UL redraw."
+    },
+    {
+      "caseId": "POET-UL-V3-PAWS-001",
+      "evidence": [
+        "semantic-overlay",
+        "paw-depth",
+        "occlusion-depth"
+      ],
+      "automatedFacts": [
+        "four paw labels are required and arm/leg labels are forbidden"
+      ],
+      "humanChecks": [
+        "four compact paws directly attach to core",
+        "front paws are tiny behind-core arcs"
+      ],
+      "passCriteria": "No visible limbs or floating paws."
+    },
+    {
+      "caseId": "POET-UL-V3-DIRECTION-001",
+      "evidence": [
+        "back-view-inspection",
+        "pose-axis"
+      ],
+      "automatedFacts": [
+        "native UL target and composition guide are bound"
+      ],
+      "humanChecks": [
+        "native upper-left back view",
+        "no face on back",
+        "relaxed idle"
+      ],
+      "passCriteria": "Direction and pose are unambiguous."
+    },
+    {
+      "caseId": "POET-UL-V3-DAO-001",
+      "evidence": [
+        "equipment-inspection",
+        "pose-axis",
+        "occlusion-depth"
+      ],
+      "automatedFacts": [
+        "one equipment input and behind-core rule are bound"
+      ],
+      "humanChecks": [
+        "small edge-on ring at right shoulder",
+        "connected sheathed axis points toward upper-left",
+        "most sheath may be hidden",
+        "no disconnected fragment"
+      ],
+      "passCriteria": "One fully sheathed Tang dao has the user-corrected UL projection."
+    },
+    {
+      "caseId": "POET-UL-V3-EXCLUSION-001",
+      "evidence": [
+        "candidate-master",
+        "rejected-regression"
+      ],
+      "automatedFacts": [
+        "negative examples remain review-only"
+      ],
+      "humanChecks": [
+        "no guqin wineskin gourd blade second weapon face limbs or vertical weapon regression"
+      ],
+      "passCriteria": "All exclusions hold."
+    },
+    {
+      "caseId": "POET-UL-V3-SCALE-001",
+      "evidence": [
+        "preview-128",
+        "tile-review",
+        "amazon-tile-compare",
+        "style-context"
+      ],
+      "automatedFacts": [
+        "master preview baseline and tile facts are reported"
+      ],
+      "humanChecks": [
+        "identity paws and weapon cue remain readable at scale"
+      ],
+      "passCriteria": "Production scale and style are coherent."
+    }
+  ]
+}

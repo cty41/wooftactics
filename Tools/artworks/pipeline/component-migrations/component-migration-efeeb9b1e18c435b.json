@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 3,
+  "componentMigrationId": "component-migration-efeeb9b1e18c435b",
+  "contractId": "contract-a4d34dfe07e5299c",
+  "contractSha256": "f830e4cb76838a774180aa3925efd02369149dc463da53d6a3af2f96f489d244",
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/concepts/poet_tang_dao_75_grip_reposition_03.png",
+    "sha256": "773dfc24bb9bac40b76a5fc1fefa14ae307c6584958f25600a2f73ddb0c63c06"
+  },
+  "prepared": {
+    "path": "Tools/artworks/poet_five_red_chow/components/poet_idle_body_grip_reposition_component_v03.png",
+    "sha256": "adccfc2c04a6637f8b7c102381dbbb2cb6bbcac05e4af225965912972b4c7999"
+  },
+  "processing": {
+    "schemaVersion": 1,
+    "operation": "deterministic-selected-study-partition",
+    "source": "Tools/artworks/poet_five_red_chow/concepts/poet_tang_dao_75_grip_reposition_03.png",
+    "selectedBy": "cty41",
+    "selection": "C: lower relaxed grip",
+    "steps": [
+      "start from the previously approved derived poet body component",
+      "remove only the old screen-left circular paw outline by replacing dark outline pixels with neighboring approved body colors",
+      "leave face, ears, five-red identity, core silhouette, tail, near paw, and foot apertures unchanged",
+      "keep equipment and repositioned far paw out of this body component"
+    ],
+    "runtimeEligible": false
+  },
+  "reviewer": "cty41",
+  "reason": "用户在75%唐刀研究后明确选择C低位放松握持；该组件仅去除旧左爪轮廓并保持其余批准身体像素",
+  "acceptedAt": "2026-09-03T14:25:00+08:00",
+  "invocationStatus": "missing-pre-v3"
+}

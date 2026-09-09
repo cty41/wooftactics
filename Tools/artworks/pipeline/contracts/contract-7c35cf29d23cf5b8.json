@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 3,
+  "contractId": "contract-7c35cf29d23cf5b8",
+  "assetId": "poet-idle-dr-far-paw-component-v1",
+  "approvedAssetId": "poet-idle-dr-far-paw-component-v1",
+  "kind": "ground_character",
+  "direction": "down-right",
+  "pose": "idle",
+  "anchor": null,
+  "maskRequired": true,
+  "noArms": false,
+  "handSides": {
+    "near_hand": null,
+    "far_hand": null
+  },
+  "occlusion": null,
+  "compositionSpec": null,
+  "identitySpec": null,
+  "requiresInvocation": false,
+  "canvasSpec": {
+    "masterSize": [
+      256,
+      256
+    ]
+  },
+  "tilePlacementSpec": null,
+  "styleSpec": null,
+  "equipmentProductionSpec": null,
+  "tolerances": {
+    "sizePx": 3,
+    "centerPx": 2
+  },
+  "outputs": {
+    "master": "Tools/artworks/poet_five_red_chow/components/poet_idle_dr_far_paw_v01.png",
+    "preview": "Tools/artworks/poet_five_red_chow/components/poet_idle_dr_far_paw_v01_128.png"
+  },
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "deterministic-derived"
+  },
+  "assetRole": "component",
+  "componentKind": "paw_overlay",
+  "sourceMode": "derived",
+  "runtimeEligible": false
+}

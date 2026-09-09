@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 2,
+  "attemptId": "job-06be9bd09be64664-a002",
+  "jobId": "job-06be9bd09be64664",
+  "ordinal": 2,
+  "parentAttemptId": "job-06be9bd09be64664-a001",
+  "retryFeedbackId": "feedback-5ad5484e31d83990",
+  "promptDelta": "按批准Potion和匕首的扁平色块重绘；no gradient/no airbrush/no texture",
+  "technicalRemediation": false,
+  "state": "review_pending",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_wine_gourd_raw_v02_flat.png",
+      "sha256": "64287033fa4186b27216d4fc1ab3d2c202538b2d841c6447b5f7a37f6e23f084"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-06be9bd09be64664/job-06be9bd09be64664-a002/raw.png",
+      "sha256": "64287033fa4186b27216d4fc1ab3d2c202538b2d841c6447b5f7a37f6e23f084"
+    },
+    "prepared": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_wine_gourd_v02_flat.png",
+      "sha256": "406a76267d7c4146a5c810a0e9c529b33e39088674059532dca098ce9ab9b13e"
+    },
+    "equipmentPreview": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_wine_gourd_v02_flat_128.png",
+      "sha256": "5848b5c3a00b2ac7247dfb175fa1ef15d8f7c8fb9d22fd2af78b14de710c4023"
+    },
+    "review": {
+      "equipmentPanel": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_wine_gourd_review_v02_flat.png",
+        "sha256": "e32b16be493565ccc0f1d53c1575968c4e639c3891c920bf227d6f9c69f546e6"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/style-reports/equipment-style-report-99a56e663f8a7dfe.json",
+    "sha256": "27365029ba174833ea68880f1995c8733cf9526d20e7fd26f8c2d7699d69820d"
+  },
+  "approvalId": null,
+  "feedbackId": "feedback-b0a86ad7881afdd5",
+  "generationInvocationId": "generation-invocation-f4df255089601da2",
+  "generationDeliveryId": "generation-delivery-5eaa9e3b348001d4",
+  "equipmentStyleReportId": "equipment-style-report-99a56e663f8a7dfe",
+  "equipmentStyleVerdictId": "equipment-style-verdict-d978ab98805610f2",
+  "equipmentStyleVerdictIds": [
+    "equipment-style-verdict-d978ab98805610f2"
+  ]
+}

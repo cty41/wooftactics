@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 4,
+  "modelReviewResultRecordId": "model-review-result-record-119b1125a3a4dff0",
+  "invocationId": "model-review-invocation-a197839e4376f310",
+  "attemptId": "job-f40816b1c2e8b36c-a005",
+  "packetId": "model-review-packet-888f12b1c649ceef",
+  "packetSha256": "ecd9221700a56ba56143fd861b2e05a088311703b8d2e042c19316956dfe1ef9",
+  "qualificationMode": true,
+  "provider": "dsh-subagent-current-session",
+  "model": "gpt-5.6-sol",
+  "effort": "high",
+  "freshSession": true,
+  "freshSessionId": "0c864253-6c76-4b18-bf43-7acd6402fa7b",
+  "promptSource": {
+    "path": "Tools/artworks/pure_run/art_direction/review/reviewer_prompt_v1.md",
+    "sha256": "ea9a86b3e7e4ee724090fe0c520a4271ce4f38a34184335f865189bcf259a850"
+  },
+  "rawResult": {
+    "path": "Tools/artworks/pure_run/art_direction/review/shadow_results/capsule_no_limbs_demonbound_idle_ul_positive_high_raw.json",
+    "sha256": "5eb31ea53fa129cf78227708c86d5c0c916a9b47cc34be92b50aaa8d16a4429b"
+  },
+  "result": {
+    "resultId": "model-review-result-f636ed03dbf5b8c9",
+    "schemaVersion": 1,
+    "packetId": "model-review-packet-888f12b1c649ceef",
+    "packetSha256": "ecd9221700a56ba56143fd861b2e05a088311703b8d2e042c19316956dfe1ef9",
+    "decision": "pass_to_human",
+    "summary": "The bound positive case visually satisfies CAPSULE-NO-LIMBS-v1: all four paw masses attach directly to the capsule core without visible arm, forearm, leg, lower-leg, or thin connecting limb segments. This shadow qualification result does not approve, reject, change attempt state, or trigger retry.",
+    "strengths": [
+      "Both lateral forepaws read as compact paw masses directly overlapping the capsule edge rather than projecting limb segments.",
+      "Both hind paws attach directly at the capsule base with no visible legs or thin connectors.",
+      "The visible artwork and semantic mask are consistent with the approved topology comparison within the bound evidence region."
+    ],
+    "defects": [],
+    "frozenInvariants": [
+      "Shadow-mode-approved-positive-no-retry-or-state-change"
+    ],
+    "operations": []
+  },
+  "outcome": "model_reviewed",
+  "validationError": null
+}

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-c846ebbfc2ae01e9",
+  "attemptId": "job-f47b524a48de2ded-a003",
+  "candidateSha256": "6889bff22b05574e3fb5f33fa4cc9f272efbd9f1ec15bd785a429fb110088b38",
+  "reviewer": "agent",
+  "verdict": "retry",
+  "strengths": [
+    "Native back view, no face, one sheathed weapon, and all four paw masses are present."
+  ],
+  "defects": [
+    "Core reads as a tall broad column rather than the approved compact capsule and fails deterministic core geometry.",
+    "Ring pommel is a large frontal circle instead of a small edge-on ellipse.",
+    "Side front-paw shapes are too vertically extended and risk reading as limb stubs."
+  ],
+  "nextPromptDelta": "Shorten and compact the capsule; reduce side paws to tiny directly attached arcs; make the shoulder ring a narrow edge-on ellipse connected to a short grip; keep all lower sheath hidden.",
+  "recordedAt": "2026-09-04T21:26:31+08:00",
+  "authorType": "agent",
+  "categories": [
+    "core_geometry",
+    "equipment_scale",
+    "pose_axis"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "poet identity, back view, one fully sheathed Tang dao, no face, no deferred props"
+  ],
+  "pendingFixes": [
+    "deterministic report must pass before Model Reviewer"
+  ]
+}

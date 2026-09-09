@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "attemptId": "job-ffaa562f76730ec3-a002",
+  "jobId": "job-ffaa562f76730ec3",
+  "promptDelta": "Treat Image 1 as an edit target, not inspiration: preserve its pixels and silhouette; make only minimal equipment additions. Reject any frontal face. Reduce sword scale 25 percent and expose both guqin ends behind body.",
+  "inputs": [
+    {
+      "role": "body_anchor",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+      "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753"
+    },
+    {
+      "role": "guqin",
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_guqin_compact_v03.png",
+      "sha256": "1abc09cbedfee504d9f3ad33fc71f44f5996cf5d0ba1eab07091b1c7b0cf7cb7"
+    },
+    {
+      "role": "tang_sword",
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_tang_sword_v01.png",
+      "sha256": "d4a4198fb47a3d84a0c5f6656d1cef0e66af369c3f85a0ae6692d5ae299164bd"
+    },
+    {
+      "role": "wineskin",
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_wine_wineskin_v01.png",
+      "sha256": "b677fa5977ea35454bf24238bbf8a9f10833bb37c95454abe7d0b46fac1cd926"
+    }
+  ],
+  "target": {
+    "direction": "down-right",
+    "pose": "idle"
+  },
+  "conceptOnly": false,
+  "contractRequirements": null
+}

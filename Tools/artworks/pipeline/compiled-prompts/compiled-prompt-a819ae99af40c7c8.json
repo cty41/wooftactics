@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "compiledPromptId": "compiled-prompt-a819ae99af40c7c8",
+  "jobId": "job-16985014758beabb",
+  "poseGuideId": "pose-guide-738e0d428ebd0eb2",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/compiled/poet_ring_pommel_tang_dao_idle_ul_v5_a002.md",
+    "sha256": "81d5d98eb693989f3a97ec0e47c699e3061c8d361daa011008f3b5dc25830c2c"
+  }
+}

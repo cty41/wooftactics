@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-40607f102a779592",
+  "attemptId": "job-dfbdae10245d7d6c-a002",
+  "candidateSha256": "9c63c564d159c5a1596cbc265f2f2e7dc4af841865148bc822eea2bb6dcd394a",
+  "reviewer": "agent",
+  "verdict": "retry",
+  "strengths": [
+    "Body component correctly excludes all paws and equipment and preserves the back view."
+  ],
+  "defects": [
+    "Core is 101x110 instead of 66x110 and has a large mane seam."
+  ],
+  "nextPromptDelta": "Reduce body width by one third while keeping height; use a smooth simple head-body contour without a mane seam; keep no paws and no equipment.",
+  "recordedAt": "2026-09-05T00:39:03+08:00",
+  "authorType": "agent",
+  "categories": [
+    "core_geometry",
+    "identity"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "body-only isolation, back view, no face, orange palette, two ears and tail"
+  ],
+  "pendingFixes": [
+    "body component deterministic pass and human review"
+  ]
+}

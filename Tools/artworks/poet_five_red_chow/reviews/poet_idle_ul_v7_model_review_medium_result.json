@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "packetId": "model-review-packet-f56486635b978b9c",
+  "packetSha256": "95cf541a0ca3e2f440ea3e2272acd5a2ab1b0dc9874da5e98b3beaa28f9407b8",
+  "decision": "pass_to_human",
+  "summary": "The candidate presents four compact, directly attached paws under the frozen occlusion arrangement, with no visible arm- or leg-like connectors.",
+  "strengths": [
+    "Visible paws are compact and attach directly to the capsule body silhouette.",
+    "No elongated limb connector is visible between any paw and the body.",
+    "The occluded screen-right side paw and mostly occluded foot remain consistent with the frozen invariant."
+  ],
+  "defects": [],
+  "frozenInvariants": [
+    "cty41-locked a010: foreground tail; screen-right side paw and foot behind body; current mostly occluded sheathed Tang dao presentation"
+  ],
+  "operations": []
+}

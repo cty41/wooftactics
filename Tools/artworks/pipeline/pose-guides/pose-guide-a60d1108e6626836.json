@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 2,
+  "poseGuideId": "pose-guide-a60d1108e6626836",
+  "compositionId": "composition-c274eb8a8c4082e2",
+  "compositionSha256": "5b87a58f28ee986ab571861b37f2ac3c0e1036276fe13a24389be7e1be9bc053",
+  "anchorSha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/guides/poet_ring_pommel_tang_dao_idle_ul_pose_guide_v3.png",
+    "sha256": "06f9e8103e83f7d06ea45d8333f6851dceff50ff9597cf5ddc96b62f311fe8c6"
+  },
+  "role": "supporting-derived"
+}

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "equipmentStyleVerdictId": "equipment-style-verdict-a308a1ccdef4c6e5",
+  "attemptId": "job-93dbc1ce4eeb846d-a002",
+  "candidateSha256": "f87b0ccfd6d22bc50ed4c11e8c7a8f11bfe5a46b6f9f2bcddd05ef4a773dba5c",
+  "reviewSha256": {
+    "equipmentPanel": "031f2c8179b5a689dbc79b6a4caba8a88ebb35f3c265ce88cf3aced868ca72c7"
+  },
+  "reviewer": "cty41",
+  "decision": "retry",
+  "reason": "用户参考实拍背琴人物明确指出v2仍是桌面正常态；背负时琴背面应贴身体，整体从左肩上方向右下斜背",
+  "decidedAt": "2026-08-31T07:46:43.8363488+08:00"
+}

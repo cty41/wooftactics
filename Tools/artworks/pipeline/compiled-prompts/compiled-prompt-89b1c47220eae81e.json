@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "compiledPromptId": "compiled-prompt-89b1c47220eae81e",
+  "jobId": "job-43b34a4685f71ca2",
+  "poseGuideId": "pose-guide-ae693268ba10e1f7",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/pipeline/idle_dr_compiled_prompt_v8_isometric.md",
+    "sha256": "444fba4e37b0339a9cb871b6f30265270aa67b6454fe4e7f440656b51e898b5a"
+  }
+}

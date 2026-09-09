@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "projectReviewPolicyId": "project-review-policy-6e319c00d0238d4d",
+  "policyId": "pure-run-model-review-policy-v1",
+  "version": 1,
+  "source": {
+    "path": "Tools/artworks/pure_run/art_direction/review/project_review_policy_v1.json",
+    "sha256": "dbff51711d4739690edffdd85127956d3b883b014e478d091e0eff5dc2b46970"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 2,
+  "migrationId": "job-migration-afe3d8d4f71d1acd",
+  "oldJobId": "job-818ab85aa81bb2b3",
+  "oldJobSha256": "c107506210d5194d051aec6ba06896719cdd9327ec1fca0bb07477c53399dd34",
+  "newJobId": "job-02bdb498e0591e81",
+  "newJobSha256": "a95541f7cd135fec7b545e4cb01f6ac33ad8a2e17cad07000aeee38d99e9c5cd",
+  "changes": [
+    {
+      "path": "Tools/artworks/pure_run/equipment/prompt_plain_iron_sword.md",
+      "previousSha256": "49e04e643819e9733354ce98e098409016174b44875609c9a551236a5a8f8b61",
+      "currentSha256": "2ad1f0d8234fcb6a089a1d7d6a05ec01cba953e27328478c2942d49f95c7ecea"
+    }
+  ],
+  "historicalAttempts": [
+    {
+      "attemptId": "job-818ab85aa81bb2b3-a001",
+      "state": "prepared",
+      "sha256": "9c6aadb72dbda15a3fc2f0862702600ad8fe875436e4c7eb186825f64158b42e"
+    }
+  ],
+  "reason": "Direct user authorized migration of committed equipment prompt bindings blocking unified verification.",
+  "authorizedBy": "direct-user-confirmation"
+}

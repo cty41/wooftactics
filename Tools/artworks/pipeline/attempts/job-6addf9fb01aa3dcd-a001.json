@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 3,
+  "attemptId": "job-6addf9fb01aa3dcd-a001",
+  "jobId": "job-6addf9fb01aa3dcd",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "prepared",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_ul_v01.png",
+      "sha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-6addf9fb01aa3dcd/job-6addf9fb01aa3dcd-a001/raw.png",
+      "sha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-6addf9fb01aa3dcd/job-6addf9fb01aa3dcd-a001/prepared.png",
+      "sha256": "491e97c04472fc50d191095a3ff50c9b917d0cb7f68634722d4579ddd17ee2c7"
+    }
+  },
+  "report": null,
+  "approvalId": null,
+  "feedbackId": null,
+  "componentMigrationId": "component-migration-551f66982a0c1670",
+  "sourceMode": "pre_v3_import"
+}

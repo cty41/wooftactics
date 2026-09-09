@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-4280a58992f3e29c",
+  "attemptId": "job-612e5cad5e501d50-a001",
+  "candidateSha256": "f0f74ca1545a4bdb14b8d36ef60463931da97d03c83f9ceb9f31dc3cb7a7e397",
+  "reviewer": "cty41",
+  "verdict": "retry",
+  "strengths": [
+    "唐式扁壶轮廓与双耳身份可保留"
+  ],
+  "defects": [
+    "渐变式体积光、柔和高光和材质噪点造成明显AI味，与既有Pure Run武器道具不一致"
+  ],
+  "nextPromptDelta": "严格参考批准匕首、盾牌和药瓶的硬边平涂；no gradient/no texture/no soft highlight",
+  "recordedAt": "2026-08-30T09:51:39.0558482+08:00",
+  "authorType": "human",
+  "categories": [
+    "processing"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "改为2-3个硬边平涂色块、统一粗轮廓，删除柔光和纹理噪点"
+  ]
+}

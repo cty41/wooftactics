@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "attemptId": "job-7805603beaa49411-a001",
+  "inputSha256": "a4c81bfbdfca9a7faa5002685eb1b6751376b9cce3d99c9d81309483c90cc4ca",
+  "maskSha256": "308e9a58d2ad8d0189f420f37ab3a355435a816dd9417bcfd376b460e264de37",
+  "technical": {
+    "size": [
+      256,
+      256
+    ],
+    "alphaBbox": [
+      98,
+      143,
+      158,
+      237
+    ]
+  },
+  "geometry": {
+    "componentKind": "equipment"
+  },
+  "issues": [
+    "chroma_fringe",
+    "exact_chroma_residue"
+  ],
+  "passed": false
+}

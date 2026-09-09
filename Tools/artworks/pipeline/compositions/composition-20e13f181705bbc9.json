@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 2,
+  "compositionId": "composition-20e13f181705bbc9",
+  "assetId": "poet-five-red-chow-idle-ul-body-component-v2",
+  "spec": {
+    "canvas": [
+      256,
+      256
+    ],
+    "bodyLayer": true,
+    "renderForbiddenRegions": false,
+    "coreBbox": [
+      94,
+      121,
+      160,
+      231
+    ],
+    "coreAxis": {
+      "bottom": [
+        128,
+        231
+      ],
+      "top": [
+        123,
+        121
+      ],
+      "tiltDegrees": [
+        -4.0,
+        -2.0
+      ]
+    },
+    "footCenter": [
+      128,
+      236
+    ],
+    "weapon": {
+      "hiddenGrip": [
+        168,
+        160
+      ],
+      "exitWindow": [
+        168,
+        160,
+        168,
+        160
+      ],
+      "tipRegion": [
+        168,
+        160,
+        168,
+        160
+      ],
+      "maxBladeWidthPx": 0,
+      "maxGemAreaPx": 0
+    },
+    "forbiddenRegions": [],
+    "requiredHiddenLabels": [],
+    "visibleAreaCaps": {},
+    "equipmentState": {
+      "scabbard": "absent",
+      "staticEffects": "absent"
+    },
+    "screenSpaceIntent": {
+      "direction": "upper-left three-quarter back, about 15–25 degrees away from straight rear",
+      "core": "narrow capsule with top center 5 px screen-left of foot center",
+      "earPlanes": "small inner plane visible on screen-left ear; screen-right ear recedes",
+      "valuePlanes": "screen-left near plane slightly lighter; screen-right back plane darker, flat values only",
+      "exclusions": "no paws, equipment, face or mane seam"
+    }
+  },
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/compositions/poet_idle_ul_body_component_composition_v2.json",
+    "sha256": "40445c819b4e637ce455b5a83d4a9db4a07dcb6708c79753a39c5d85ff4b1904"
+  },
+  "anchor": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+    "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "attemptId": "job-52353908c08e6df6-a003",
+  "jobId": "job-52353908c08e6df6",
+  "promptDelta": "保持视觉内容不变，使用同一语义蒙版与已批准 anchor mask 参数执行确定性 256 校准",
+  "inputs": [],
+  "target": {
+    "direction": "down-right",
+    "pose": "idle"
+  },
+  "conceptOnly": false,
+  "contractRequirements": null
+}

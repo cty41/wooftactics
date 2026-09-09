@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 2,
+  "compositionId": "composition-d45d88c83d9b9532",
+  "assetId": "poet-five-red-chow-idle-dr-final-v3",
+  "spec": {
+    "canvas": [
+      256,
+      256
+    ],
+    "coreAxis": {
+      "bottom": [
+        128,
+        231
+      ],
+      "top": [
+        128,
+        121
+      ],
+      "tiltDegrees": [
+        -2.0,
+        2.0
+      ]
+    },
+    "footCenter": [
+      128,
+      236
+    ],
+    "weapon": {
+      "hiddenGrip": [
+        128,
+        198
+      ],
+      "exitWindow": [
+        124,
+        194,
+        132,
+        202
+      ],
+      "tipRegion": [
+        124,
+        194,
+        132,
+        202
+      ],
+      "guardWindow": [
+        124,
+        194,
+        132,
+        202
+      ],
+      "bladeCenterline": [
+        124,
+        194,
+        132,
+        202
+      ],
+      "maxBladeWidthPx": 1,
+      "maxGemAreaPx": 1
+    },
+    "forbiddenRegions": [],
+    "equipmentState": {
+      "scabbard": "absent",
+      "sword": "absent",
+      "guqin": "absent",
+      "wineVessel": "absent",
+      "staticEffects": "absent"
+    }
+  },
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/idle_down_right_composition_v3_final.json",
+    "sha256": "dc015cec385251521b8f3ace9c1dc8b51d646fb8afc17ba10bc7ce98066e2328"
+  },
+  "anchor": {
+    "path": "Tools/artworks/doge/calibrated/doge_capsule_demonbound_idle_dr_v01.png",
+    "sha256": "21559ca7aedd3e146feb2b93c5a6633affc6ce544122628c960972a982b0b5e7"
+  }
+}

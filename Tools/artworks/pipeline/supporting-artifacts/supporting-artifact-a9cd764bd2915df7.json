@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-a9cd764bd2915df7",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/idle_dr_tilemap_hunter_compare_v01.png",
+    "sha256": "278ead7f404136767edd5ea59c7ab631288621ad8f494f1aeb024c571fb6754e"
+  },
+  "role": "review-derived",
+  "note": "诗人美术人工审核辅助对比图，不是运行时Sprite"
+}

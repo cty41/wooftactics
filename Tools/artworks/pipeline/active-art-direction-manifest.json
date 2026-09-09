@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 4,
+  "activeArtDirectionManifestId": "pure-run-art-direction-manifest-v1",
+  "registryId": "art-direction-manifest-e0ce050ea257c7bb",
+  "artifact": {
+    "path": "Tools/artworks/pure_run/art_direction/art_direction_manifest_v1.json",
+    "sha256": "dfc6e9a0cd517287f5cfa10d7ad36393908eed4c7cb92c2c03ede403f95d71f9"
+  }
+}

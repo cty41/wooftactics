@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "registryId": "pure-run-review-rule-registry-v1",
+  "rules": [
+    {
+      "ruleId": "CAPSULE-CORE-SHAPE-v1",
+      "title": "胶囊核心轮廓",
+      "scope": {"family": ["actor"], "topology": ["capsule"]},
+      "authority": "hard",
+      "autoRetryEligible": true,
+      "humanMeaning": "排除耳、尾、四爪和装备后，核心保持批准的紧凑胶囊体；不得梨形、窄柱形、矮胖或按完整外轮廓缩放。",
+      "requiredEvidence": ["candidate-master", "core-anchor-overlay", "preview-128"],
+      "sourcePaths": [".agents/docs/pure-run-artwork-guidelines.md", ".agents/skills/pure-run-artwork-pipeline/references/review-casebook.md"]
+    },
+    {
+      "ruleId": "CAPSULE-NO-LIMBS-v1",
+      "title": "胶囊角色无胳膊和腿",
+      "scope": {"family": ["actor"], "topology": ["capsule"]},
+      "authority": "hard",
+      "autoRetryEligible": true,
+      "humanMeaning": "角色只有直接贴体的手爪和脚爪，不得出现胳膊、前臂、腿、小腿或细长连接段。",
+      "requiredEvidence": ["candidate-master", "semantic-overlay", "paw-depth"],
+      "sourcePaths": [".agents/docs/pure-run-artwork-guidelines.md"]
+    },
+    {
+      "ruleId": "PAW-DIRECT-CONTACT-v1",
+      "title": "四爪直接接触核心",
+      "scope": {"family": ["actor"], "topology": ["capsule"]},
+      "authority": "hard",
+      "autoRetryEligible": true,
+      "humanMeaning": "可见手爪和脚爪以多像素宽接触面直接附着核心或合同允许的握持面；不得浮空。",
+      "requiredEvidence": ["semantic-overlay", "paw-depth"],
+      "sourcePaths": [".agents/docs/pure-run-artwork-guidelines.md"]
+    },
+    {
+      "ruleId": "REAR-FOOT-OCCLUSION-v1",
+      "title": "后脚与身体遮挡",
+      "scope": {"family": ["actor"], "topology": ["capsule"]},
+      "authority": "hard",
+      "autoRetryEligible": true,
+      "humanMeaning": "站立胶囊角色的脚爪上部应由身体覆盖，不得成为带腿段或完整浮在前景的独立椭圆。",
+      "requiredEvidence": ["candidate-master", "semantic-overlay", "preview-128"],
+      "sourcePaths": [".agents/docs/pure-run-artwork-guidelines.md"]
+    },
+    {
+      "ruleId": "NATIVE-DIRECTION-PROJECTION-v1",
+      "title": "原生方向与三维重投影",
+      "scope": {"family": ["actor", "equipment"]},
+      "authority": "hard",
+      "autoRetryEligible": true,
+      "humanMeaning": "目标方向必须按三维观察关系原生重绘，不能用二维镜像、旋转、倾斜或缩放冒充。",
+      "requiredEvidence": ["candidate-master", "direction-anchor-compare", "pose-axis"],
+      "sourcePaths": [".agents/docs/pure-run-artwork-guidelines.md"]
+    },
+    {
+      "ruleId": "BACK-VIEW-NO-FACE-v1",
+      "title": "背向不出现正脸",
+      "scope": {"family": ["actor"], "view": ["back", "back-three-quarter"]},
+      "authority": "hard",
+      "autoRetryEligible": true,
+      "humanMeaning": "背向角色不得把 DR 正脸、双眼、鼻口或完整吻部复制到后脑。",
+      "requiredEvidence": ["candidate-master", "back-view-inspection"],
+      "sourcePaths": [".agents/docs/pure-run-artwork-guidelines.md"]
+    },
+    {
+      "ruleId": "BEHIND-CORE-OCCLUSION-v1",
+      "title": "合同指定后层遮挡",
+      "scope": {"family": ["actor"]},
+      "authority": "hard",
+      "autoRetryEligible": true,
+      "humanMeaning": "合同声明为 behind-core 的手爪或装备只能在主体外露出受限外弧，主体必须覆盖其内侧。",
+      "requiredEvidence": ["semantic-overlay", "occlusion-depth", "candidate-master"],
+      "sourcePaths": [".agents/docs/pure-run-artwork-guidelines.md", ".agents/skills/pure-run-artwork-pipeline/references/review-casebook.md"]
+    },
+    {
+      "ruleId": "EQUIPMENT-STATE-v1",
+      "title": "装备存在与状态",
+      "scope": {"family": ["actor", "equipment"]},
+      "authority": "hard",
+      "autoRetryEligible": true,
+      "humanMeaning": "装备的存在、缺席、入鞘、出鞘、脱手和数量必须与合同一致，不得增加第二武器。",
+      "requiredEvidence": ["candidate-master", "equipment-inspection"],
+      "sourcePaths": [".agents/docs/pure-run-artwork-guidelines.md"]
+    },
+    {
+      "ruleId": "EQUIPMENT-PROJECTION-v1",
+      "title": "批准装备投影保持",
+      "scope": {"family": ["actor", "equipment"]},
+      "authority": "hard",
+      "autoRetryEligible": true,
+      "humanMeaning": "实装装备必须保持已批准方向投影中的轴线、透视和身份，不得退回其他方向。",
+      "requiredEvidence": ["approved-equipment", "equipment-inspection", "pose-axis"],
+      "sourcePaths": [".agents/docs/pure-run-art-direction-bible.md"]
+    },
+    {
+      "ruleId": "EQUIPMENT-VISIBILITY-RESTRAINT-v1",
+      "title": "空间关系优先于装备展示",
+      "scope": {"family": ["actor"], "equipmentRelation": ["held", "worn", "carried"]},
+      "authority": "hard",
+      "autoRetryEligible": true,
+      "humanMeaning": "不得为了展示装备破坏真实遮挡；装备大部分乃至全部不可见可以合法，不能规定最低展示量。",
+      "requiredEvidence": ["candidate-master", "equipment-inspection", "occlusion-depth"],
+      "sourceFeedbackIds": ["feedback-2ce2bbdf35d14dcc"]
+    },
+    {
+      "ruleId": "EQUIPMENT-VISUAL-CONTINUITY-v1",
+      "title": "装备视觉连续性",
+      "scope": {"family": ["actor"], "equipmentRelation": ["held", "worn", "carried"]},
+      "authority": "hard",
+      "autoRetryEligible": true,
+      "humanMeaning": "即使物理上可由遮挡解释，可见片段也不能在人眼中读成断裂、复制或多件装备。",
+      "requiredEvidence": ["candidate-master", "equipment-inspection", "preview-128"],
+      "sourceFeedbackIds": ["feedback-2ce2bbdf35d14dcc"]
+    },
+    {
+      "ruleId": "REFERENCE-ROLE-ISOLATION-v1",
+      "title": "参考职责隔离",
+      "scope": {"project": ["pure-run"]},
+      "authority": "hard",
+      "autoRetryEligible": false,
+      "humanMeaning": "跨角色参考只能承担明确职责；Negative、retry 和 superseded 只能供审核，不能进入生成输入。",
+      "requiredEvidence": ["reference-manifest"],
+      "sourcePaths": [".agents/docs/pure-run-art-direction-state-machine-design.md"]
+    },
+    {
+      "ruleId": "RETIRED-ASSET-REJECTION-v1",
+      "title": "退休资产硬拒绝",
+      "scope": {"project": ["pure-run"]},
+      "authority": "hard",
+      "autoRetryEligible": false,
+      "humanMeaning": "任何恢复的 Tools/artworks/amazon 路径均不得读取或绑定；项目 Amazon 只指赤柴 Hunter。",
+      "requiredEvidence": ["reference-manifest"],
+      "sourcePaths": ["Tools/artworks/pure_run/art_direction/references/retired_humanoid_amazon_v1.json"]
+    },
+    {
+      "ruleId": "SEMANTIC-MASK-HONESTY-v1",
+      "title": "语义蒙版不得掩盖视觉事实",
+      "scope": {"family": ["actor"]},
+      "authority": "hard",
+      "autoRetryEligible": false,
+      "humanMeaning": "Reviewer 必须同时检查图片和蒙版叠加；可见胳膊或腿不能通过标成 hand/core 而获得通过。",
+      "requiredEvidence": ["candidate-master", "semantic-overlay"],
+      "sourceFeedbackIds": ["feedback-2ce2bbdf35d14dcc"]
+    },
+    {
+      "ruleId": "ART-DIRECTION-HUMAN-ONLY-v1",
+      "title": "主观审美人工专属",
+      "scope": {"project": ["pure-run"]},
+      "authority": "human-only",
+      "autoRetryEligible": false,
+      "humanMeaning": "可爱程度、自然感、合理方案间的偏好和最终美术通过只能由 cty41 决定。",
+      "requiredEvidence": ["candidate-master", "art-direction-review"],
+      "sourcePaths": [".agents/docs/pure-run-art-direction-bible.md"]
+    }
+  ]
+}

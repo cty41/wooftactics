@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-6a69b38785a0ef0a",
+  "attemptId": "job-6270c6a0b9b0ba3c-a001",
+  "candidateSha256": "1bcaa569958cfc11b855c204500daaafd9837cf4f9598e7c95b878c7a890c610",
+  "reviewer": "cty41",
+  "verdict": "backup",
+  "strengths": [
+    "用户选择保留 C 的宽头、短吻、厚鬃与庄重松狮神情"
+  ],
+  "defects": [
+    "内部毛发层次仍偏多，不够接近项目简洁母图"
+  ],
+  "nextPromptDelta": "以 C 为犬种身份锚点，融合 B 的简化画风，不直接选用 C 全图",
+  "recordedAt": "2026-08-29T21:21:13.9669738+08:00",
+  "authorType": "human",
+  "categories": [
+    "identity",
+    "processing"
+  ],
+  "disposition": "backup",
+  "frozenInvariants": [
+    "C 的犬种脸、厚鬃和庄重神情"
+  ],
+  "pendingFixes": [
+    "采用 B 的简化平涂和稀疏内部线"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-7c88329c4b9ce563",
+  "attemptId": "job-7c41706595ff4e35-a001",
+  "candidateSha256": "35bc86c539e1d5a0ed033e36e47ade8aecec80b195996d31963c3a53f2b85cba",
+  "reviewer": "agent",
+  "verdict": "retry",
+  "strengths": [
+    "Three-quarter UL direction is now readable: asymmetric ears, left inner ear plane, receding right value plane, off-center tail and bounded core tilt all work."
+  ],
+  "defects": [
+    "Core is 74x110 versus 66x110, 8 px too wide.",
+    "Small shoulder-side fur spikes weaken the requested simple continuous contour."
+  ],
+  "nextPromptDelta": "Preserve every directional cue exactly; narrow only the core about 10 percent and remove all shoulder side fur spikes, leaving a smooth capsule edge.",
+  "recordedAt": "2026-09-05T08:27:27+08:00",
+  "authorType": "agent",
+  "categories": [
+    "core_geometry",
+    "identity"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "upper-left three-quarter direction, asymmetric ears and value planes, body-only isolation, no face, off-center tail, 110 px height and center"
+  ],
+  "pendingFixes": [
+    "deterministic body pass and human review"
+  ]
+}

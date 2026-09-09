@@ -1,0 +1,106 @@
+{
+  "canvas": [
+    256,
+    256
+  ],
+  "bodyLayer": false,
+  "coreBbox": [
+    94,
+    121,
+    160,
+    231
+  ],
+  "coreAxis": {
+    "bottom": [
+      127,
+      231
+    ],
+    "top": [
+      127,
+      121
+    ],
+    "tiltDegrees": [
+      -2.0,
+      2.0
+    ]
+  },
+  "footCenter": [
+    128,
+    236
+  ],
+  "weapon": {
+    "hiddenGrip": [
+      168,
+      160
+    ],
+    "exitWindow": [
+      151,
+      137,
+      180,
+      174
+    ],
+    "tipRegion": [
+      0,
+      0,
+      255,
+      255
+    ],
+    "guardWindow": [
+      153,
+      135,
+      188,
+      172
+    ],
+    "bladeCenterline": null,
+    "maxBladeWidthPx": 12,
+    "maxGemAreaPx": 0,
+    "screenAxis": null,
+    "tipMayBeOccluded": true
+  },
+  "forbiddenRegions": [
+    {
+      "name": "wrong-left-shoulder-ring",
+      "rect": [
+        65,
+        120,
+        105,
+        180
+      ]
+    },
+    {
+      "name": "vertical-or-lower-scabbard",
+      "rect": [
+        151,
+        176,
+        187,
+        232
+      ]
+    }
+  ],
+  "requiredHiddenLabels": [
+    "near_hand",
+    "far_hand",
+    "equipment"
+  ],
+  "visibleAreaCaps": {
+    "near_hand": 0.18,
+    "far_hand": 0.18,
+    "equipment": 0.22
+  },
+  "equipmentState": {
+    "scabbard": "present",
+    "staticEffects": "absent"
+  },
+  "screenSpaceIntent": {
+    "direction": "tail-right face-left native upper-left rear three-quarter",
+    "core": "must fit the cyan narrow capsule guide, approximately 66 px wide by 110 px high after calibration",
+    "ringPommel": "small approved ring/grip visible at screen-right upper shoulder",
+    "scabbard": "fully sheathed weapon remains almost entirely occluded behind the body; no visible tip is required by the human-approved candidate",
+    "holdingPaw": "tiny screen-right far paw arc behind core",
+    "freePaw": "tiny screen-left near paw arc behind core without equipment contact",
+    "feet": "two compact rear paws attached at baseline",
+    "faceCue": "one tiny eye and minimal nose edge only on screen-left",
+    "tail": "tail mass on screen-right"
+  },
+  "renderForbiddenRegions": false
+}

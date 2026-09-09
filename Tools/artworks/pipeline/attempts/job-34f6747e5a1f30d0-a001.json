@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 3,
+  "attemptId": "job-34f6747e5a1f30d0-a001",
+  "jobId": "job-34f6747e5a1f30d0",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "promoted",
+  "artifacts": {
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-34f6747e5a1f30d0/job-34f6747e5a1f30d0-a001/prepared.png",
+      "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+    },
+    "mask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-34f6747e5a1f30d0/job-34f6747e5a1f30d0-a001/mask.png",
+      "sha256": "30350db22426bd078b09d9095ad797d69eceb3ccd7c83f8f4bb960193e440fa0"
+    },
+    "review": {
+      "overlay": {
+        "path": "Tools/artworks/pipeline/reviews/job-34f6747e5a1f30d0-a001/overlay.png",
+        "sha256": "3de3a8fa79a7b18f117cc20e117c5e05432dbfecb3fdb34f5670be93a8c7be4a"
+      },
+      "preview128": {
+        "path": "Tools/artworks/pipeline/reviews/job-34f6747e5a1f30d0-a001/preview128.png",
+        "sha256": "0535842582f41fb8afb578a570a03ea5cde819e2f2318c96522014be8222adae"
+      },
+      "tile64x32": {
+        "path": "Tools/artworks/pipeline/reviews/job-34f6747e5a1f30d0-a001/tile64x32.png",
+        "sha256": "e0b12458fb43bd1022ae67152df673c9efd4b1eaef0537a0e0f58723219797a3"
+      },
+      "assemblyLayerReview": {
+        "path": "Tools/artworks/pipeline/reviews/job-34f6747e5a1f30d0-a001/assemblyLayerReview.png",
+        "sha256": "17108898be23a65a03f9dc915c336529b69da59c052dac25d24f1a92938256b2"
+      }
+    },
+    "promoted": {
+      "master": {
+        "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+        "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+      },
+      "preview": {
+        "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03_128.png",
+        "sha256": "0535842582f41fb8afb578a570a03ea5cde819e2f2318c96522014be8222adae"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-c2e2208e35fcc41a.json",
+    "sha256": "e3259385a270d84e81a05ce1cabc931be1d258066673c16d2bfdc6c7e0f05bf0"
+  },
+  "approvalId": "approval-3affe3151e3652b6",
+  "feedbackId": null,
+  "assemblyId": "assembly-f73ccbfba8bfde9a",
+  "assemblyRenderId": "assembly-render-95ae7cfbb2a13d68",
+  "sourceMode": "derived",
+  "acceptanceCaseResultIds": [
+    "acceptance-case-result-f5ac101fc02f3715",
+    "acceptance-case-result-f5de2783463f427d",
+    "acceptance-case-result-cf99d362549da879",
+    "acceptance-case-result-a71f49861e87bdb8",
+    "acceptance-case-result-d528a8806c01b279",
+    "acceptance-case-result-027f29f626c9c6a8",
+    "acceptance-case-result-8b09685898fea5ea",
+    "acceptance-case-result-0251f533af1c6d91",
+    "acceptance-case-result-b3f85775a411a9db",
+    "acceptance-case-result-1f2204c52b29415b",
+    "acceptance-case-result-6370b78897be39f6",
+    "acceptance-case-result-162953278253c39a",
+    "acceptance-case-result-da18aaf313cd0b4e",
+    "acceptance-case-result-87ff025d65e84a1a",
+    "acceptance-case-result-368ea3a1bde208fc",
+    "acceptance-case-result-f6e24a90a3aa8bcd",
+    "acceptance-case-result-90818e45a7ba54f1",
+    "acceptance-case-result-42889575076b7b9b",
+    "acceptance-case-result-954847cc621ee708",
+    "acceptance-case-result-1f8efe365290de00"
+  ],
+  "artDirectionReviewId": "art-direction-review-29148590528bcd84",
+  "artDirectionVerdictIds": [
+    "art-direction-verdict-c53b61dc2d7da984"
+  ],
+  "artDirectionVerdictId": "art-direction-verdict-c53b61dc2d7da984"
+}

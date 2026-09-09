@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 2,
+  "migrationId": "job-migration-c1995dac9035824e",
+  "oldJobId": "job-b03fba61c188e7a1",
+  "oldJobSha256": "2ae9e02aecf691ac99d06479ea88edbaf6168fe3813cd00336f3b902536ba362",
+  "newJobId": "job-0c19b11d49af1888",
+  "newJobSha256": "d8052b894a9682609a6a8da1f9802b541cb9e45a8d102d79c897e65f8e214394",
+  "changes": [
+    {
+      "path": "Tools/artworks/pure_run/equipment/prompt_amazon_javelin.md",
+      "previousSha256": "0a64141112730342600152362da449bc5ebcb840960cce3d0f53a689e46b7b99",
+      "currentSha256": "66c8cd53925b5f66772a34ee329b671bcfd16b68be6dc5d3de9d5f2844720e80"
+    }
+  ],
+  "historicalAttempts": [
+    {
+      "attemptId": "job-b03fba61c188e7a1-a001",
+      "state": "prepared",
+      "sha256": "d950aa67494ed49a0f21509bb69f3d29916afbfac14c4b961a066fb8c93a4bde"
+    }
+  ],
+  "reason": "Direct user authorized migration of committed equipment prompt bindings blocking unified verification.",
+  "authorizedBy": "direct-user-confirmation"
+}

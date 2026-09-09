@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-16985014758beabb-a002",
+  "jobId": "job-16985014758beabb",
+  "ordinal": 2,
+  "generationRound": 2,
+  "parentAttemptId": "job-16985014758beabb-a001",
+  "retryFeedbackId": "feedback-e2d1a1f9a4fd51be",
+  "promptDelta": "Freeze body, face cue, tail side, four compact paws and old simple grip. Reproject only the whole sheathed dao by a half-turn relative to the DR component: ring/grip at right shoulder; sheath tip visibly protrudes upper-left; body hides only the middle.",
+  "technicalRemediation": false,
+  "state": "prepared",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/concepts/poet_ring_pommel_tang_dao_idle_ul_v5_raw_a002.png",
+      "sha256": "e401b4338c648405d0e9e4e6c497210b1a4829d55123a470504910756c8deff9"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-16985014758beabb/job-16985014758beabb-a002/raw.png",
+      "sha256": "e401b4338c648405d0e9e4e6c497210b1a4829d55123a470504910756c8deff9"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-16985014758beabb/job-16985014758beabb-a002/prepared.png",
+      "sha256": "19f8e2b74822b43c6117a79861063436a50847ffcf4dccd00693023b61da3eff"
+    }
+  },
+  "report": null,
+  "approvalId": null,
+  "feedbackId": "feedback-2299ad9da02e34a1",
+  "generationInvocationId": "generation-invocation-eeeae2737c912000",
+  "generationDeliveryId": "generation-delivery-1c72a3eec321ec5c",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 48
+  }
+}

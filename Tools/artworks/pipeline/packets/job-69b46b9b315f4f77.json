@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "jobId": "job-69b46b9b315f4f77",
+  "state": "ready",
+  "contractId": "contract-570a3ff55c67e5a5",
+  "contractSha256": "8511350124e165d81a8291981aa5821abbd6cd1a335dd41677381b6c15adf924",
+  "prompt": {
+    "path": "Tools/artworks/pure_run/equipment/prompt_mage_oak_staff.md",
+    "sha256": "580d1ff34b15a67df5c164393cd17c7fba731c030590c1653a0a6cdcc8b50367"
+  },
+  "inputs": [
+    {
+      "role": "weapon_reference",
+      "path": "Tools/artworks/doge/calibrated/doge_capsule_mage_color_calibrated_v03.png",
+      "sha256": "84fbefaa2423948cb2a716aa9848a75a12745a4bfdc4a9ad446b95fe17bccee5"
+    }
+  ],
+  "target": {
+    "direction": "down-right",
+    "pose": "display"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": false,
+  "poseGuide": null
+}

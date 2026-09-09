@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 2,
+  "approvalId": "approval-ff85c4a4e8d89e45",
+  "attemptId": "job-93dbc1ce4eeb846d-a003",
+  "candidateSha256": "a4c81bfbdfca9a7faa5002685eb1b6751376b9cce3d99c9d81309483c90cc4ca",
+  "maskSha256": null,
+  "reviewer": "cty41",
+  "reviewSha256": {
+    "equipmentPanel": "ef639bd05e1e6f941d48e79aac7a9e74a4fb436c308e01b342dddfebe81d7049"
+  },
+  "decision": "approved",
+  "reason": "用户明确确认背负朝向古琴v3正确，固定Review与技术门禁通过",
+  "decidedAt": "2026-08-31T07:49:06.2554013+08:00",
+  "annotation": null,
+  "reportSha256": "666f107ded8b2407c73ea6cf5b34c0314c985067cf573cabec763d5c1c08f244"
+}

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "feedbackAddendumId": "feedback-addendum-96fa8e4d44983c4b",
+  "attemptId": "job-16985014758beabb-a003",
+  "parentFeedbackId": "feedback-63d553f8be216a5a",
+  "reviewer": "cty41",
+  "defects": [
+    "cty41 considers raw a003 basically satisfactory; the only remaining issue is incorrect front/back layering between the four paws, tail, and body. Preserve the selected candidate and correct only those occlusions."
+  ],
+  "recordedAt": "2026-09-08T10:50:45+08:00",
+  "authorType": "human",
+  "disposition": "retry"
+}

@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "styleReportId": "equipment-style-report-3838463054f1bca0",
+  "contractId": "contract-6bc9bd5af3d6da4a",
+  "contractSha256": "9619840d9ccb37b7eaa7e64433e179e6abd9f59b660b37531009eeba14d30880",
+  "profile": {
+    "path": "Tools/artworks/pure_run/equipment/equipment_production_profile_v2.json",
+    "sha256": "e23e540c790a57432967d944c82bdad9721f109d2cb6352b3288c0c2c7d7bbb1"
+  },
+  "source": {
+    "path": "Tools/artworks/pipeline/artifacts/job-ffb58eed1dd89ce2/job-ffb58eed1dd89ce2-a001/raw.png",
+    "sha256": "bb7abf6120ec3a9afb17bac565f7fc247f464e06bf128d9e821c93f66dcf1f8f"
+  },
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_sheathed_dr_v01.png",
+    "sha256": "363df76dbec446d1ece5d46d2857ef8e7de4164030053f1b8a8a67f456b3b3c6"
+  },
+  "preview": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_sheathed_dr_v01_128.png",
+    "sha256": "907bfd9b271cb2a91f5f0adefafeaac23be6e1d024e7ae9bfbb0fa2b02e30611"
+  },
+  "metrics": {
+    "interiorPixels": 359,
+    "interiorColorBins": 26,
+    "smoothGradientRatio": 0.0,
+    "visibleBbox": [
+      82,
+      141,
+      175,
+      237
+    ],
+    "visibleSize": [
+      93,
+      96
+    ],
+    "baseline": 236
+  },
+  "processingMode": "preserve-fidelity",
+  "quantized": false,
+  "remediation": null,
+  "hardIssues": [],
+  "advisories": [],
+  "issues": [],
+  "passed": true
+}

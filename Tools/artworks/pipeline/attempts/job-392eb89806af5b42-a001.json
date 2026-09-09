@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 3,
+  "attemptId": "job-392eb89806af5b42-a001",
+  "jobId": "job-392eb89806af5b42",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "review_pending",
+  "artifacts": {
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-392eb89806af5b42/job-392eb89806af5b42-a001/prepared.png",
+      "sha256": "940606701f0cdf56a0ccd41db3486849197f699c4cab0483fc52889fea203456"
+    },
+    "mask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-392eb89806af5b42/job-392eb89806af5b42-a001/mask.png",
+      "sha256": "805af6f0810d13df5a0a92de315f4bfb585b25a3ec64b52216ea439856c16226"
+    },
+    "review": {
+      "overlay": {
+        "path": "Tools/artworks/pipeline/reviews/job-392eb89806af5b42-a001/overlay.png",
+        "sha256": "9ee981a98baa979b34fca74553baaabd704ff5ad8a58c8a0713ca24e130c7eb7"
+      },
+      "preview128": {
+        "path": "Tools/artworks/pipeline/reviews/job-392eb89806af5b42-a001/preview128.png",
+        "sha256": "08b9c517a7bab270eb577107b356ebceb577e5263949b874e0bc81d2c62fdf27"
+      },
+      "tile64x32": {
+        "path": "Tools/artworks/pipeline/reviews/job-392eb89806af5b42-a001/tile64x32.png",
+        "sha256": "d82e47fe02de70bd014adf7bcc3e4a58cdc2591f86bf4d0d0d63b297fecf8f7d"
+      },
+      "assemblyLayerReview": {
+        "path": "Tools/artworks/pipeline/reviews/job-392eb89806af5b42-a001/assemblyLayerReview.png",
+        "sha256": "101eead59499aabd8d3ff5651dd5a1617f8495f54866abd639a36c0a06a43097"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-9a21b9db71efbbd9.json",
+    "sha256": "c2ae76e251a98bd39a0af074ec314c1e973097803c86b70f39840ebaa369958f"
+  },
+  "approvalId": null,
+  "feedbackId": "feedback-5ceceff5e8296d9a",
+  "assemblyId": "assembly-382f1661d7221682",
+  "assemblyRenderId": "assembly-render-87e76ac32ef8e4fe",
+  "sourceMode": "derived",
+  "acceptanceCaseResultIds": [
+    "acceptance-case-result-ade8232004f669ad",
+    "acceptance-case-result-43018981292ebb63",
+    "acceptance-case-result-b6aeb4cb575fa9da",
+    "acceptance-case-result-96cbc4565e2b896a",
+    "acceptance-case-result-d313a41f29dd24e0",
+    "acceptance-case-result-d080ca71df7d8dad",
+    "acceptance-case-result-00954aac8f194827",
+    "acceptance-case-result-3c553ba17f16b63f",
+    "acceptance-case-result-4c5415ea1d5a0990",
+    "acceptance-case-result-10a844eb32fb9b1f"
+  ],
+  "artDirectionReviewId": "art-direction-review-2372fa1feaf3f4d6"
+}

@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "registryId": "asset-brief-a04b0835f4075806",
+  "sourceId": "poet-ring-pommel-tang-dao-sheathed-diagonal-ul-source-v1",
+  "sourceType": "asset",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/briefs/poet_ring_pommel_tang_dao_sheathed_diagonal_ul_component_source_brief_v1.json",
+    "sha256": "d4b0ca6914a7f8a690b2a83a78c4bfa471f4fef45b917f689ce0e8c893443f43"
+  }
+}

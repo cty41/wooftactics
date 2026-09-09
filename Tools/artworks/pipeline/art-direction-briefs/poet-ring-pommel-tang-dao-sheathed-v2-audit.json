@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "registryId": "asset-brief-199006528915e790",
+  "sourceId": "poet-ring-pommel-tang-dao-sheathed-v2-audit",
+  "sourceType": "asset",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/briefs/poet_ring_pommel_tang_dao_sheathed_v2_asset_brief.json",
+    "sha256": "d89e8a75cb5cf63a6b52e740579705990642821b6d7f57f4162ee87fd79561e4"
+  }
+}

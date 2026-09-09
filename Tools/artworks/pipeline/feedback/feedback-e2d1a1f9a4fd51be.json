@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-e2d1a1f9a4fd51be",
+  "attemptId": "job-16985014758beabb-a001",
+  "candidateSha256": "9ca48e3db3e3ca3a0052fefc0690a0d4064f5688d2001593652a921f78f5022e",
+  "reviewer": "agent",
+  "verdict": "retry",
+  "strengths": [
+    "Confirmed equipped DR identity produced a coherent poet, tail-right UL turn, original simple ring design, and exactly four compact attached paws."
+  ],
+  "defects": [
+    "The DR weapon endpoint orientation leaked through: ring is upper-right but the sheath descends left/down behind the body; the required connected sheath must extend from the right shoulder toward screen upper-left."
+  ],
+  "nextPromptDelta": "Freeze body, face cue, tail side, four compact paws and old simple grip. Reproject only the whole sheathed dao by a half-turn relative to the DR component: ring/grip at right shoulder; sheath tip visibly protrudes upper-left; body hides only the middle.",
+  "recordedAt": "2026-09-08T10:30:09+08:00",
+  "authorType": "agent",
+  "categories": [
+    "pose_axis",
+    "occlusion"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "body direction, core silhouette, tiny left face cue, tail-right placement, exactly four attached paws, old approved Tang dao ring and grip style"
+  ],
+  "pendingFixes": [
+    "correct the whole weapon endpoint axis without changing the character"
+  ]
+}

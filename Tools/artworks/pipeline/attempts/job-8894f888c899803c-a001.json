@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 3,
+  "attemptId": "job-8894f888c899803c-a001",
+  "jobId": "job-8894f888c899803c",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "review_pending",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/concepts/poet_tang_dao_75_grip_reposition_03.png",
+      "sha256": "773dfc24bb9bac40b76a5fc1fefa14ae307c6584958f25600a2f73ddb0c63c06"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-8894f888c899803c/job-8894f888c899803c-a001/raw.png",
+      "sha256": "773dfc24bb9bac40b76a5fc1fefa14ae307c6584958f25600a2f73ddb0c63c06"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-8894f888c899803c/job-8894f888c899803c-a001/prepared.png",
+      "sha256": "fbf03fb212fc71587bc4171f87acd5318f0c1af3949df084ded43c07c8ab30e0"
+    },
+    "maskSource": {
+      "path": "Tools/artworks/poet_five_red_chow/components/poet_far_paw_low_grip_mask_v03.png",
+      "sha256": "6fb77f81be484857cc67fed6e5fb96335655b3d5068b6743885a2ddaed6177ca"
+    },
+    "mask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-8894f888c899803c/job-8894f888c899803c-a001/mask.png",
+      "sha256": "6fb77f81be484857cc67fed6e5fb96335655b3d5068b6743885a2ddaed6177ca"
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-dd9d7f31b10364c1.json",
+    "sha256": "3869d90fad32c62e9001f668321a8fbc433c901c34b7595bafac464b92619324"
+  },
+  "approvalId": null,
+  "feedbackId": null,
+  "componentMigrationId": "component-migration-92bdc2accb65552f",
+  "sourceMode": "pre_v3_import"
+}

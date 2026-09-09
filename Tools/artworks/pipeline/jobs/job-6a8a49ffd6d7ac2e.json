@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "jobId": "job-6a8a49ffd6d7ac2e",
+  "state": "ready",
+  "contractId": "contract-47753651548de126",
+  "contractSha256": "f4aa557fbaab3101a6f8b54a7679d171700a3cc6d1721c3d0cc54f92a50f8f2f",
+  "prompt": {
+    "path": "Tools/artworks/pure_run/equipment/prompt_necromancer_dagger.md",
+    "sha256": "75d784f9391079bc42051c000696386df36e76b8f8bedfc2b5ba2a1366ea4c70"
+  },
+  "inputs": [
+    {
+      "role": "weapon_reference",
+      "path": "Tools/artworks/doge/calibrated/doge_capsule_necromancer_color_calibrated_v04.png",
+      "sha256": "a967f2767667bb16cfae4167ae16570ad169246654455280f33eccca0fa44b8f"
+    }
+  ],
+  "target": {
+    "direction": "down-right",
+    "pose": "display"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": false,
+  "poseGuide": null
+}

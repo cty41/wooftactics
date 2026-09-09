@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "equipmentStyleVerdictId": "equipment-style-verdict-5e21991b1e9c91a1",
+  "attemptId": "job-93dbc1ce4eeb846d-a001",
+  "candidateSha256": "34165d6fccb39857c3153221c2da3be6f24902ca8df8ebc70dfa0da3b3e21faa",
+  "reviewSha256": {
+    "equipmentPanel": "826aa48f4f975b20331e2126cb44f5f85f69bfb126674166bd9c582b954d8935"
+  },
+  "reviewer": "cty41",
+  "decision": "retry",
+  "reason": "用户选择窄琴尾从右肩上方露出、宽琴首从左下腰后露出的方向；v1空间轴过于竖直，无法同时跨过角色左右轮廓",
+  "decidedAt": "2026-08-30T19:22:35.9280429+08:00"
+}

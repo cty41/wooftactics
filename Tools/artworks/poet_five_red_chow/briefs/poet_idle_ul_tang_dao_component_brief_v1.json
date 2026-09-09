@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "briefKind": "asset",
+  "briefId": "poet-idle-ul-tang-dao-component-v1",
+  "assetId": "poet-five-red-chow-idle-ul-tang-dao-component-v1",
+  "family": "actor",
+  "purpose": "Migrate the already approved project-owned fully sheathed UL ring-pommel Tang dao as an offline assembly component.",
+  "firstRead": ["approved_ring_pommel_tang_dao", "fully_sheathed", "single_equipment_component"],
+  "targetContexts": ["component-assembly"],
+  "identityInvariants": ["single connected Tang dao", "fully sheathed", "oblique ring pommel", "approved palette and outline"],
+  "shapeStrategy": "Preserve approved bytes; assembly may use only deterministic transform and occlusion.",
+  "colorStrategy": "Preserve source bytes.",
+  "materialStrategy": "Preserve source bytes.",
+  "attentionRole": "supporting",
+  "allowedVariation": ["deterministic assembly scale, translation and horizontal flip only"],
+  "forbidden": ["exposed blade", "second weapon", "disconnected fragment", "manual paint edit"],
+  "referenceResponsibilities": [{"role": "approved-equipment-source", "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_ul_v01.png", "sha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4", "responsibility": "Exact approved component pixels."}],
+  "requiredReviewPanels": ["candidate-master"],
+  "acceptanceCases": [{"caseId": "POET-UL-DAO-COMPONENT-001", "evidence": ["candidate-master"], "automatedFacts": ["approved source hash and migration processing are bound"], "humanChecks": ["historical equipment approval remains authoritative"], "passCriteria": "Migration preserves exact approved prepared bytes."}]
+}

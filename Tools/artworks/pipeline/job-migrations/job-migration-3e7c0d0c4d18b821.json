@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 2,
+  "migrationId": "job-migration-3e7c0d0c4d18b821",
+  "oldJobId": "job-a4763d62bd4b6787",
+  "oldJobSha256": "64cb63249ff222710b86e1316ad71106467879a2d06e62f4c020f8dbb132f8bb",
+  "newJobId": "job-f459872cd76a6956",
+  "newJobSha256": "4be92b3684bbfbd74ff87f118bc9ee980787d8fa38c83b481315dbe24190d644",
+  "changes": [
+    {
+      "path": "Tools/artworks/pure_run/equipment/prompt_amazon_round_shield.md",
+      "previousSha256": "3a1b7d1205242efd63df4ac4fe7e08cccf2109fcbd882d073b35a5da47739d5b",
+      "currentSha256": "dbc2f6f5a0f878c8b13d5c9dbd78b27c22363713a5be8a3f5caab88f521a05be"
+    }
+  ],
+  "historicalAttempts": [
+    {
+      "attemptId": "job-a4763d62bd4b6787-a001",
+      "state": "prepared",
+      "sha256": "d44e7a58a7bd0aa6de7b17314951176d7ecb0109065502e0554c280dc8762be6"
+    }
+  ],
+  "reason": "Direct user authorized migration of committed equipment prompt bindings blocking unified verification.",
+  "authorizedBy": "direct-user-confirmation"
+}

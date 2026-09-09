@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 4,
+  "acceptanceCaseResultId": "acceptance-case-result-0026f41d306279fb",
+  "attemptId": "job-9a531767f319b957-a001",
+  "caseId": "POET-UL-BODY-V2-ISOLATION-001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-9a531767f319b957/job-9a531767f319b957-a001/calibrated.png",
+    "sha256": "9c37f61930aefd4aac08ad6f82a2e1ff6282faf90ca5f0ed42dbfb3e4d29a387"
+  },
+  "contractId": "contract-53ac5c9a2831366a",
+  "contractSha256": "ffb15557fc850c60225b617b8ec79bfa5fdad15565fdbfa7c870cbb63f828c4b",
+  "evidence": {
+    "mask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-9a531767f319b957/job-9a531767f319b957-a001/calibrated-mask.png",
+      "sha256": "eed18dfa2a3e19af9b0f154cfaa3d22e0324f8cf4dddc51de953573040774276"
+    }
+  },
+  "automatedFacts": [
+    "No paw limb or equipment labels; validation passed."
+  ],
+  "automatedResult": "passed",
+  "humanChecks": [
+    "Clean body-only component accepted."
+  ],
+  "humanDecision": "passed",
+  "reviewer": "cty41",
+  "reason": "Suitable for deterministic assembly.",
+  "decidedAt": "2026-09-05T11:32:06+08:00"
+}

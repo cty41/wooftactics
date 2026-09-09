@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-4c07350e2fb953a9",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/components/poet_guqin_back_carried_dr_equipment_mask_v02.png",
+    "sha256": "514399b5cdb89d73db993235e964511daf595afee78b69db54cbb2807558f773"
+  },
+  "role": "semantic-mask",
+  "note": "色幕规范化后背负古琴组件的纯equipment语义蒙版，供schema v3 Assembly使用"
+}

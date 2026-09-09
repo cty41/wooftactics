@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "registryId": "material-language-63786a1836389291",
+  "sourceId": "pure-run-material-language-v1",
+  "sourceType": "material-language",
+  "artifact": {
+    "path": "Tools/artworks/pure_run/art_direction/material_language_v1.json",
+    "sha256": "3efa1e523c20c41f407ff142759a0bc18bb874392266006c704c314fd13dfd83"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-16cbb372c16bc523",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_left_paw_source_crop_v02.png",
+    "sha256": "3c431ffdd49aabb8aa7f9feb6ec0e52c9a0b5be4a164028edde8c32e94444f03"
+  },
+  "role": "review-derived",
+  "note": "Artwork pilot intermediate or review evidence; non-runtime and not an approved generation input"
+}

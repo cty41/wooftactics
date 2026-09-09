@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 4,
+  "jobId": "job-7603439437c554d0",
+  "state": "ready",
+  "contractId": "contract-09c5beab8374106f",
+  "contractSha256": "6d9d5bc95963970677f398aec152d19a714b5cd9c1ac86083ea0c49482a7ef42",
+  "prompt": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/poet_ring_pommel_tang_dao_sheathed_ul_projection_prompt_v1.md",
+    "sha256": "79a2dae627f9d734c061ee5739689753f8c618bb1070b1dc93576a946b0d2d2c"
+  },
+  "inputs": [
+    {
+      "role": "equipment_reference",
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_dr_v02.png",
+      "sha256": "eb4acedf50fe56d2c216e932a7364686de603a4df40c9bc5f1fe10c22ab55999"
+    }
+  ],
+  "target": {
+    "direction": "non_directional",
+    "pose": "inventory"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": true,
+  "poseGuide": null,
+  "localReferences": []
+}

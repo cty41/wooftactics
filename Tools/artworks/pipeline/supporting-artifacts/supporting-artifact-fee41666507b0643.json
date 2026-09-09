@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-fee41666507b0643",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_back_guqin_wineskin_spatial_review_v01.png",
+    "sha256": "8ee3545f479bd9be9be18d9ad6b893ee2e24a95b04286d4d348315eae0c15f12"
+  },
+  "role": "review-derived",
+  "note": "背负古琴与右腰酒囊的大尺寸三维朝向及遮挡位置审核图，不是可晋升Sprite"
+}

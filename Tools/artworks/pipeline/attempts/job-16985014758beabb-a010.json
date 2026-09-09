@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-16985014758beabb-a010",
+  "jobId": "job-16985014758beabb",
+  "ordinal": 10,
+  "generationRound": 9,
+  "parentAttemptId": "job-16985014758beabb-a009",
+  "retryFeedbackId": "feedback-4397f7db85b4ed7b",
+  "promptDelta": "Freeze a009, especially foreground tail and rear screen-right side paw. Edit only screen-right bottom foot overlap: body lower contour covers its inner/top part; retain a compact visible outer/lower crescent attached behind the body.",
+  "technicalRemediation": false,
+  "state": "technical_failed",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/concepts/poet_ring_pommel_tang_dao_idle_ul_v5_raw_a010.png",
+      "sha256": "1d605908bf402bcde38a66e7b23dbde84ab1cdb3e98a77f369acfc8e1a94d29d"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-16985014758beabb/job-16985014758beabb-a010/raw.png",
+      "sha256": "1d605908bf402bcde38a66e7b23dbde84ab1cdb3e98a77f369acfc8e1a94d29d"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-16985014758beabb/job-16985014758beabb-a010/prepared.png",
+      "sha256": "675bbd8cec8c55c50db589f0f5219749d051f37cb45a431fdaa17f71d9bdf2d2"
+    },
+    "maskSource": {
+      "path": "Tools/artworks/poet_five_red_chow/masks/poet_ring_pommel_tang_dao_idle_ul_v5_a010_mask.png",
+      "sha256": "5a82119b4b9b2a6937603e23fd48c0a33f88fa44ab5927cd79315532c20ba561"
+    },
+    "mask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-16985014758beabb/job-16985014758beabb-a010/mask.png",
+      "sha256": "5a82119b4b9b2a6937603e23fd48c0a33f88fa44ab5927cd79315532c20ba561"
+    },
+    "calibrated": {
+      "path": "Tools/artworks/pipeline/artifacts/job-16985014758beabb/job-16985014758beabb-a010/calibrated.png",
+      "sha256": "2782fd64ed9601fae3248db916daf62fb4bf6110a0b17fdceaa88c2300587519"
+    },
+    "calibratedMask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-16985014758beabb/job-16985014758beabb-a010/calibrated-mask.png",
+      "sha256": "951ab793283199c0ed23286f6a62c982e9b708da927d88596bc2dba5560f917d"
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-e958a48355ba3a6b.json",
+    "sha256": "25f23824cc5c77ef5928576359e7dca336e4cc593d91e0544a82c1caa322b1b7"
+  },
+  "approvalId": null,
+  "feedbackId": "feedback-5f3fc26206f66ad3",
+  "generationInvocationId": "generation-invocation-9f0ebe85c95da57f",
+  "generationDeliveryId": "generation-delivery-22b56c5fb7065aa2",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 120
+  },
+  "calibration": {
+    "method": "uniform-core-height",
+    "scale": 0.22839506172839505,
+    "offset": [
+      -8,
+      25
+    ],
+    "sourceCoreBbox": [
+      465,
+      430,
+      715,
+      915
+    ],
+    "anchorCoreBbox": [
+      94,
+      121,
+      160,
+      231
+    ],
+    "anchorMask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-34f6747e5a1f30d0/job-34f6747e5a1f30d0-a001/mask.png",
+      "sha256": "30350db22426bd078b09d9095ad797d69eceb3ccd7c83f8f4bb960193e440fa0"
+    }
+  }
+}

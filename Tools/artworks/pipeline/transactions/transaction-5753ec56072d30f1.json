@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 2,
+  "transactionId": "transaction-5753ec56072d30f1",
+  "operation": "prepare",
+  "payload": {
+    "attemptId": "job-69a7e239bb73eef5-a001",
+    "chroma": "0,255,0",
+    "chromaTolerance": 42
+  },
+  "state": "committed",
+  "resolution": {
+    "reviewer": "cty41",
+    "reason": "Corrected the initial conservative abort after canonicalizing decimal RGB chroma metadata; the existing prepared artifact hash and preparation parameters prove that prepare committed.",
+    "decidedAt": "2026-09-08T20:21:46+08:00",
+    "evidence": {
+      "path": "Tools/artworks/pipeline/artifacts/job-69a7e239bb73eef5/job-69a7e239bb73eef5-a001/prepared.png",
+      "sha256": "c95884c2a5bb5bfa2de50dba944f26d2bd1e4c864b41ff098c9a1bb7055ef5d9"
+    },
+    "previousResolution": {
+      "reviewer": "cty41",
+      "reason": "Recovered the stranded prepare transaction from the matching prepared artifact hash and exact chroma/tolerance metadata already bound to the attempt.",
+      "decidedAt": "2026-09-08T20:20:10+08:00",
+      "evidence": null
+    }
+  }
+}

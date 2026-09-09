@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "feedbackAddendumId": "feedback-addendum-9255ca4229943ecf",
+  "attemptId": "job-dfbdae10245d7d6c-a003",
+  "parentFeedbackId": "feedback-1f47ea9ad398036c",
+  "reviewer": "cty41",
+  "defects": [
+    "Body shape is close, but orientation is a straight rear view; expected UL has a visible three-quarter back angle comparable to the approved red-shiba UL reference."
+  ],
+  "recordedAt": "2026-09-05T08:23:44+08:00",
+  "authorType": "human",
+  "disposition": "retry"
+}

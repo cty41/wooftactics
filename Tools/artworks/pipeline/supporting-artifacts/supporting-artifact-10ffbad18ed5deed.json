@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-10ffbad18ed5deed",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/components/poet_far_paw_low_grip_component_v03.png",
+    "sha256": "fbf03fb212fc71587bc4171f87acd5318f0c1af3949df084ded43c07c8ab30e0"
+  },
+  "role": "review-derived",
+  "note": "Artwork pilot intermediate or review evidence; non-runtime and not an approved generation input"
+}

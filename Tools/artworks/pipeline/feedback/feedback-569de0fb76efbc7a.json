@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-569de0fb76efbc7a",
+  "attemptId": "job-c92184f48437bd89-a002",
+  "candidateSha256": "eaf1815fb7e791410d5ef328cde02227e192e953e88581544fecc05d78fa8a21",
+  "reviewer": "cty41",
+  "verdict": "selected",
+  "strengths": [
+    "用户确认修正版符合项目胶囊体；冻结窄直核心、平行中段、不外扩下段、贴身前爪、落地后爪与五红土松头脸"
+  ],
+  "defects": [],
+  "nextPromptDelta": "视觉内容不再重画，仅进入确定性技术校准；若硬门禁暴露图像本体缺陷再单独反馈",
+  "recordedAt": "2026-08-29T21:26:30.6705316+08:00",
+  "authorType": "human",
+  "categories": [
+    "core_geometry",
+    "identity"
+  ],
+  "disposition": "selected",
+  "frozenInvariants": [
+    "当前胶囊核心几何、四爪位置、五红土松头脸、红棕毛色、小卷尾和简化平涂"
+  ],
+  "pendingFixes": [
+    "精确语义蒙版、正式 256 校准、去幕残边、核心叠加与 Tile Review"
+  ]
+}

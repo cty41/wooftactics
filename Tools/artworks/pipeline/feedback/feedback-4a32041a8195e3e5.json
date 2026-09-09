@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-4a32041a8195e3e5",
+  "attemptId": "job-7c41706595ff4e35-a002",
+  "candidateSha256": "9d562950708fec7d444a6d0fcbdc631be8ee16df3e5a34b7c2f0338251a00d45",
+  "reviewer": "agent",
+  "verdict": "retry",
+  "strengths": [
+    "Correct three-quarter UL direction, clean smooth contour, body-only isolation, flat asymmetric ear and side planes, exact height and center."
+  ],
+  "defects": [
+    "Core is 72x110 versus 66x110, 6 px too wide."
+  ],
+  "nextPromptDelta": "Preserve all appearance and direction cues; narrow core only 7 percent to 66x110.",
+  "recordedAt": "2026-09-05T08:29:12+08:00",
+  "authorType": "agent",
+  "categories": [
+    "core_geometry"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "three-quarter direction, clean contour, ear asymmetry, side value plane, tail offset, body-only isolation, 110 px height and center"
+  ],
+  "pendingFixes": [
+    "final body generation round"
+  ]
+}

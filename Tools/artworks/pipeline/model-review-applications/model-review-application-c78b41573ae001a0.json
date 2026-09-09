@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 4,
+  "modelReviewApplicationId": "model-review-application-c78b41573ae001a0",
+  "modelReviewResultRecordId": "model-review-result-record-5abf02b68dce6b7c",
+  "attemptId": "job-4affd0d3e702d0d0-a001",
+  "decision": {
+    "action": "review_pending",
+    "automaticRetry": false,
+    "reason": "reviewer_passed_to_human"
+  },
+  "invocation": {
+    "modelReviewInvocationId": "model-review-invocation-aed35c297a58550f",
+    "packetId": "model-review-packet-f56486635b978b9c",
+    "packetSha256": "95cf541a0ca3e2f440ea3e2272acd5a2ab1b0dc9874da5e98b3beaa28f9407b8",
+    "model": "gpt-5.6-sol",
+    "effort": "medium",
+    "promptSource": {
+      "path": "Tools/artworks/pure_run/art_direction/review/reviewer_prompt_v1.md",
+      "sha256": "ea9a86b3e7e4ee724090fe0c520a4271ce4f38a34184335f865189bcf259a850"
+    }
+  }
+}

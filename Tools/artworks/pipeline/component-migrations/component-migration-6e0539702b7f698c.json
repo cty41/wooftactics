@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 3,
+  "componentMigrationId": "component-migration-6e0539702b7f698c",
+  "contractId": "contract-8e5c404ca91f0b41",
+  "contractSha256": "55c1f5797970b41686883f7327240d8767cdcd602edb6d56b6e17e0b92f57d3b",
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_guqin_back_carried_dr_raw_v03.png",
+    "sha256": "c924ad7ae9578bbb378a80a25c7447c55dc236d98c92b3805105bbd54d2ecf30"
+  },
+  "prepared": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_guqin_back_carried_dr_v01.png",
+    "sha256": "a4c81bfbdfca9a7faa5002685eb1b6751376b9cce3d99c9d81309483c90cc4ca"
+  },
+  "processing": {
+    "operation": "identity-copy-from-approved-v2-equipment",
+    "sourceAttemptId": "job-93dbc1ce4eeb846d-a003",
+    "sourceApprovalId": "approval-ff85c4a4e8d89e45",
+    "pixelTransform": "none",
+    "semanticLabel": "equipment",
+    "note": "用户已确认琴背贴身、宽琴首左肩上方、窄琴尾右下的背负方向；迁入 schema v3 仅供确定性 Assembly。"
+  },
+  "reviewer": "cty41",
+  "reason": "迁入用户已明确确认并由approval-ff85c4a4e8d89e45批准的背负朝向古琴组件，不改变prepared像素，仅供角色加古琴的确定性Assembly",
+  "acceptedAt": "2026-08-31T15:00:15.2059872+08:00",
+  "invocationStatus": "missing-pre-v3"
+}

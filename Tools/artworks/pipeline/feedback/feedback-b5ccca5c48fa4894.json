@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-b5ccca5c48fa4894",
+  "attemptId": "job-ffaa562f76730ec3-a001",
+  "candidateSha256": "02f2ff614ff8c9afb34d6e983a047adb1f358a7b33230b23698037cbaa534f67",
+  "reviewer": "agent",
+  "verdict": "retry",
+  "strengths": [
+    "唐剑、古琴、皮革酒囊三件装备均出现且身份可读，近侧爪与剑柄有稳定接触"
+  ],
+  "defects": [
+    "角色被重绘为接近正面视角，明显偏离已批准down-right三分之四母图；身体更高更窄，古琴只露单侧尾部且缺少左下琴首，剑体量过大遮挡主体"
+  ],
+  "nextPromptDelta": "Treat Image 1 as an edit target, not inspiration: preserve its pixels and silhouette; make only minimal equipment additions. Reject any frontal face. Reduce sword scale 25 percent and expose both guqin ends behind body.",
+  "recordedAt": "2026-08-30T12:31:26.4837063+08:00",
+  "authorType": "agent",
+  "categories": [
+    "pose_axis",
+    "core_geometry",
+    "equipment_scale",
+    "occlusion"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "严格复制母图的DR头部偏转与宽胶囊体；缩短剑并减小约25%；让古琴上下两端都从身体后层适量露出"
+  ]
+}

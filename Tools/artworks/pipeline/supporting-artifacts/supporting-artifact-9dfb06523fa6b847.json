@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-9dfb06523fa6b847",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/components/poet_idle_body_clean_grip_v09.png",
+    "sha256": "862751a8cac580ebda2abc5ae1ad6a27c0c4aa391237c589698e545276820173"
+  },
+  "role": "review-derived",
+  "note": "Artwork pilot intermediate or review evidence; non-runtime and not an approved generation input"
+}

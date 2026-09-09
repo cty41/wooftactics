@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "equipmentStyleVerdictId": "equipment-style-verdict-d935a21326678c47",
+  "attemptId": "job-93dbc1ce4eeb846d-a003",
+  "candidateSha256": "a4c81bfbdfca9a7faa5002685eb1b6751376b9cce3d99c9d81309483c90cc4ca",
+  "reviewSha256": {
+    "equipmentPanel": "ef639bd05e1e6f941d48e79aac7a9e74a4fb436c308e01b342dddfebe81d7049"
+  },
+  "reviewer": "cty41",
+  "decision": "approved",
+  "reason": "用户明确确认v3背负轴线与琴背可见关系正确：宽琴首左肩上方、窄琴尾右下、琴背贴身",
+  "decidedAt": "2026-08-31T07:49:06.2554013+08:00"
+}

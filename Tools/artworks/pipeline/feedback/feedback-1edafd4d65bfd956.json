@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-1edafd4d65bfd956",
+  "attemptId": "job-3094052b8342329b-a001",
+  "candidateSha256": "9430ab50fde95ef9bac02c26a5b03a6e8e4580be3032c5daa3dae0a21ec4642a",
+  "reviewer": "cty41",
+  "verdict": "retry",
+  "strengths": [
+    "人物母图身份保持稳定；环首和完全入鞘状态可读"
+  ],
+  "defects": [
+    "用户明确判定当前角色候选及完整远爪覆盖测试均不合格",
+    "合成后暴露唐刀比角色与魔剑士装备更写实，金属雕纹和材质渐变过密",
+    "远侧爪握持关系不自然"
+  ],
+  "nextPromptDelta": "先暂停角色Assembly；以魔剑士Idle DR为装备风格对比锚点，将环首唐刀重做为粗黑轮廓、扁平二至三阶明暗、低纹理密度、夸张而清晰的卡通像素装备，再独立人工审核完全入鞘单图",
+  "recordedAt": "2026-09-03T09:26:32.3223510+08:00",
+  "authorType": "human",
+  "categories": [
+    "equipment_state",
+    "occlusion"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "用户明确判定当前角色候选及完整远爪覆盖测试均不合格",
+    "合成后暴露唐刀比角色与魔剑士装备更写实，金属雕纹和材质渐变过密",
+    "远侧爪握持关系不自然"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-13eeaf1c40091bc5",
+  "attemptId": "job-ac50821e216fe188-a001",
+  "candidateSha256": "897b70efa9b42acd23a9f58bc8a6196e5829f844e1c6ff1a97aeb4457247c151",
+  "reviewer": "cty41",
+  "verdict": "retry",
+  "strengths": [
+    "琴背贴身方向、角色母图、Tile落点与技术门禁均正确"
+  ],
+  "defects": [
+    "用户认为琴顶与头顶齐平仍偏高，要求进一步缩短并把琴顶部降到角色眼睛高度"
+  ],
+  "nextPromptDelta": "Deterministic assembly only: scale guqin to about 80 percent and translate it down so its semantic top aligns with the character eye level around y=150. Do not alter the body.",
+  "recordedAt": "2026-08-31T15:12:29.4983965+08:00",
+  "authorType": "human",
+  "categories": [
+    "equipment_scale"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "仅把古琴缩至约80%，并下移使equipment语义顶部约y=150对齐角色眼睛；其他图层不变"
+  ]
+}

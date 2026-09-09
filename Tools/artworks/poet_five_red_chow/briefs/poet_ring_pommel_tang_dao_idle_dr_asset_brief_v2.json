@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "briefKind": "asset",
+  "briefId": "poet-ring-pommel-tang-dao-idle-dr-v2",
+  "assetId": "poet-five-red-chow-ring-pommel-tang-dao-idle-dr",
+  "family": "actor",
+  "purpose": "Create the five-red chow poet Idle DR with a completely sheathed ring-pommel Tang dao held in a relaxed low diagonal pose.",
+  "firstRead": ["approved_five_red_chow_poet", "relaxed_idle", "low_diagonal_sheathed_ring_pommel_dao"],
+  "targetContexts": ["master-256", "preview-128", "tile-64x32", "battle-actor"],
+  "identityInvariants": ["approved face and breed identity", "five red chow markings", "approved capsule core volume", "approved feet baseline and DR view", "no guqin"],
+  "shapeStrategy": "Preserve the approved poet body silhouette; add one low upper-left-to-lower-right equipment axis without turning it into an attack silhouette.",
+  "colorStrategy": "Preserve approved poet colors; use the approved dark red-brown dao without increasing local contrast above the face.",
+  "materialStrategy": "Keep actor and dao in the same bold-outline, low-detail, flat-value Pure Run rendering language.",
+  "attentionRole": "primary",
+  "allowedVariation": ["far-paw pose needed for a natural grip", "near-paw pose needed for relaxed balance", "integer translation and approved uniform scaling of the equipment component"],
+  "forbidden": ["identity drift", "core-volume drift", "guqin", "wineskin", "exposed blade", "second weapon", "combat-ready raised pose", "floating paw", "full sticker-like paw overlay", "thin arm or leg connectors", "realistic weapon rendering"],
+  "referenceResponsibilities": [
+    {"role": "immutable-identity-anchor", "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png", "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753", "responsibility": "Poet identity, face, five-red markings, core volume, feet and baseline."},
+    {"role": "approved-equipment-component", "path": "Tools/artworks/poet_five_red_chow/components/poet_ring_pommel_tang_dao_sheathed_component_clean_v02.png", "sha256": "8ecf3de0f6859965cdc08ebae8735bfaa8d134a701e855ba422262fbf71ce0cf", "responsibility": "Assembly input pixels derived from the approved completely sheathed Tang dao."},
+    {"role": "equipment-shape-anchor", "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_dr_v02.png", "sha256": "eb4acedf50fe56d2c216e932a7364686de603a4df40c9bc5f1fe10c22ab55999", "responsibility": "User-approved completely sheathed straight ring-pommel shape and cartoon equipment detail budget; not a mounted grip reference."},
+    {"role": "mounted-style-anchor", "path": "Tools/artworks/doge/calibrated/doge_capsule_demonbound_idle_dr_v01.png", "sha256": "21559ca7aedd3e146feb2b93c5a6633affc6ce544122628c960972a982b0b5e7", "responsibility": "Actor-mounted near-melee outline weight, detail budget, and overall media coherence only."}
+  ],
+  "requiredReviewPanels": ["candidate-master", "preview-128", "identity-overlay", "equipment-inspection", "pose-axis", "grip-original", "grip-nearest", "free-paw", "assembly-layers", "tile-review", "style-context", "rejected-regression"],
+  "acceptanceCases": [
+    {"caseId": "POET-STYLE-001", "evidence": ["style-context", "grip-nearest"], "automatedFacts": ["style advisory dimensions are reported without an aggregate score"], "humanChecks": ["actor and weapon share bold outline, flat values, and low interior detail", "weapon is not more realistic than the actor"], "passCriteria": "No media mismatch or isolated realistic equipment appearance."},
+    {"caseId": "POET-IDENTITY-001", "evidence": ["identity-overlay", "candidate-master"], "automatedFacts": ["anchor and mask hashes match", "center core bands and baseline are within contract tolerance"], "humanChecks": ["face, ears, five-red markings, body attitude, and feet remain the approved poet"], "passCriteria": "The candidate is immediately identifiable as the approved five-red chow poet."},
+    {"caseId": "POET-EQUIPMENT-001", "evidence": ["equipment-inspection", "candidate-master"], "automatedFacts": ["assembly binds the approved v2 equipment component", "no second equipment role exists"], "humanChecks": ["straight and completely sheathed", "thick empty ring pommel", "no exposed blade or weapon-category drift"], "passCriteria": "The complete equipment state and historical shape remain readable."},
+    {"caseId": "POET-POSE-001", "evidence": ["pose-axis", "candidate-master"], "automatedFacts": ["equipment axis runs screen upper-left to lower-right inside the safe area"], "humanChecks": ["ring pommel points toward the screen-left shoulder", "scabbard hangs low toward screen lower-right", "pose reads relaxed rather than ready-to-attack"], "passCriteria": "Low relaxed diagonal Idle DR is unambiguous."},
+    {"caseId": "POET-GRIP-001", "evidence": ["grip-original", "grip-nearest", "assembly-layers"], "automatedFacts": ["far paw has stable multi-pixel contact with the grip-throat zone", "far-paw role and layer order are valid"], "humanChecks": ["paw wraps naturally", "no floating, thin connector, or full sticker-like overlay"], "passCriteria": "The screen-left far paw forms a believable relaxed grip."},
+    {"caseId": "POET-FREE-PAW-001", "evidence": ["free-paw", "candidate-master"], "automatedFacts": ["near paw does not create a second equipment contact"], "humanChecks": ["screen-right near paw is visibly relaxed", "pose remains balanced"], "passCriteria": "The near paw does not participate in the grip and does not look rigid."},
+    {"caseId": "POET-OCCLUSION-001", "evidence": ["assembly-layers", "grip-nearest"], "automatedFacts": ["six required roles occur once", "semantic purity, core continuity, paw and foot contact pass"], "humanChecks": ["body, equipment, paws, and feet have plausible DR depth"], "passCriteria": "No impossible crossing or pasted overlay is visible."},
+    {"caseId": "POET-COMPOSITION-001", "evidence": ["candidate-master", "preview-128", "tile-review"], "automatedFacts": ["256x256 RGBA", "center baseline alpha bbox crop and safe margin pass"], "humanChecks": ["poet, ring pommel, and diagonal hold remain readable at 128", "tile footprint does not imply incorrect occupancy"], "passCriteria": "The sprite is readable and correctly placed at production scales."},
+    {"caseId": "POET-EXCLUSION-001", "evidence": ["candidate-master", "assembly-layers"], "automatedFacts": ["no guqin wineskin unsheathed-blade or unapproved equipment role is in the assembly input list"], "humanChecks": ["no visual residue of excluded objects"], "passCriteria": "All explicitly excluded objects and states are absent."},
+    {"caseId": "POET-REGRESSION-001", "evidence": ["rejected-regression", "style-context", "grip-nearest"], "automatedFacts": ["rejected assets appear only in review evidence and never as mother or assembly input"], "humanChecks": ["realistic engraving fittings gradients and highlights do not recur", "unnatural far-paw overlays do not recur"], "passCriteria": "All known failures from the rejected role candidates remain absent."}
+  ]
+}

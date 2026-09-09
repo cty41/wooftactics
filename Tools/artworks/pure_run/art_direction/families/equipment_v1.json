@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "profileKind": "family",
+  "profileId": "pure-run-equipment-family-v1",
+  "family": "equipment",
+  "rules": [
+    "Equipment serves actor identity, action, and tactical readability rather than isolated concept-art spectacle.",
+    "Express numeric rarity primarily through UI; only profession-defining or narrative-unique equipment receives one restrained world-silhouette motif.",
+    "Inventory and actor-mounted representations share identity, shape, primary color, and signature feature but may simplify independently for target size.",
+    "An isolated equipment pass never substitutes for actor-mounted context approval."
+  ],
+  "requiredReviewPanels": ["isolated-master", "preview-128", "actor-mounted-context", "grip-axis", "category-anchor"],
+  "advisories": ["palette-complexity", "smooth-gradient", "interior-edge-density", "actor-dominance-risk", "grip-axis-risk"]
+}

@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-564af82fac19deea",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_direction_occlusion_board_v01.png",
+    "sha256": "83c41253ea9ca0b3e57b086e7b3720d04e65d2383f708911ee558ac1550196bd"
+  },
+  "role": "review-derived",
+  "note": "Pre-generation Idle UL direction and occlusion study; schematic panel is not a sprite candidate"
+}

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 4,
+  "modelReviewAuditId": "model-review-audit-eeb5cd4992951476",
+  "modelReviewResultRecordId": "model-review-result-record-95511ea3b343e64f",
+  "modelReviewResult": {
+    "path": "Tools/artworks/pipeline/model-review-results/model-review-result-record-95511ea3b343e64f.json",
+    "sha256": "9685ee47f85d68fdc5889444c18838b7187f16303b1bf419deb357e8cbdd8fe9"
+  },
+  "reviewer": "cty41",
+  "finding": "correctly-escalates-occluded-boundary",
+  "auditedAt": "2026-09-04T21:05:54+08:00"
+}

@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-873a65a14a65abcd",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_ring_pommel_tang_dao_ul_projection_review_v02.png",
+    "sha256": "683689bb6a1e455ba85fddd3dc75a1484ee281b2411c10d262129011ca96d7f9"
+  },
+  "role": "review-derived",
+  "note": "Isolated UL Tang dao v02 review: steep carried axis and edge-on ring side profile; compares approved DR and rejected flat v01; human decision pending"
+}

@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-2d9ec563903644fd",
+  "artifact": {
+    "path": "Tools/artworks/pure_run/art_direction/reviews/topology_anchor_candidate_board_v1.png",
+    "sha256": "19bc0f00dff570739414357002b53d976f771fe7107e2c66e3359a3be036705f"
+  },
+  "role": "review-derived",
+  "note": "项目级Art Direction首批大型敌对与飞行拓扑职责锚点候选板，仅供人工选择"
+}

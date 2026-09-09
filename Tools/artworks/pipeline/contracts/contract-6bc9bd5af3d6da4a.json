@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 2,
+  "contractId": "contract-6bc9bd5af3d6da4a",
+  "assetId": "poet-ring-pommel-tang-dao-sheathed-dr-v1",
+  "approvedAssetId": "poet-ring-pommel-tang-dao-sheathed-dr-v1",
+  "kind": "tile",
+  "direction": "non_directional",
+  "pose": "inventory",
+  "anchor": null,
+  "maskRequired": false,
+  "noArms": false,
+  "handSides": {
+    "near_hand": null,
+    "far_hand": null
+  },
+  "occlusion": null,
+  "compositionSpec": null,
+  "identitySpec": null,
+  "requiresInvocation": true,
+  "canvasSpec": {
+    "masterSize": [
+      256,
+      256
+    ]
+  },
+  "tilePlacementSpec": null,
+  "styleSpec": null,
+  "equipmentProductionSpec": {
+    "profileId": "pure-run-equipment-production-v2",
+    "profilePath": "Tools/artworks/pure_run/equipment/equipment_production_profile_v2.json",
+    "profileSha256": "e23e540c790a57432967d944c82bdad9721f109d2cb6352b3288c0c2c7d7bbb1",
+    "category": "weapon",
+    "anchors": [
+      {
+        "role": "character-style-anchor",
+        "path": "Tools/artworks/doge/calibrated/doge_capsule_hunter_color_calibrated_v01.png",
+        "sha256": "68a35da9d5d646d497ae7bf99eebc5871bcc5be26a893441d9fcece57877ac07"
+      },
+      {
+        "role": "weapon-category-anchor",
+        "path": "Tools/artworks/pure_run/equipment/approved/pure_run_equipment_necromancer_dagger_v01.png",
+        "sha256": "7b5854a12e2515cabab1f8e263e444e2407d2e77fcfd7c808fb4314b1e837123"
+      }
+    ],
+    "targetVisibleHeight": 96,
+    "visibleHeightRange": [
+      90,
+      102
+    ]
+  },
+  "tolerances": {
+    "sizePx": 3,
+    "centerPx": 2
+  },
+  "outputs": {
+    "master": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_dr_v01.png",
+    "preview": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_dr_v01_128.png"
+  },
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "gpt-image-2-user-reference-guided"
+  }
+}

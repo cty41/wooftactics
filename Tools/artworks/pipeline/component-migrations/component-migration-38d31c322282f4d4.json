@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 3,
+  "componentMigrationId": "component-migration-38d31c322282f4d4",
+  "contractId": "contract-9401e215fb323eb1",
+  "contractSha256": "05b710f33e0346ba8c273c47d2c4b643a0de187aac97ebc423a9508c3f964a51",
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/components/poet_idle_body_full_silhouette_clean_grip_v08.png",
+    "sha256": "3548162e5d50fa698b6144ec69e5ef7ffd6d8601d9422f35fc1a06762d996bd9"
+  },
+  "prepared": {
+    "path": "Tools/artworks/poet_five_red_chow/components/poet_idle_body_full_silhouette_clean_grip_v08.png",
+    "sha256": "3548162e5d50fa698b6144ec69e5ef7ffd6d8601d9422f35fc1a06762d996bd9"
+  },
+  "processing": {
+    "schemaVersion": 1,
+    "operation": "deterministic-old-paw-residue-removal",
+    "source": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+    "trigger": "cty41 found a dirty residual region immediately below the holding paw",
+    "steps": [
+      "start again from the complete approved poet v03 mother",
+      "preserve the complete approved tail and both rear foot-paw silhouettes",
+      "replace the entire old screen-left front-paw disk by row-wise interpolation between adjacent approved torso colors",
+      "avoid retaining old outline, fill, highlight, or antialias residue below the new holding paw",
+      "keep the selected far-paw grip and approved 75 percent Tang dao as separate assembly layers"
+    ],
+    "runtimeEligible": false
+  },
+  "reviewer": "cty41",
+  "reason": "按用户指出的位置清除持刀爪下方旧爪残留脏区，同时完整保留尾巴和脚爪",
+  "acceptedAt": "2026-09-03T15:30:00+08:00",
+  "invocationStatus": "missing-pre-v3"
+}

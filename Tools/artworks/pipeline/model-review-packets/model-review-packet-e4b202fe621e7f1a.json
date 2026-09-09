@@ -1,0 +1,125 @@
+{
+  "packetId": "model-review-packet-e4b202fe621e7f1a",
+  "schemaVersion": 1,
+  "attemptId": "job-38caaa8120d4a303-a006",
+  "contract": {
+    "contractId": "contract-8cfb066aab230727",
+    "sha256": "1833ba8cf30eb1692126d6e303e7f8d66297a3cfbf920d8ff4943d9fb189ce13"
+  },
+  "brief": {
+    "briefId": "poet-ring-pommel-tang-dao-idle-ul-v1",
+    "sha256": "90779598409ccbdafafd1ab9d20396209ae49adeb6ad6db2df4bf97d1290c74b"
+  },
+  "compiledPolicy": {
+    "compiledPolicyId": "compiled-review-policy-9300e3319ae32600",
+    "sha256": "9300e3319ae326002ecf5988696284793ae6f518ca4b6e48bd62e5426e16bc53"
+  },
+  "reviewContext": {
+    "responsibility": "REVIEW_CONTEXT_ONLY",
+    "contract": {
+      "contractId": "contract-8cfb066aab230727",
+      "sha256": "1833ba8cf30eb1692126d6e303e7f8d66297a3cfbf920d8ff4943d9fb189ce13"
+    },
+    "brief": {
+      "briefId": "poet-ring-pommel-tang-dao-idle-ul-v1",
+      "sha256": "90779598409ccbdafafd1ab9d20396209ae49adeb6ad6db2df4bf97d1290c74b"
+    },
+    "compiledPolicy": {
+      "compiledPolicyId": "compiled-review-policy-9300e3319ae32600",
+      "sha256": "9300e3319ae326002ecf5988696284793ae6f518ca4b6e48bd62e5426e16bc53"
+    },
+    "compiledPolicyRecord": {
+      "compiledPolicyId": "compiled-review-policy-record-9f25ed911f518547",
+      "sha256": "3518c128a1592fca3f20bdbbb98676cb6accc4cc929c30480a770e3bbd4cbd58"
+    }
+  },
+  "historicalProvenance": {
+    "attemptId": "job-38caaa8120d4a303-a006",
+    "contract": {
+      "contractId": "contract-63e48d93e0c14372",
+      "sha256": "56d2397defdde34deb8e804401b8b77b3df81b91e30861f4ca782ca7d70a9079"
+    },
+    "artifact": {
+      "path": "Tools/artworks/pipeline/artifacts/job-38caaa8120d4a303/job-38caaa8120d4a303-a006/calibrated.png",
+      "sha256": "4519d643cecce40130d92f00e4bbef9c3cd628f6b34953763a7cbbdda4d0e82b"
+    },
+    "humanDecision": "approved",
+    "humanFeedback": {
+      "feedbackId": "feedback-f81805db04fbfde8",
+      "sha256": "8ebc7b5db33a748031fb5672df0528e3630681f636255e485de2025c75e7d6bb"
+    }
+  },
+  "reviewRound": null,
+  "requiredModel": "gpt-5.6-sol",
+  "reasoningEffort": "high",
+  "artifacts": [
+    {
+      "role": "HISTORICAL_CASE_ARTIFACT",
+      "path": "Tools/artworks/pipeline/artifacts/job-38caaa8120d4a303/job-38caaa8120d4a303-a006/calibrated.png",
+      "sha256": "4519d643cecce40130d92f00e4bbef9c3cd628f6b34953763a7cbbdda4d0e82b",
+      "reviewOnly": true,
+      "generationInput": false
+    }
+  ],
+  "evidence": [
+    {
+      "role": "SEMANTIC_MASK",
+      "path": "Tools/artworks/pipeline/artifacts/job-38caaa8120d4a303/job-38caaa8120d4a303-a006/calibrated-mask.png",
+      "sha256": "be152dc41ca96b6736e444dfea6c804b312acfc87ce918cceadd0652a8a3e296"
+    },
+    {
+      "role": "APPROVED_TOPOLOGY_COMPARISON",
+      "path": "Tools/artworks/doge/calibrated/doge_capsule_demonbound_melee_ul_v01.png",
+      "sha256": "4519d643cecce40130d92f00e4bbef9c3cd628f6b34953763a7cbbdda4d0e82b"
+    }
+  ],
+  "acceptanceCases": [
+    {
+      "caseId": "CASE-DEMONBOUND-MELEE-UL-OCCLUDED-PAWS-BOUNDARY-v1"
+    }
+  ],
+  "feedback": [
+    {
+      "feedbackId": "feedback-f81805db04fbfde8"
+    }
+  ],
+  "frozenInvariants": [
+    "Shadow-final-policy-boundary-no-state-change"
+  ],
+  "permissions": {
+    "allowedDecisions": [
+      "retry",
+      "escalate_to_human",
+      "pass_to_human"
+    ],
+    "mayApprove": false,
+    "mayMakeHumanDecision": false,
+    "mayUseAggregateAestheticScore": false
+  },
+  "qualificationMode": true,
+  "countsTowardFormalAttemptBudget": false,
+  "mayChangeAttemptState": false,
+  "caseBinding": {
+    "reviewCaseRecord": {
+      "reviewCaseRecordId": "review-case-f6b742c0c814d397",
+      "sha256": "60073ec6b099b3d2810e256aeac36942fa31c0948fa4e6e7ef171261bc0dc38e"
+    },
+    "caseId": "CASE-DEMONBOUND-MELEE-UL-OCCLUDED-PAWS-BOUNDARY-v1",
+    "artifact": {
+      "path": "Tools/artworks/pipeline/artifacts/job-38caaa8120d4a303/job-38caaa8120d4a303-a006/calibrated.png",
+      "sha256": "4519d643cecce40130d92f00e4bbef9c3cd628f6b34953763a7cbbdda4d0e82b"
+    },
+    "humanDecision": "approved",
+    "humanFeedback": {
+      "feedbackId": "feedback-f81805db04fbfde8",
+      "sha256": "8ebc7b5db33a748031fb5672df0528e3630681f636255e485de2025c75e7d6bb"
+    },
+    "evidenceRegion": {
+      "x": 0.18,
+      "y": 0.4,
+      "width": 0.64,
+      "height": 0.4
+    }
+  },
+  "sha256": "1701ae4ad9c70594b4b37091007bf5c82f043df72694f19d0a80a2ad066c5bc2"
+}

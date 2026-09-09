@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-697ae6f4903d5400",
+  "attemptId": "job-43b34a4685f71ca2-a001",
+  "candidateSha256": "8214283a5efde35c07835e581192c1777f8ac54d7ac56c54fdd365da83b934e2",
+  "reviewer": "cty41",
+  "verdict": "retry",
+  "strengths": [
+    "用户确认视觉风格、胶囊体、毛色和五红土松身份可接受；技术门禁全部通过"
+  ],
+  "defects": [
+    "姿态接近正面，未形成 down-right 45° isometric 三分之四视角"
+  ],
+  "nextPromptDelta": "严格采用 Demonbound DR 的三分之四朝向：口鼻中心位于核心轴右侧，近侧脸更完整、远侧轮廓受压；禁止正面证件照姿态",
+  "recordedAt": "2026-08-29T21:36:01.7851595+08:00",
+  "authorType": "human",
+  "categories": [
+    "pose_axis",
+    "identity"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "当前简化平涂、胶囊核心比例、五红土松头脸、红棕毛色、四爪和卷尾设计"
+  ],
+  "pendingFixes": [
+    "头部和口吻朝画面右下偏转；双眼、双耳、前爪和后爪体现近远侧差；核心仍竖直且脚底中心不变"
+  ]
+}

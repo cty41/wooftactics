@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "seriesId": "poet-five-red-chow-formal-v2",
+  "assetId": "poet-five-red-chow-idle-dr-formal-v2",
+  "maxUniqueOutputs": null,
+  "currentPoseId": "idle-dr",
+  "provisionalAnchorAttemptId": null,
+  "poses": [
+    {
+      "poseId": "idle-dr",
+      "state": "active",
+      "jobIds": [
+        "job-4cf6c491a251bcf1"
+      ],
+      "attemptIds": [
+        "job-4cf6c491a251bcf1-a001",
+        "job-4cf6c491a251bcf1-a002"
+      ],
+      "selectedAttemptId": null
+    }
+  ]
+}

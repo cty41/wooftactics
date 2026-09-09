@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 3,
+  "contractId": "contract-2c385915928621cf",
+  "assetId": "poet-guqin-back-equipment-component-v2",
+  "approvedAssetId": "poet-guqin-back-equipment-component-v2",
+  "kind": "ground_character",
+  "direction": "down-right",
+  "pose": "idle",
+  "anchor": null,
+  "maskRequired": true,
+  "noArms": false,
+  "handSides": {
+    "near_hand": null,
+    "far_hand": null
+  },
+  "occlusion": null,
+  "compositionSpec": null,
+  "identitySpec": null,
+  "requiresInvocation": false,
+  "canvasSpec": {
+    "masterSize": [
+      256,
+      256
+    ]
+  },
+  "tilePlacementSpec": null,
+  "styleSpec": null,
+  "equipmentProductionSpec": null,
+  "tolerances": {
+    "sizePx": 3,
+    "centerPx": 2
+  },
+  "outputs": {
+    "master": "Tools/artworks/poet_five_red_chow/components/poet_guqin_back_equipment_v02.png",
+    "preview": "Tools/artworks/poet_five_red_chow/components/poet_guqin_back_equipment_v02_128.png"
+  },
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "approved-v2-component-migration"
+  },
+  "assetRole": "component",
+  "componentKind": "equipment",
+  "sourceMode": "pre_v3_import",
+  "runtimeEligible": false
+}

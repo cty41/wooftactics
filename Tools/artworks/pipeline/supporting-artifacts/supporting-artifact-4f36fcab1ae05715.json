@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-4f36fcab1ae05715",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_dr_v09_marked_region_cleanup.png",
+    "sha256": "27b0a4f5bd6196f9adbe1830f8c6e0b13dbd1864b46fc62cf9f2f5e6190eb892"
+  },
+  "role": "review-derived",
+  "note": "Artwork pilot intermediate or review evidence; non-runtime and not an approved generation input"
+}
