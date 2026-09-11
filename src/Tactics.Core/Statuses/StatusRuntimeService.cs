@@ -85,7 +85,9 @@ public sealed class StatusRuntimeService
         {
             result = strategy switch
             {
-                StatusRefreshStrategy.RefreshDuration => CreateState(definition, sourceId, appliedAmount, active.StackCount),
+                StatusRefreshStrategy.RefreshDuration => CreateState(definition, sourceId, appliedAmount, active.StackCount)
+                    .WithAttributeModifiers(MergeStrongest(active.AttributeModifiers,
+                        definition.AttributeModifiers, definition.Polarity)),
                 StatusRefreshStrategy.AddStacks => CreateState(
                     definition,
                     sourceId,
@@ -148,13 +150,32 @@ public sealed class StatusRuntimeService
     public BattleUnitState RecalculateSpeed(BattleUnitState unit)
     {
         ArgumentNullException.ThrowIfNull(unit);
+        UnitAttributeModifiers modifiers = unit.Statuses.Values
+            .Select(status => status.AttributeModifiers)
+            .Aggregate(default(UnitAttributeModifiers), (total, value) => total + value);
+        UnitAttributes effective = modifiers.Apply(unit.Unit.BaseAttributes);
+        UnitDerivedStats baseDerived = UnitDerivedStatRules.Calculate(unit.Unit.BaseAttributes);
+        UnitDerivedStats previousFormula = UnitDerivedStatRules.Calculate(unit.Unit.EffectiveAttributes);
+        int movementTraitModifier = unit.Unit.BaseMoveRange - baseDerived.MoveRange;
+        UnitDerivedStats projected = UnitDerivedStatRules.Calculate(effective, movementTraitModifier);
         int moveModifier = unit.Statuses.Values.Sum(status => status.EffectKind == StatusEffectKind.Slow
             ? -1 : status.MovementModifier);
         int initiativeModifier = unit.Statuses.Values.Sum(status => status.EffectKind == StatusEffectKind.Slow
             ? -4 : status.InitiativeModifier);
-        int moveRange = Math.Clamp(unit.Unit.BaseMoveRange + moveModifier, 2, 5);
-        float initiative = Math.Max(0f, unit.Unit.BaseInitiative + initiativeModifier);
-        return unit.WithUnitFacts(unit.Unit with { MoveRange = moveRange, Initiative = initiative });
+        int projectedMaxHealth = Math.Max(1,
+            checked(unit.MaxHealth + projected.MaxHealth - previousFormula.MaxHealth));
+        int projectedMaxMana = Math.Max(0,
+            checked(unit.MaxMana + projected.MaxMana - previousFormula.MaxMana));
+        var finalDerived = new UnitDerivedStats(
+            projectedMaxHealth,
+            projectedMaxMana,
+            Math.Min(projected.StartingMana, projectedMaxMana),
+            Math.Clamp(projected.MoveRange + moveModifier, 2, 5),
+            Math.Max(0f, unit.Unit.BaseInitiative +
+                (projected.Initiative - baseDerived.Initiative) + initiativeModifier));
+        int manaRecovery = Math.Max(0, checked(unit.ManaRecoveryPerTurn +
+            effective.Intelligence - unit.Unit.EffectiveAttributes.Intelligence));
+        return unit.WithAttributeProjection(effective, finalDerived, manaRecovery);
     }
 
     public StatusBeforeAttackPolicy EvaluateBeforeAttack(BattleUnitState target)
@@ -256,7 +277,26 @@ public sealed class StatusRuntimeService
             definition.MeleeRetaliationDuration,
             definition.InitiativeModifier,
             definition.MovementModifier,
-            definition.FrozenTotalDamage);
+            definition.FrozenTotalDamage,
+            definition.AttributeModifiers,
+            definition.FrozenTotalHealing);
+
+    private static UnitAttributeModifiers MergeStrongest(
+        UnitAttributeModifiers active,
+        UnitAttributeModifiers incoming,
+        StatusPolarity polarity)
+    {
+        int Pick(int left, int right) => polarity == StatusPolarity.Beneficial
+            ? Math.Max(left, right)
+            : Math.Min(left, right);
+        return new UnitAttributeModifiers(
+            Pick(active.Strength, incoming.Strength),
+            Pick(active.Agility, incoming.Agility),
+            Pick(active.Constitution, incoming.Constitution),
+            Pick(active.Intelligence, incoming.Intelligence),
+            Pick(active.Charisma, incoming.Charisma),
+            Pick(active.Luck, incoming.Luck));
+    }
 
     private static int Manhattan(BattleUnitState left, BattleUnitState right) =>
         Math.Abs(left.Unit.Position.X - right.Unit.Position.X) +

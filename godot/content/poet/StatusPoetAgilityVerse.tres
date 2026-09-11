@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="StatusDefinitionResource" format=3 uid="uid://p1hd0f40xc47"]
+
+[ext_resource type="Script" path="res://src/Tactics.Godot.Adapter/Runtime/StatusDefinitionResource.cs" id="1_q61yo"]
+
+[resource]
+script = ExtResource("1_q61yo")
+SchemaVersion = 2
+ContentIdValue = "status.poet.agility-verse"
+SourceId = "godot.status.poet.agility-verse"
+DefaultDuration = 1
+PolarityValue = "Beneficial"
+EffectKindValue = "None"
+TriggerTimingValue = "None"
+RefreshStrategyValue = "RefreshDuration"
+ElementKindValue = "None"
+DamageCategoryValue = "Magic"

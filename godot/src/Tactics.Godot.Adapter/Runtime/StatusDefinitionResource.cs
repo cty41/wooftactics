@@ -1,6 +1,7 @@
 using Godot;
 using Tactics.Core.Content;
 using Tactics.Core.Statuses;
+using Tactics.Core.Units;
 
 namespace Tactics.Godot.Adapter.Runtime;
 
@@ -27,6 +28,16 @@ public partial class StatusDefinitionResource : Resource
     [Export] public float DamageReductionPercent { get; set; }
     [Export] public string MeleeRetaliationStatusIdValue { get; set; } = string.Empty;
     [Export] public int MeleeRetaliationDuration { get; set; }
+    [Export] public int InitiativeModifier { get; set; }
+    [Export] public int MovementModifier { get; set; }
+    [Export] public int FrozenTotalDamage { get; set; }
+    [Export] public int StrengthModifier { get; set; }
+    [Export] public int AgilityModifier { get; set; }
+    [Export] public int ConstitutionModifier { get; set; }
+    [Export] public int IntelligenceModifier { get; set; }
+    [Export] public int CharismaModifier { get; set; }
+    [Export] public int LuckModifier { get; set; }
+    [Export] public int FrozenTotalHealing { get; set; }
     [Export] public string SourcePath { get; set; } = string.Empty;
     [Export] public string SourceGuid { get; set; } = string.Empty;
     [Export] public long SourceLocalFileId { get; set; }
@@ -38,11 +49,12 @@ public partial class StatusDefinitionResource : Resource
 
     public StatusDefinition ToCoreDefinition()
     {
-        if (SchemaVersion != 1)
+        if (SchemaVersion is not (1 or 2))
             throw new InvalidOperationException($"Status '{ContentIdValue}' has unsupported schema {SchemaVersion}.");
         if (IconPayloadCopied)
             throw new InvalidOperationException($"Status '{ContentIdValue}' copied an audit-only icon payload.");
-        if (string.IsNullOrWhiteSpace(SourcePath) || string.IsNullOrWhiteSpace(SourceGuid) || SourceLocalFileId <= 0)
+        if (SchemaVersion == 1 &&
+            (string.IsNullOrWhiteSpace(SourcePath) || string.IsNullOrWhiteSpace(SourceGuid) || SourceLocalFileId <= 0))
             throw new InvalidOperationException($"Status '{ContentIdValue}' has invalid frozen source audit fields.");
         bool hasIcon = !string.IsNullOrEmpty(IconSourcePath) || !string.IsNullOrEmpty(IconSourceGuid) ||
                        IconSourceLocalFileId != 0 || !string.IsNullOrEmpty(IconDependencyHash);
@@ -70,7 +82,14 @@ public partial class StatusDefinitionResource : Resource
             string.IsNullOrEmpty(MeleeRetaliationStatusIdValue)
                 ? null
                 : new ContentId(MeleeRetaliationStatusIdValue),
-            MeleeRetaliationDuration);
+            MeleeRetaliationDuration,
+            initiativeModifier: InitiativeModifier,
+            movementModifier: MovementModifier,
+            frozenTotalDamage: FrozenTotalDamage,
+            attributeModifiers: new UnitAttributeModifiers(
+                StrengthModifier, AgilityModifier, ConstitutionModifier,
+                IntelligenceModifier, CharismaModifier, LuckModifier),
+            frozenTotalHealing: FrozenTotalHealing);
     }
 
     private static T Parse<T>(string value) where T : struct, Enum =>

@@ -41,7 +41,14 @@ public sealed record BattleUiUnitSnapshot(
     IReadOnlyDictionary<ContentId, int> SuccessfulSkillUses,
     IReadOnlyList<BattleUiStatusSnapshot>? Statuses = null,
     int? Corruption = null,
-    bool IsPossessed = false);
+    bool IsPossessed = false,
+    UnitFacing Facing = UnitFacing.East);
+
+public sealed record BattleUiInitiativeEntry(
+    UnitInstanceId UnitId,
+    ContentId DefinitionId,
+    int PlayerNumber,
+    bool IsCurrent);
 
 public sealed record BattleUiTarget(ContentId SkillId, GridPoint Cell, UnitInstanceId? UnitId);
 public sealed record BattleUiSkillPreview(
@@ -98,7 +105,8 @@ public sealed record BattleUiSnapshot(
     BattleUiMoveAvailability MoveAvailability = null!,
     bool TerminalPending = false,
     BattleUiSkillAvailability? MeditationAvailability = null,
-    IReadOnlyCollection<GridPoint>? ShallowWaterCells = null);
+    IReadOnlyCollection<GridPoint>? ShallowWaterCells = null,
+    IReadOnlyList<BattleUiInitiativeEntry>? InitiativeQueue = null);
 
 public sealed record PlayableBattleSessionContext(
     BattleState InitialState,
@@ -244,7 +252,13 @@ public sealed class PlayableBattleSessionService
             MoveAvailability(view, active),
             _battleResult is not null,
             MeditationAvailability(view, active),
-            _context.ShallowWaterCells ?? Array.Empty<GridPoint>());
+            _context.ShallowWaterCells ?? Array.Empty<GridPoint>(),
+            view.InitiativeRound.GetCurrentRoundOrder().Select(entry =>
+            {
+                BattleUnitState unit = view.Units[entry.UnitId];
+                return new BattleUiInitiativeEntry(entry.UnitId, unit.Unit.DefinitionId,
+                    unit.Unit.PlayerNumber, entry.UnitId == view.ActiveUnitId);
+            }).ToArray());
     }
 
     public IReadOnlyList<GridPoint> PreviewMovePath(GridPoint destination)
@@ -381,6 +395,14 @@ public sealed class PlayableBattleSessionService
                 return;
             BattleUnitState active = State.Units[State.ActiveUnitId];
             SummonControllerDefinition? summonController = ControllerFor(active);
+            if (active.IsAlive && active.Statuses.Values.Any(status => !status.CanAct))
+            {
+                BattleTransition skipped = _transitions.Apply(State, new EndTurnCommand(active.Unit.InstanceId));
+                _automaticFrames.Enqueue(("IncapacitatedEnd", State, null, skipped.Events));
+                State = skipped.State;
+                Append(skipped.Events);
+                continue;
+            }
             if (active.IsAlive && active.Unit.PlayerNumber == _context.PlayerNumber && !IsAiControlled(active) && !IsNonActingSummon(active))
                 return;
             if (++commandCount > MaximumAutomaticCommands)
@@ -419,9 +441,13 @@ public sealed class PlayableBattleSessionService
                 return;
             }
             int patternIndex = _patternIndices.GetValueOrDefault(active.Unit.InstanceId);
+            UnitInstanceId? priorityTargetId = ResolvePriorityTarget(active, definition);
+            bool requirePriorityTarget = priorityTargetId is UnitInstanceId priorityId &&
+                State.Units[priorityId].Unit.DefinitionId == new ContentId("unit.pure-run.poet-decoy");
             AiTurnPlan plan = _decisions.Decide(State, definition, _context.SkillCatalog, patternIndex,
                 possessed ? TargetRelationshipStrategy.UnifiedAll : TargetRelationshipStrategy.StandardHostile,
-                priorityTargetId: active.Unit.PlayerNumber == _context.PlayerNumber ? null : _context.ProtectedNpcUnitId);
+                priorityTargetId: priorityTargetId,
+                requirePriorityTarget: requirePriorityTarget);
             AiPlanExecutionResult result = _aiTurns.Execute(State, plan, _context.SkillCatalog);
             _automaticFrames.Enqueue(("Decision",State,result.Decision,Array.Empty<BattleEvent>()));
             foreach(AiExecutionFrame frame in result.Frames??Array.Empty<AiExecutionFrame>())_automaticFrames.Enqueue((frame.Stage,frame.State,null,frame.Events));
@@ -429,6 +455,51 @@ public sealed class PlayableBattleSessionService
             _patternIndices[active.Unit.InstanceId] = result.NextPatternIndex;
             Append(result.Events);
         }
+    }
+
+    private UnitInstanceId? ResolvePriorityTarget(BattleUnitState active, AiDefinition definition)
+    {
+        if (active.Unit.PlayerNumber == _context.PlayerNumber) return null;
+        SkillDefinition[] directAttacks = definition.SkillIds
+            .Where(_context.SkillCatalog.ContainsKey)
+            .Select(skillId => _context.SkillCatalog[skillId])
+            .Where(skill => skill.IsDirectAttack).ToArray();
+        BattleUnitState? poetDecoy = State.Units.Values
+            .Where(unit => unit.IsAlive && unit.Unit.PlayerNumber != active.Unit.PlayerNumber &&
+                unit.Unit.DefinitionId == new ContentId("unit.pure-run.poet-decoy"))
+            .Where(unit => Math.Abs(unit.Unit.Position.X - active.Unit.Position.X) +
+                Math.Abs(unit.Unit.Position.Y - active.Unit.Position.Y) <= 3)
+            .Where(unit => CanCompleteDirectAttack(active, unit, directAttacks))
+            .OrderBy(unit => Math.Abs(unit.Unit.Position.X - active.Unit.Position.X) +
+                Math.Abs(unit.Unit.Position.Y - active.Unit.Position.Y))
+            .ThenBy(unit => unit.Unit.InstanceId.Value, StringComparer.Ordinal)
+            .FirstOrDefault();
+        return poetDecoy?.Unit.InstanceId ?? _context.ProtectedNpcUnitId;
+    }
+
+    private bool CanCompleteDirectAttack(BattleUnitState active, BattleUnitState target,
+        IReadOnlyList<SkillDefinition> directAttacks)
+    {
+        bool CanAttack(BattleState probeState, SkillDefinition skill)
+        {
+            BattleTransition attack = _transitions.Apply(probeState, new UseSkillCommand(active.Unit.InstanceId,
+                target.Unit.InstanceId, target.Unit.Position, skill));
+            return attack.Succeeded && attack.Events.OfType<DamageAppliedEvent>().Any(value =>
+                value.SourceId == active.Unit.InstanceId && value.TargetId == target.Unit.InstanceId &&
+                value.SkillId == skill.ContentId);
+        }
+
+        if (directAttacks.Any(skill => CanAttack(State, skill))) return true;
+        if (active.HasMovedThisTurn) return false;
+        foreach (GridPoint destination in State.Board.Cells.Keys
+                     .OrderBy(cell => cell.X).ThenBy(cell => cell.Y))
+        {
+            BattleTransition move = _transitions.Apply(State,
+                new MoveUnitCommand(active.Unit.InstanceId, destination));
+            if (!move.Succeeded) continue;
+            if (directAttacks.Any(skill => CanAttack(move.State, skill))) return true;
+        }
+        return false;
     }
 
     private void AdvanceProtectedNpc(BattleUnitState active)
@@ -501,7 +572,7 @@ public sealed class PlayableBattleSessionService
         {
             SkillExecutionKind.SummonSkeleton => view.Corpses.OrderBy(cell => cell.X).ThenBy(cell => cell.Y).ToArray(),
             SkillExecutionKind.PickupSpear => view.TryGetDroppedSpear(actor.Unit.InstanceId, out GridPoint spear) ? new[] { spear } : Array.Empty<GridPoint>(),
-            SkillExecutionKind.Thrust => view.Board.Cells.Keys.Where(cell => IsWithinRange(actor.Unit.Position, cell, skill) &&
+            SkillExecutionKind.Thrust or SkillExecutionKind.PoetCharge => view.Board.Cells.Keys.Where(cell => IsWithinRange(actor.Unit.Position, cell, skill) &&
                 (cell.X == actor.Unit.Position.X || cell.Y == actor.Unit.Position.Y)).OrderBy(cell => cell.X).ThenBy(cell => cell.Y).ToArray(),
             _ => view.Board.Cells.Keys.Where(cell => IsWithinRange(actor.Unit.Position, cell, skill)).OrderBy(cell => cell.X).ThenBy(cell => cell.Y).ToArray()
         };
@@ -542,10 +613,11 @@ public sealed class PlayableBattleSessionService
 
     private void EvaluateTerminal()
     {
-        bool playerAlive = State.Units.Values.Any(unit => unit.IsAlive &&
+        bool playerAlive = State.Units.Values.Any(unit => unit.IsAlive && !IsNonActingSummon(unit) &&
             unit.Unit.PlayerNumber == _context.PlayerNumber &&
             (_context.ProtectedNpcUnitId is not UnitInstanceId protectedId || unit.Unit.InstanceId != protectedId));
-        bool enemyAlive = State.Units.Values.Any(unit => unit.IsAlive && unit.Unit.PlayerNumber != _context.PlayerNumber);
+        bool enemyAlive = State.Units.Values.Any(unit => unit.IsAlive && !IsNonActingSummon(unit) &&
+            unit.Unit.PlayerNumber != _context.PlayerNumber);
         if (playerAlive && enemyAlive)
         {
             _lastTerminalMarker = "combat_continues";
@@ -603,9 +675,9 @@ public sealed class PlayableBattleSessionService
     private PlayableBattlePhase DeterminePhase(BattleState view)
     {
         if (_failureCode is not null) return PlayableBattlePhase.Faulted;
-        bool playerAlive=view.Units.Values.Any(unit=>unit.IsAlive&&unit.Unit.PlayerNumber==_context.PlayerNumber&&
+        bool playerAlive=view.Units.Values.Any(unit=>unit.IsAlive&&!IsNonActingSummon(unit)&&unit.Unit.PlayerNumber==_context.PlayerNumber&&
             (_context.ProtectedNpcUnitId is not UnitInstanceId protectedId || unit.Unit.InstanceId!=protectedId));
-        bool enemyAlive=view.Units.Values.Any(unit=>unit.IsAlive&&unit.Unit.PlayerNumber!=_context.PlayerNumber);
+        bool enemyAlive=view.Units.Values.Any(unit=>unit.IsAlive&&!IsNonActingSummon(unit)&&unit.Unit.PlayerNumber!=_context.PlayerNumber);
         if(!playerAlive)return PlayableBattlePhase.Defeat;
         if(!enemyAlive)return PlayableBattlePhase.Victory;
         BattleUnitState active = view.Units[view.ActiveUnitId];
@@ -667,7 +739,8 @@ public sealed class PlayableBattleSessionService
             .Select(status => new BattleUiStatusSnapshot(status.ContentId, status.EffectKind, status.Polarity,
                 status.RemainingTurns, status.StackCount)).ToArray(),
         unit.DemonboundState?.Corruption,
-        unit.DemonboundState?.IsPossessed == true);
+        unit.DemonboundState?.IsPossessed == true,
+        unit.Unit.Facing);
 
     private BattleTerminalUnitDiagnostics ToTerminalDiagnostics(BattleUnitState unit)
     {

@@ -60,6 +60,14 @@ public partial class SkillDefinitionResource : Resource
     [Export] public int LifeStealPercent { get; set; }
     [Export] public string EffectScalingValue { get; set; } = nameof(SkillEffectScalingKind.None);
     [Export] public double AccuracyFactor { get; set; } = 1d;
+    [Export] public int KillManaRefund { get; set; }
+    [Export] public int RepeatChancePercent { get; set; }
+    [Export] public int RepeatDamagePercent { get; set; }
+    [Export] public int HealingTickCount { get; set; }
+    [Export] public int HealingBase { get; set; }
+    [Export] public int AttributeModifier { get; set; }
+    [Export] public int DirectHitCharges { get; set; }
+    [Export] public int RetreatDistance { get; set; } = 1;
     [Export] public string SourcePath { get; set; } = string.Empty;
     [Export] public string SourceGuid { get; set; } = string.Empty;
     [Export] public long SourceLocalFileId { get; set; }
@@ -87,7 +95,9 @@ public partial class SkillDefinitionResource : Resource
             BounceRange, BounceCount, PierceAll, AllowsEmptyTarget, MovementDamagePerCell,
             string.IsNullOrEmpty(SummonAttackContentIdValue) ? null : new ContentId(SummonAttackContentIdValue),
             CorruptionCost, Parse<SkillDamageScalingKind>(DamageScalingValue), LifeStealPercent,
-            Parse<SkillEffectScalingKind>(EffectScalingValue), (decimal)AccuracyFactor);
+            Parse<SkillEffectScalingKind>(EffectScalingValue), (decimal)AccuracyFactor,
+            KillManaRefund, RepeatChancePercent, RepeatDamagePercent, HealingTickCount,
+            HealingBase, AttributeModifier, DirectHitCharges, RetreatDistance);
         return new SkillDefinition(new ContentId(ContentIdValue), SourceId, Parse<SkillRole>(RoleValue), Parse<SkillKind>(KindValue), Level, ManaCost, MinRange, MaxRange, Parse<SkillExecutionKind>(ExecutionKindValue), Damage, Parse<SkillDamageKind>(DamageKindValue), string.IsNullOrEmpty(StatusContentIdValue) ? null : new ContentId(StatusContentIdValue), StatusDuration, Hidden, ExternalDependency, IsBasicAbility, MaxUsesPerTurn, BranchId, string.IsNullOrEmpty(PrerequisiteContentIdValue) ? null : new ContentId(PrerequisiteContentIdValue), GrowthVisible, profile, RequiredAttribute, MinimumAttribute, PrerequisiteBranchId, CanCrit);
     }
 

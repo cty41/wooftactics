@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="UnitDefinitionResource" format=3 uid="uid://h41angeqw2un"]
+
+[ext_resource type="PackedScene" path="res://content/units/UnitActor.tscn" id="1_y6hd3"]
+[ext_resource type="Texture2D" path="res://assets/units/actions/doge_demonbound_cast_dr.png" id="2_frllr"]
+[ext_resource type="Texture2D" path="res://assets/units/actions/doge_demonbound_cast_ul.png" id="3_6mlrf"]
+[ext_resource type="Texture2D" path="res://assets/units/doge_demonbound.png" id="4_ebxto"]
+[ext_resource type="Texture2D" path="res://assets/units/actions/doge_demonbound_hit_dr.png" id="5_7ftbg"]
+[ext_resource type="Texture2D" path="res://assets/units/actions/doge_demonbound_hit_ul.png" id="6_moewi"]
+[ext_resource type="Texture2D" path="res://assets/units/actions/doge_demonbound_melee_attack_dr.png" id="7_frytc"]
+[ext_resource type="Texture2D" path="res://assets/units/actions/doge_demonbound_melee_attack_ul.png" id="8_6sgbm"]
+[ext_resource type="Texture2D" path="res://assets/units/pure_run_unit_shadow_1x1_v01.png" id="9_n7e6g"]
+[ext_resource type="Texture2D" path="res://assets/units/doge_demonbound_ul.png" id="10_xd6tf"]
+[ext_resource type="Script" path="res://src/Tactics.Godot.Adapter/Runtime/UnitDefinitionResource.cs" id="11_o3ifq"]
+
+[resource]
+script = ExtResource("11_o3ifq")
+ContentIdValue = "unit.pure-run.poet-decoy"
+SourceId = "godot.poet-decoy"
+DisplayName = "Poet Afterimage"
+Category = "player"
+FamilyId = "summon"
+RoleId = "poet-decoy"
+Strength = 1
+Agility = 1
+Constitution = 1
+Intelligence = 1
+Charisma = 1
+Luck = 1
+MaxHealth = 2
+DerivedStatModeValue = "explicit"
+AttackRange = 1
+AttackFactor = 1.0
+DefenceFactor = 1.0
+ActorContentIdValue = "packed-scene.unit-actor"
+ActorScene = ExtResource("1_y6hd3")
+DownRightTexture = ExtResource("4_ebxto")
+UpLeftTexture = ExtResource("10_xd6tf")
+MeleeDownRightTexture = ExtResource("7_frytc")
+MeleeUpLeftTexture = ExtResource("8_6sgbm")
+CastDownRightTexture = ExtResource("2_frllr")
+CastUpLeftTexture = ExtResource("3_6mlrf")
+HitDownRightTexture = ExtResource("5_7ftbg")
+HitUpLeftTexture = ExtResource("6_moewi")
+ShadowTexture = ExtResource("9_n7e6g")
+DownRightBodyOffset = Vector2(0, -108)
+UpLeftBodyOffset = Vector2(0, -108)
+ShadowOffset = Vector2(0, 3.84)
+ShadowScale = Vector2(1.6, 1.6)
+ShadowOpacity = 0.9
+BodyTint = Color(0.36, 0.84, 1, 0.72)
+BaseBodyColor = Color(0.36, 0.84, 1, 0.72)
+DeferredDependencies = PackedStringArray("starting-branch-skill")

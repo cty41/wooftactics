@@ -16,6 +16,8 @@ public sealed class SkillRuntimeService
     private static readonly ContentId FireDemonDefinitionId = new("unit.pure-run.fire-demon");
     private static readonly ContentId SkeletonMageDefinitionId = new("unit.pure-run.skeleton-mage");
     private static readonly ContentId DecoyDefinitionId = new("unit.pure-run.amazon-decoy");
+    private static readonly ContentId PoetDecoyDefinitionId = new("unit.pure-run.poet-decoy");
+    private static readonly ContentId PoetMoonDrinkFamilyUseId = new("skill-family.poet.moon-drink");
     public static readonly ContentId RunPermanentDeathStatusId = new("status.run.permanent-death");
     private readonly ILineOfSightService _lineOfSight;
     private readonly StatusRuntimeService _statuses;
@@ -41,6 +43,12 @@ public sealed class SkillRuntimeService
         if (skill.ExecutionKind is SkillExecutionKind.IceArmor or SkillExecutionKind.BoneShield) return ApplySelfDefense(state, actor, command);
         if (skill.ExecutionKind == SkillExecutionKind.DemonicRegeneration) return ApplyDemonicRegeneration(state, actor, command);
         if (skill.ExecutionKind == SkillExecutionKind.MultiStab) return ApplyMultiStab(state, actor, command);
+        if (skill.ExecutionKind == SkillExecutionKind.PoetCharge) return ApplyPoetCharge(state, actor, command);
+        if (skill.ExecutionKind == SkillExecutionKind.PoetSwordRain) return ApplyPoetSwordRain(state, actor, command);
+        if (skill.ExecutionKind == SkillExecutionKind.PoetWineHeal) return ApplyPoetWineHeal(state, actor, command);
+        if (skill.ExecutionKind == SkillExecutionKind.PoetAgilityVerse) return ApplyPoetAgilityVerse(state, actor, command);
+        if (skill.ExecutionKind == SkillExecutionKind.PoetMoonDrink) return ApplyPoetMoonDrink(state, actor, command);
+        if (skill.ExecutionKind == SkillExecutionKind.PoetDecoyRetreat) return ApplyPoetDecoyRetreat(state, actor, command);
         if (skill.RequiresLineOfSight && state.Board.Contains(command.TargetCell) &&
             !_lineOfSight.Trace(state.Board, actor.Unit.Position, command.TargetCell,
                 LivingBlockers(state, actor.Unit.InstanceId, command.TargetCell, skill.ExecutionKind)).IsClear)
@@ -73,7 +81,8 @@ public sealed class SkillRuntimeService
                 skill.ExecutionProfile.DetonateStatusContentId is ContentId detonateId &&
                 target.Statuses.TryGetValue(detonateId, out BattleStatusState? detonated))
             {
-                int detonationDamage = Math.Min(target.CurrentHealth, Math.Max(0, detonated.StackCount));
+                int detonationDamage = LimitDirectHitDamage(target,
+                    Math.Min(target.CurrentHealth, Math.Max(0, detonated.StackCount)));
                 target = target.WithoutStatus(detonateId).WithHealth(target.CurrentHealth - detonationDamage);
                 events.Add(new StatusExpiredEvent(target.Unit.InstanceId, detonateId));
                 if (detonationDamage > 0)
@@ -129,6 +138,7 @@ public sealed class SkillRuntimeService
                 target = target.WithDamageShield(remaining > 0 ? shield with { RemainingPoints = remaining } : null);
                 events.Add(new DamageShieldAbsorbedEvent(target.Unit.InstanceId, skill.ContentId, absorbed, remaining));
             }
+            damage = LimitDirectHitDamage(target, damage);
             int beforeHealth = target.CurrentHealth;
             int health = Math.Max(0, beforeHealth - damage);
             target = target.WithHealth(health);
@@ -184,7 +194,8 @@ public sealed class SkillRuntimeService
                 if (followUpRoll < 30)
                 {
                     BattleUnitState current = next.Units[target.Unit.InstanceId];
-                    int followUpDamage = Math.Min(current.CurrentHealth, actor.PhysicalAttack);
+                    int followUpDamage = LimitDirectHitDamage(current,
+                        Math.Min(current.CurrentHealth, actor.PhysicalAttack));
                     BattleUnitState followed = current.WithHealth(current.CurrentHealth - followUpDamage);
                     events.Add(new DamageAppliedEvent(actor.Unit.InstanceId, current.Unit.InstanceId, skill.ContentId,
                         followUpDamage, followed.CurrentHealth));
@@ -210,7 +221,8 @@ public sealed class SkillRuntimeService
                 events.Add(new CombatRollResolvedEvent(actor.Unit.InstanceId, bounce.Unit.InstanceId, skill.ContentId,
                     roll, bounce.HasCombatTechniquesLevelOne ? 30 : 0, dodged ? "dodge" : "hit", random.State));
                 next = next.WithRandomState(random.State);
-                int damage = dodged ? 0 : Math.Min(bounce.CurrentHealth, Math.Max(1, skill.Damage / 2));
+                int damage = LimitDirectHitDamage(bounce,
+                    dodged ? 0 : Math.Min(bounce.CurrentHealth, Math.Max(1, skill.Damage / 2)));
                 BattleUnitState damaged = bounce.WithHealth(bounce.CurrentHealth - damage);
                 events.Add(new DamageAppliedEvent(actor.Unit.InstanceId, bounce.Unit.InstanceId, skill.ContentId, damage, damaged.CurrentHealth));
                 if (!dodged && damaged.IsAlive && skill.StatusContentId is ContentId slowId)
@@ -247,6 +259,370 @@ public sealed class SkillRuntimeService
             new SemanticCueEmittedEvent(actor.Unit.InstanceId, actor.Unit.InstanceId, skill.ContentId, "passive-enabled")
         });
     }
+
+    private BattleTransition ApplyPoetCharge(BattleState state, BattleUnitState actor, UseSkillCommand command)
+    {
+        SkillDefinition skill = command.Definition;
+        int dx = command.TargetCell.X - actor.Unit.Position.X;
+        int dy = command.TargetCell.Y - actor.Unit.Position.Y;
+        int selectedDistance = Manhattan(actor.Unit.Position, command.TargetCell);
+        if (selectedDistance < skill.MinRange || selectedDistance > skill.MaxRange ||
+            (dx == 0) == (dy == 0))
+            return Reject(state, actor, "poet_charge_requires_cardinal_line");
+
+        int stepX = Math.Sign(dx);
+        int stepY = Math.Sign(dy);
+        BattleUnitState? target = null;
+        GridPoint destination = actor.Unit.Position;
+        for (int step = 1; step <= selectedDistance; step++)
+        {
+            GridPoint cell = new(actor.Unit.Position.X + stepX * step, actor.Unit.Position.Y + stepY * step);
+            if (!state.Board.Contains(cell) || !state.Board.GetCell(cell).CanTraverse(actor.Unit.MovementKind))
+                return Reject(state, actor, "poet_charge_path_blocked");
+            BattleUnitState? occupant = state.Units.Values.FirstOrDefault(unit =>
+                unit.IsAlive && unit.Unit.InstanceId != actor.Unit.InstanceId && unit.Unit.Position == cell);
+            if (occupant is null)
+            {
+                destination = cell;
+                continue;
+            }
+            if (!IsHostile(state, actor, occupant))
+                return Reject(state, actor, "poet_charge_path_blocked");
+            target = occupant;
+            break;
+        }
+        if (target is null) return Reject(state, actor, "poet_charge_enemy_not_found");
+
+        BattleUnitState spent = actor.WithPosition(destination, actor.HasMovedThisTurn)
+            .WithMana(actor.CurrentMana - skill.ManaCost).WithSuccessfulSkillUse(skill.ContentId);
+        BattleState next = state.WithUnit(spent);
+        var events = new List<BattleEvent>
+        {
+            new SkillUsedEvent(actor.Unit.InstanceId, target.Unit.InstanceId, skill.ContentId)
+        };
+        if (skill.ManaCost > 0)
+            events.Add(new ManaSpentEvent(actor.Unit.InstanceId, skill.ContentId, skill.ManaCost, spent.CurrentMana));
+        if (destination != actor.Unit.Position)
+            events.Add(new UnitMovedEvent(actor.Unit.InstanceId, actor.Unit.Position, destination,
+                CardinalPath(actor.Unit.Position, destination)));
+
+        int rawDamage = checked(skill.Damage + actor.Unit.EffectiveAttributes.Strength +
+            (skill.Level >= 2 ? Math.Max(0, actor.Unit.EffectiveAttributes.Strength - 5) : 0));
+        PoetDamageSegmentResult segment = ApplyPoetDamageSegment(next, spent, target, skill, rawDamage, events);
+        next = segment.State;
+        if (segment.Defeated && skill.Level >= 3)
+        {
+            int requestedRefund = skill.ExecutionProfile.KillManaRefund > 0
+                ? skill.ExecutionProfile.KillManaRefund : 6;
+            BattleUnitState currentActor = next.Units[actor.Unit.InstanceId];
+            BattleUnitState refunded = currentActor.WithMana(currentActor.CurrentMana + requestedRefund);
+            int amount = refunded.CurrentMana - currentActor.CurrentMana;
+            next = next.WithUnit(refunded);
+            events.Add(new ManaRestoredEvent(actor.Unit.InstanceId, actor.Unit.InstanceId,
+                skill.ContentId, amount, refunded.CurrentMana));
+        }
+        events.Add(new SemanticCueEmittedEvent(actor.Unit.InstanceId, target.Unit.InstanceId,
+            skill.ContentId, "resolution"));
+        return new BattleTransition(next, events);
+    }
+
+    private BattleTransition ApplyPoetSwordRain(BattleState state, BattleUnitState actor, UseSkillCommand command)
+    {
+        SkillDefinition skill = command.Definition;
+        int distance = Manhattan(actor.Unit.Position, command.TargetCell);
+        if (!state.Board.Contains(command.TargetCell) || distance < skill.MinRange || distance > skill.MaxRange)
+            return Reject(state, actor, "poet_sword_rain_center_out_of_range");
+        if (!_lineOfSight.Trace(state.Board, actor.Unit.Position, command.TargetCell,
+                LivingBlockers(state, actor.Unit.InstanceId, command.TargetCell, skill.ExecutionKind)).IsClear)
+            return Reject(state, actor, "line_of_sight_blocked");
+        int radius = skill.ExecutionProfile.AreaRadius > 0 ? skill.ExecutionProfile.AreaRadius : 2;
+        BattleUnitState[] targets = state.Units.Values
+            .Where(unit => unit.IsAlive && IsHostile(state, actor, unit) &&
+                           Manhattan(unit.Unit.Position, command.TargetCell) <= radius)
+            .OrderBy(unit => unit.Unit.InstanceId.Value, StringComparer.Ordinal).ToArray();
+        if (targets.Length == 0) return Reject(state, actor, "no_valid_target");
+
+        BattleUnitState spent = actor.WithMana(actor.CurrentMana - skill.ManaCost)
+            .WithSuccessfulSkillUse(skill.ContentId);
+        BattleState next = state.WithUnit(spent);
+        var events = new List<BattleEvent>
+        {
+            new SkillUsedEvent(actor.Unit.InstanceId, targets[0].Unit.InstanceId, skill.ContentId)
+        };
+        if (skill.ManaCost > 0)
+            events.Add(new ManaSpentEvent(actor.Unit.InstanceId, skill.ContentId, skill.ManaCost, spent.CurrentMana));
+        int rawDamage = checked(skill.Damage + actor.Unit.EffectiveAttributes.Strength / 2);
+        foreach (BattleUnitState original in targets)
+        {
+            if (!next.TryGetUnit(original.Unit.InstanceId, out BattleUnitState? current) || current is null || !current.IsAlive)
+                continue;
+            next = ApplyPoetDamageSegment(next, spent, current, skill, rawDamage, events).State;
+        }
+
+        int repeatChance = skill.ExecutionProfile.RepeatChancePercent > 0
+            ? skill.ExecutionProfile.RepeatChancePercent : skill.Level >= 2 ? 25 : 0;
+        if (repeatChance > 0)
+        {
+            var repeatRandom = new DeterministicRandom(next.RandomState);
+            int repeatRoll = repeatRandom.NextInt(100);
+            bool repeat = repeatRoll < repeatChance;
+            next = next.WithRandomState(repeatRandom.State);
+            events.Add(new CombatRollResolvedEvent(actor.Unit.InstanceId, actor.Unit.InstanceId,
+                skill.ContentId, repeatRoll, repeatChance,
+                repeat ? "poet-sword-rain-repeat" : "poet-sword-rain-no-repeat", repeatRandom.State));
+            if (repeat)
+            {
+                int repeatPercent = skill.ExecutionProfile.RepeatDamagePercent > 0
+                    ? skill.ExecutionProfile.RepeatDamagePercent : 50;
+                int repeatDamage = (int)Math.Floor(rawDamage * repeatPercent / 100d);
+                foreach (BattleUnitState original in targets)
+                {
+                    if (!next.TryGetUnit(original.Unit.InstanceId, out BattleUnitState? current) || current is null || !current.IsAlive)
+                        continue;
+                    next = ApplyPoetDamageSegment(next, spent, current, skill, repeatDamage, events).State;
+                }
+            }
+        }
+        events.Add(new SemanticCueEmittedEvent(actor.Unit.InstanceId, targets[0].Unit.InstanceId,
+            skill.ContentId, "resolution"));
+        return new BattleTransition(next, events);
+    }
+
+    private BattleTransition ApplyPoetWineHeal(BattleState state, BattleUnitState actor, UseSkillCommand command)
+    {
+        SkillDefinition skill = command.Definition;
+        if (command.TargetCell != actor.Unit.Position ||
+            command.TargetId is UnitInstanceId targetId && targetId != actor.Unit.InstanceId)
+            return Reject(state, actor, "poet_wine_target_not_self");
+        int radius = skill.ExecutionProfile.AreaRadius > 0 ? skill.ExecutionProfile.AreaRadius : 2;
+        int tickCount = skill.ExecutionProfile.HealingTickCount > 0 ? skill.ExecutionProfile.HealingTickCount : 3;
+        int healingBase = skill.ExecutionProfile.HealingBase > 0
+            ? skill.ExecutionProfile.HealingBase : skill.Level >= 2 ? 6 : 3;
+        int totalHealing = checked(healingBase + actor.Unit.EffectiveAttributes.Strength);
+        ContentId statusId = skill.StatusContentId ?? new ContentId("status.poet.wine-heal");
+        var definition = new StatusDefinition(statusId, skill.SourceId, tickCount, true,
+            StatusPolarity.Beneficial, StatusEffectKind.None, StatusTriggerTiming.TurnStart,
+            StatusRefreshStrategy.RefreshDuration, frozenTotalHealing: totalHealing);
+        BattleUnitState[] targets = state.Units.Values
+            .Where(unit => unit.IsAlive && unit.Unit.PlayerNumber == actor.Unit.PlayerNumber &&
+                           unit.CanReceiveStandardHealing && Manhattan(unit.Unit.Position, actor.Unit.Position) <= radius)
+            .OrderBy(unit => unit.Unit.InstanceId.Value, StringComparer.Ordinal).ToArray();
+        if (targets.Length == 0) return Reject(state, actor, "no_valid_target");
+
+        BattleState next = state;
+        var events = new List<BattleEvent>
+        {
+            new SkillUsedEvent(actor.Unit.InstanceId, actor.Unit.InstanceId, skill.ContentId)
+        };
+        foreach (BattleUnitState original in targets)
+        {
+            BattleUnitState current = next.Units[original.Unit.InstanceId];
+            StatusApplicationResult application = _statuses.Apply(current, definition,
+                actor.Unit.InstanceId, tickCount);
+            current = application.Unit;
+            events.Add(new StatusAppliedEvent(actor.Unit.InstanceId, current.Unit.InstanceId,
+                statusId, application.AppliedStatus.RemainingTurns));
+            if (skill.Level >= 3)
+            {
+                BattleStatusState? harmful = current.Statuses.Values
+                    .Where(status => status.Polarity == StatusPolarity.Harmful)
+                    .OrderByDescending(HarmfulCleansePriority)
+                    .ThenByDescending(status => status.RemainingTurns)
+                    .ThenBy(status => status.ContentId.Value, StringComparer.Ordinal).FirstOrDefault();
+                if (harmful is not null)
+                {
+                    current = _statuses.Remove(current, harmful.ContentId);
+                    events.Add(new StatusesCleansedEvent(actor.Unit.InstanceId, current.Unit.InstanceId,
+                        skill.ContentId, new[] { harmful.ContentId }));
+                }
+            }
+            next = next.WithUnit(current);
+        }
+        BattleUnitState spent = next.Units[actor.Unit.InstanceId]
+            .WithMana(actor.CurrentMana - skill.ManaCost).WithSuccessfulSkillUse(skill.ContentId);
+        next = next.WithUnit(spent);
+        if (skill.ManaCost > 0)
+            events.Insert(1, new ManaSpentEvent(actor.Unit.InstanceId, skill.ContentId,
+                skill.ManaCost, spent.CurrentMana));
+        return new BattleTransition(next, events);
+    }
+
+    private BattleTransition ApplyPoetAgilityVerse(BattleState state, BattleUnitState actor, UseSkillCommand command)
+    {
+        SkillDefinition skill = command.Definition;
+        if (command.TargetCell != actor.Unit.Position ||
+            command.TargetId is UnitInstanceId targetId && targetId != actor.Unit.InstanceId)
+            return Reject(state, actor, "poet_agility_target_not_self");
+        int radius = skill.ExecutionProfile.AreaRadius > 0 ? skill.ExecutionProfile.AreaRadius : 2;
+        int amount = skill.ExecutionProfile.AttributeModifier > 0
+            ? skill.ExecutionProfile.AttributeModifier : skill.Level >= 2 ? 4 : 2;
+        ContentId statusId = skill.StatusContentId ?? new ContentId("status.poet.agility-verse");
+        var definition = new StatusDefinition(statusId, skill.SourceId, 1, true,
+            StatusPolarity.Beneficial, StatusEffectKind.None, StatusTriggerTiming.None,
+            StatusRefreshStrategy.RefreshDuration,
+            attributeModifiers: new UnitAttributeModifiers(Agility: amount));
+        BattleUnitState[] targets = state.Units.Values
+            .Where(unit => unit.IsAlive && unit.Unit.PlayerNumber == actor.Unit.PlayerNumber &&
+                           Manhattan(unit.Unit.Position, actor.Unit.Position) <= radius)
+            .OrderBy(unit => unit.Unit.InstanceId.Value, StringComparer.Ordinal).ToArray();
+        if (targets.Length == 0) return Reject(state, actor, "no_valid_target");
+
+        BattleState next = state;
+        var events = new List<BattleEvent>
+        {
+            new SkillUsedEvent(actor.Unit.InstanceId, actor.Unit.InstanceId, skill.ContentId)
+        };
+        foreach (BattleUnitState original in targets)
+        {
+            StatusApplicationResult application = _statuses.Apply(next.Units[original.Unit.InstanceId],
+                definition, actor.Unit.InstanceId, 1);
+            next = next.WithUnit(application.Unit);
+            events.Add(new StatusAppliedEvent(actor.Unit.InstanceId, original.Unit.InstanceId,
+                statusId, application.AppliedStatus.RemainingTurns));
+        }
+        BattleUnitState spent = next.Units[actor.Unit.InstanceId]
+            .WithMana(actor.CurrentMana - skill.ManaCost).WithSuccessfulSkillUse(skill.ContentId);
+        next = next.WithUnit(spent);
+        if (skill.ManaCost > 0)
+            events.Insert(1, new ManaSpentEvent(actor.Unit.InstanceId, skill.ContentId,
+                skill.ManaCost, spent.CurrentMana));
+        return new BattleTransition(next, events);
+    }
+
+    private BattleTransition ApplyPoetMoonDrink(BattleState state, BattleUnitState actor, UseSkillCommand command)
+    {
+        SkillDefinition skill = command.Definition;
+        if (command.TargetCell != actor.Unit.Position ||
+            command.TargetId is UnitInstanceId targetId && targetId != actor.Unit.InstanceId)
+            return Reject(state, actor, "poet_moon_drink_target_not_self");
+        ContentId[] harmful = actor.Statuses.Values.Where(status => status.Polarity == StatusPolarity.Harmful)
+            .OrderBy(status => status.ContentId.Value, StringComparer.Ordinal)
+            .Select(status => status.ContentId).ToArray();
+        bool canCleanse = skill.Level >= 3 && harmful.Length > 0;
+        if (actor.CurrentHealth >= actor.MaxHealth && !canCleanse)
+            return Reject(state, actor, "poet_moon_drink_no_effect");
+
+        int percent = actor.CurrentHealth * 2 >= actor.MaxHealth ? 20 : 40;
+        int requested = Math.Max(1, (int)Math.Floor(actor.MaxHealth * percent / 100d));
+        BattleUnitState updated = actor.WithHealth(actor.CurrentHealth + requested);
+        int restored = updated.CurrentHealth - actor.CurrentHealth;
+        if (canCleanse) updated = _statuses.RemoveHarmful(updated, out _);
+        updated = updated.WithMana(actor.CurrentMana - skill.ManaCost)
+            .WithSuccessfulSkillUse(skill.ContentId)
+            .WithSuccessfulSkillUse(PoetMoonDrinkFamilyUseId);
+        var events = new List<BattleEvent>
+        {
+            new SkillUsedEvent(actor.Unit.InstanceId, actor.Unit.InstanceId, skill.ContentId)
+        };
+        if (skill.ManaCost > 0)
+            events.Add(new ManaSpentEvent(actor.Unit.InstanceId, skill.ContentId, skill.ManaCost, updated.CurrentMana));
+        if (restored > 0)
+            events.Add(new HealthRestoredEvent(actor.Unit.InstanceId, actor.Unit.InstanceId,
+                skill.ContentId, restored, updated.CurrentHealth));
+        if (canCleanse)
+            events.Add(new StatusesCleansedEvent(actor.Unit.InstanceId, actor.Unit.InstanceId,
+                skill.ContentId, harmful));
+        return new BattleTransition(state.WithUnit(updated), events);
+    }
+
+    private BattleTransition ApplyPoetDecoyRetreat(BattleState state, BattleUnitState actor, UseSkillCommand command)
+    {
+        SkillDefinition skill = command.Definition;
+        if (command.TargetCell != actor.Unit.Position ||
+            command.TargetId is UnitInstanceId targetId && targetId != actor.Unit.InstanceId)
+            return Reject(state, actor, "poet_retreat_target_not_self");
+        GridPoint destination = actor.Unit.Position;
+        int distance = skill.ExecutionProfile.RetreatDistance;
+        for (int step = 0; step < distance; step++)
+            destination = UnitFacingResolver.BackwardStep(destination, actor.Unit.Facing);
+        if (!state.Board.Contains(destination) ||
+            !state.CreateMovementBoard(actor.Unit.InstanceId).GetCell(destination).CanStop(actor.Unit.MovementKind))
+            return Reject(state, actor, "poet_retreat_blocked");
+
+        GridPoint origin = actor.Unit.Position;
+        BattleUnitState moved = actor.WithPosition(destination, actor.HasMovedThisTurn)
+            .WithMana(actor.CurrentMana - skill.ManaCost).WithSuccessfulSkillUse(skill.ContentId);
+        int ordinal = state.Units.Values.Select(unit => unit.Unit.SpawnOrdinal).DefaultIfEmpty(-1).Max() + 1;
+        var id = new UnitInstanceId($"{actor.Unit.InstanceId.Value}.poet-decoy.{ordinal}");
+        ContentId definitionId = skill.ExecutionProfile.SummonDefinitionId ?? PoetDecoyDefinitionId;
+        int charges = skill.ExecutionProfile.DirectHitCharges > 0
+            ? skill.ExecutionProfile.DirectHitCharges : skill.Level >= 2 ? 2 : 1;
+        var facts = new UnitState(id, definitionId, origin, 0, 0, actor.Unit.PlayerNumber, ordinal,
+            movementKind: actor.Unit.MovementKind, effectiveAttributes: actor.Unit.EffectiveAttributes,
+            combatRole: SkillRole.Poet, facing: actor.Unit.Facing,
+            baseAttributes: actor.Unit.BaseAttributes);
+        var decoy = new BattleUnitState(facts, charges, charges, summonOwnerId: actor.Unit.InstanceId,
+            canReceiveStandardHealing: false, canProduceCorpse: false, summonCategory: "Decoy");
+        BattleState next = state.WithUnit(moved).WithSummon(decoy, 1, "Decoy");
+        var events = new List<BattleEvent>
+        {
+            new SkillUsedEvent(actor.Unit.InstanceId, actor.Unit.InstanceId, skill.ContentId)
+        };
+        if (skill.ManaCost > 0)
+            events.Add(new ManaSpentEvent(actor.Unit.InstanceId, skill.ContentId, skill.ManaCost, moved.CurrentMana));
+        events.Add(new UnitMovedEvent(actor.Unit.InstanceId, origin, destination, new[] { destination }));
+        events.Add(new UnitSummonedEvent(actor.Unit.InstanceId, id, definitionId, origin));
+        return new BattleTransition(next, events);
+    }
+
+    private sealed record PoetDamageSegmentResult(BattleState State, bool Defeated);
+
+    private PoetDamageSegmentResult ApplyPoetDamageSegment(BattleState state, BattleUnitState actor,
+        BattleUnitState originalTarget, SkillDefinition skill, int rawDamage, ICollection<BattleEvent> events)
+    {
+        BattleUnitState target = state.Units[originalTarget.Unit.InstanceId];
+        var random = new DeterministicRandom(state.RandomState);
+        int hitRoll = random.NextInt(100);
+        int accuracy = UnitCombatStatRules.Accuracy(actor.Unit.EffectiveAttributes);
+        int dodge = UnitCombatStatRules.Dodge(target.Unit.EffectiveAttributes) +
+                    (target.HasCombatTechniquesLevelOne ? 30 : 0);
+        int hitChance = Math.Clamp((int)Math.Floor((accuracy - dodge) * skill.ExecutionProfile.AccuracyFactor), 0, 100);
+        bool dodged = hitRoll >= hitChance;
+        int criticalRoll = random.NextInt(100);
+        int criticalChance = Math.Clamp(UnitCombatStatRules.CriticalChance(actor.Unit.EffectiveAttributes) +
+                                        (actor.CombatTechniquesLevel >= 3 ? 20 : 0), 0, 100);
+        bool critical = skill.CanCrit && !dodged &&
+                        (_statuses.EvaluateBeforeAttack(target).ForceCritical || criticalRoll < criticalChance);
+        events.Add(new CombatRollResolvedEvent(actor.Unit.InstanceId, target.Unit.InstanceId,
+            skill.ContentId, hitRoll, hitChance, dodged ? "dodge" : critical ? "critical" : "hit", random.State));
+        BattleState next = state.WithRandomState(random.State);
+        if (actor.Statuses.Values.Any(status => status.EffectKind == StatusEffectKind.DamageOutputReduction))
+            rawDamage = (int)MathF.Round(rawDamage * 0.75f, MidpointRounding.AwayFromZero);
+        if (critical)
+            rawDamage = checked((int)Math.Floor(rawDamage * UnitCombatStatRules.CriticalMultiplier(
+                actor.Unit.EffectiveAttributes)));
+        StatusDamagePolicy damagePolicy = _statuses.EvaluateDamageTaken(target, actor,
+            skill.ExecutionKind == SkillExecutionKind.PoetSwordRain);
+        int damage = dodged ? 0 : (int)MathF.Round(rawDamage * damagePolicy.DamageMultiplier,
+            MidpointRounding.AwayFromZero);
+        if (!dodged && target.DamageShield is BattleDamageShieldState shield &&
+            (skill.DamageKind == SkillDamageKind.Physical || shield.AbsorbsAllDamage))
+        {
+            int absorbed = Math.Min(shield.RemainingPoints, damage);
+            damage -= absorbed;
+            int remaining = shield.RemainingPoints - absorbed;
+            target = target.WithDamageShield(remaining > 0 ? shield with { RemainingPoints = remaining } : null);
+            events.Add(new DamageShieldAbsorbedEvent(target.Unit.InstanceId, skill.ContentId, absorbed, remaining));
+        }
+        damage = LimitDirectHitDamage(target, damage);
+        int before = target.CurrentHealth;
+        BattleUnitState damaged = target.WithHealth(before - damage);
+        int actual = before - damaged.CurrentHealth;
+        events.Add(new DamageAppliedEvent(actor.Unit.InstanceId, target.Unit.InstanceId,
+            skill.ContentId, actual, damaged.CurrentHealth));
+        next = next.WithUnit(damaged);
+        next = ApplyDefeat(next, actor, target, damaged, events);
+        return new PoetDamageSegmentResult(next, target.IsAlive && !damaged.IsAlive && actual > 0);
+    }
+
+    private static int HarmfulCleansePriority(BattleStatusState status) => status.EffectKind switch
+    {
+        StatusEffectKind.Stun or StatusEffectKind.Fear or StatusEffectKind.Frozen => 100,
+        StatusEffectKind.Slow or StatusEffectKind.DamageOutputReduction => 80,
+        StatusEffectKind.CurseDamageAmplifier => 60,
+        StatusEffectKind.Burning or StatusEffectKind.Poison => 40,
+        _ => 0
+    };
 
     private static BattleTransition ApplyDemonicRegeneration(
         BattleState state, BattleUnitState actor, UseSkillCommand command)
@@ -395,7 +771,8 @@ public sealed class SkillRuntimeService
                          .OrderBy(unit => unit.Unit.InstanceId.Value, StringComparer.Ordinal).ToArray())
             {
                 BattleUnitState target = next.Units[original.Unit.InstanceId];
-                BattleUnitState damaged = target.WithHealth(target.CurrentHealth - secondaryDamage);
+                int damage = LimitDirectHitDamage(target, secondaryDamage);
+                BattleUnitState damaged = target.WithHealth(target.CurrentHealth - damage);
                 next = next.WithUnit(damaged);
                 events.Add(new DamageAppliedEvent(actor.Unit.InstanceId, target.Unit.InstanceId, command.Definition.ContentId, target.CurrentHealth - damaged.CurrentHealth, damaged.CurrentHealth));
                 next = ApplyDefeat(next, actor, target, damaged, events);
@@ -427,7 +804,8 @@ public sealed class SkillRuntimeService
             int before = target.CurrentHealth;
             int contribution = UnitCombatStatRules.AttributeContribution(actor.Unit.EffectiveAttributes,
                 EffectiveRole(actor, command.Definition), EffectiveScaling(command.Definition), multiHit: true);
-            int damage = missed ? 0 : checked(command.Definition.Damage + contribution);
+            int damage = LimitDirectHitDamage(target,
+                missed ? 0 : checked(command.Definition.Damage + contribution));
             BattleUnitState damaged = target.WithHealth(before - damage);
             next = next.WithUnit(damaged);
             events.Add(new DamageAppliedEvent(actor.Unit.InstanceId, targetId, command.Definition.ContentId, before - damaged.CurrentHealth, damaged.CurrentHealth));
@@ -435,6 +813,21 @@ public sealed class SkillRuntimeService
         }
         return new BattleTransition(next, events);
     }
+
+    private static IReadOnlyList<GridPoint> CardinalPath(GridPoint origin, GridPoint destination)
+    {
+        int dx = Math.Sign(destination.X - origin.X);
+        int dy = Math.Sign(destination.Y - origin.Y);
+        int distance = Manhattan(origin, destination);
+        return Enumerable.Range(1, distance)
+            .Select(step => new GridPoint(origin.X + dx * step, origin.Y + dy * step)).ToArray();
+    }
+
+    private static int LimitDirectHitDamage(BattleUnitState target, int damage) =>
+        damage > 0 && (target.Unit.DefinitionId == PoetDecoyDefinitionId ||
+                       target.Unit.InstanceId.Value.Contains(".poet-decoy.", StringComparison.Ordinal))
+            ? 1
+            : damage;
 
     private static int Manhattan(GridPoint left, GridPoint right) => Math.Abs(left.X - right.X) + Math.Abs(left.Y - right.Y);
 
@@ -627,6 +1020,9 @@ public sealed class SkillRuntimeService
     public static string? UsageFailure(BattleUnitState actor, SkillDefinition skill)
     {
         int uses = actor.SuccessfulUsesOf(skill.ContentId);
+        if (skill.ExecutionKind == SkillExecutionKind.PoetMoonDrink &&
+            actor.SuccessfulUsesOf(PoetMoonDrinkFamilyUseId) >= 1)
+            return "ability_use_limit_reached";
         if (skill.IsBasicAbility && uses >= 1) return "basic_ability_already_used";
         if (!skill.IsBasicAbility && skill.MaxUsesPerTurn > 0 && uses >= skill.MaxUsesPerTurn)
             return "ability_use_limit_reached";
@@ -638,6 +1034,9 @@ public sealed class SkillRuntimeService
     {
         string? usageFailure = UsageFailure(actor, skill);
         if (usageFailure is not null) return usageFailure;
+        if (skill.ExecutionKind == SkillExecutionKind.PoetMoonDrink && actor.CurrentHealth >= actor.MaxHealth &&
+            !(skill.Level >= 3 && actor.Statuses.Values.Any(status => status.Polarity == StatusPolarity.Harmful)))
+            return "poet_moon_drink_no_effect";
         return actor.CurrentMana < skill.ManaCost ? "insufficient_mana" : null;
     }
 }

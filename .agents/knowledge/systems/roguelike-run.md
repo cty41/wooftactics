@@ -4,11 +4,12 @@ resource: https://github.com/cty41/tactics/tree/main/src/Tactics.Core/Runs
 title: Roguelike Run
 description: Godot Pure Run 的七层路线、节点事务、队伍成长、存档和终局主链。
 tags: [gameplay, roguelike, map, progression, godot]
-timestamp: "2026-08-24T16:30:50+08:00"
+timestamp: "2026-09-11T11:08:42+08:00"
 status: active
 catalog_scope: roguelike-run
 repo_paths:
   - .agents/docs/2026-06-24-pure-run-squad-prototype-design.md
+  - .agents/docs/poet-class-design.md
   - src/Tactics.Core/Runs
   - src/Tactics.Application/Runs
   - src/Tactics.Core.Tests/RunAdventureTransitionServiceTests.cs
@@ -17,7 +18,7 @@ repo_paths:
   - godot/src/Tactics.Godot.Adapter/Runtime/GodotPlayableRunMain.cs
   - Tests/gameplay-specs/godot
 verified_revision: c56d71ad4ebd
-source_fingerprint: sha256:ba4cf81fb62a3a90d95ce30512190d08795948486cea97f792c89adf2d62136f
+source_fingerprint: sha256:350e0ff06d4eb863b0bf5ea28b90b9ebf4221fcdca68564755b9fcefd19505f1
 ---
 
 # Current State
@@ -28,7 +29,7 @@ Pure Run 使用七层只前进路线、稳定节点 ID 和持久化 `RunAdventur
 
 Godot Adventure Board 使用正式 Tile 投影和生产输入链呈现出口、队伍位置与节点状态；Rogue Map 仅作只读总览。战斗节点先进入 Tile 场景，胜利后恢复同一 resolved 场景再开放出口。存档采用 V10、revision、hash、temp 重读与 backup 回退；V9 活跃 Run/Pending Setup 要求新局，Terminal Summary 保留，损坏证据隔离保存且不静默覆盖。
 
-当前可选角色、战斗、事件、休息、商店、宝箱、Elite、Boss、成长和终局均由代码、typed Resource 与测试共同定义。自动旅程验证逻辑和持久化边界；地图可读性、操作手感和视觉反馈由人工验收账本负责。
+当前候选池包含法师、死灵法师、亚马逊、魔剑士与诗人五名角色，开局仍必须选择恰好三人；SeededStartingSkill 可为魔剑士与诗人从各自三个候选技能确定性选择。战斗、事件、休息、商店、宝箱、Elite、Boss、成长和终局均由代码、typed Resource 与测试共同定义。自动旅程验证逻辑和持久化边界；地图可读性、操作手感和视觉反馈由人工验收账本负责。
 
 成长阶段保存的六维是永久属性，装备只在战斗/面板有效属性投影中叠加。亚马逊以永久六维总增量 2/4 判定高级和大师候选；装备与临时状态不会解锁技能，但会影响实际技能数值和二级属性。当前仍禁止主动洗点、退款和自由重分配，永久惩罚不得把单项属性降到 1 以下。
 

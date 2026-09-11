@@ -4,6 +4,30 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 
 ## Pending
 
+### MQA-GODOT-POET-RUNTIME — 诗人开局、技能表现与临时分身
+
+- Status: `pending`
+- Source: 第五职业诗人、六套技能与临时分身功能实现
+- Action: 使用三个 disposable Run，在 Start Camp 确认五名候选均有独立站位；每次选择“诗人”与另外两人，并分别从剑仙、诗仙、酒仙起步。进入战斗后至少实际使用一次侠客行、剑雨、将进酒、行路难、月下独酌和山中与幽人对酌；观察冲锋/范围攻击、三次回合开始治疗、敏捷提升、自疗净化，以及按施法前朝向后退并在原地留下分身。
+- Expected: 候选和战斗 UI 显示“诗人”，第五候选不重叠或崩溃；技能按钮、目标范围、动作反馈、HP/MP/状态变化容易理解。分身与本体可明显区分，后退和生成原子完成，敌人在合法直接攻击范围内优先攻击分身；临时分身素材允许保留当前差异化占位视觉。
+- Observe: Start Camp 候选区、Battle action bar、棋盘单位/状态层、HP/MP、事件日志、CheatConsole 与 Godot Output。
+- Preserve on failure: Run seed、起始分支、技能等级、双方格子与朝向、施法前后 HP/MP/状态、截图或短视频、battle checkpoint/save 副本和完整 Output。
+- Save boundary: 选择队伍、成长和战斗会修改当前 Run；只使用 disposable/隔离存档，不覆盖生产存档。
+- Automated evidence: Core 205/205、Application 199/199、Poet focused 13/13、Resource/Catalog 185、相关 GdUnit 与 29/29 Gameplay journeys已通过；技能公式、合法性、持续时间、硬 AI 分身优先和五候选结构由自动化覆盖。动作可读性、临时分身辨识度和职业体验仍需人工判断。
+- User verdict: none.
+
+### MQA-GODOT-INITIATIVE-HUD — 动态先攻头像条、Hover 联动与输入锁
+
+- Status: `pending`
+- Source: Core 权威动态先攻与右上角圆形头像行动条实现
+- Action: 在 disposable battle 中依次完成普通行动、施放行路难改变未行动单位敏捷、召唤或替换召唤物、击杀一个单位，并让一个带不可行动状态的单位轮到行动；悬停友方和敌方头像，再把队列扩展到十个以上单位观察省略号。
+- Expected: 右上条只显示当前与未行动单位，当前头像为金框、友敌底色明确、相同先攻保持玩家方优先；已行动头像消失，未行动头像按新先攻平滑重排，召唤物按当前先攻插入。队列最多显示九个头像和不可交互的“…”；隐藏队列变化时省略号脉冲。Hover 显示白框，并在棋盘对应单位上显示阵营色轮廓及 HP/MP；约 0.22 秒 Tween 期间点击不会重复提交，结束后输入立即恢复。不可行动单位自动跳过但只消费一次 EndTurn/状态时长。
+- Observe: 右上 initiative strip、Round 标签、头像框与省略号、棋盘单位轮廓/HP/MP、action bar、事件日志、CheatConsole 和 Godot Output。
+- Preserve on failure: 短视频、Round、完整可见/隐藏队列、各单位先攻与 acted 状态、悬停单位 ID、点击时刻、事件日志、Run seed/checkpoint 和 Output。
+- Save boundary: 战斗行动和召唤会修改 disposable Run；悬停本身只读，失败时先复制 checkpoint 再继续。
+- Automated evidence: Core/Application 覆盖逐轮重排、未行动队列同步、召唤插入/替换、昏迷自动 EndTurn 和无重复行动；Godot tests 覆盖九头像省略、0.22 秒过渡、五候选和生产输入锁，Gameplay journeys 29/29 通过。动画手感、Hover 对应关系、视觉层级和高速连续操作仍需人工验收。
+- User verdict: none.
+
 ### MQA-GODOT-MAW-BAT-SLICE — 大嘴蝠、浅水与 N2 实战纵切
 
 - Status: `pending`
@@ -514,6 +538,18 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 
 ## Deferred or Blocked
 
+### MQA-GODOT-POET-DECOY-ART — 青川犬正式分身美术
+
+- Status: `deferred`
+- Source: 诗人功能优先范围决定；本轮允许差异化临时 Demonbound 视觉
+- Action: 后续美术任务中完成青川犬身份、四方向、受击/消散与 Tile 落点设计，经逐图人工审核后再接入分身 Resource。
+- Expected: 正式分身在正常战斗缩放下可立即识别为青川犬，与诗人本体、敌方和其他召唤物不混淆；方向、脚底锚点、直接命中段数反馈和消失表现清晰。
+- Observe: Artwork review panel、Unit Gallery/SpawnFixture、Battle board、分身受击/替换/消失和 Godot Output。
+- Preserve on failure: 母图/候选版本、prompt/job/attempt ID、方向、Tile 对比截图、运行时截图与 Output。
+- Save boundary: 美术生产只能通过 artwork pipeline；未获人工批准不得替换当前运行时素材或改写生产存档。
+- Automated evidence: 当前临时视觉的 Resource 类型、装载、分身规则和战斗清理已自动验证；正式美术尚未生产，不能自动验收。
+- User verdict: Deferred by the user; formal Qingchuan Hound artwork is outside this implementation round.
+
 ### MQA-GODOT-AUDIO-ASSETS — Licensed audio payload and listening pass
 
 - Status: `deferred`
@@ -528,4 +564,6 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 
 ## Last Emitted Order
 
-1. `MQA-GODOT-DEMONBOUND-POSSESSION` — 腐化与附身形态表现、敌友统一目标、永久死亡与缺员（同一 pending item 的三方面）
+1. `MQA-GODOT-POET-RUNTIME` — 诗人开局、六套技能与临时分身
+2. `MQA-GODOT-INITIATIVE-HUD` — 动态先攻头像条、Hover 与输入锁
+3. `MQA-GODOT-POET-DECOY-ART` — 青川犬正式美术（deferred）

@@ -103,13 +103,25 @@ dsl_support: unsupported
 
 ```gameplay-contract
 id: ATTR-CLASS-IDENTITY-001
-status: approved_target
-statement: 四个玩家职业 Lv1 初始六维总和均为 30；法师为 4/5/3/6/6/6 且以智力为主属性，死灵法师为 5/3/6/6/6/4 且以体质为主属性，魔剑士为 6/4/6/6/6/2 且以魅力为主属性，亚马逊为六维全 5 且无主属性的全才职业。此规则不改变现有 MP 派生公式。
+status: verified_current
+statement: 五个玩家职业 Lv1 初始六维总和均为 30；法师为 4/5/3/6/6/6 且以智力为主属性，死灵法师为 5/3/6/6/6/4 且以体质为主属性，魔剑士为 6/4/6/6/6/2 且以魅力为主属性，亚马逊为六维全 5 且无主属性的全才职业，诗人为 6/5/5/4/6/4 且以力量为主属性。此规则不改变现有 MP 派生公式。
 verification:
   - layer: core_test
     path: src/Tactics.Core.Tests/UnitDefinitionTests.cs
   - layer: godot_test
     path: godot/tests/UnitBatchGodotTests.cs
+dsl_support: unsupported
+```
+
+```gameplay-contract
+id: ATTR-TEMPORARY-MODIFIER-001
+status: verified_current
+statement: 战斗状态可携带六维有符号临时修正；所有活动状态按属性求和并以 UnitState.BaseAttributes 为基线生成 EffectiveAttributes，单项最低为 1。施加、刷新、驱散和到期都统一重算最大 HP/MP、法力恢复、移动、先攻、命中及其他六维派生值；上限下降时当前 HP/MP 钳制到新上限。旧式显式单位通过公式差值保持其原始基线数值。
+verification:
+  - layer: core_test
+    path: src/Tactics.Core.Tests/StatusItemRuntimeTests.cs
+  - layer: core_test
+    path: src/Tactics.Core.Tests/BattleTransitionTests.cs
 dsl_support: unsupported
 ```
 

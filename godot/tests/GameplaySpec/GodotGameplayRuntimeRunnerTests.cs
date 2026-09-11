@@ -43,7 +43,7 @@ public class GodotGameplayRuntimeRunnerTests
             ["inventory-store-ready-v1"] = "f0178ece6249cfa8e978550fa36e3871ea2ecc2b7b05f138d1d76598e659d8b9",
             ["defeat-no-summon-v1"] = "ca88be359b96f0e3a2b193d9052618ddb6b086c8c63065175ac36acfe5a6ea0c",
             ["numbers-mana-v1"] = "c418483a77bdc78b3388d33b88abac8ee82d6291cae0dfbf7ad4a2939c7fca78",
-            ["numbers-miss-v1"] = "19b5db213502e64ab3646f7690fb821ccebdf3b1a56fdedeb09afe6fc2d5ed6e",
+            ["numbers-miss-v1"] = "2ac46742150437eba37c8007286e946d2a4caf2f478c0b4e5f833bd7d63126b7",
             ["reload-pending-battle-v1"] = "8ee5dc0cf76134f6a816ff1c49fb41192afc0ccd4609a487c0f8f55027aa1d98",
             ["demonbound-ready-v1"] = "8eb6407f3a930534b9aa6d11e65787fba59b56bff018f2561c8e5a09ebc4f7cf",
             ["layer4-choice-ready-v1"] = "2d0ab502e474b2c61c413be755279126fa509dcf9cfb5afdb9ce3f66b20f9ac2",

@@ -381,6 +381,40 @@ public sealed class BattleUnitState
             physicalAttack: PhysicalAttack, magicalAttack: MagicalAttack, summonOwnerId: SummonOwnerId,
             canReceiveStandardHealing: CanReceiveStandardHealing, hasCombatTechniquesLevelOne: HasCombatTechniquesLevelOne, canProduceCorpse: CanProduceCorpse, successfulSkillUses: _successfulSkillUses, manaRecoveryPerTurn: ManaRecoveryPerTurn, summonCategory: SummonCategory, combatTechniquesLevel: CombatTechniquesLevel, damageShield: DamageShield, movementCellsThisTurn: MovementCellsThisTurn, demonboundState: DemonboundState, primaryAttributeDamageBonus: PrimaryAttributeDamageBonus);
 
+    public BattleUnitState WithAttributeProjection(
+        UnitAttributes effectiveAttributes,
+        UnitDerivedStats derivedStats,
+        int manaRecoveryPerTurn) => new(
+        Unit with
+        {
+            EffectiveAttributes = effectiveAttributes,
+            MoveRange = derivedStats.MoveRange,
+            Initiative = derivedStats.Initiative
+        },
+        derivedStats.MaxHealth,
+        Math.Min(CurrentHealth, derivedStats.MaxHealth),
+        HasMovedThisTurn,
+        maxMana: derivedStats.MaxMana,
+        currentMana: Math.Min(CurrentMana, derivedStats.MaxMana),
+        statuses: _statuses,
+        baseSpeed: BaseSpeed,
+        consumables: _consumables,
+        lastSuccessfulConsumableUseRound: LastSuccessfulConsumableUseRound,
+        physicalAttack: PhysicalAttack,
+        magicalAttack: MagicalAttack,
+        summonOwnerId: SummonOwnerId,
+        canReceiveStandardHealing: CanReceiveStandardHealing,
+        hasCombatTechniquesLevelOne: HasCombatTechniquesLevelOne,
+        canProduceCorpse: CanProduceCorpse,
+        successfulSkillUses: _successfulSkillUses,
+        manaRecoveryPerTurn: manaRecoveryPerTurn,
+        summonCategory: SummonCategory,
+        combatTechniquesLevel: CombatTechniquesLevel,
+        damageShield: DamageShield,
+        movementCellsThisTurn: MovementCellsThisTurn,
+        demonboundState: DemonboundState,
+        primaryAttributeDamageBonus: PrimaryAttributeDamageBonus);
+
     public BattleUnitState WithHealthAndMana(int maxHealth, int currentHealth, int maxMana, int currentMana) => new(
         Unit, maxHealth, currentHealth, HasMovedThisTurn, maxMana: maxMana, currentMana: currentMana,
         statuses: _statuses, baseSpeed: BaseSpeed, consumables: _consumables,

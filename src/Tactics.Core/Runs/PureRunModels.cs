@@ -70,8 +70,8 @@ public sealed record PureRunDefinition
         LayerFourMapContentId = layerFourMapContentId;
         if (Encounters.Count != 3 || Encounters.Distinct().Count() != 3)
             throw new ArgumentException("The Phase 6B slice requires exactly three unique encounters.", nameof(encounters));
-        if (Party.Count is not (3 or 4) || Party.Select(item => item.CharacterId).Distinct(StringComparer.Ordinal).Count() != Party.Count)
-            throw new ArgumentException("Pure Run requires three or four unique candidate characters.", nameof(party));
+        if (Party.Count is not (3 or 4 or 5) || Party.Select(item => item.CharacterId).Distinct(StringComparer.Ordinal).Count() != Party.Count)
+            throw new ArgumentException("Pure Run requires three, four, or five unique candidate characters.", nameof(party));
         foreach (PureRunPartyTemplate template in Party)
         {
             IReadOnlyList<ContentId> choices = template.EffectiveStartingSkillChoices;

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="StatusDefinitionResource" format=3 uid="uid://bwoy35kfceodh"]
+
+[ext_resource type="Script" path="res://src/Tactics.Godot.Adapter/Runtime/StatusDefinitionResource.cs" id="1_0gy4n"]
+
+[resource]
+script = ExtResource("1_0gy4n")
+SchemaVersion = 2
+ContentIdValue = "status.poet.wine-heal"
+SourceId = "godot.status.poet.wine-heal"
+DefaultDuration = 3
+PolarityValue = "Beneficial"
+EffectKindValue = "None"
+TriggerTimingValue = "TurnStart"
+RefreshStrategyValue = "RefreshDuration"
+ElementKindValue = "None"
+DamageCategoryValue = "Magic"

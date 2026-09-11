@@ -92,6 +92,13 @@ public sealed record StatusTickedEvent(
     int Amount,
     int RemainingHealth) : BattleEvent;
 
+public sealed record StatusHealingTickedEvent(
+    UnitInstanceId SourceId,
+    UnitInstanceId TargetId,
+    ContentId StatusId,
+    int Amount,
+    int CurrentHealth) : BattleEvent;
+
 /// <summary>
 /// Reports a status duration decrement at the affected unit's turn end.
 /// </summary>

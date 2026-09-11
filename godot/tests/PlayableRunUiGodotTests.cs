@@ -356,6 +356,13 @@ public class PlayableRunUiGodotTests
     }
 
     [TestCase]
+    public void StartCampProvidesDistinctCellsForAllFiveCandidates()
+    {
+        AssertThat(GodotPlayableRunMain.StartCampCandidateCells.Count).IsEqual(5);
+        AssertThat(GodotPlayableRunMain.StartCampCandidateCells.Distinct().Count()).IsEqual(5);
+    }
+
+    [TestCase]
     [RequireGodotRuntime]
     public void RunDefinitionUsesCanonicalPoisonSpearStartingChoice()
     {
@@ -379,7 +386,29 @@ public class PlayableRunUiGodotTests
 
     [TestCase]
     [RequireGodotRuntime]
-    public void RunDefinitionV2SerializesAllFourCandidateAttributes()
+    public void FiveCandidateRunDefinitionUsesCanonicalPoetFallbackStartingChoices()
+    {
+        var resource = new PureRunDefinitionResource
+        {
+            ContentIdValue = "run.pure-run.five-candidate-test",
+            EncounterContentIds = ["encounter.pure-run.n1", "encounter.pure-run.n2", "encounter.pure-run.n3"],
+            CharacterIds = ["mage", "necromancer", "amazon", "demonbound", "poet"],
+            UnitContentIds = ["unit.mage", "unit.necromancer", "unit.amazon", "unit.demonbound", "unit.poet"],
+            StartingSkillContentIds = ["skill.mage.fireball.lv1", "skill.necromancer.bone-spear.lv1",
+                "skill.amazon.thrust.lv1", "skill.demonbound.bane.lv1", "skill.poet.xiake-xing.lv1"]
+        };
+
+        PureRunPartyTemplate poet = resource.ToCoreDefinition().Party.Single(value => value.CharacterId == "poet");
+
+        AssertThat(poet.EffectiveStartingSkillChoices).ContainsExactly(
+            new ContentId("skill.poet.xiake-xing.lv1"),
+            new ContentId("skill.poet.jiang-jin-jiu.lv1"),
+            new ContentId("skill.poet.moon-drink.lv1"));
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public void RunDefinitionV2SerializesAllFiveCandidateAttributes()
     {
         var resource = ResourceLoader.Load<PureRunDefinitionResource>(
             "res://content/runs/PureRunThreeEncounterV1.tres", string.Empty, ResourceLoader.CacheMode.Ignore);
@@ -389,10 +418,16 @@ public class PlayableRunUiGodotTests
         PureRunDefinition definition = resource.ToCoreDefinition();
         PureRunPartyTemplate demonbound = definition.Party.Single(value =>
             value.CharacterId == "pure_run_demonbound");
+        PureRunPartyTemplate poet = definition.Party.Single(value =>
+            value.CharacterId == "pure_run_poet");
 
         AssertThat(resource.SchemaVersion).IsEqual(2);
-        AssertThat(resource.Charismas.Length).IsEqual(4);
-        AssertThat(demonbound.Attributes).IsEqual(new UnitAttributes(5, 5, 5, 5, 6, 5));
+        AssertThat(resource.Charismas.Length).IsEqual(5);
+        AssertThat(demonbound.Attributes).IsEqual(new UnitAttributes(6, 4, 6, 6, 6, 2));
+        AssertThat(poet.Attributes).IsEqual(new UnitAttributes(6, 5, 5, 4, 6, 4));
+        AssertThat(poet.EffectiveStartingSkillChoices).Contains(new ContentId("skill.poet.xiake-xing.lv1"));
+        AssertThat(poet.EffectiveStartingSkillChoices).Contains(new ContentId("skill.poet.jiang-jin-jiu.lv1"));
+        AssertThat(poet.EffectiveStartingSkillChoices).Contains(new ContentId("skill.poet.moon-drink.lv1"));
         AssertThat(demonbound.EffectiveInherentSkills)
             .Contains(new ContentId("skill.demonbound.meditation"));
     }
@@ -783,7 +818,7 @@ public class PlayableRunUiGodotTests
             "res://content/ContentCatalog.tres", string.Empty, ResourceLoader.CacheMode.Ignore)!;
         Dictionary<string, GodotResourceEntry> entries = catalog.Entries.ToDictionary(value => value.ContentIdValue);
 
-        AssertThat(entries.Count).IsEqual(166);
+        AssertThat(entries.Count).IsEqual(185);
         foreach (string id in new[]
         {
             "skill.summon.skeleton-attack.lv1", "skill.summon.skeleton-attack.lv2",

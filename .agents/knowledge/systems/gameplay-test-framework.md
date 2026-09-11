@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics/tree/main/Tools/gameplay-test-spec
 title: Gameplay Test Framework
 description: 将受控 gameplay spec 编译为 Godot runtime runner 可执行的确定性计划。
 tags: [testing, gameplay, automation, godot]
-timestamp: "2026-08-22T14:57:22+08:00"
+timestamp: "2026-08-28T13:05:39+08:00"
 status: active
 catalog_scope: gameplay-test-framework
 repo_paths:
@@ -16,7 +16,7 @@ repo_paths:
   - godot/src/Tactics.Godot.Adapter/Runtime/GodotPlayableRunMain.cs
   - Tests/gameplay-specs
 verified_revision: c56d71ad4ebd
-source_fingerprint: sha256:afb8ebae6cc89dd354e2bbacd65037ec0456a78c91b2ac715d38bc385c94a166
+source_fingerprint: sha256:718bbb7740bb514482f834fcc906dea03032a16b1d8e4e5ca10b12ed3b734742
 ---
 
 # Current State
@@ -34,7 +34,7 @@ OpenCode Go Key 与普通 provider 配置分离，secrets ACL 只允许当前用
 
 `GodotGameplayRuntimeRunner` 加载正式 `Main.tscn`，并通过 `Viewport.PushInput` 驱动生产 GUI/Input 链。每个场景使用隔离 `user://qa-runner/<scenario>/<attempt>/`，执行前后验证生产主档与 backup 未变化，并在退出时释放 Main、临时节点和隔离目录。
 
-依赖命中/闪避结果的 presentation 场景绑定显式 checkpoint RNG state；属性命中公式变化后必须重新选择能证明目标分支的确定性 state，并同步 checkpoint semantic hash 与编译 plan。
+依赖命中/闪避结果的 presentation 场景绑定显式 checkpoint RNG state；属性、行动顺序或 committed battle snapshot 变化后必须重新确认目标分支，并同步 checkpoint semantic hash 与由源 spec 编译的 plan。生产输入 readiness 同时观察表现播放锁和 initiative Tween 输入锁，避免自动旅程在 Core 已提交但 HUD 动画尚未解锁时注入下一次点击。
 
 测试按非零最小测试、相关 fixture、相关门禁和统一 verifier 逐级升级；输入、场景、缓存 UI、异步状态或 reload fixture 首次通过后连续复跑一轮。同一 canonical Editor、runner 和 verifier 只有一个 mutating job owner。长任务以实际进度判断 active/stalled，90 秒无可验证进展时检查进程、runner 和日志，确认卡死后只恢复当前门禁。当前任务失败必须修复；基线失败需要可核验证据和用户或仓库政策授权。
 

@@ -9,6 +9,7 @@ using Tactics.Core.Runs;
 using Tactics.Core.Items;
 using Tactics.Core.Pathfinding;
 using Tactics.Core.Skills;
+using Tactics.Core.Statuses;
 using Tactics.Core.Units;
 
 namespace Tactics.Application.Tests;
@@ -46,6 +47,7 @@ public sealed class PlayableBattleSessionServiceTests
             Assert.That(PlayableBattleSessionFactory.CalculatePrimaryAttributeDamageBonus(attributes, SkillRole.Necromancer), Is.Zero);
             Assert.That(PlayableBattleSessionFactory.CalculatePrimaryAttributeDamageBonus(attributes, SkillRole.Demonbound), Is.EqualTo(6));
             Assert.That(PlayableBattleSessionFactory.CalculatePrimaryAttributeDamageBonus(attributes, SkillRole.Amazon), Is.EqualTo(2));
+            Assert.That(PlayableBattleSessionFactory.CalculatePrimaryAttributeDamageBonus(attributes, SkillRole.Poet), Is.EqualTo(3));
             Assert.That(PlayableBattleSessionFactory.CalculatePrimaryAttributeDamageBonus(attributes, SkillRole.Any), Is.Zero);
         });
     }
@@ -102,6 +104,24 @@ public sealed class PlayableBattleSessionServiceTests
             Assert.That(PlayableBattleSessionService.DynamicSummonBasicSkill(new ContentId("unit.pure-run.fire-demon")),
                 Is.EqualTo(new ContentId("skill.summon.fire-demon-attack")));
             Assert.That(PlayableBattleSessionService.DynamicSummonBasicSkill(new ContentId("unit.pure-run.decoy")), Is.Null);
+        });
+    }
+
+    [Test]
+    public void Snapshot_ProjectsCommittedFacingAndCurrentRemainingInitiativeQueue()
+    {
+        PlayableBattleSessionService service = CreateService(out _, out _);
+
+        BattleUiSnapshot snapshot = service.CaptureSnapshot();
+        IReadOnlyList<BattleUiInitiativeEntry> queue = snapshot.InitiativeQueue!;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(queue, Is.Not.Null.And.Not.Empty);
+            Assert.That(queue.First().UnitId, Is.EqualTo(snapshot.ActiveUnitId));
+            Assert.That(queue.Count(item => item.IsCurrent), Is.EqualTo(1));
+            Assert.That(snapshot.Units.Single(item => item.PlayerNumber == 0).Facing, Is.EqualTo(UnitFacing.East));
+            Assert.That(snapshot.Units.Single(item => item.PlayerNumber == 1).Facing, Is.EqualTo(UnitFacing.West));
         });
     }
 
@@ -309,6 +329,27 @@ public sealed class PlayableBattleSessionServiceTests
             Assert.That(preview!.RangeCells, Does.Contain(new GridPoint(1, 2)));
             Assert.That(preview.RangeCells, Does.Contain(new GridPoint(2, 1)));
             Assert.That(preview.RangeCells, Does.Not.Contain(new GridPoint(2, 2)));
+        });
+    }
+
+    [Test]
+    public void PoetChargePreview_OnlyIncludesAxialCellsAndProjectsLinePath()
+    {
+        PlayableBattleSessionService service = CreateService(
+            out SkillDefinition playerSkill,
+            out _,
+            executionKind: SkillExecutionKind.PoetCharge);
+
+        BattleUiSkillPreview? preview = service.Submit(new SelectSkillIntent(playerSkill.ContentId)).Snapshot.SkillPreview;
+        BattleUiImpactPreview impact = service.PreviewSkillTarget(new GridPoint(2, 1))!;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(preview, Is.Not.Null);
+            Assert.That(preview!.RangeCells, Does.Contain(new GridPoint(1, 2)));
+            Assert.That(preview.RangeCells, Does.Contain(new GridPoint(2, 1)));
+            Assert.That(preview.RangeCells, Does.Not.Contain(new GridPoint(2, 2)));
+            Assert.That(impact.PathCells, Is.EqualTo(new[] { new GridPoint(2, 1) }));
         });
     }
 
@@ -732,6 +773,170 @@ public sealed class PlayableBattleSessionServiceTests
             Assert.That(projected!.ContentId, Is.EqualTo(baneLv3.ContentId));
             Assert.That(projected.Level, Is.EqualTo(3));
         });
+    }
+
+    [Test]
+    public void IncapacitatedCurrentUnit_AutoEndsAndConsumesStatusBeforeNextPlayer()
+    {
+        var stunnedId = new UnitInstanceId("party-stunned");
+        var nextId = new UnitInstanceId("party-next");
+        var enemyId = new UnitInstanceId("enemy-waiting");
+        ContentId stunId = new("buff.test-stun");
+        BattleUnitState stunnedBase = Unit(stunnedId, "unit.pure-run.poet", new GridPoint(1, 1), 0, 0, 20, 20);
+        var stun = new BattleStatusState(stunId, enemyId, 1, 0, canAct: false,
+            effectKind: StatusEffectKind.Stun, refreshStrategy: StatusRefreshStrategy.RefreshDuration);
+        var stunned = new BattleUnitState(stunnedBase.Unit, 20, 20,
+            statuses: new Dictionary<ContentId, BattleStatusState> { [stunId] = stun }, maxMana: 10, currentMana: 10);
+        BattleUnitState next = Unit(nextId, "unit.pure-run.mage", new GridPoint(2, 1), 0, 1, 20, 20);
+        BattleUnitState enemy = Unit(enemyId, "unit.pure-run.goat-charger", new GridPoint(8, 8), 1, 2, 20, 20);
+        BattleState state = State([stunned, next, enemy], [stunnedId, nextId, enemyId]);
+        var context = new PlayableBattleSessionContext(state, 0,
+            new Dictionary<UnitInstanceId, IReadOnlyList<SkillDefinition>>(),
+            new Dictionary<UnitInstanceId, AiDefinition>(),
+            new Dictionary<ContentId, SkillDefinition>());
+
+        var service = new PlayableBattleSessionService(context);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(service.State.ActiveUnitId, Is.EqualTo(nextId));
+            Assert.That(service.State.Round, Is.EqualTo(1));
+            Assert.That(service.State.Units[stunnedId].Statuses, Does.Not.ContainKey(stunId));
+            Assert.That(service.CaptureSnapshot().RecentEvents.OfType<StatusExpiredEvent>()
+                .Any(status => status.TargetId == stunnedId && status.StatusId == stunId), Is.True);
+        });
+    }
+
+    [TestCase(2)]
+    [TestCase(3)]
+    public void EnemyAi_PrioritizesPoetDecoyAfterCompleteLegalMoveThenDirectAttack(int distance)
+    {
+        PlayableBattleSessionService service = CreatePoetDecoyPriorityService(distance, blockRoute: false,
+            out UnitInstanceId decoyId, out UnitInstanceId protectedId);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(service.State.Units[decoyId].CurrentHealth, Is.Zero);
+            Assert.That(service.State.Units[protectedId].CurrentHealth, Is.EqualTo(20));
+        });
+    }
+
+    [Test]
+    public void EnemyAi_DoesNotHardPrioritizePoetDecoyWhenNoLegalMoveAttackRouteExists()
+    {
+        PlayableBattleSessionService service = CreatePoetDecoyPriorityService(3, blockRoute: true,
+            out UnitInstanceId decoyId, out UnitInstanceId protectedId);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(service.State.Units[decoyId].CurrentHealth, Is.EqualTo(1));
+            Assert.That(service.State.Units[protectedId].CurrentHealth, Is.EqualTo(19));
+        });
+    }
+
+    [TestCase(AiArchetype.Charger)]
+    [TestCase(AiArchetype.PredatoryDiver)]
+    public void EnemyAi_PrioritizesNearbyPoetDecoyWhenDirectAttackIsLegal(AiArchetype archetype)
+    {
+        var enemyId = new UnitInstanceId("enemy-poet-test");
+        var decoyId = new UnitInstanceId("poet-decoy-test");
+        var playerId = new UnitInstanceId("party-poet-test");
+        var protectedId = new UnitInstanceId("protected-poet-test");
+        SkillDefinition melee = Skill("skill.basic.melee", 5, SkillExecutionKind.MeleeAttack);
+        SkillDefinition patternArea = Skill("skill.enemy.pattern-area", 9, SkillExecutionKind.AreaBlast);
+        BattleUnitState enemy = Unit(enemyId, "unit.pure-run.goat-charger", new GridPoint(0, 1), 1, 0, 20, 20);
+        var decoyFacts = new UnitState(decoyId, new ContentId("unit.pure-run.poet-decoy"),
+            new GridPoint(1, 1), 0, 0, 0, 1);
+        var decoy = new BattleUnitState(decoyFacts, 1, 1, summonOwnerId: playerId,
+            canReceiveStandardHealing: false, canProduceCorpse: false, summonCategory: "Decoy");
+        BattleUnitState player = Unit(playerId, "unit.pure-run.poet", new GridPoint(9, 9), 0, 1, 20, 20);
+        BattleUnitState protectedNpc = Unit(protectedId, "unit.pure-run.amazon", new GridPoint(2, 1), 0, 2, 20, 20);
+        BattleState state = State([enemy, decoy, player, protectedNpc], [enemyId, playerId, decoyId, protectedId]);
+        var ai = new AiDefinition(new ContentId("ai.poet-decoy-priority"), archetype,
+            new AiProfileDefinition(1, 1, 0, 0), [melee.ContentId, patternArea.ContentId], [patternArea.ContentId]);
+        var context = new PlayableBattleSessionContext(state, 0,
+            new Dictionary<UnitInstanceId, IReadOnlyList<SkillDefinition>>(),
+            new Dictionary<UnitInstanceId, AiDefinition> { [enemyId] = ai },
+            new Dictionary<ContentId, SkillDefinition>
+            {
+                [melee.ContentId] = melee,
+                [patternArea.ContentId] = patternArea
+            },
+            ProtectedNpcUnitId: protectedId);
+
+        var service = new PlayableBattleSessionService(context);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(service.State.Units[decoyId].CurrentHealth, Is.Zero);
+            Assert.That(service.State.Units[protectedId].CurrentHealth, Is.EqualTo(20));
+        });
+    }
+
+    [Test]
+    public void EnemyAi_DoesNotPrioritizePoetDecoyBehindPoetChargeFirstEnemy()
+    {
+        UnitInstanceId enemyId = new("enemy-poet-charge"), frontId = new("party-front"),
+            decoyId = new("party-poet-decoy");
+        BattleUnitState enemy = Unit(enemyId, "unit.enemy.poet", new GridPoint(0, 0), 1, 0, 20, 20);
+        BattleUnitState front = Unit(frontId, "unit.pure-run.amazon", new GridPoint(1, 0), 0, 1, 20, 20);
+        var decoyFacts = new UnitState(decoyId, new ContentId("unit.pure-run.poet-decoy"),
+            new GridPoint(2, 0), 0, 8, 0, 2);
+        var decoy = new BattleUnitState(decoyFacts, 1, 1, summonOwnerId: frontId,
+            canReceiveStandardHealing: false, canProduceCorpse: false, summonCategory: "Decoy");
+        var cells = Enumerable.Range(0, 4).ToDictionary(x => new GridPoint(x, 0), _ => new CellState());
+        BattleState state = new(new BoardSnapshot(cells), [enemy, front, decoy], [enemyId, frontId, decoyId],
+            randomState: 7);
+        SkillDefinition charge = new(new ContentId("skill.enemy.poet-charge"), "poet-charge",
+            SkillRole.Poet, SkillKind.Active, 1, 0, 1, 4, SkillExecutionKind.PoetCharge, 5,
+            SkillDamageKind.Physical, canCrit: false);
+        AiDefinition ai = new(new ContentId("ai.enemy.poet-charge"), AiArchetype.Charger,
+            new AiProfileDefinition(1, 1, 0, 0), [charge.ContentId], []);
+
+        var service = new PlayableBattleSessionService(new PlayableBattleSessionContext(state, 0,
+            new Dictionary<UnitInstanceId, IReadOnlyList<SkillDefinition>>(),
+            new Dictionary<UnitInstanceId, AiDefinition> { [enemyId] = ai },
+            new Dictionary<ContentId, SkillDefinition> { [charge.ContentId] = charge }));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(service.State.Units[frontId].CurrentHealth, Is.LessThan(20));
+            Assert.That(service.State.Units[decoyId].CurrentHealth, Is.EqualTo(1));
+        });
+    }
+
+    private static PlayableBattleSessionService CreatePoetDecoyPriorityService(int distance, bool blockRoute,
+        out UnitInstanceId decoyId, out UnitInstanceId protectedId)
+    {
+        var enemyId = new UnitInstanceId("enemy-poet-route-test");
+        decoyId = new UnitInstanceId("poet-decoy-route-test");
+        var playerId = new UnitInstanceId("party-poet-route-test");
+        protectedId = new UnitInstanceId("protected-poet-route-test");
+        var melee = new SkillDefinition(new ContentId("skill.route-test.melee"), "route-test.melee",
+            SkillRole.Any, SkillKind.Active, 1, 0, 1, 1, SkillExecutionKind.MeleeAttack, 5,
+            SkillDamageKind.Physical, canCrit: false);
+        BattleUnitState enemy = Unit(enemyId, "unit.pure-run.goat-charger", new GridPoint(0, 1), 1, 0, 20, 20);
+        var decoyFacts = new UnitState(decoyId, new ContentId("unit.pure-run.poet-decoy"),
+            new GridPoint(distance, 1), 0, 0, 0, 1);
+        var decoy = new BattleUnitState(decoyFacts, 1, 1, summonOwnerId: playerId,
+            canReceiveStandardHealing: false, canProduceCorpse: false, summonCategory: "Decoy");
+        BattleUnitState player = Unit(playerId, "unit.pure-run.poet", new GridPoint(9, 9), 0, 1, 20, 20);
+        BattleUnitState protectedNpc = Unit(protectedId, "unit.pure-run.amazon", new GridPoint(0, 2), 0, 2, 20, 20);
+        var cells = new Dictionary<GridPoint, CellState>();
+        for (int x = 0; x < 10; x++)
+        for (int y = 0; y < 10; y++)
+            cells[new GridPoint(x, y)] = blockRoute && x == 1
+                ? new CellState(obstacle: MovementObstacleKind.Absolute)
+                : new CellState();
+        var state = new BattleState(new BoardSnapshot(cells), [enemy, decoy, player, protectedNpc],
+            [enemyId, playerId, decoyId, protectedId], randomState: 7);
+        var ai = new AiDefinition(new ContentId("ai.poet-decoy-route-priority"), AiArchetype.Charger,
+            new AiProfileDefinition(1, 1, 0, 0), [melee.ContentId], Array.Empty<ContentId>());
+        return new PlayableBattleSessionService(new PlayableBattleSessionContext(state, 0,
+            new Dictionary<UnitInstanceId, IReadOnlyList<SkillDefinition>>(),
+            new Dictionary<UnitInstanceId, AiDefinition> { [enemyId] = ai },
+            new Dictionary<ContentId, SkillDefinition> { [melee.ContentId] = melee },
+            ProtectedNpcUnitId: protectedId));
     }
 
     private static PlayableBattleSessionService CreateService(

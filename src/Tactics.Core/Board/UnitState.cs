@@ -22,7 +22,9 @@ public readonly record struct UnitState
         UnitAttributes? effectiveAttributes = null,
         int? baseMoveRange = null,
         float? baseInitiative = null,
-        SkillRole combatRole = SkillRole.Any)
+        SkillRole combatRole = SkillRole.Any,
+        UnitFacing? facing = null,
+        UnitAttributes? baseAttributes = null)
     {
         if (!float.IsFinite(initiative))
             throw new ArgumentOutOfRangeException(nameof(initiative));
@@ -41,9 +43,11 @@ public readonly record struct UnitState
         IsAlive = isAlive;
         MovementKind = movementKind;
         EffectiveAttributes = effectiveAttributes ?? new UnitAttributes(5, 5, 5, 5, 5, 5);
+        BaseAttributes = baseAttributes ?? EffectiveAttributes;
         BaseMoveRange = baseMoveRange ?? MoveRange;
         BaseInitiative = baseInitiative ?? Initiative;
         CombatRole = combatRole;
+        Facing = facing ?? UnitFacingResolver.Initial(playerNumber);
     }
 
     public UnitInstanceId InstanceId { get; init; }
@@ -56,9 +60,11 @@ public readonly record struct UnitState
     public bool IsAlive { get; init; }
     public UnitMovementKind MovementKind { get; init; }
     public UnitAttributes EffectiveAttributes { get; init; }
+    public UnitAttributes BaseAttributes { get; init; }
     public int BaseMoveRange { get; init; }
     public float BaseInitiative { get; init; }
     public SkillRole CombatRole { get; init; }
+    public UnitFacing Facing { get; init; }
 
     private static int ValidateMoveRange(int moveRange) =>
         moveRange < 0 ? throw new ArgumentOutOfRangeException(nameof(moveRange)) : moveRange;

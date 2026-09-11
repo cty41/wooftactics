@@ -31,12 +31,18 @@ public sealed record BattleStatusState
         int meleeRetaliationDuration = 0,
         int initiativeModifier = 0,
         int movementModifier = 0,
-        int frozenTotalDamageRemaining = 0)
+        int frozenTotalDamageRemaining = 0,
+        UnitAttributeModifiers attributeModifiers = default,
+        int frozenTotalHealingRemaining = 0)
     {
         if (remainingTurns <= 0)
             throw new ArgumentOutOfRangeException(nameof(remainingTurns));
         if (damagePerTurn < 0)
             throw new ArgumentOutOfRangeException(nameof(damagePerTurn));
+        if (frozenTotalDamageRemaining < 0)
+            throw new ArgumentOutOfRangeException(nameof(frozenTotalDamageRemaining));
+        if (frozenTotalHealingRemaining < 0)
+            throw new ArgumentOutOfRangeException(nameof(frozenTotalHealingRemaining));
         if (stackCount <= 0)
             throw new ArgumentOutOfRangeException(nameof(stackCount));
         if (!Enum.IsDefined(polarity))
@@ -74,6 +80,8 @@ public sealed record BattleStatusState
         InitiativeModifier = initiativeModifier;
         MovementModifier = movementModifier;
         FrozenTotalDamageRemaining = frozenTotalDamageRemaining;
+        AttributeModifiers = attributeModifiers;
+        FrozenTotalHealingRemaining = frozenTotalHealingRemaining;
     }
 
     public ContentId ContentId { get; }
@@ -94,6 +102,8 @@ public sealed record BattleStatusState
     public int InitiativeModifier { get; }
     public int MovementModifier { get; }
     public int FrozenTotalDamageRemaining { get; }
+    public UnitAttributeModifiers AttributeModifiers { get; }
+    public int FrozenTotalHealingRemaining { get; }
 
     public BattleStatusState WithRemainingTurns(int remainingTurns) =>
         Copy(remainingTurns, StackCount);
@@ -105,7 +115,19 @@ public sealed record BattleStatusState
         ContentId, SourceId, RemainingTurns, DamagePerTurn, StackCount, CanAct, Polarity, EffectKind,
         TriggerTiming, RefreshStrategy, CurseCategory, SpeedModifier, DamageReductionPercent,
         MeleeRetaliationStatusId, MeleeRetaliationDuration, InitiativeModifier, MovementModifier,
-        Math.Max(0, value));
+        Math.Max(0, value), AttributeModifiers, FrozenTotalHealingRemaining);
+
+    public BattleStatusState WithAttributeModifiers(UnitAttributeModifiers modifiers) => new(
+        ContentId, SourceId, RemainingTurns, DamagePerTurn, StackCount, CanAct, Polarity, EffectKind,
+        TriggerTiming, RefreshStrategy, CurseCategory, SpeedModifier, DamageReductionPercent,
+        MeleeRetaliationStatusId, MeleeRetaliationDuration, InitiativeModifier, MovementModifier,
+        FrozenTotalDamageRemaining, modifiers, FrozenTotalHealingRemaining);
+
+    public BattleStatusState WithFrozenTotalHealingRemaining(int value) => new(
+        ContentId, SourceId, RemainingTurns, DamagePerTurn, StackCount, CanAct, Polarity, EffectKind,
+        TriggerTiming, RefreshStrategy, CurseCategory, SpeedModifier, DamageReductionPercent,
+        MeleeRetaliationStatusId, MeleeRetaliationDuration, InitiativeModifier, MovementModifier,
+        FrozenTotalDamageRemaining, AttributeModifiers, Math.Max(0, value));
 
     private BattleStatusState Copy(int remainingTurns, int stackCount) => new(
         ContentId,
@@ -125,5 +147,7 @@ public sealed record BattleStatusState
         MeleeRetaliationDuration,
         InitiativeModifier,
         MovementModifier,
-        FrozenTotalDamageRemaining);
+        FrozenTotalDamageRemaining,
+        AttributeModifiers,
+        FrozenTotalHealingRemaining);
 }

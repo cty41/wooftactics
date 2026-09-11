@@ -42,6 +42,9 @@ public partial class UnitDefinitionResource : Resource
     [Export] public PackedScene? ActorScene { get; set; }
     [Export] public Texture2D? DownRightTexture { get; set; }
     [Export] public Texture2D? UpLeftTexture { get; set; }
+    [Export] public Texture2D? PortraitTextureOverride { get; set; }
+    [Export] public bool HasPortraitRegion { get; set; }
+    [Export] public Rect2 PortraitRegion { get; set; }
     [Export] public Texture2D? UnarmedDownRightTexture { get; set; }
     [Export] public Texture2D? UnarmedUpLeftTexture { get; set; }
     [Export] public Texture2D? DeathTexture { get; set; }
@@ -116,6 +119,10 @@ public partial class UnitDefinitionResource : Resource
             throw new InvalidOperationException($"Unit '{ContentIdValue}' has no canonical actor scene.");
         if (DownRightTexture is null || UpLeftTexture is null || ShadowTexture is null)
             throw new InvalidOperationException($"Unit '{ContentIdValue}' is missing a required texture.");
+        if (HasPortraitRegion &&
+            (PortraitRegion.Size.X <= 0f || PortraitRegion.Size.Y <= 0f ||
+             PortraitRegion.Position.X < 0f || PortraitRegion.Position.Y < 0f))
+            throw new InvalidOperationException($"Unit '{ContentIdValue}' has an invalid portrait crop region.");
         if ((UnarmedDownRightTexture is null) != (UnarmedUpLeftTexture is null) ||
             (ContentIdValue == "unit.pure-run.amazon") != (UnarmedDownRightTexture is not null))
             throw new InvalidOperationException($"Unit '{ContentIdValue}' has an invalid unarmed texture contract.");

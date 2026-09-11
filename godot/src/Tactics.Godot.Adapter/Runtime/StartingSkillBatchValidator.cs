@@ -17,7 +17,7 @@ public static class StartingSkillBatchValidator
         ArgumentNullException.ThrowIfNull(globalCatalog);
         batchCatalog.Validate();
         globalCatalog.Validate();
-        if (batchCatalog.Entries.Length != 12 || globalCatalog.Entries.Length is not (74 or 101 or 108 or 114 or 115 or 116 or 119 or 123 or 124 or 125 or 131 or 132 or 141 or 142 or 143 or 160 or 161 or 162 or 166))
+        if (batchCatalog.Entries.Length != 12 || globalCatalog.Entries.Length is not (74 or 101 or 108 or 114 or 115 or 116 or 119 or 123 or 124 or 125 or 131 or 132 or 141 or 142 or 143 or 160 or 161 or 162 or 166 or 185))
             throw new InvalidOperationException("Starting-skill or canonical Catalog entry count is invalid.");
         if (globalCatalog.Entries.Select(entry => entry.ContentIdValue).Distinct(StringComparer.Ordinal).Count() != globalCatalog.Entries.Length)
             throw new InvalidOperationException("Canonical Catalog contains duplicate ContentIds.");
@@ -39,6 +39,6 @@ public static class StartingSkillBatchValidator
         }
         if (generated != 11)
             throw new InvalidOperationException("Starting-skill batch must generate exactly 11 Resources.");
-        return new StartingSkillBatchValidation(12, 74, generated);
+        return new StartingSkillBatchValidation(12, globalCatalog.Entries.Length, generated);
     }
 }

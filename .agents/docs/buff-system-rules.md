@@ -48,6 +48,18 @@ verification:
 dsl_support: unsupported
 ```
 
+```gameplay-contract
+id: BUFF-FROZEN-TOTAL-HEALING-001
+status: verified_current
+statement: TurnStart 持续治疗在施加时冻结总治疗量和 tick 数，每次按 ceil(剩余总量/剩余 tick) 调度，因此不能整除的余数优先较早 tick；过量治疗仍消耗本次调度量。同名 RefreshDuration 重施替换为新的完整总量和 tick 数，不叠加；该类状态只在目标未来 TurnStart 递减，施加当回合的 EndTurn 不提前消耗 tick。
+verification:
+  - layer: core_test
+    path: src/Tactics.Core.Tests/StatusItemRuntimeTests.cs
+  - layer: core_test
+    path: src/Tactics.Core.Tests/PoetSkillRuntimeTests.cs
+dsl_support: unsupported
+```
+
 ## 设计约束
 
 - 新状态必须明确 polarity、effect kind、触发时点、刷新策略、来源与持续量纲。
