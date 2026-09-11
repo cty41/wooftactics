@@ -1,5 +1,6 @@
 #if TOOLS
 using Godot;
+using Tactics.Application.Units;
 using Tactics.Godot.Adapter.Runtime;
 
 namespace Tactics.Godot.Adapter.Editor;
@@ -11,6 +12,8 @@ public static class PoetAssetFactory
     private const string CatalogPath = "res://content/ContentCatalog.tres";
     private const string RunPath = "res://content/runs/PureRunThreeEncounterV1.tres";
     private const string BalancePath = "res://content/ui/PlayableLv1BalanceProfile.tres";
+    private const string PoetDownRightTexturePath = "res://assets/units/doge_poet.png";
+    private const string PoetUpLeftTexturePath = "res://assets/units/doge_poet_ul.png";
 
     private sealed record SkillData(
         string Id, string Name, int Level, int Mana, int MinRange, int MaxRange,
@@ -109,7 +112,13 @@ public static class PoetAssetFactory
 
         UnitDefinitionResource visualTemplate = ResourceLoader.Load<UnitDefinitionResource>(
             "res://content/demonbound/PureRunDemonbound.tres", string.Empty, ResourceLoader.CacheMode.Ignore)
-            ?? throw new InvalidOperationException("Poet placeholder requires the generated Demonbound visual template.");
+            ?? throw new InvalidOperationException("Poet generation requires the canonical player-unit template.");
+        Texture2D poetDownRightTexture = ResourceLoader.Load<Texture2D>(PoetDownRightTexturePath,
+            string.Empty, ResourceLoader.CacheMode.Ignore)
+            ?? throw new InvalidOperationException($"Approved Poet Idle texture missing: {PoetDownRightTexturePath}");
+        Texture2D poetUpLeftTexture = ResourceLoader.Load<Texture2D>(PoetUpLeftTexturePath,
+            string.Empty, ResourceLoader.CacheMode.Ignore)
+            ?? throw new InvalidOperationException($"Approved Poet Idle texture missing: {PoetUpLeftTexturePath}");
         UnitDefinitionResource poet = (UnitDefinitionResource)visualTemplate.Duplicate(true);
         poet.ContentIdValue = "unit.pure-run.poet";
         poet.SourceId = "godot.poet";
@@ -121,9 +130,7 @@ public static class PoetAssetFactory
         poet.Speed = 5; poet.MaxHealth = 20; poet.MaxMana = 18; poet.StartingMana = 6;
         poet.MoveRange = 4; poet.Initiative = 10; poet.MovementTraitModifier = 0;
         poet.DerivedStatModeValue = "frozen-formula";
-        poet.BodyTint = new Color(.48f, .72f, 1f);
-        poet.BaseBodyColor = poet.BodyTint;
-        ApplyDefaultPortraitCrop(poet);
+        ConfigurePoetVisuals(poet, poetDownRightTexture, poetUpLeftTexture);
         poet.ToCoreDefinition();
         const string poetPath = Root + "/PureRunPoet.tres";
         pendingResources.Add((poet, poetPath));
@@ -140,10 +147,7 @@ public static class PoetAssetFactory
         decoy.Intelligence = 1; decoy.Charisma = 1; decoy.Luck = 1;
         decoy.Speed = 0; decoy.MaxHealth = 2; decoy.MaxMana = 0; decoy.StartingMana = 0;
         decoy.MoveRange = 0; decoy.Initiative = 0;
-        decoy.CanProduceCorpse = false;
-        decoy.DeathTexture = null;
-        decoy.BodyTint = new Color(.36f, .84f, 1f, .72f);
-        decoy.BaseBodyColor = decoy.BodyTint;
+        ConfigureDecoyVisuals(decoy);
         decoy.ToCoreDefinition();
         const string decoyPath = Root + "/PoetAfterimage.tres";
         pendingResources.Add((decoy, decoyPath));
@@ -182,11 +186,57 @@ public static class PoetAssetFactory
         Save(balance, BalancePath);
     }
 
+    internal static void ConfigurePoetVisuals(
+        UnitDefinitionResource poet,
+        Texture2D downRightTexture,
+        Texture2D upLeftTexture)
+    {
+        poet.DownRightTexture = downRightTexture;
+        poet.UpLeftTexture = upLeftTexture;
+        poet.DeathTexture = downRightTexture;
+        poet.DeathBodyOffset = poet.DownRightBodyOffset;
+        poet.UnarmedDownRightTexture = null;
+        poet.UnarmedUpLeftTexture = null;
+        ClearActionTextures(poet);
+        poet.BodyTint = Colors.White;
+        poet.BaseBodyColor = Colors.White;
+        poet.BodyTintModeValue = UnitBodyTintModes.Multiply;
+        poet.BodyTintMaterial = null;
+        ApplyDefaultPortraitCrop(poet);
+    }
+
+    internal static void ConfigureDecoyVisuals(UnitDefinitionResource decoy)
+    {
+        decoy.CanProduceCorpse = false;
+        decoy.DeathTexture = null;
+        decoy.DeathBodyOffset = Vector2.Zero;
+        decoy.UnarmedDownRightTexture = null;
+        decoy.UnarmedUpLeftTexture = null;
+        ClearActionTextures(decoy);
+        decoy.BodyTint = new Color(.36f, .84f, 1f, .72f);
+        decoy.BaseBodyColor = decoy.BodyTint;
+        decoy.BodyTintModeValue = UnitBodyTintModes.Multiply;
+        decoy.BodyTintMaterial = null;
+        ApplyDefaultPortraitCrop(decoy);
+    }
+
     internal static void ApplyDefaultPortraitCrop(UnitDefinitionResource unit)
     {
         unit.PortraitTextureOverride = null;
         unit.HasPortraitRegion = false;
         unit.PortraitRegion = default;
+    }
+
+    private static void ClearActionTextures(UnitDefinitionResource unit)
+    {
+        unit.MeleeDownRightTexture = null;
+        unit.MeleeUpLeftTexture = null;
+        unit.RangedDownRightTexture = null;
+        unit.RangedUpLeftTexture = null;
+        unit.CastDownRightTexture = null;
+        unit.CastUpLeftTexture = null;
+        unit.HitDownRightTexture = null;
+        unit.HitUpLeftTexture = null;
     }
 
     internal static void ConfigurePureRun(PureRunDefinitionResource run, string poetContentId)

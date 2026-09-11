@@ -9,11 +9,11 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 - Status: `pending`
 - Source: 第五职业诗人、六套技能与临时分身功能实现
 - Action: 使用三个 disposable Run，在 Start Camp 确认五名候选均有独立站位；每次选择“诗人”与另外两人，并分别从剑仙、诗仙、酒仙起步。进入战斗后至少实际使用一次侠客行、剑雨、将进酒、行路难、月下独酌和山中与幽人对酌；观察冲锋/范围攻击、三次回合开始治疗、敏捷提升、自疗净化，以及按施法前朝向后退并在原地留下分身。
-- Expected: 候选和战斗 UI 显示“诗人”，第五候选不重叠或崩溃；技能按钮、目标范围、动作反馈、HP/MP/状态变化容易理解。分身与本体可明显区分，后退和生成原子完成，敌人在合法直接攻击范围内优先攻击分身；临时分身素材允许保留当前差异化占位视觉。
+- Expected: 候选和战斗 UI 显示“诗人”，第五候选不重叠或崩溃；已批准五红土松 Idle 在南/西使用 DR、北/东使用 UL，只有东/西镜像，正式颜色不受额外蓝色 tint 污染。缺失动作安全回退到相应方向 Idle，Death 暂用不镜像 DR；分身继承同一诗人身份但以半透明青色明显区分。技能按钮、目标范围、动作反馈、HP/MP/状态变化容易理解；后退和生成原子完成，敌人在合法直接攻击范围内优先攻击分身。
 - Observe: Start Camp 候选区、Battle action bar、棋盘单位/状态层、HP/MP、事件日志、CheatConsole 与 Godot Output。
 - Preserve on failure: Run seed、起始分支、技能等级、双方格子与朝向、施法前后 HP/MP/状态、截图或短视频、battle checkpoint/save 副本和完整 Output。
 - Save boundary: 选择队伍、成长和战斗会修改当前 Run；只使用 disposable/隔离存档，不覆盖生产存档。
-- Automated evidence: Core 205/205、Application 199/199、Poet focused 13/13、Resource/Catalog 185、相关 GdUnit 与 29/29 Gameplay journeys已通过；技能公式、合法性、持续时间、硬 AI 分身优先和五候选结构由自动化覆盖。动作可读性、临时分身辨识度和职业体验仍需人工判断。
+- Automated evidence: Core 205/205、Application 199/199、Poet focused 13/13、Resource/Catalog 185、Poet/Initiative/Actor GdUnit 10/10 与 29/29 Gameplay journeys已通过；运行时 DR/UL 副本哈希绑定获批母图，ResourceSaver 断言白色 tint、方向回退、Death 占位与分身清理。技能公式、合法性、持续时间、硬 AI 分身优先和五候选结构由自动化覆盖；动作可读性、半透明分身辨识度和职业体验仍需人工判断。
 - User verdict: none.
 
 ### MQA-GODOT-INITIATIVE-HUD — 动态先攻头像条、Hover 联动与输入锁
@@ -541,13 +541,13 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 ### MQA-GODOT-POET-DECOY-ART — 青川犬正式分身美术
 
 - Status: `deferred`
-- Source: 诗人功能优先范围决定；本轮允许差异化临时 Demonbound 视觉
+- Source: 诗人功能优先范围决定；当前分身继承获批诗人 Idle 并使用半透明青色占位
 - Action: 后续美术任务中完成青川犬身份、四方向、受击/消散与 Tile 落点设计，经逐图人工审核后再接入分身 Resource。
 - Expected: 正式分身在正常战斗缩放下可立即识别为青川犬，与诗人本体、敌方和其他召唤物不混淆；方向、脚底锚点、直接命中段数反馈和消失表现清晰。
 - Observe: Artwork review panel、Unit Gallery/SpawnFixture、Battle board、分身受击/替换/消失和 Godot Output。
 - Preserve on failure: 母图/候选版本、prompt/job/attempt ID、方向、Tile 对比截图、运行时截图与 Output。
 - Save boundary: 美术生产只能通过 artwork pipeline；未获人工批准不得替换当前运行时素材或改写生产存档。
-- Automated evidence: 当前临时视觉的 Resource 类型、装载、分身规则和战斗清理已自动验证；正式美术尚未生产，不能自动验收。
+- Automated evidence: 当前半透明诗人 Idle 占位的 Resource 类型、装载、显式动作/死亡清理、分身规则和战斗清理已自动验证；独立正式分身美术尚未生产，不能自动验收。
 - User verdict: Deferred by the user; formal Qingchuan Hound artwork is outside this implementation round.
 
 ### MQA-GODOT-AUDIO-ASSETS — Licensed audio payload and listening pass

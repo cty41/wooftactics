@@ -25,7 +25,7 @@ Godot 4.7 C# 是唯一产品主线，`godot/project.godot` 是唯一项目。Cor
 
 迁移来源已冻结在最终 Tag、FrozenOracle、Golden、DTO、receipt、ownership ledger 与 retirement manifest 中。它们只用于来源审计、确定性回归和许可证证明，不提供 live 旧编辑器、旧 MCP 或旧资产写入路径。
 
-内容生成只消费已绑定的冻结输入，经 Application typed draft、ResourceSaver/PackedScene、Catalog/UID、target hash、幂等与 rollback 门禁进入 Godot。诗人是 Godot-owned 新内容，不来自 Unity 冻结迁移：`PoetAssetFactory` 通过 ResourceSaver 生成 15 技能、2 状态、诗人单位和分身，canonical Catalog 当前为 185；ownership receipt 继续将人工质量门禁分离为 pending。公开根缺少一次性 Unity DTO 时，已提交 Unit Resource 仍通过专用 ResourceSaver 升级入口应用当前属性派生合同并由主线门禁校验。自动验证不能替代视觉、操作、真实 Editor Reload 或干净 Windows 启动验收。
+内容生成只消费已绑定的冻结输入，经 Application typed draft、ResourceSaver/PackedScene、Catalog/UID、target hash、幂等与 rollback 门禁进入 Godot。诗人是 Godot-owned 新内容，不来自 Unity 冻结迁移：`PoetAssetFactory` 通过 ResourceSaver 生成 15 技能、2 状态、诗人单位和分身，canonical Catalog 当前为 185；已批准 Idle DR/UL 以保留 `project-owned` 权利绑定的逐字节副本导入，生成器显式保持动作字段为空并配置方向 Idle、Death 与分身回退合同；ownership receipt 继续将人工质量门禁分离为 pending。公开根缺少一次性 Unity DTO 时，已提交 Unit Resource 仍通过专用 ResourceSaver 升级入口应用当前属性派生合同并由主线门禁校验。自动验证不能替代视觉、操作、真实 Editor Reload 或干净 Windows 启动验收。
 
 属性命中公式切换后的 `PresentationMiss` 使用固定 RNG state 6 继续验证生产 End Turn 输入产生 committed dodge 与灰色 Miss 数字；checkpoint 哈希和跟踪 plan 与该状态共同受门禁约束。
 

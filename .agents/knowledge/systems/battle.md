@@ -81,7 +81,7 @@ Air 可越过动态占位与 flyover 障碍但不能停在其上；absolute 障�
 
 固定种子数值循环已有 Core 规则层诊断代理：三种 Demonbound 队伍标签各跑相同 10 seed，复用正式 `AiDecisionService`、`AiTurnService` 与 `BattleTransitionService`，记录终局、腐化峰值、冥想、首次附身、友伤、Down、永久死亡和技能次数，并验证同 seed 重放一致。其无尸体诊断夹具和简化队友策略只用于证明采样管线及发现规则问题；未接入生产 Run 路线、Resource 数值和完整职业策略前，不得视为完整平衡证据或人工体验替代。
 
-诗人作为第五名候选、仍只选三人出战，基础六维 `6/5/5/4/6/4` 且力量为主属性。剑仙、诗仙、酒仙共 15 个技能等级已通过 Core 执行器、Application snapshot/AI 和 Godot typed Resource 接入；后撤分身读取 Core Facing，分身不参与行动队列并以直接命中段作为吸收层。正式青川犬美术与诗人装备均未实现：当前仅使用差异化临时纹理，装备只有未来设计文档。
+诗人作为第五名候选、仍只选三人出战，基础六维 `6/5/5/4/6/4` 且力量为主属性。剑仙、诗仙、酒仙共 15 个技能等级已通过 Core 执行器、Application snapshot/AI 和 Godot typed Resource 接入；后撤分身读取 Core Facing，分身不参与行动队列并以直接命中段作为吸收层。诗人已接入 `cty41` 批准的五红土松装备版 Idle DR/UL：南/西取 DR、北/东取 UL，东/西仅镜像身体；正式动作对保持空值并回退方向 Idle，Death 暂用不镜像 Idle DR。分身继承该身份并用半透明青色区分、清空动作/死亡且不产尸；独立动作、正式死亡与正式分身美术仍待后续。装备系统本身只有未来设计文档。
 
 # Relationships
 

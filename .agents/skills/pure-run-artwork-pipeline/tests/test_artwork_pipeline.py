@@ -1768,9 +1768,25 @@ class ArtworkPipelineTests(unittest.TestCase):
         contract, _job, _job_args = self.contract_and_job()
         source = self.store.absolute(contract["anchor"]["path"])
         pipeline.register_public_artifacts(self.store, [contract["anchor"]], "project-owned-gpt-generated")
+        manifest_path = self.root / "Tools/public-release/asset-provenance.json"
+        manifest = pipeline.load_json(manifest_path)
+        source_entry = next(entry for entry in manifest["entries"] if entry["path"] == contract["anchor"]["path"])
+        source_entry["license"] = "project-owned"
+        pipeline.write_json_idempotent(manifest_path, manifest)
         target = self.root / "godot/assets/units/hero.png"; target.parent.mkdir(parents=True); target.write_bytes(source.read_bytes())
         result = pipeline.register_runtime_copy(self.store, self.ns(source=str(source), target=str(target)))
         self.assertEqual(result["source"]["sha256"], result["target"]["sha256"])
+        target_entry = next(entry for entry in pipeline.load_json(manifest_path)["entries"]
+                            if entry["path"] == "godot/assets/units/hero.png")
+        self.assertEqual(target_entry["license"], "project-owned")
+        target_entry["license"] = "CC-BY-4.0"
+        manifest = pipeline.load_json(manifest_path)
+        next(entry for entry in manifest["entries"] if entry["path"] == target_entry["path"])["license"] = "CC-BY-4.0"
+        pipeline.write_json_idempotent(manifest_path, manifest)
+        pipeline.register_runtime_copy(self.store, self.ns(source=str(source), target=str(target)))
+        normalized = next(entry for entry in pipeline.load_json(manifest_path)["entries"]
+                          if entry["path"] == target_entry["path"])
+        self.assertEqual(normalized["license"], "project-owned")
         Image.new("RGBA", (256, 256), (1, 2, 3, 255)).save(target)
         with self.assertRaisesRegex(pipeline.PipelineError, "byte-identical"):
             pipeline.register_runtime_copy(self.store, self.ns(source=str(source), target=str(target)))

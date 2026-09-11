@@ -38,6 +38,62 @@ public class PoetAssetFactoryGodotTests
 
     [TestCase]
     [RequireGodotRuntime]
+    public void ApprovedPoetIdleAndDecoyVisualContractsUseExplicitSafeFallbacks()
+    {
+        var poet = ResourceLoader.Load<UnitDefinitionResource>(
+            "res://content/poet/PureRunPoet.tres", string.Empty, ResourceLoader.CacheMode.Ignore);
+        var decoy = ResourceLoader.Load<UnitDefinitionResource>(
+            "res://content/poet/PoetAfterimage.tres", string.Empty, ResourceLoader.CacheMode.Ignore);
+        AssertThat(poet).IsNotNull();
+        AssertThat(decoy).IsNotNull();
+        if (poet is null || decoy is null) return;
+
+        AssertThat(poet.DownRightTexture?.ResourcePath).IsEqual("res://assets/units/doge_poet.png");
+        AssertThat(poet.UpLeftTexture?.ResourcePath).IsEqual("res://assets/units/doge_poet_ul.png");
+        AssertThat(ReferenceEquals(poet.DeathTexture, poet.DownRightTexture)).IsTrue();
+        AssertThat(poet.DeathBodyOffset.IsEqualApprox(poet.DownRightBodyOffset)).IsTrue();
+        AssertThat(HasNoActionTextures(poet)).IsTrue();
+        AssertThat(poet.BodyTint.IsEqualApprox(Colors.White)).IsTrue();
+        AssertThat(decoy.DownRightTexture?.ResourcePath).IsEqual("res://assets/units/doge_poet.png");
+        AssertThat(decoy.UpLeftTexture?.ResourcePath).IsEqual("res://assets/units/doge_poet_ul.png");
+        AssertThat(decoy.DeathTexture).IsNull();
+        AssertThat(decoy.CanProduceCorpse).IsFalse();
+        AssertThat(HasNoActionTextures(decoy)).IsTrue();
+        AssertThat(decoy.BodyTint.A < 1f).IsTrue();
+
+        GodotUnitActor actor = GodotUnitFactory.InstantiateActor(poet);
+        AssertThat(actor.Body).IsNotNull();
+        if (actor.Body is null)
+        {
+            actor.Free();
+            return;
+        }
+        actor.SetSpearHeld(true);
+        actor.SetFacing(GodotUnitFacing.South);
+        actor.SetActionPose(GodotUnitActionPose.Melee);
+        AssertThat(actor.Body.Texture?.ResourcePath).IsEqual("res://assets/units/doge_poet.png");
+        AssertThat(actor.Body.FlipH).IsFalse();
+        actor.SetFacing(GodotUnitFacing.North);
+        actor.SetActionPose(GodotUnitActionPose.Cast);
+        AssertThat(actor.Body.Texture?.ResourcePath).IsEqual("res://assets/units/doge_poet_ul.png");
+        AssertThat(actor.Body.FlipH).IsFalse();
+        actor.SetFacing(GodotUnitFacing.East);
+        actor.SetActionPose(GodotUnitActionPose.Hit);
+        AssertThat(actor.Body.Texture?.ResourcePath).IsEqual("res://assets/units/doge_poet_ul.png");
+        AssertThat(actor.Body.FlipH).IsTrue();
+        actor.SetFacing(GodotUnitFacing.West);
+        actor.SetActionPose(GodotUnitActionPose.Ranged);
+        AssertThat(actor.Body.Texture?.ResourcePath).IsEqual("res://assets/units/doge_poet.png");
+        AssertThat(actor.Body.FlipH).IsTrue();
+        actor.SetDeathVisual(true);
+        AssertThat(actor.Body.Texture?.ResourcePath).IsEqual("res://assets/units/doge_poet.png");
+        AssertThat(actor.Body.FlipH).IsFalse();
+        AssertThat(actor.Body.Offset.IsEqualApprox(poet.DownRightBodyOffset)).IsTrue();
+        actor.Free();
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
     public void PureRunRootReferencesIncludeTheNonEmptyLayerFourMapId()
     {
         var run = new PureRunDefinitionResource
@@ -117,6 +173,12 @@ public class PoetAssetFactoryGodotTests
         AssertThat(expected.All(available.Contains)).IsTrue();
         AssertThat(Reachable(root.ContentIdValue, updated).IsSupersetOf(expected)).IsTrue();
     }
+
+    private static bool HasNoActionTextures(UnitDefinitionResource unit) =>
+        unit.MeleeDownRightTexture is null && unit.MeleeUpLeftTexture is null &&
+        unit.RangedDownRightTexture is null && unit.RangedUpLeftTexture is null &&
+        unit.CastDownRightTexture is null && unit.CastUpLeftTexture is null &&
+        unit.HitDownRightTexture is null && unit.HitUpLeftTexture is null;
 
     private static HashSet<string> Reachable(string rootId, GodotResourceCatalog catalog)
     {

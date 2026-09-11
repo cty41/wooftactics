@@ -30,7 +30,7 @@ Tactics 是 Agent 优先维护并准备公开发布的 Godot 4.7 C# 战棋项目
 
 - `Tactics.Core` 与 `Tactics.Application` 是纯 .NET 9；Godot Node、Resource、Scene、文件系统和 UI 只进入 Adapter/Editor 层。
 - 最终内容由 Godot Resource/PackedScene 与轻量 Catalog 驱动；迁移 DTO、Unity GUID 和历史 receipt 不进入运行时。公开仓库中的已提交 Unit Resource 可由独立 ResourceSaver 升级入口刷新到当前属性派生合同，无需恢复 Unity DTO。
-- 五候选选三人的 Pure Run 使用 Save V10、确定性 Battle/Run 状态、Catalog 185 与单一 `Main.tscn`；魔剑士使用魅力主属性、腐化/冥想与附身控制合同，诗人使用力量主属性并提供剑仙/诗仙/酒仙 15 个技能等级；`battle-layout.pure-run.split-flank` 是正式 Resource。
+- 五候选选三人的 Pure Run 使用 Save V10、确定性 Battle/Run 状态、Catalog 185 与单一 `Main.tscn`；魔剑士使用魅力主属性、腐化/冥想与附身控制合同，诗人使用力量主属性、提供剑仙/诗仙/酒仙 15 个技能等级，并以获批五红土松 Idle DR/UL 作为当前方向视觉；`battle-layout.pure-run.split-flank` 是正式 Resource。
 - Battle HUD 由 Godot Adapter 将 Application Snapshot 投影为当前行动者状态卡、鼠标 Hover 浮层和右上动态行动条；行动条读取 Core 已提交的 current/remaining，使用圆形脸部头像、阵营背景、current/hover 框、九头像上限与省略号，不拥有玩法顺序。
 - 自动 gameplay runner 的指针目标先从 Control 本地空间转换到 Canvas 全局空间，再通过 Viewport 进入生产 `_gui_input` 链，避免把全屏 Control 的 Hover 误当作格坐标命中。
 - `Tools/godot/Verify-GodotProject.ps1` 是本地主线统一门禁；Windows RC 使用只读 staging、包审计和双 renderer EXE smoke。

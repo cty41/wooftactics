@@ -23769,6 +23769,22 @@
       "rightsHolder": "cty41",
       "license": "CC-BY-4.0",
       "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "godot/assets/units/doge_poet.png",
+      "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "project-owned-migrated-runtime-art"
+    },
+    {
+      "path": "godot/assets/units/doge_poet_ul.png",
+      "sha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "project-owned-migrated-runtime-art"
     }
   ]
 }

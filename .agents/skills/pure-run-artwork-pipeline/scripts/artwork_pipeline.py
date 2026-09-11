@@ -4126,7 +4126,27 @@ def register_runtime_copy(store: Store, args: argparse.Namespace) -> dict[str, A
     source_entry = next((entry for entry in manifest["entries"] if entry.get("path") == source["path"]), None)
     if not source_entry or source_entry.get("status") != "approved":
         raise PipelineError("runtime copy source must have approved public provenance")
-    register_public_artifacts(store, [target], "project-owned-migrated-runtime-art")
+    if not source_entry.get("rightsHolder") or not source_entry.get("license"):
+        raise PipelineError("runtime copy source provenance must bind rights holder and license")
+    target_entry = {
+        "path": target["path"], "sha256": target["sha256"], "status": "approved",
+        "rightsHolder": source_entry["rightsHolder"], "license": source_entry["license"],
+        "provenance": "project-owned-migrated-runtime-art",
+    }
+    existing = next((entry for entry in manifest["entries"] if entry.get("path") == target["path"]), None)
+    if existing and existing != target_entry:
+        normalizable_runtime_copy = (
+            existing.get("sha256") == target["sha256"]
+            and existing.get("status") == "approved"
+            and existing.get("provenance") == "project-owned-migrated-runtime-art"
+        )
+        if not normalizable_runtime_copy:
+            raise PipelineError(f"conflicting provenance entry: {target['path']}")
+        existing.clear()
+        existing.update(target_entry)
+    elif not existing:
+        manifest["entries"].append(target_entry)
+    write_json_idempotent(store.root / "Tools/public-release/asset-provenance.json", manifest)
     return {"schemaVersion": 1, "source": source, "target": target}
 
 

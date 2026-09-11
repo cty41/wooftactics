@@ -1,10 +1,10 @@
 # 五红土松诗人动作覆盖矩阵
 
-状态：Idle DR/UL 已批准；Melee DR 已进行两套尝试但均未通过，其他动作仍未批准。独立出鞘装备已完成下述批准与离线晋升，不代表角色动作获批。
+状态：Idle DR/UL 已批准并以逐字节一致副本接入 Godot；Melee DR 已进行两套尝试但均未通过，其他动作仍未批准。缺失动作运行时仅回退到方向 Idle；独立出鞘装备已完成下述批准与离线晋升，不代表角色动作获批或已接入动作字段。
 
 ## 范围与盘点
 
-初次盘点只建立离线美术覆盖清单。2026-09-10 两点清理通过 recontract 新建技术 Job 并保留原 Invocation/Delivery，经受控 CLI 批准并离线晋升独立 v02。随后 Melee DR 的直接双参考策略完成三轮视觉尝试后以 `job-a6df55a1b4f8ac96-a006` exhausted 收口；改用魔剑士动作参考的三参考策略在 `job-50532e1e9fe7c307-a001` technical_failed 收口。两套策略均无 promoted 角色动作，不接入运行时。
+初次盘点只建立离线美术覆盖清单。2026-09-10 两点清理通过 recontract 新建技术 Job 并保留原 Invocation/Delivery，经受控 CLI 批准并离线晋升独立 v02。随后 Melee DR 的直接双参考策略完成三轮视觉尝试后以 `job-a6df55a1b4f8ac96-a006` exhausted 收口；改用魔剑士动作参考的三参考策略在 `job-50532e1e9fe7c307-a001` technical_failed 收口。两套策略均无 promoted 角色动作，未接入运行时；运行时只使用已批准 Idle DR/UL。
 
 ### 独立出鞘装备：已批准，不计入角色动作覆盖
 
@@ -19,9 +19,9 @@
 - 正式离线装备：[出鞘唐刀母版](equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v01.png) 与 [128 预览](equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v01_128.png)。正式文件沿用原合同 `_v01` 输出名，内容是已接受的候选 v02；母版 SHA-256 `704cd888947a648a9e1ee0db154804288ba230eca422fcc4c63229c145b9e82b`，与候选逐字节一致。
 - 实际 v02 使用既有两张 approved 来源：入鞘 DR v02 负责环/柄/护手/画风，旧唐剑 v01 仅负责金属配色和细节密度。`feedback-addendum-6589876558d05ba6` 澄清旧 feedback 中 one input / <=220 words / new contract 属于生成前已取消的主代理准备要求；旧记录和 v01 prompt 改写说明均保留。
 - 附加逐像素 QA 发现母版保留两个极低 alpha 的精确绿像素（alpha 3/2），128 预览没有；状态机 strict 与既有装备 report 未检出。`feedback-addendum-6086f09a42ad87ca` 如实记录此技术门禁缺口；候选及晋升字节不改，不声称所有 QA 全绿。
-- Melee DR 已生成失败候选但未获批准或晋升；Melee UL、Hit、Cast、Thrown、Death 仍未生成正式候选。装备批准及失败尝试均不等于这些动作的构图、来源、装备状态或运行时接入授权。
+- Melee DR 已生成失败候选但未获批准或晋升；Melee UL、Hit、Cast、Thrown、Death 仍未生成正式候选。装备批准及失败尝试均不等于这些动作的构图、来源、装备状态或运行时接入授权；当前动作字段为空并安全回退到方向 Idle，Death 单独以 Idle DR 占位。
 
-按 pipeline promoted Attempt 盘点：当前装备版完整角色只有 Idle DR v03、Idle UL v07；另有无装备身份底稿 Idle DR v03（`job-43b34a4685f71ca2-a010` / `approval-1acd77a15a84f096`）。该底稿不是新的动作覆盖，也不应取代更直接的装备版来源。未发现下表非 Idle 动作的诗人完整 promoted Sprite。独立装备、组件、研究图与历史候选不计入动作覆盖。
+按 pipeline promoted Attempt 盘点：当前装备版完整角色只有 Idle DR v03、Idle UL v07；二者已分别登记为 `godot/assets/units/doge_poet.png` 与 `doge_poet_ul.png` 的逐字节一致运行时副本。另有无装备身份底稿 Idle DR v03（`job-43b34a4685f71ca2-a010` / `approval-1acd77a15a84f096`）。该底稿不是新的动作覆盖，也不应取代更直接的装备版来源。未发现下表非 Idle 动作的诗人完整 promoted Sprite。独立装备、组件、研究图与历史候选不计入动作覆盖。
 
 覆盖状态含义：**已批准**=有 promoted Attempt 与 cty41 Approval；**尝试失败**=存在可追溯候选但没有 promoted 输出；**待制作**=建议补齐但尚未生成正式候选；**待确认**=需求/表现/变体尚未批准；**历史模板**=不得直接用于新生成。
 

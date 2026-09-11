@@ -1,6 +1,6 @@
 # 诗人职业设计与实现合同
 
-状态：`verified_current`（正式青川犬美术延期；当前复用魔剑士纹理并使用独立蓝色调）
+状态：`verified_current`（已接入获批五红土松装备版 Idle DR/UL；独立动作与正式分身美术延期）
 
 ## 职业定位
 
@@ -81,4 +81,4 @@ dsl_support: unsupported
 
 ## Godot 表现边界
 
-诗人和分身均为 Godot-owned ResourceSaver 内容。正式青川犬角色图延期；当前复制魔剑士动作纹理并使用不同蓝色调，不能把该临时表现视作人工美术验收通过。技能逻辑不依赖剑或琴装备。
+诗人和分身均为 Godot-owned ResourceSaver 内容。诗人运行时 Idle 使用已由 `cty41` 批准的五红土松装备版 DR v03 / UL v07 原图字节，BodyTint 为白色；南/西取 DR、北/东取 UL，仅东/西镜像。Melee、Ranged、Cast、Hit 方向对保持空值并由 Actor 回退到对应 Idle；Death 暂以不镜像的 Idle DR 和 DR offset 占位。分身继承同一 Idle 身份并保留半透明青色 tint，但显式清空动作与死亡字段且不产生尸体。独立动作、正式死亡与正式分身美术仍待后续人工生产和验收；技能逻辑不依赖剑或琴装备。

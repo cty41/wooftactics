@@ -904,6 +904,35 @@ try {
     }
     }
 
+    Invoke-Checked 'Import approved Poet Idle PNG payload in headless Editor' {
+        & $GodotExecutable --headless --editor --path $projectRoot --quit-after 6000
+    }
+    $poetGeneratedTargets = @(
+        Get-ChildItem -LiteralPath (Join-Path $projectRoot 'content\poet') -Filter '*.tres' -File |
+            Select-Object -ExpandProperty FullName
+    ) + @(
+        (Join-Path $projectRoot 'content\ContentCatalog.tres')
+        (Join-Path $projectRoot 'content\runs\PureRunThreeEncounterV1.tres')
+        (Join-Path $projectRoot 'content\ui\PlayableLv1BalanceProfile.tres')
+    )
+    Invoke-Checked 'Generate approved Poet content through ResourceSaver' {
+        & $GodotExecutable --headless --path $projectRoot `
+            --script 'res://src/Tactics.Godot.Adapter/Editor/PoetAssetBuilder.cs'
+    }
+    $firstPoetGenerationHashes = @{}
+    foreach ($target in $poetGeneratedTargets) {
+        $firstPoetGenerationHashes[$target] = (Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash
+    }
+    Invoke-Checked 'Repeat approved Poet generation for idempotency' {
+        & $GodotExecutable --headless --path $projectRoot `
+            --script 'res://src/Tactics.Godot.Adapter/Editor/PoetAssetBuilder.cs'
+    }
+    foreach ($target in $poetGeneratedTargets) {
+        if ($firstPoetGenerationHashes[$target] -ne (Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash) {
+            throw "Poet generation is not byte-idempotent: $target"
+        }
+    }
+
     # A ResourceSaver script can register a newly created UID only in its current process.
     # The headless Editor filesystem scan persists the project UID cache before Runtime validation.
     Invoke-Checked 'Godot editor filesystem scan and plugin initialization' {
