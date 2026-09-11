@@ -77,6 +77,25 @@ _WINDOWS_NO_CONSOLE_BOOTSTRAP = (
     "import subprocess,sys;"
     "sys.exit(subprocess.call(sys.argv[1:], creationflags=0x08000000))"
 )
+_UVX_PRODUCTION_ARGS = (
+    "--isolated",
+    "--no-config",
+    "--no-env-file",
+    "--no-sources",
+    "--no-build",
+    "--index-strategy",
+    "first-index",
+    "--keyring-provider",
+    "disabled",
+    "--index",
+    "https://pypi.org/simple",
+    "--default-index",
+    "https://pypi.org/simple",
+    "--find-links",
+    "https://pypi.org/simple/godot-ai/",
+    "--link-mode",
+    "copy",
+)
 
 
 def load_policy(root: Path) -> CodexMcpPolicy:
@@ -295,6 +314,7 @@ def bootstrap_configuration(
         "command": str(pythonw),
         "args": [
             "-c", _WINDOWS_NO_CONSOLE_BOOTSTRAP, str(uvx_value),
+            *_UVX_PRODUCTION_ARGS,
             "--from", f"godot-ai=={policy.version}", "godot-ai", "attach",
             "--port", str(policy.http_port), "--ws-port", str(policy.websocket_port),
         ],
@@ -516,15 +536,25 @@ def _validate_launch(
         raise CodexGodotAiConfigError(f"configured pythonw.exe does not exist: {command_path}")
     if not isinstance(args, list) or not all(isinstance(value, str) for value in args):
         raise CodexGodotAiConfigError("godot-ai args must be a string array")
-    if "-c" not in args or not any("creationflags=0x08000000" in value for value in args):
-        raise CodexGodotAiConfigError("godot-ai command is missing the Windows no-console bootstrap")
+    if (
+        len(args) < 3
+        or args[0] != "-c"
+        or "creationflags=0x08000000" not in args[1]
+        or Path(args[2]).name.lower() not in {"uvx", "uvx.exe"}
+    ):
+        raise CodexGodotAiConfigError("godot-ai command is missing the Windows no-console uvx bootstrap")
     if allow_version_mismatch:
         pinned = _argument_value(args, "--from")
         if not pinned.startswith("godot-ai=="):
             raise CodexGodotAiConfigError("godot-ai --from must be an exact godot-ai version pin")
     else:
+        expected_resolution = list(_UVX_PRODUCTION_ARGS)
+        if args[3 : 3 + len(expected_resolution)] != expected_resolution:
+            raise CodexGodotAiConfigError(
+                "godot-ai uvx launch does not match the isolated public-PyPI resolution policy"
+            )
         _require_argument(args, "--from", f"godot-ai=={policy.version}")
-    if "godot-ai" not in args or "attach" not in args:
+    if _godot_ai_cli_index(args) < 0:
         raise CodexGodotAiConfigError("godot-ai command is not the pinned attach launcher")
     _require_argument(args, "--port", str(policy.http_port))
     _require_argument(args, "--ws-port", str(policy.websocket_port))
@@ -550,12 +580,28 @@ def _argument_value(args: Sequence[str], name: str) -> str:
 
 
 def _retarget_launch_version(server: Mapping[str, Any], policy: CodexMcpPolicy) -> dict[str, Any]:
+    """Retarget and harden a previously validated uvx Attach launch."""
     updated = dict(server)
     args = list(updated["args"])
-    index = args.index("--from")
-    args[index + 1] = f"godot-ai=={policy.version}"
-    updated["args"] = args
+    cli_index = _godot_ai_cli_index(args)
+    if cli_index < 0:
+        raise CodexGodotAiConfigError("godot-ai command is not the pinned attach launcher")
+    updated["args"] = [
+        *args[:3],
+        *_UVX_PRODUCTION_ARGS,
+        "--from",
+        f"godot-ai=={policy.version}",
+        "godot-ai",
+        *args[cli_index + 1 :],
+    ]
     return updated
+
+
+def _godot_ai_cli_index(args: Sequence[str]) -> int:
+    for index in range(len(args) - 1):
+        if args[index] == "godot-ai" and args[index + 1] == "attach":
+            return index
+    return -1
 
 
 def _require_argument(args: Sequence[str], name: str, expected_value: str) -> None:

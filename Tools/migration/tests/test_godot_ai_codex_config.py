@@ -123,6 +123,36 @@ class GodotAiCodexConfigTests(unittest.TestCase):
 
         self.assertIn("godot-ai==3.2.5", self._project_server()["args"])
 
+    def test_profile_sync_hardens_a_legacy_v3_uvx_launch(self) -> None:
+        from Tools.migration.godot_ai_codex_config import render_project_server
+
+        policy = load_policy(self.root)
+        legacy = parse_server_table(find_server_block(self._generated_block(version="3.2.5")).text)
+        legacy["args"] = [
+            *legacy["args"][:3],
+            "--link-mode",
+            "copy",
+            "--from",
+            "godot-ai==3.2.5",
+            "godot-ai",
+            "attach",
+            "--port",
+            "8000",
+            "--ws-port",
+            "9500",
+        ]
+        self._project_path().write_text(
+            render_project_server(legacy, policy, resolve_profile_tools(policy, "phase3-observe")),
+            encoding="utf-8",
+        )
+
+        apply_profile(self.root, self.user_config, "phase3-observe", check_command_exists=False)
+
+        args = self._project_server()["args"]
+        self.assertEqual(args[3], "--isolated")
+        self.assertIn("https://pypi.org/simple/godot-ai/", args)
+        self.assertIn("godot-ai==3.1.2", args)
+
     def test_check_rejects_a_remaining_user_level_entry(self) -> None:
         self.user_config.write_text(self._generated_block(), encoding="utf-8")
         import_generated_user_entry(
@@ -231,6 +261,28 @@ class GodotAiCodexConfigTests(unittest.TestCase):
         self.assertEqual(server["command"], r"C:\Tools\pythonw.exe")
         self.assertIn("creationflags=0x08000000", server["args"][1])
         self.assertIn("godot-ai==3.1.2", server["args"])
+        self.assertEqual(
+            server["args"][3:20],
+            [
+                "--isolated",
+                "--no-config",
+                "--no-env-file",
+                "--no-sources",
+                "--no-build",
+                "--index-strategy",
+                "first-index",
+                "--keyring-provider",
+                "disabled",
+                "--index",
+                "https://pypi.org/simple",
+                "--default-index",
+                "https://pypi.org/simple",
+                "--find-links",
+                "https://pypi.org/simple/godot-ai/",
+                "--link-mode",
+                "copy",
+            ],
+        )
         self.assertEqual(server["enabled_tools"], sorted(self._observe_tools()))
 
     def test_bootstrap_rejects_user_level_entry(self) -> None:
@@ -367,6 +419,21 @@ class GodotAiCodexConfigTests(unittest.TestCase):
             "-c",
             bootstrap,
             uvx,
+            "--isolated",
+            "--no-config",
+            "--no-env-file",
+            "--no-sources",
+            "--no-build",
+            "--index-strategy",
+            "first-index",
+            "--keyring-provider",
+            "disabled",
+            "--index",
+            "https://pypi.org/simple",
+            "--default-index",
+            "https://pypi.org/simple",
+            "--find-links",
+            "https://pypi.org/simple/godot-ai/",
             "--link-mode",
             "copy",
             "--from",
