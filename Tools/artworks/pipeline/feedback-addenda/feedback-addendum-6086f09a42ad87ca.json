@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "feedbackAddendumId": "feedback-addendum-6086f09a42ad87ca",
+  "attemptId": "job-c91127f8d0e61731-a002",
+  "parentFeedbackId": "feedback-518c494547fac1f7",
+  "reviewer": "agent",
+  "defects": [
+    "Post-closeout deterministic QA finding, not a new human verdict: accepted candidate and byte-identical promoted master SHA 704cd888947a648a9e1ee0db154804288ba230eca422fcc4c63229c145b9e82b contain two exact green RGB pixels with alpha 3 and 2 respectively. Preview has none; transparent RGB is zero. Existing equipment style report and CLI strict pass do not detect this low-alpha chroma condition. No candidate edits, exception, new approval, or automatic remediation were performed. Preserve explicit cty41 visual acceptance and report this technical gate gap rather than claim all QA passed."
+  ],
+  "recordedAt": "2026-09-10T11:15:38.9115433+08:00",
+  "authorType": "agent",
+  "disposition": null
+}

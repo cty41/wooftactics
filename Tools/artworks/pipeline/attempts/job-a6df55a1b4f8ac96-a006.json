@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-a6df55a1b4f8ac96-a006",
+  "jobId": "job-a6df55a1b4f8ac96",
+  "ordinal": 6,
+  "generationRound": 3,
+  "parentAttemptId": "job-a6df55a1b4f8ac96-a005",
+  "retryFeedbackId": "feedback-6fe3e2fc70a88a50",
+  "promptDelta": "Do not draw any arm, sleeve, forelimb, elbow, wrist, hand, fist, or circular gripping limb. The sword grip emerges directly from the near body edge and is overlapped only by one small paw nub identical in size/style to an Idle paw. Show all four small paws attached to the capsule body. Copy Image 1 hat/clothes/gourd exactly; gourd is blank with no writing. Copy Image 2 blade silhouette literally: narrow straight single-edged dao with one highlight edge and asymmetric oblique tip, not a broad centered sword point.",
+  "technicalRemediation": false,
+  "state": "prepared",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a006/raw.png",
+      "sha256": "e46f993ba81db8fc30188a4bc4750d3f32d66664657f5218f583ccd776ec8acc"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a006/raw.png",
+      "sha256": "e46f993ba81db8fc30188a4bc4750d3f32d66664657f5218f583ccd776ec8acc"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a006/prepared.png",
+      "sha256": "9671cc1079f61289aba103352c3ec0ea55fd2e09ac214c6878c6634dea36cb0f"
+    }
+  },
+  "report": null,
+  "approvalId": null,
+  "feedbackId": "feedback-7d2b2feeceb42ba8",
+  "generationInvocationId": "generation-invocation-a2544810438b4384",
+  "generationDeliveryId": "generation-delivery-7c2e0bb1c23cd67d",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 48
+  }
+}

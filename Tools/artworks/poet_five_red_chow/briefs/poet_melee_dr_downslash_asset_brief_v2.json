@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "briefKind": "asset",
+  "briefId": "poet-melee-dr-downslash-v2",
+  "assetId": "poet-five-red-chow-melee-dr-downslash-v2",
+  "family": "actor",
+  "purpose": "Create one complete single-frame Melee DR sprite at the readable peak of a steep forward diagonal downward slash, using the approved Demonbound Melee DR only for no-arm grip topology and action readability.",
+  "firstRead": ["approved_equipped_five_red_chow_poet", "down_right_facing", "peak_steep_diagonal_downslash", "body-edge_paw_grip", "drawn_ring_pommel_tang_dao"],
+  "targetContexts": ["master-256", "preview-128", "tile-64x32", "battle-actor"],
+  "identityInvariants": ["Image 1 is the sole identity and volume authority", "five-red chow face and markings", "compact no-arm no-leg capsule topology with four attached round paws", "approved hat clothing gourd and empty side/back scabbard", "native DR three-quarter anatomy", "Idle foot baseline anchor"],
+  "shapeStrategy": "Redraw one coherent action sprite. Image 2 contributes only the proven topology of small round paws attached directly at the body edge and grip, plus immediate melee-action readability; keep the target dao axis steeply down-right rather than copying Image 2's more horizontal weapon axis.",
+  "colorStrategy": "Preserve Image 1 character palette and Image 3 weapon palette. Do not inherit Image 2 dog breed, colors, sword, collar, armor, or equipment.",
+  "materialStrategy": "Preserve Pure Run bold outlines, flat values, compact readable masses, and restrained pixel detail.",
+  "attentionRole": "primary",
+  "allowedVariation": ["coherent forward body lean", "small round front-paw placement needed for broad body-edge and grip contact", "natural partial occlusion of the retained empty scabbard"],
+  "forbidden": ["identity drift", "Demonbound breed or palette", "Demonbound sword collar armor or equipment", "horizontal sword axis", "arm", "leg connector", "floating paw", "thin grip connector", "detached weapon", "missing scabbard", "second blade", "curved katana", "motion blur", "slash trail", "glow", "VFX", "cropped silhouette"],
+  "resolvedHistory": "The prior job-a6df55a1b4f8ac96 three-round strategy is exhausted and is neither reused nor amended. Its long technical failure history is resolved context only and must not enter the ImageGen prompt. This v2 contract starts a fresh strategy using the approved Demonbound Melee DR as a narrowly scoped topology/action reference.",
+  "referenceResponsibilities": [
+    {"role": "image-1-approved-equipped-idle-dr-v03", "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png", "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3", "responsibility": "Identity, compact volume, colors, clothing, hat, gourd, four-paw anatomy, DR facing, foot anchor, and empty side/back scabbard only."},
+    {"role": "image-2-approved-demonbound-melee-dr-topology", "path": "Tools/artworks/doge/calibrated/doge_capsule_demonbound_melee_dr_v01.png", "sha256": "a0fee8512cf8578f57b8b3d3c5e2b74a1f68ac3afdcbefd15a87c82f5a85eaf5", "responsibility": "No-arm grip topology only: small round paws attached directly to body edge and weapon grip, body-contact silhouette, and readable melee action. Do not inherit breed, palette, sword, collar, armor, equipment, or its more horizontal sword axis."},
+    {"role": "image-3-approved-unsheathed-dao-v02", "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v02.png", "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1", "responsibility": "Drawn weapon form only: ring pommel, grip, guard, straight single-edged Tang dao blade, proportions, tip, colors, and detail budget."}
+  ],
+  "requiredReviewPanels": ["candidate-master", "preview-128", "identity-overlay", "direction-action", "weapon-inspection", "grip-contact", "scabbard-occlusion", "tile-review", "style-anchor-context"],
+  "acceptanceCases": [
+    {"caseId": "POET-MELEE-DR-V2-IDENTITY-001", "evidence": ["candidate-master", "identity-overlay"], "automatedFacts": ["identity anchor and core mask hashes match contract"], "humanChecks": ["poet identity clothing hat gourd and four paws remain recognizable", "no Demonbound identity or equipment leaks"], "passCriteria": "The sprite is unmistakably the approved poet."},
+    {"caseId": "POET-MELEE-DR-V2-ACTION-001", "evidence": ["direction-action", "candidate-master"], "automatedFacts": ["blade exits body-adjacent grip and reaches lower-right tip region"], "humanChecks": ["DR forward downslash reads at peak", "sword axis is clearly steep diagonal down-right, not horizontal"], "passCriteria": "The peak downslash reads immediately."},
+    {"caseId": "POET-MELEE-DR-V2-GRIP-001", "evidence": ["grip-contact", "candidate-master"], "automatedFacts": ["no arm labels and multi-pixel contact are required"], "humanChecks": ["small round paw touches body edge and grip directly", "no arm thin connector or floating paw"], "passCriteria": "The no-arm grip uses the approved topology."},
+    {"caseId": "POET-MELEE-DR-V2-WEAPON-001", "evidence": ["weapon-inspection", "candidate-master"], "automatedFacts": ["one drawn dao and one empty scabbard are required"], "humanChecks": ["Image 3 weapon form is preserved", "empty scabbard stays at side/back"], "passCriteria": "Weapon and scabbard states are unambiguous."},
+    {"caseId": "POET-MELEE-DR-V2-COMPOSITION-001", "evidence": ["candidate-master", "preview-128", "tile-review"], "automatedFacts": ["256x256 RGBA and y236 foot anchor are required"], "humanChecks": ["complete silhouette is uncropped", "compact volume is preserved"], "passCriteria": "Production geometry remains valid."},
+    {"caseId": "POET-MELEE-DR-V2-EXCLUSION-001", "evidence": ["candidate-master", "style-anchor-context"], "automatedFacts": ["exactly three ordered approved inputs are bound"], "humanChecks": ["no arms VFX extra equipment or reference leakage"], "passCriteria": "All exclusions hold."}
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-6fe3e2fc70a88a50",
+  "attemptId": "job-a6df55a1b4f8ac96-a005",
+  "candidateSha256": "53438763ade2386f0d893a715006a312857c929b00fcc5a6214a43b2068dc5bc",
+  "reviewer": "pipeline-agent",
+  "verdict": "retry",
+  "strengths": [
+    "Restores hat, clothing, gourd, side/back scabbard and down-right endpoint."
+  ],
+  "defects": [
+    "Second candidate still grows one large humanoid arm/hand, shows only two grounded paws, adds forbidden Chinese text on the gourd, redesigns the simple hat and clothing, and retains a broad symmetric double-edged jian blade."
+  ],
+  "nextPromptDelta": "Do not draw any arm, sleeve, forelimb, elbow, wrist, hand, fist, or circular gripping limb. The sword grip emerges directly from the near body edge and is overlapped only by one small paw nub identical in size/style to an Idle paw. Show all four small paws attached to the capsule body. Copy Image 1 hat/clothes/gourd exactly; gourd is blank with no writing. Copy Image 2 blade silhouette literally: narrow straight single-edged dao with one highlight edge and asymmetric oblique tip, not a broad centered sword point.",
+  "recordedAt": "2026-09-10T23:45:23.3662970+08:00",
+  "authorType": "agent",
+  "categories": [
+    "topology",
+    "equipment_state",
+    "identity"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "Second candidate still grows one large humanoid arm/hand, shows only two grounded paws, adds forbidden Chinese text on the gourd, redesigns the simple hat and clothing, and retains a broad symmetric double-edged jian blade."
+  ]
+}

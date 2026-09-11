@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics/tree/main/Tools/artworks
 title: Pure Run Artwork Pipeline
 description: Pure Run 角色美术的生成、去幕、尺寸校准、Review 与提交入口。
 tags: [operations, pure-run, artwork, sprite, godot]
-timestamp: "2026-09-09T14:43:17+08:00"
+timestamp: "2026-09-10T20:49:56+08:00"
 status: active
 catalog_scope: pure-run-artwork
 repo_paths:
@@ -14,7 +14,7 @@ repo_paths:
   - godot/assets
   - Tools/public-release/asset-provenance.json
 verified_revision: c68dbebe
-source_fingerprint: sha256:e340151bad80706a17dab2f9b92a97af1b3faa90a3ac184186bc6e4b8d8fd7b4
+source_fingerprint: sha256:a4227750a4ae0f0a0b59b011955cfcc1acff0b8935ce354749c4491a1bf78a17
 ---
 
 # Pure Run 角色美术流水线
@@ -23,8 +23,13 @@ source_fingerprint: sha256:e340151bad80706a17dab2f9b92a97af1b3faa90a3ac184186bc6
 
 ## Current State
 
+- 出鞘唐刀两像素技术收尾已完成：`reviewed-recontract-e6a91dc49320f564` / `contract-a6b9130f239467e7` / Attempt `job-a254d0afc9b7b286-a001` 已 promoted；Approval `approval-8dbcb2755d3c06b2`、style verdict `equipment-style-verdict-c6f6105d9c6260b2`、AD verdict `art-direction-verdict-debb48d7057ac13e` 与三项新 Acceptance Case 均绑定新 SHA。当前独立 calibrated `poet_ring_pommel_tang_dao_unsheathed_v02.png` SHA `375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1`，128 SHA `d1db586755bb515036ef7626f315dab88aea775ff651668afa5af64cda3e1f49`。逐像素实测只清零 `(117,166)` `[0,255,0,3]` 与 `(169,236)` `[0,255,0,2]`，母版无 resize，256×256、visible 90×96、baseline236、report passed。批准来自用户对两点清理及检测后自动机械收尾的明确授权，不声称新视觉会话；原 Invocation/Delivery、旧 v01 和下述历史保留，未生成图片/修改运行时。4 张 processing QA 经逐文件授权登记 project-owned supporting-derived，不升级许可证；strict 历史 16 项污染仍失败且不豁免。详见 [动作覆盖矩阵](https://github.com/cty41/tactics/blob/main/Tools/artworks/poet_five_red_chow/action_coverage_matrix.md)。
+
+- 诗人独立出鞘环首唐刀候选 v02 已依据 cty41 对比例、展示 raw_v02 与 128 预览整体外形/画风的明确接受完成离线晋升：Attempt `job-c91127f8d0e61731-a002`、Approval `approval-40e551d85e6899c1`、装备风格 Verdict `equipment-style-verdict-1f126a937643f493`、Art Direction Verdict `art-direction-verdict-67590b39415c014d`；三个 Acceptance Case 绑定现有证据，palette complexity 保留为 advisory。原合同输出 `equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v01.png` 实际承载候选 v02，SHA `704cd888947a648a9e1ee0db154804288ba230eca422fcc4c63229c145b9e82b` 完全一致。`feedback-addendum-6589876558d05ba6` 追加澄清 one input / <=220 words / new contract 为生成前取消的代理内部准备要求；v02 保留原合同和两张 approved 来源，旧反馈与 v01 prompt 改写说明不重写。此次未生成图片、未接入运行时、未批准未来图或角色动作。附加逐像素 QA 发现该母版有两个 alpha 3/2 的精确绿像素（128 无），现有装备 report/strict 未检出；`feedback-addendum-6086f09a42ad87ca` 记录此技术门禁缺口，保留原字节且不声称全部 QA 通过。
+- 诗人动作覆盖矩阵 `Tools/artworks/poet_five_red_chow/action_coverage_matrix.md` 现记录已批准的装备版 Idle DR/UL 及失败 Melee 历史。直接双参考 `job-a6df55a1b4f8ac96` 以 a006 `exhausted` 收口；增加魔剑士 Melee 姿势职责的三参考 `job-50532e1e9fe7c307` 以 a001 `technical_failed` 收口。两者均没有 promoted 输出，不得接入运行时或作为正向输入；Hit、Cast、Thrown 与独立 Death 仍未制作。当前美术工作暂停，旧 Attack 六帧模板仅作历史追溯。
+
 - 项目级美术方向现由 schema v4 数据链治理：当前 Manifest 固定 Project Art Direction Profile、Material Language、Actor/Equipment/World/Interactable/Prop/VFX Family Profile 与 Brief 作者源 SHA；只有 `cty41` 签发的窄职责 `approved-anchor` 可绑定合同。每个 v4 候选先记录 Brief 声明的 Acceptance Case，自动事实只产生 passed/warning/failed 维度而不汇总美学总分；pending 人工证据可以先进入固定 Review，但只有全部最新结果为 `cty41 passed`、Review/候选/合同哈希一致且具有正式 ArtDirectionVerdict 时，普通 approval 与 promotion 才能通过。历史 rejected、retry 和 superseded 资产只允许作为带 `NEGATIVE / DO NOT USE AS INPUT` 标识的 Review 证据。
-- 首个端到端试点是五红土松诗人 Idle DR：合同 `contract-57bf5c0526078c9d` 绑定诗人 v03 身份职责、魔剑士实装近战装备细节职责、已批准环首唐刀 v2 形制职责，以及十项 `POET-*` 用例。用户选择 75% 唐刀与 C 型低位放松握持，并在尾巴/脚爪切坏和旧爪脏区两次回归修正后明确批准十项；候选 SHA `e2246e0e...dfb3` 由 `art-direction-verdict-c53b61dc2d7da984`、`approval-3affe3151e3652b6` 绑定并离线晋升为 `Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png`。该事实不授权或实施 Godot 运行时接入；古琴保持移除，酒囊与出鞘唐刀继续延期。
+- 首个端到端试点是五红土松诗人 Idle DR：合同 `contract-57bf5c0526078c9d` 绑定诗人 v03 身份职责、魔剑士实装近战装备细节职责、已批准环首唐刀 v2 形制职责，以及十项 `POET-*` 用例。用户选择 75% 唐刀与 C 型低位放松握持，并在尾巴/脚爪切坏和旧爪脏区两次回归修正后明确批准十项；候选 SHA `e2246e0e...dfb3` 由 `art-direction-verdict-c53b61dc2d7da984`、`approval-3affe3151e3652b6` 绑定并离线晋升为 `Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png`。该事实不授权或实施 Godot 运行时接入；古琴保持移除，酒囊与出鞘唐刀的角色动作/运行时接入继续延期；独立出鞘装备已按上文批准。
 - Reviewer MVP 已完成历史 Feedback/Case Fitness、Rule/Case/CompiledPolicy、不可变 Packet/Invocation/Result/Audit、Prompt-only 对照、显式 Shadow、按规则三档资格/替代/撤权、受控经验和 `medium → high → xhigh` 三轮熔断。Shadow 历史图严格保持 review-only；旧弱资格通过显式 supersession 保留而不再生效。已 selected 生成图可用 `recontract-reviewed-attempt` 保留原 Invocation/Delivery 并绑定诚实新合同与确定性 processing，不得伪造 invocation。五红土松诗人环首唐刀 Idle UL 已由 `cty41` 批准并仅离线晋升为 `Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_ul_v07.png`（SHA `519e288f…512`，Verdict `art-direction-verdict-b196da86a5b54f86`，Approval `approval-a71f2eecb8e0ec5e`）；未修改或授权 Godot 运行时接入。
 - 人形像素 Amazon 探索已因重复误选正式退休：`Tools/artworks/amazon/**` 的 31 个文件被删除，22 个公开 provenance/legacy 活跃索引条目被移除，完整文件路径与 SHA 保存在 `Tools/artworks/pure_run/art_direction/references/retired_humanoid_amazon_v1.json`，历史 job/packet 仅为已有 attempt 审计而保留。管线即使看到从 Git 恢复的旧路径也会硬拒绝。项目中“Amazon”唯一指赤柴 Hunter；DR 尺寸与 Tilemap 对比权威图为 `Tools/artworks/doge/calibrated/doge_capsule_hunter_color_calibrated_v01.png`。
 - Pure Run 装备图使用独立 v2 生产策略层：`equipmentProductionSpec` 绑定共享基础画风、weapon/shield/armor/jewelry/consumable 品类锚点及目标尺寸，新装备强制正式 ImageGen invocation 和逐版结构化 feedback。默认 `prepare-equipment-candidate` 保留原始色阶，只做去幕、透明 RGB、真实 Alpha 裁切、等比缩放和基线定位；色阶/渐变指标降为 advisory，“AI 味”由绑定候选与固定锚点 Review 哈希的 `cty41` style verdict 决定。技术量化只允许通过 child remediation attempt，不能覆盖原始输出。第三方截图只登记无绝对路径的本机 descriptor（职责、来源标签、文件名、SHA），不复制、不进入公开 provenance；新装备禁止 reviewed import，历史 `styleSpec` 记录继续只读兼容。当前正式装备包含亚马逊长矛/圆盾、法师橡木杖、死灵匕首、魔剑士绑定剑、普通铁剑，以及皮甲 V04、铁头盔 V04、皮靴 V05、暗影斗篷 V04、法师帽 V04、诗人环首唐刀、紧凑旅行古琴与皮革酒囊；平涂酒葫芦保留为未来正式装备备用，不代表已晋升或运行时接入。

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 2,
+  "poseGuideId": "pose-guide-f8400732da15d147",
+  "compositionId": "composition-6e115c3a2f5d9def",
+  "compositionSha256": "67286e437d36624ad9e487c1ed1f79beb1e6804f17ea1cef5b9b85833e7a85c2",
+  "anchorSha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/guides/poet_melee_dr_downslash_pose_guide_v2.png",
+    "sha256": "4fbb3b09faf09d5bff2aa559ca14ac9ac058598032495527a97d3830cd46eb8f"
+  },
+  "role": "supporting-derived"
+}

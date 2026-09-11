@@ -1,0 +1,14 @@
+Create one complete 256×256 crisp pixel-art character sprite on a perfectly uniform pure #00FF00 background.
+
+Use the three supplied images in exactly this order, with strict roles:
+1. Image 1: identity and volume only. Preserve the five-red Chow poet, compact capsule body, DR three-quarter facing, face and colors, clothing, hat, gourd, four attached paws, foot anchor, and the empty scabbard at the side/back.
+2. Image 2: topology and action readability only. Use its successful no-arm solution: small round paws sit directly on the body edge and weapon grip with broad contact, and the melee action reads clearly. Do not inherit its dog breed, colors, sword, collar, armor, equipment, or its more horizontal sword angle.
+3. Image 3: weapon form only. Preserve the ring pommel, grip, guard, straight single-edged Tang dao blade, proportions, tip, colors, and pixel-detail language.
+
+Pose the poet at the single peak of a forward Melee DR downward slash, facing down-right in the fixed isometric front three-quarter view. The grip is high and immediately beside the body. The dao must run on a clear steep diagonal from the body toward screen lower-right, with the tip low in the lower-right. Do not make the sword horizontal.
+
+No visible arms or leg connectors. Keep two front paws and two rear paws. The gripping front paw is small and round, overlaps both the body edge and grip through a broad multi-pixel contact area, and never floats or connects by a thin line. Keep the other paws directly attached to the compact body.
+
+The dao is drawn, so retain one empty scabbard attached at the side/back, partly occluded by the body. Keep the complete silhouette uncropped, preserve the compact body scale, and keep the ground anchor centered at x=128 with foot baseline y=236.
+
+No second weapon, Demonbound identity or equipment, arms, motion blur, afterimage, streak, slash arc, glow, sparks, impact, aura, magic, particles, shadow, text, border, or background detail. Render exactly one full character.

@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "styleReportId": "equipment-style-report-f01b30ca48d3afad",
+  "contractId": "contract-a6b9130f239467e7",
+  "contractSha256": "0383c9e2ca93f829b8c739162b55fa9f0b5d3f8232055ffcff884add13dcd928",
+  "profile": {
+    "path": "Tools/artworks/pure_run/equipment/equipment_production_profile_v2.json",
+    "sha256": "e23e540c790a57432967d944c82bdad9721f109d2cb6352b3288c0c2c7d7bbb1"
+  },
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/processing/unsheathed_exact_green_v2/candidate.png",
+    "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1"
+  },
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/processing/unsheathed_exact_green_v2/candidate.png",
+    "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1"
+  },
+  "preview": {
+    "path": "Tools/artworks/pipeline/artifacts/job-a254d0afc9b7b286/job-a254d0afc9b7b286-a001/equipment-preview.png",
+    "sha256": "d1db586755bb515036ef7626f315dab88aea775ff651668afa5af64cda3e1f49"
+  },
+  "metrics": {
+    "interiorPixels": 595,
+    "interiorColorBins": 44,
+    "smoothGradientRatio": 0.0,
+    "visibleBbox": [
+      83,
+      141,
+      173,
+      237
+    ],
+    "visibleSize": [
+      90,
+      96
+    ],
+    "baseline": 236
+  },
+  "processingMode": "exact-reviewed-recontract-no-resize",
+  "quantized": false,
+  "reviewedRecontractId": "reviewed-recontract-e6a91dc49320f564",
+  "technical": {
+    "size": [
+      256,
+      256
+    ],
+    "alphaBbox": [
+      83,
+      141,
+      173,
+      237
+    ]
+  },
+  "hardIssues": [],
+  "advisories": [
+    "equipment_palette_complexity_review"
+  ],
+  "issues": [],
+  "passed": true
+}

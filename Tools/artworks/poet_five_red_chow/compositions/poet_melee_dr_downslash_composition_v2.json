@@ -1,0 +1,38 @@
+{
+  "canvas": [256, 256],
+  "bodyLayer": false,
+  "coreBbox": [90, 112, 166, 231],
+  "coreAxis": {"bottom": [128, 231], "top": [119, 114], "tiltDegrees": [2.0, 10.0]},
+  "footCenter": [128, 236],
+  "weapon": {
+    "hiddenGrip": [146, 157],
+    "exitWindow": [138, 143, 163, 171],
+    "tipRegion": [194, 204, 241, 237],
+    "guardWindow": [145, 148, 171, 178],
+    "bladeCenterline": [155, 164, 224, 226],
+    "maxBladeWidthPx": 18,
+    "maxGemAreaPx": 0,
+    "screenAxis": [[151, 158], [226, 228]],
+    "tipMayBeOccluded": false
+  },
+  "forbiddenRegions": [
+    {"name": "eye-and-face-weapon-exclusion", "rect": [91, 105, 151, 149]},
+    {"name": "wrong-upper-left-blade-tip", "rect": [0, 0, 105, 118]},
+    {"name": "detached-lower-left-weapon", "rect": [0, 174, 84, 255]},
+    {"name": "too-horizontal-right-blade", "rect": [205, 135, 255, 181]}
+  ],
+  "requiredHiddenLabels": [],
+  "visibleAreaCaps": {},
+  "equipmentState": {"scabbard": "present", "blade": "drawn-single-ring-pommel-tang-dao", "staticEffects": "absent"},
+  "screenSpaceIntent": {
+    "direction": "native down-right front three-quarter facing",
+    "core": "preserve Image 1 compact poet volume and complete four attached paws",
+    "action": "single frozen peak of a forward steep diagonal downward slash toward screen lower-right",
+    "drawnDao": "Image 3 form; guard beside body, blade descends steeply to lower-right; do not copy Image 2's more horizontal sword axis",
+    "grip": "follow Image 2 topology only: a small round paw sits on the body edge and grip with broad multi-pixel contact; no arm, thin connector, gap, or floating paw",
+    "scabbard": "empty scabbard remains attached at side/back and partly behind the body",
+    "feet": "four paws remain coherent; rear feet retain y236 ground anchor",
+    "effects": "none"
+  },
+  "renderForbiddenRegions": false
+}

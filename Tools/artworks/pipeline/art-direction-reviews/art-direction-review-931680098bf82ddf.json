@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 4,
+  "artDirectionReviewId": "art-direction-review-931680098bf82ddf",
+  "attemptId": "job-c91127f8d0e61731-a002",
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_unsheathed_v02.png",
+    "sha256": "704cd888947a648a9e1ee0db154804288ba230eca422fcc4c63229c145b9e82b"
+  },
+  "contractId": "contract-bfb85273c3228d32",
+  "contractSha256": "6cdedfe10171380db631b0dd71b2f3592b0c325a5624d44be7a1fa2f5df70307",
+  "sourcePanels": {
+    "candidate-master": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_unsheathed_v02.png",
+      "sha256": "704cd888947a648a9e1ee0db154804288ba230eca422fcc4c63229c145b9e82b"
+    },
+    "actual-size": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_unsheathed_v02_128.png",
+      "sha256": "1b91c243f9a60003f5fb5a7aa2e841117b9da7daf72149514f18575399d90606"
+    },
+    "two-source-comparison": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_ring_pommel_tang_dao_unsheathed_sources_v02.png",
+      "sha256": "469553027ea497311e07661e964d066a4ac66af58835259b3e41e3fbc2301028"
+    },
+    "ring-grip-guard": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_ring_pommel_tang_dao_unsheathed_raw_v02.png",
+      "sha256": "4808df1269886534bd04d6da59c7b994ba2480e1961d90528fe5367e826d626a"
+    },
+    "single-edge-tip": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_ring_pommel_tang_dao_unsheathed_raw_v02.png",
+      "sha256": "4808df1269886534bd04d6da59c7b994ba2480e1961d90528fe5367e826d626a"
+    }
+  },
+  "acceptanceCaseResultIds": [
+    "acceptance-case-result-3f90c6fa0bf41d8d",
+    "acceptance-case-result-e86f7c17dd7ce04d",
+    "acceptance-case-result-23a5dbedb821c9c2"
+  ],
+  "overview": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_ring_pommel_tang_dao_unsheathed_art_direction_v02.png",
+    "sha256": "d61e708b453cbb6819bb752ae1975bb0227cee86509781be1302c1b3027fc000"
+  }
+}

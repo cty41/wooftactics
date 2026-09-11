@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-7d2b2feeceb42ba8",
+  "attemptId": "job-a6df55a1b4f8ac96-a006",
+  "candidateSha256": "9671cc1079f61289aba103352c3ec0ea55fd2e09ac214c6878c6634dea36cb0f",
+  "reviewer": "pipeline-agent",
+  "verdict": "exhausted",
+  "strengths": [
+    "Maintains DR orientation, side/back scabbard ring and lower-right weapon endpoint."
+  ],
+  "defects": [
+    "Third candidate again removes approved hat, clothes, gourd and forehead blaze, shows only two grounded paws plus a large circular gripping limb, and renders a broad symmetric jian-like blade. Same two-reference direct-generation strategy failed repeatedly."
+  ],
+  "nextPromptDelta": "",
+  "recordedAt": "2026-09-10T23:47:25.2476009+08:00",
+  "authorType": "agent",
+  "categories": [
+    "identity",
+    "topology",
+    "equipment_state"
+  ],
+  "disposition": "exhausted",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "Third candidate again removes approved hat, clothes, gourd and forehead blaze, shows only two grounded paws plus a large circular gripping limb, and renders a broad symmetric jian-like blade. Same two-reference direct-generation strategy failed repeatedly."
+  ]
+}

@@ -23281,6 +23281,494 @@
       "rightsHolder": "cty41",
       "license": "project-owned",
       "provenance": "approved-equipment-authorized-rigid-rotation"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_ring_pommel_tang_dao_unsheathed_raw_v01.png",
+      "sha256": "7e613042da9b5d810a34cf9267f22b085905c2d39c76c3d7486dc8566c798067",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-c91127f8d0e61731/job-c91127f8d0e61731-a001/raw.png",
+      "sha256": "7e613042da9b5d810a34cf9267f22b085905c2d39c76c3d7486dc8566c798067",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_unsheathed_v01.png",
+      "sha256": "f8aa3b0152f832c1f336b9eda8e1fa19718082f46eadbe040af376c393ba5c6c",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-supporting-derived"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_unsheathed_v01_128.png",
+      "sha256": "4b0dfaf7095cde88fcbac0bf1c9a6a4a38246d19461d57efd01b53de6c779e96",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-supporting-derived"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_ring_pommel_tang_dao_unsheathed_review_v01.png",
+      "sha256": "d65943d3ae2cf533731c2ba1195a815279cc3b92dd0be8f275eb4fe1f0acd52c",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_ring_pommel_tang_dao_unsheathed_raw_v02.png",
+      "sha256": "4808df1269886534bd04d6da59c7b994ba2480e1961d90528fe5367e826d626a",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-c91127f8d0e61731/job-c91127f8d0e61731-a002/raw.png",
+      "sha256": "4808df1269886534bd04d6da59c7b994ba2480e1961d90528fe5367e826d626a",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_unsheathed_v02.png",
+      "sha256": "704cd888947a648a9e1ee0db154804288ba230eca422fcc4c63229c145b9e82b",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-supporting-derived"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_unsheathed_v02_128.png",
+      "sha256": "1b91c243f9a60003f5fb5a7aa2e841117b9da7daf72149514f18575399d90606",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-supporting-derived"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_ring_pommel_tang_dao_unsheathed_review_v02.png",
+      "sha256": "ac860661ce5edaedc71060a3122311a64f3d66985b6e1ee2b31254b148a12908",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_ring_pommel_tang_dao_unsheathed_art_direction_v02.png",
+      "sha256": "d61e708b453cbb6819bb752ae1975bb0227cee86509781be1302c1b3027fc000",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "review-derived"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v01.png",
+      "sha256": "704cd888947a648a9e1ee0db154804288ba230eca422fcc4c63229c145b9e82b",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "gpt-image-2-user-reference-guided"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v01_128.png",
+      "sha256": "1b91c243f9a60003f5fb5a7aa2e841117b9da7daf72149514f18575399d90606",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "gpt-image-2-user-reference-guided"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/processing/unsheathed_exact_green_v2/candidate.png",
+      "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "gpt-image-2-user-reference-guided"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-a254d0afc9b7b286/job-a254d0afc9b7b286-a001/equipment-preview.png",
+      "sha256": "d1db586755bb515036ef7626f315dab88aea775ff651668afa5af64cda3e1f49",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "gpt-image-2-user-reference-guided"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_ring_pommel_tang_dao_unsheathed_review_v03.png",
+      "sha256": "e28ee5193b7bdbcbe2e0b43e0f2f5c1aef5410de624ccafcb5a62146493e84f5",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_ring_pommel_tang_dao_unsheathed_art_direction_v03.png",
+      "sha256": "6fab00619ca5843f8970aab5328e3ce6eb9a233752d8b863e88166ac5a66d232",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "review-derived"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v02.png",
+      "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "gpt-image-2-user-reference-guided"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v02_128.png",
+      "sha256": "d1db586755bb515036ef7626f315dab88aea775ff651668afa5af64cda3e1f49",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "gpt-image-2-user-reference-guided"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/processing/unsheathed_exact_green_v1/candidate.png",
+      "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/processing/unsheathed_exact_green_v1/derived_preview_128.png",
+      "sha256": "d1db586755bb515036ef7626f315dab88aea775ff651668afa5af64cda3e1f49",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/processing/unsheathed_exact_green_v1/preview_128.png",
+      "sha256": "1b91c243f9a60003f5fb5a7aa2e841117b9da7daf72149514f18575399d90606",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/processing/unsheathed_exact_green_v2/preview_128.png",
+      "sha256": "d1db586755bb515036ef7626f315dab88aea775ff651668afa5af64cda3e1f49",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_melee_dr_downslash_pose_guide_v1.png",
+      "sha256": "93f74d47474b07c31a07d0ffa32e54f5732501cdb4569a388e9a01abd16d8506",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-supporting-derived"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a001/raw.png",
+      "sha256": "67c4bcb15d19febcbf18e811a00d179865f928014e812bee3d81c2790bdb9cdd",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a001/prepared.png",
+      "sha256": "aa258b5a67024453fc599723f6bc2807a74f3d53df77057a9aa3de2c703e921d",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-a6df55a1b4f8ac96-a001/overlay.png",
+      "sha256": "e533bc268a120507d48eba3956ed70e17d1f0c29ccde7da320e1ca14189289ee",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-a6df55a1b4f8ac96-a001/preview128.png",
+      "sha256": "ba150e4ab0071b7f44e57c7c91891ac1974461b2887311275f86abea5167c515",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-a6df55a1b4f8ac96-a001/tile64x32.png",
+      "sha256": "30b94f8478ef495ef33ab875b32eadea0ff9044195e2e5d0df04cf514c8a43fd",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a002/raw.png",
+      "sha256": "67c4bcb15d19febcbf18e811a00d179865f928014e812bee3d81c2790bdb9cdd",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a002/prepared.png",
+      "sha256": "f75244219d35c0a74e979149e352758d4458abc3ae8113bbfe6149cfc518bf26",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-a6df55a1b4f8ac96-a002/overlay.png",
+      "sha256": "ccfd3b1e376c9609e61c781f9e29d67886e1b0ad3c85344ad5afbfa1e41289ad",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-a6df55a1b4f8ac96-a002/preview128.png",
+      "sha256": "bc49569f2643b1e238e9212073382d446cb6fd30ed054d37a880dc83774cea06",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-a6df55a1b4f8ac96-a002/tile64x32.png",
+      "sha256": "0f83bc7e241b2c6f467b0a08a838b4502531221af528790cf4e1d609f2511a87",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a003/raw.png",
+      "sha256": "67c4bcb15d19febcbf18e811a00d179865f928014e812bee3d81c2790bdb9cdd",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a003/prepared.png",
+      "sha256": "f75244219d35c0a74e979149e352758d4458abc3ae8113bbfe6149cfc518bf26",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a003/semantic-core-mask.png",
+      "sha256": "76048bf7da6bbbba22eb9dea8442e2797a8cd45030678c4937923cb7906bc220",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a003/mask.png",
+      "sha256": "76048bf7da6bbbba22eb9dea8442e2797a8cd45030678c4937923cb7906bc220",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a004/raw.png",
+      "sha256": "67c4bcb15d19febcbf18e811a00d179865f928014e812bee3d81c2790bdb9cdd",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a004/prepared.png",
+      "sha256": "f75244219d35c0a74e979149e352758d4458abc3ae8113bbfe6149cfc518bf26",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a004/semantic-mask.png",
+      "sha256": "ae6783ae5a5a2455e9c03527ab3345f414e7f4a11c2da204d0d26c520f73ccc9",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a004/mask.png",
+      "sha256": "ae6783ae5a5a2455e9c03527ab3345f414e7f4a11c2da204d0d26c520f73ccc9",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a004/calibrated.png",
+      "sha256": "1de2e2df915efea167f6d96b7e30ec18ea7dc4dfd811e77df0bf8410113deaf4",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a004/calibrated-mask.png",
+      "sha256": "93594270b13a76563bda7b1531f20882b3aa1923d659a6a8297de343beee9da6",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-a6df55a1b4f8ac96-a004/overlay.png",
+      "sha256": "03939d6acfe7558b6920e6a94943da34bd60211dcca4b473175d9d9dd7b33bea",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-a6df55a1b4f8ac96-a004/preview128.png",
+      "sha256": "a85e00223d58e0bc8d44f1b19e453cb8d08f58cfe101975df5ee3f5a9677c3c3",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-a6df55a1b4f8ac96-a004/tile64x32.png",
+      "sha256": "a3ec5ad891fbfec3a6b87f095142f3de7660b043cd3f16f981513eca533d8e2b",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a005/raw.png",
+      "sha256": "51a23ca494d5196e3f46194b271c50bbe0cffd51b62477a3523640af27149a6e",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a005/prepared.png",
+      "sha256": "53438763ade2386f0d893a715006a312857c929b00fcc5a6214a43b2068dc5bc",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a006/raw.png",
+      "sha256": "e46f993ba81db8fc30188a4bc4750d3f32d66664657f5218f583ccd776ec8acc",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a006/prepared.png",
+      "sha256": "9671cc1079f61289aba103352c3ec0ea55fd2e09ac214c6878c6634dea36cb0f",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_melee_dr_downslash_pose_guide_v2.png",
+      "sha256": "4fbb3b09faf09d5bff2aa559ca14ac9ac058598032495527a97d3830cd46eb8f",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-supporting-derived"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-50532e1e9fe7c307/job-50532e1e9fe7c307-a001/raw.png",
+      "sha256": "1fa642c7daeced9f2463fcdd2c998769322dc7ba3744ebc0f3efdf5098220d2f",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-50532e1e9fe7c307/job-50532e1e9fe7c307-a001/prepared.png",
+      "sha256": "cc583db2a6bc5b8de950781006dce207c389ebe50095a9121109499b439df39f",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-50532e1e9fe7c307/job-50532e1e9fe7c307-a001/semantic-mask.png",
+      "sha256": "6d067212143d7db43763cbcd449a018ea4673106b235430b3cff336445aa4180",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-50532e1e9fe7c307/job-50532e1e9fe7c307-a001/mask.png",
+      "sha256": "6d067212143d7db43763cbcd449a018ea4673106b235430b3cff336445aa4180",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-50532e1e9fe7c307/job-50532e1e9fe7c307-a001/calibrated.png",
+      "sha256": "69b22d7bea3c1c41df7a715ad65ec109224060c95fd068e9bd5ff1cad2016425",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-50532e1e9fe7c307/job-50532e1e9fe7c307-a001/calibrated-mask.png",
+      "sha256": "ec0602fb6eec58cb90bc76fb3e882f0d8661a99c210b62160703162350ec7923",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-50532e1e9fe7c307-a001/overlay.png",
+      "sha256": "c8b16c47f3eb3c450744bbdec596c01fbd8c4495ffd9e06697452f578969a8d0",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-50532e1e9fe7c307-a001/preview128.png",
+      "sha256": "336eb9e69f4ede873e3cd5c7e17fe5e64c142c1b7557dea3dddc02230cf4a8d4",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-50532e1e9fe7c307-a001/tile64x32.png",
+      "sha256": "aea4601b8af17228212ec8676f08c6d149d6cc4a8ea1169c6f0d74b5bf9748ea",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
     }
   ]
 }

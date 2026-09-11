@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-cc23aea80edaec4b",
+  "attemptId": "job-c91127f8d0e61731-a001",
+  "candidateSha256": "f8aa3b0152f832c1f336b9eda8e1fa19718082f46eadbe040af376c393ba5c6c",
+  "reviewer": "cty41",
+  "verdict": "retry",
+  "strengths": [],
+  "defects": [
+    "The unsheathed v01 blade is too long relative to the approved Idle DR sheathed dao."
+  ],
+  "nextPromptDelta": "Use only approved sheathed_dr_v02.png as actual Image 1, locking grip, ring, guard and compact proportions. v01 is NEGATIVE / DO NOT USE AS INPUT. Shorten blade 20-25 percent versus v01; straight single edge; blade/grip about 4:1 excluding ring and guard; blade must fit reference scabbard. Large ring pommel. No scabbard or character. Entire actual compiled prompt must be short English, at most 220 words. Preserve v01 actual-prompt rewrite disclosure and all historical records; new contract version for changed requirements. Prepare one image only; no approval, promotion or runtime changes.",
+  "recordedAt": "2026-09-09T22:57:01.4096998+08:00",
+  "authorType": "human",
+  "categories": [
+    "equipment_scale"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "Straight single-edged blade; large ring pommel; approved sheathed DR grip, ring and guard proportions."
+  ],
+  "pendingFixes": [
+    "Shorten the blade by 20-25 percent versus v01. Blade/grip length approximately 4:1, excluding ring and guard from grip length; blade must fit inside the reference scabbard."
+  ]
+}

@@ -1822,6 +1822,88 @@ class ArtworkPipelineTests(unittest.TestCase):
             license="CC-BY-4.0", provenance="project-owned-gpt-generated"))
         return contract, profile
 
+    def test_recontract_equipment_report_preserves_master_and_supports_review(self):
+        contract, _profile = self.equipment_contract_fixture()
+        candidate_path = self.root / "Tools/artworks/candidates/exact-clean.png"
+        candidate_path.parent.mkdir(parents=True, exist_ok=True)
+        image = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
+        ImageDraw.Draw(image).rectangle((110, 129, 140, 236), fill=(120, 80, 60, 255))
+        image.save(candidate_path)
+        before = candidate_path.read_bytes()
+        attempt = {"schemaVersion": 4, "attemptId": "job-exact-a001", "jobId": "job-exact", "state": "prepared",
+                   "reviewedRecontractId": "recontract-test", "artifacts": {"prepared": {
+                       "path": self.store.relative(candidate_path), "sha256": pipeline.sha256_file(candidate_path)}}}
+        pipeline._bind_recontract_equipment_report(self.store, attempt, contract)
+        self.assertEqual(before, candidate_path.read_bytes())
+        self.assertTrue(pipeline.load_json(self.store.absolute(attempt["report"]["path"]))["passed"])
+        with Image.open(self.store.absolute(attempt["artifacts"]["equipmentPreview"]["path"])) as preview:
+            self.assertEqual(pipeline.clean_exact_chroma(pipeline.make_preview(image)).tobytes(), preview.tobytes())
+        pipeline.write_json_idempotent(self.store.record("jobs", "job-exact"), {
+            "schemaVersion": 4, "jobId": "job-exact", "contractId": contract["contractId"]})
+        pipeline.write_json_idempotent(self.store.record("attempts", attempt["attemptId"]), attempt)
+        review = pipeline.render_equipment_review(self.store, self.ns(
+            attempt_id=attempt["attemptId"], output="Tools/artworks/reviews/exact.png"))
+        self.assertIn("equipmentPanel", review["outputs"])
+        image.putpixel((110, 129), (0, 255, 0, 2)); image.save(candidate_path)
+        with self.assertRaisesRegex(pipeline.PipelineError, "technical gate failed"):
+            pipeline._bind_recontract_equipment_report(self.store, attempt, contract)
+
+    def test_exact_chroma_cleanup_preserves_non_key_colors_and_alpha(self):
+        pixels = [(0, 255, 0, 2), (0, 255, 0, 3), (255, 0, 255, 1),
+                  (255, 0, 255, 255), (12, 34, 56, 0), (0, 254, 0, 2),
+                  (254, 0, 255, 3), (100, 139, 100, 255), (10, 20, 30, 1)]
+        image = Image.new("RGBA", (len(pixels), 1)); image.putdata(pixels)
+        cleaned = pipeline.clean_exact_chroma(image)
+        self.assertEqual([(0, 0, 0, 0)] * 5 + pixels[5:], pipeline.pixel_data(cleaned))
+        self.assertEqual(pixels, pipeline.pixel_data(image))
+
+    def test_equipment_lanczos_cleanup_removes_real_resampled_key_pixels(self):
+        contract, _profile = self.equipment_contract_fixture()
+        source = self.root / "Tools/artworks/concepts/resampled.png"
+        source.parent.mkdir(parents=True)
+        image = Image.new("RGBA", (160, 160))
+        ImageDraw.Draw(image).ellipse((0, 0, 159, 159), fill=(100, 139, 100, 255))
+        image.save(source)
+        # This legal muted green survives the source keyer; Lanczos creates exact green at alpha=1.
+        resized = image.resize((108, 108), Image.Resampling.LANCZOS)
+        self.assertTrue(any(p[:3] == (0, 255, 0) and p[3] for p in pipeline.pixel_data(resized)))
+        report = pipeline.prepare_equipment_candidate(self.store, self.ns(
+            contract_id=contract["contractId"], source=str(source),
+            output="Tools/artworks/candidates/resampled.png",
+            preview="Tools/artworks/candidates/resampled_128.png", attempt_id=None))
+        self.assertTrue(report["passed"], report["issues"])
+        for key in ("candidate", "preview"):
+            with Image.open(self.store.absolute(report[key]["path"])) as output:
+                pixels = pipeline.pixel_data(output)
+            self.assertFalse(any(p[3] and p[:3] in {(0, 255, 0), (255, 0, 255)} for p in pixels))
+            self.assertFalse(any(not p[3] and any(p[:3]) for p in pixels))
+            self.assertIn((100, 139, 100, 255), pixels)
+
+    def test_technical_gate_rejects_low_alpha_exact_keys(self):
+        path = self.png("Tools/artworks/candidates/low-alpha.png")
+        for color in ((0, 255, 0), (255, 0, 255)):
+            for alpha in (1, 2, 3, 255):
+                with self.subTest(color=color, alpha=alpha):
+                    image = Image.new("RGBA", (256, 256))
+                    image.putpixel((128, 128), (*color, alpha)); image.save(path)
+                    _, issues = pipeline.inspect_technical(path, "projectile")
+                    self.assertIn("exact_chroma_residue", issues)
+
+    def test_equipment_strict_rejects_actual_approved_master_and_preview_residue(self):
+        self.test_equipment_approval_requires_matching_cty41_style_verdict()
+        for name in ("approval.png", "approval_128.png"):
+            path = self.root / "Tools/artworks/candidates" / name
+            with Image.open(path) as opened:
+                image = opened.convert("RGBA")
+            image.putpixel((20, 20), (0, 255, 0, 2))
+            image.putpixel((21, 20), (255, 0, 255, 3))
+            image.putpixel((22, 20), (12, 34, 56, 0)); image.save(path)
+            issues = pipeline.strict_check(self.store, False)["issues"]
+            self.assertTrue(any(issue.startswith("equipment_exact_chroma_residue:") and issue.endswith(name) for issue in issues), issues)
+            self.assertTrue(any(issue.startswith("equipment_transparent_rgb_nonzero:") and issue.endswith(name) for issue in issues), issues)
+            with self.assertRaisesRegex(pipeline.PipelineError, "equipment_exact_chroma_residue"):
+                pipeline.strict_check(self.store, True)
+
     def test_equipment_contract_binds_category_anchors_and_requires_invocation(self):
         contract, _profile = self.equipment_contract_fixture()
         self.assertTrue(contract["requiresInvocation"])
@@ -2141,6 +2223,92 @@ class ArtworkPipelineTests(unittest.TestCase):
             pipeline.resolve_transaction(self.store, self.ns(transaction_id=transaction_id, reviewer="cty41",
                 reason="do not guess", decided_at="2026-09-08T12:00:00+00:00"))
         self.assertFalse(any((self.store.pipeline / "transaction-resolutions").glob("*.json")))
+
+    def exact_chroma_processing_fixture(self):
+        source = self.root / "Tools/artworks/exact-source.png"
+        source.parent.mkdir(parents=True, exist_ok=True)
+        image = Image.new("RGBA", (16, 16), (80, 60, 40, 255))
+        image.putpixel((2, 3), (0, 255, 0, 2)); image.putpixel((4, 5), (255, 0, 255, 3))
+        image.putpixel((0, 0), (12, 34, 56, 0)); image.save(source)
+        output = source.with_name("exact-output.png")
+        image.putpixel((2, 3), (0, 0, 0, 0)); image.putpixel((4, 5), (0, 0, 0, 0)); image.save(output)
+        attempt = {"attemptId": "job-exact-a001", "artifacts": {"prepared": pipeline._bound_artifact(self.store, str(source))}}
+        candidate = pipeline._bound_artifact(self.store, str(output))
+        processing = {"schemaVersion": 2, "operation": "deterministic-exact-chroma-pixel-cleanup",
+                      "sourceAttemptId": attempt["attemptId"], "sourcePreparedSha256": pipeline.sha256_file(source),
+                      "outputSha256": candidate["sha256"], "maxAlpha": 3,
+                      "pixels": [{"x": 2, "y": 3, "rgba": [0, 255, 0, 2]},
+                                 {"x": 4, "y": 5, "rgba": [255, 0, 255, 3]}]}
+        return attempt, candidate, processing
+
+    def test_exact_chroma_recontract_replays_only_two_bound_pixels(self):
+        attempt, candidate, processing = self.exact_chroma_processing_fixture()
+        pipeline._validate_recontract_processing(self.store, attempt, candidate, processing)
+        output = self.store.absolute(candidate["path"])
+        with Image.open(output) as opened:
+            changed = opened.copy()
+        changed.putpixel((0, 0), (0, 0, 0, 0)); changed.save(output)
+        candidate["sha256"] = pipeline.sha256_file(output); processing["outputSha256"] = candidate["sha256"]
+        with self.assertRaisesRegex(pipeline.PipelineError, "two-pixel replay"):
+            pipeline._validate_recontract_processing(self.store, attempt, candidate, processing)
+
+    def test_exact_chroma_recontract_rejects_unsafe_declarations(self):
+        attempt, candidate, processing = self.exact_chroma_processing_fixture()
+        mutations = [lambda p: p.update(maxAlpha=255), lambda p: p.update(maxAlpha=True),
+                     lambda p: p.update(outputSha256="wrong"), lambda p: p.update(sourcePreparedSha256="wrong"),
+                     lambda p: p.update(sourceAttemptId="wrong"), lambda p: p.update(extra="erase anything"),
+                     lambda p: p["pixels"].pop(), lambda p: p["pixels"].append(p["pixels"][0]),
+                     lambda p: p["pixels"].__setitem__(1, p["pixels"][0]),
+                     lambda p: p["pixels"][0].update(x=-1), lambda p: p["pixels"][0].update(x=True),
+                     lambda p: p["pixels"][0].update(rgba=[0, 254, 0, 2]),
+                     lambda p: p["pixels"][0].update(rgba=[0, 255, 0, 0]),
+                     lambda p: p["pixels"][0].update(rgba=[0, 255, 0, 4]),
+                     lambda p: p["pixels"][0].update(rgba=[0, 255, 0, 3]),
+                     lambda p: p["pixels"][0].update(x=6, y=6)]
+        for index, mutate in enumerate(mutations):
+            with self.subTest(index=index):
+                invalid = json.loads(json.dumps(processing)); mutate(invalid)
+                with self.assertRaises(pipeline.PipelineError):
+                    pipeline._validate_recontract_processing(self.store, attempt, candidate, invalid)
+        source = self.store.absolute(attempt["artifacts"]["prepared"]["path"])
+        Image.new("RGBA", (16, 16)).save(source)
+        with self.assertRaisesRegex(pipeline.PipelineError, "binding"):
+            pipeline._validate_recontract_processing(self.store, attempt, candidate, processing)
+
+    def test_recontract_processing_does_not_resurrect_invalid_strict_receipt(self):
+        self.test_equipment_approval_requires_matching_cty41_style_verdict()
+        source_path = next((self.store.pipeline / "attempts").glob("*.json"))
+        source = pipeline.load_json(source_path)
+        _fixture, candidate, processing = self.exact_chroma_processing_fixture()
+        image = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
+        ImageDraw.Draw(image).rectangle((110, 129, 140, 236), fill=(120, 80, 60, 255))
+        image.putpixel((2, 3), (0, 255, 0, 2)); image.putpixel((4, 5), (255, 0, 255, 3))
+        fixture_source = self.store.absolute(_fixture["artifacts"]["prepared"]["path"])
+        image.save(fixture_source)
+        _fixture["artifacts"]["prepared"]["sha256"] = pipeline.sha256_file(fixture_source)
+        image.putpixel((2, 3), (0, 0, 0, 0)); image.putpixel((4, 5), (0, 0, 0, 0))
+        image.save(self.store.absolute(candidate["path"]))
+        candidate["sha256"] = pipeline.sha256_file(self.store.absolute(candidate["path"]))
+        processing.update(sourcePreparedSha256=_fixture["artifacts"]["prepared"]["sha256"], outputSha256=candidate["sha256"])
+        source["artifacts"]["prepared"] = _fixture["artifacts"]["prepared"]
+        source["feedbackId"] = "feedback-selected"
+        pipeline.write_json_idempotent(source_path, source)
+        pipeline.write_json_idempotent(self.store.record("feedback", "feedback-selected"),
+            {"schemaVersion": 2, "feedbackId": "feedback-selected", "authorType": "human", "verdict": "selected", "reviewer": "cty41"})
+        processing.update(sourceAttemptId=source["attemptId"])
+        processing_path = self.root / "Tools/artworks/exact-processing.json"
+        pipeline.write_json_idempotent(processing_path, processing)
+        job = pipeline.load_json(self.store.record("jobs", source["jobId"]))
+        result = pipeline.recontract_reviewed_attempt(self.store, self.ns(
+            source_attempt_id=source["attemptId"], contract_id=job["contractId"], candidate=candidate["path"],
+            processing=str(processing_path), reviewer="cty41", reason="exact cleanup",
+            accepted_at="2026-09-08T12:00:00+00:00"))
+        receipt = result["receipt"]
+        expected_issue = "trusted_artifact_record_invalid:reviewed-recontracts:" + receipt["reviewedRecontractId"]
+        self.assertNotIn(expected_issue, pipeline.strict_check(self.store, False)["issues"])
+        receipt["reviewer"] = "forged-reviewer"
+        pipeline.write_json_idempotent(self.store.record("reviewed-recontracts", receipt["reviewedRecontractId"]), receipt)
+        self.assertIn(expected_issue, pipeline.strict_check(self.store, False)["issues"])
 
     def test_reviewed_recontract_rejects_missing_generation_lineage(self):
         source = self.png("Tools/artworks/source.png")

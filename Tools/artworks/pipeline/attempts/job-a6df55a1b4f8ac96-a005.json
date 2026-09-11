@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-a6df55a1b4f8ac96-a005",
+  "jobId": "job-a6df55a1b4f8ac96",
+  "ordinal": 5,
+  "generationRound": 2,
+  "parentAttemptId": "job-a6df55a1b4f8ac96-a004",
+  "retryFeedbackId": "feedback-fa4f65af3968bf3e",
+  "promptDelta": "Strict identity correction: copy Image 1 hat, clothing, gourd, face and compact four directly attached paws; do not enlarge or simplify character. The near front paw is a small attached paw overlapping the grip, never a circular disk. Copy Image 2 single-edged asymmetric dao exactly; one blunt spine, one cutting edge, oblique asymmetric tip. Increase forward body lean and diagonal-down strike tension while retaining no FX. Keep empty scabbard side/back.",
+  "technicalRemediation": false,
+  "state": "prepared",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a005/raw.png",
+      "sha256": "51a23ca494d5196e3f46194b271c50bbe0cffd51b62477a3523640af27149a6e"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a005/raw.png",
+      "sha256": "51a23ca494d5196e3f46194b271c50bbe0cffd51b62477a3523640af27149a6e"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a005/prepared.png",
+      "sha256": "53438763ade2386f0d893a715006a312857c929b00fcc5a6214a43b2068dc5bc"
+    }
+  },
+  "report": null,
+  "approvalId": null,
+  "feedbackId": "feedback-6fe3e2fc70a88a50",
+  "generationInvocationId": "generation-invocation-572fc3c4818257f7",
+  "generationDeliveryId": "generation-delivery-68fd5e503b1fb6e7",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 48
+  }
+}

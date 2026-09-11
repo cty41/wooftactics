@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-9da67a4bb72428b7",
+  "attemptId": "job-a6df55a1b4f8ac96-a001",
+  "candidateSha256": "aa258b5a67024453fc599723f6bc2807a74f3d53df77057a9aa3de2c703e921d",
+  "reviewer": "pipeline-agent",
+  "verdict": "technical_failed",
+  "strengths": [],
+  "defects": [
+    "ImageGen chroma background contains near-green variation; exact tolerance 0 left opaque canvas and failed size/corner/fringe validation."
+  ],
+  "nextPromptDelta": "No visual regeneration; deterministically re-key the same raw with bounded chroma tolerance.",
+  "recordedAt": "2026-09-10T21:18:06.6987351+08:00",
+  "authorType": "agent",
+  "categories": [],
+  "disposition": "technical_failed",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "ImageGen chroma background contains near-green variation; exact tolerance 0 left opaque canvas and failed size/corner/fringe validation."
+  ]
+}

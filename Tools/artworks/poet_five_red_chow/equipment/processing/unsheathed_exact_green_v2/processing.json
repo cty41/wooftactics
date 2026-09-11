@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 2,
+  "operation": "deterministic-exact-chroma-pixel-cleanup",
+  "sourceAttemptId": "job-c91127f8d0e61731-a002",
+  "sourcePreparedSha256": "704cd888947a648a9e1ee0db154804288ba230eca422fcc4c63229c145b9e82b",
+  "outputSha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1",
+  "maxAlpha": 3,
+  "pixels": [
+    { "x": 117, "y": 166, "rgba": [0, 255, 0, 3] },
+    { "x": 169, "y": 236, "rgba": [0, 255, 0, 2] }
+  ]
+}

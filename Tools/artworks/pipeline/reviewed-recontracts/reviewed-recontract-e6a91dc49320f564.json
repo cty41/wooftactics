@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 4,
+  "reviewedRecontractId": "reviewed-recontract-e6a91dc49320f564",
+  "sourceAttemptId": "job-c91127f8d0e61731-a002",
+  "sourceJobId": "job-c91127f8d0e61731",
+  "sourceContractId": "contract-bfb85273c3228d32",
+  "generationInvocationId": "generation-invocation-b84f2467c34ff845",
+  "generationDeliveryId": "generation-delivery-fc16bf33afd67346",
+  "sourceLineage": {
+    "sourceAttempt": {
+      "path": "Tools/artworks/pipeline/attempts/job-c91127f8d0e61731-a002.json",
+      "sha256": "48903585a8f71a7e7d74f74d560d0485873eca135ae2bd9dca600c73c1a0617c"
+    },
+    "sourceJob": {
+      "path": "Tools/artworks/pipeline/jobs/job-c91127f8d0e61731.json",
+      "sha256": "3327a40b6c985289637f7b369e0aa7e2a6bd88f0ebe5cf9b3e3ca8233b357bff"
+    },
+    "generationInvocation": {
+      "path": "Tools/artworks/pipeline/generation-invocations/generation-invocation-b84f2467c34ff845.json",
+      "sha256": "c87e45b3066ca60244c9609ad9947e5046fe6b09bc347e6d957f192bd796ad5a"
+    },
+    "generationDelivery": {
+      "path": "Tools/artworks/pipeline/generation-deliveries/generation-delivery-fc16bf33afd67346.json",
+      "sha256": "df09e085f5e46ca713a536841669c825fb83f905d31af8c04e6425d58eb68744"
+    }
+  },
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/processing/unsheathed_exact_green_v2/candidate.png",
+    "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1"
+  },
+  "processing": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/processing/unsheathed_exact_green_v2/processing.json",
+    "sha256": "8bcbef100d705da4791196479f929a3efc5ded07077b1093153713b61427e5bc",
+    "parameters": {
+      "schemaVersion": 2,
+      "operation": "deterministic-exact-chroma-pixel-cleanup",
+      "sourceAttemptId": "job-c91127f8d0e61731-a002",
+      "sourcePreparedSha256": "704cd888947a648a9e1ee0db154804288ba230eca422fcc4c63229c145b9e82b",
+      "outputSha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1",
+      "maxAlpha": 3,
+      "pixels": [
+        {
+          "x": 117,
+          "y": 166,
+          "rgba": [
+            0,
+            255,
+            0,
+            3
+          ]
+        },
+        {
+          "x": 169,
+          "y": 236,
+          "rgba": [
+            0,
+            255,
+            0,
+            2
+          ]
+        }
+      ]
+    }
+  },
+  "targetContractId": "contract-a6b9130f239467e7",
+  "targetContractSha256": "0383c9e2ca93f829b8c739162b55fa9f0b5d3f8232055ffcff884add13dcd928",
+  "reviewer": "cty41",
+  "reason": "User explicitly authorized only the two exact-green low-alpha pixel cleanup, detection and automatic mechanical closure after acceptance; this binds the new SHA as technical approval, not a new visual session; preserve v01 and history.",
+  "acceptedAt": "2026-09-10T12:43:30Z"
+}

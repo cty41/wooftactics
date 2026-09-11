@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-2296ca64239fb057",
+  "attemptId": "job-a6df55a1b4f8ac96-a002",
+  "candidateSha256": "f75244219d35c0a74e979149e352758d4458abc3ae8113bbfe6149cfc518bf26",
+  "reviewer": "pipeline-agent",
+  "verdict": "technical_failed",
+  "strengths": [],
+  "defects": [
+    "Prepared raw requires semantic core mask and deterministic core calibration to 256x256 before validation."
+  ],
+  "nextPromptDelta": "No visual regeneration; reuse the same raw, bounded chroma key, attach semantic core mask, then calibrate.",
+  "recordedAt": "2026-09-10T21:19:44.3477352+08:00",
+  "authorType": "agent",
+  "categories": [],
+  "disposition": "technical_failed",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "Prepared raw requires semantic core mask and deterministic core calibration to 256x256 before validation."
+  ]
+}

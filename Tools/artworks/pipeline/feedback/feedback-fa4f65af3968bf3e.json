@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-fa4f65af3968bf3e",
+  "attemptId": "job-a6df55a1b4f8ac96-a004",
+  "candidateSha256": "1de2e2df915efea167f6d96b7e30ec18ea7dc4dfd811e77df0bf8410113deaf4",
+  "reviewer": "pipeline-agent",
+  "verdict": "retry",
+  "strengths": [
+    "Down-right orientation and lower-right weapon endpoint are broadly present; empty scabbard ring remains visible."
+  ],
+  "defects": [
+    "Candidate drops the approved hat, clothing, and gourd; shows only two grounded paws plus an oversized circular front paw; the blade reads as a symmetric double-edged sword rather than the approved single-edged dao; the pose reads as static presentation more than a forceful downslash peak."
+  ],
+  "nextPromptDelta": "Strict identity correction: copy Image 1 hat, clothing, gourd, face and compact four directly attached paws; do not enlarge or simplify character. The near front paw is a small attached paw overlapping the grip, never a circular disk. Copy Image 2 single-edged asymmetric dao exactly; one blunt spine, one cutting edge, oblique asymmetric tip. Increase forward body lean and diagonal-down strike tension while retaining no FX. Keep empty scabbard side/back.",
+  "recordedAt": "2026-09-10T23:42:35.4608037+08:00",
+  "authorType": "agent",
+  "categories": [
+    "identity",
+    "topology",
+    "equipment_state",
+    "pose_axis"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "Candidate drops the approved hat, clothing, and gourd; shows only two grounded paws plus an oversized circular front paw; the blade reads as a symmetric double-edged sword rather than the approved single-edged dao; the pose reads as static presentation more than a forceful downslash peak."
+  ]
+}

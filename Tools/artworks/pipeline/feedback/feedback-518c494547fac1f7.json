@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-518c494547fac1f7",
+  "attemptId": "job-c91127f8d0e61731-a002",
+  "candidateSha256": "704cd888947a648a9e1ee0db154804288ba230eca422fcc4c63229c145b9e82b",
+  "reviewer": "cty41",
+  "verdict": "selected",
+  "strengths": [
+    "v02 proportions accepted; displayed raw_v02 and 128 preview overall shape and art style explicitly accepted."
+  ],
+  "defects": [],
+  "nextPromptDelta": "",
+  "recordedAt": "2026-09-10T11:10:19.0378031+08:00",
+  "authorType": "human",
+  "categories": [],
+  "disposition": "selected",
+  "frozenInvariants": [
+    "Candidate SHA256 704cd888947a648a9e1ee0db154804288ba230eca422fcc4c63229c145b9e82b; no future-image approval."
+  ],
+  "pendingFixes": []
+}

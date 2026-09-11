@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-a6df55a1b4f8ac96-a003",
+  "jobId": "job-a6df55a1b4f8ac96",
+  "ordinal": 3,
+  "generationRound": 1,
+  "parentAttemptId": "job-a6df55a1b4f8ac96-a002",
+  "retryFeedbackId": "feedback-2296ca64239fb057",
+  "promptDelta": "No visual regeneration; reuse the same raw, bounded chroma key, attach semantic core mask, then calibrate.",
+  "technicalRemediation": true,
+  "state": "annotated",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a001/raw.png",
+      "sha256": "67c4bcb15d19febcbf18e811a00d179865f928014e812bee3d81c2790bdb9cdd"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a003/raw.png",
+      "sha256": "67c4bcb15d19febcbf18e811a00d179865f928014e812bee3d81c2790bdb9cdd"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a003/prepared.png",
+      "sha256": "f75244219d35c0a74e979149e352758d4458abc3ae8113bbfe6149cfc518bf26"
+    },
+    "maskSource": {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a003/semantic-core-mask.png",
+      "sha256": "76048bf7da6bbbba22eb9dea8442e2797a8cd45030678c4937923cb7906bc220"
+    },
+    "mask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a003/mask.png",
+      "sha256": "76048bf7da6bbbba22eb9dea8442e2797a8cd45030678c4937923cb7906bc220"
+    }
+  },
+  "report": null,
+  "approvalId": null,
+  "feedbackId": "feedback-5728c9c2c95d3f40",
+  "generationInvocationId": "generation-invocation-988f5e108fd0bc95",
+  "generationDeliveryId": "generation-delivery-60fbe566f2cf0315",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 48
+  }
+}

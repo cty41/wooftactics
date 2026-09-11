@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "registryId": "asset-brief-98852515ce792102",
+  "sourceId": "poet-ring-pommel-tang-dao-unsheathed-v1",
+  "sourceType": "asset",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/briefs/poet_ring_pommel_tang_dao_unsheathed_asset_brief_v1.json",
+    "sha256": "51c210ee1f4e0a06b8286d1c6c994c3dfba69970f2acb4afdb06c368a630bbd1"
+  }
+}

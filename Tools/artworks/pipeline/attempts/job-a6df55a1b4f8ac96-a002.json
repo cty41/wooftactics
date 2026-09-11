@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-a6df55a1b4f8ac96-a002",
+  "jobId": "job-a6df55a1b4f8ac96",
+  "ordinal": 2,
+  "generationRound": 1,
+  "parentAttemptId": "job-a6df55a1b4f8ac96-a001",
+  "retryFeedbackId": "feedback-9da67a4bb72428b7",
+  "promptDelta": "No visual regeneration; deterministically re-key the same raw with bounded chroma tolerance.",
+  "technicalRemediation": true,
+  "state": "technical_failed",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a001/raw.png",
+      "sha256": "67c4bcb15d19febcbf18e811a00d179865f928014e812bee3d81c2790bdb9cdd"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a002/raw.png",
+      "sha256": "67c4bcb15d19febcbf18e811a00d179865f928014e812bee3d81c2790bdb9cdd"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a002/prepared.png",
+      "sha256": "f75244219d35c0a74e979149e352758d4458abc3ae8113bbfe6149cfc518bf26"
+    },
+    "review": {
+      "overlay": {
+        "path": "Tools/artworks/pipeline/reviews/job-a6df55a1b4f8ac96-a002/overlay.png",
+        "sha256": "ccfd3b1e376c9609e61c781f9e29d67886e1b0ad3c85344ad5afbfa1e41289ad"
+      },
+      "preview128": {
+        "path": "Tools/artworks/pipeline/reviews/job-a6df55a1b4f8ac96-a002/preview128.png",
+        "sha256": "bc49569f2643b1e238e9212073382d446cb6fd30ed054d37a880dc83774cea06"
+      },
+      "tile64x32": {
+        "path": "Tools/artworks/pipeline/reviews/job-a6df55a1b4f8ac96-a002/tile64x32.png",
+        "sha256": "0f83bc7e241b2c6f467b0a08a838b4502531221af528790cf4e1d609f2511a87"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-4d5f8447a81b4a29.json",
+    "sha256": "27628828a3328012b9763aef7fd8a5eecb26d0525e8486305d3b4f4553974d5e"
+  },
+  "approvalId": null,
+  "feedbackId": "feedback-2296ca64239fb057",
+  "generationInvocationId": "generation-invocation-988f5e108fd0bc95",
+  "generationDeliveryId": "generation-delivery-60fbe566f2cf0315",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 48
+  }
+}

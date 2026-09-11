@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 4,
+  "approvalId": "approval-8dbcb2755d3c06b2",
+  "attemptId": "job-a254d0afc9b7b286-a001",
+  "candidateSha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1",
+  "maskSha256": null,
+  "reviewer": "cty41",
+  "reviewSha256": {
+    "equipmentPanel": "e28ee5193b7bdbcbe2e0b43e0f2f5c1aef5410de624ccafcb5a62146493e84f5"
+  },
+  "decision": "approved",
+  "reason": "User explicitly authorized new-SHA technical approval and mechanical promotion after only two exact-green low-alpha pixels removed; tests here confirm no other master pixel difference or resize; not a new visual approval session.",
+  "decidedAt": "2026-09-10T12:45:21Z",
+  "annotation": null,
+  "reportSha256": "b49254703e49240296b50d719b343156b53598645119971213b173bed9d31b4f",
+  "artDirectionVerdict": {
+    "artDirectionVerdictId": "art-direction-verdict-debb48d7057ac13e",
+    "sha256": "e7dfa427482ce01a8b05eb011e7ba7e1fc700ceed73c7630882ee0724561c52c"
+  }
+}

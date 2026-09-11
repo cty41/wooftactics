@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "equipmentStyleVerdictId": "equipment-style-verdict-c6f6105d9c6260b2",
+  "attemptId": "job-a254d0afc9b7b286-a001",
+  "candidateSha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1",
+  "reviewSha256": {
+    "equipmentPanel": "e28ee5193b7bdbcbe2e0b43e0f2f5c1aef5410de624ccafcb5a62146493e84f5"
+  },
+  "reviewer": "cty41",
+  "decision": "approved",
+  "reason": "Technical SHA rebind under explicit user authorization for exactly two low-alpha green pixels and automatic closure; retain prior accepted style; no new human visual session claimed. Report passed, no resize, palette advisory retained.",
+  "decidedAt": "2026-09-10T12:44:03Z"
+}

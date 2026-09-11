@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 4,
+  "acceptanceCaseResultId": "acceptance-case-result-23a5dbedb821c9c2",
+  "attemptId": "job-c91127f8d0e61731-a002",
+  "caseId": "POET-DRAWN-DAO-STYLE-001",
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_unsheathed_v02.png",
+    "sha256": "704cd888947a648a9e1ee0db154804288ba230eca422fcc4c63229c145b9e82b"
+  },
+  "contractId": "contract-bfb85273c3228d32",
+  "contractSha256": "6cdedfe10171380db631b0dd71b2f3592b0c325a5624d44be7a1fa2f5df70307",
+  "evidence": {
+    "actual-size": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_unsheathed_v02_128.png",
+      "sha256": "1b91c243f9a60003f5fb5a7aa2e841117b9da7daf72149514f18575399d90606"
+    },
+    "two-source-comparison": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_ring_pommel_tang_dao_unsheathed_sources_v02.png",
+      "sha256": "469553027ea497311e07661e964d066a4ac66af58835259b3e41e3fbc2301028"
+    },
+    "size-alpha-report": {
+      "path": "Tools/artworks/pipeline/style-reports/equipment-style-report-ee2b99fd0820ee30.json",
+      "sha256": "2396be1077b1c1b2864b71b5c953a53b4b2abe81d677be6b1a8a05ec0495380b"
+    }
+  },
+  "automatedFacts": [
+    "Existing equipment report passed with no hard issues; visible size 90x96, baseline 236, preserve-fidelity, quantized=false; equipment_palette_complexity_review remains advisory."
+  ],
+  "automatedResult": "warning",
+  "humanChecks": [
+    "cty41 explicitly accepted displayed raw_v02 and 128 preview overall appearance and art style; no new human observation asserted."
+  ],
+  "humanDecision": "passed",
+  "reviewer": "cty41",
+  "reason": "cty41 explicitly accepted v02 proportions, then answered 接受 for the displayed raw_v02 and 128 preview overall shape and art style; current user request authorizes mechanical receipt closeout for this exact candidate only. This records that existing acceptance, not a new human observation of the subsequently assembled QA board.",
+  "decidedAt": "2026-09-10T11:10:19.0378031+08:00"
+}

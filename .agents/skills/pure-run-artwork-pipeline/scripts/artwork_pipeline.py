@@ -1224,7 +1224,8 @@ def prepare_equipment_candidate(store: Store, args: argparse.Namespace) -> dict[
     y = baseline - target_height + 1
     would_clip = x < 0 or y < 0 or x + target_width > master_size[0] or baseline >= master_size[1]
     canvas.alpha_composite(resized, (x, y))
-    canvas = normalize_transparent_rgb(canvas)
+    canvas = clean_exact_chroma(canvas)
+    preview_image = clean_exact_chroma(make_preview(canvas))
     output_rel = store.relative(args.output)
     preview_rel = store.relative(args.preview)
     output_path = store.absolute(output_rel)
@@ -1232,9 +1233,19 @@ def prepare_equipment_candidate(store: Store, args: argparse.Namespace) -> dict[
     output_path.parent.mkdir(parents=True, exist_ok=True)
     preview_path.parent.mkdir(parents=True, exist_ok=True)
     canvas.save(output_path, format="PNG", optimize=False, compress_level=9)
-    make_preview(canvas).save(preview_path, format="PNG", optimize=False, compress_level=9)
+    preview_image.save(preview_path, format="PNG", optimize=False, compress_level=9)
     candidate = _bound_artifact(store, output_rel)
     preview = _bound_artifact(store, preview_rel)
+    return _equipment_candidate_report(store, contract, source, candidate, preview, canvas, would_clip, attempt)
+
+
+def _equipment_candidate_report(store: Store, contract: dict[str, Any], source: dict[str, str],
+                                candidate: dict[str, str], preview: dict[str, str], canvas: Image.Image,
+                                would_clip: bool = False, attempt: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Measure an existing master without resizing or rewriting its pixels."""
+    profile = _equipment_style_profile(store, contract)
+    spec = contract.get("equipmentProductionSpec") or contract["styleSpec"]
+    baseline = int(profile.get("baseline", 236))
     visible = canvas.getchannel("A").getbbox()
     metrics = _interior_style_metrics(canvas)
     metrics.update({"visibleBbox": list(visible) if visible else None,
@@ -1254,8 +1265,8 @@ def prepare_equipment_candidate(store: Store, args: argparse.Namespace) -> dict[
         advisories.append("equipment_palette_complexity_review")
     if metrics["smoothGradientRatio"] > float(limits.get("maxSmoothGradientRatio", 0.12)):
         advisories.append("equipment_smooth_gradient_review")
-    payload = {"contractId": args.contract_id,
-               "contractSha256": sha256_file(store.record("contracts", args.contract_id)),
+    payload = {"contractId": contract["contractId"],
+               "contractSha256": sha256_file(store.record("contracts", contract["contractId"])),
                "profile": {"path": spec["profilePath"], "sha256": spec["profileSha256"]},
                "source": source, "candidate": candidate, "preview": preview, "metrics": metrics,
                "processingMode": "preserve-fidelity", "quantized": False,
@@ -2487,6 +2498,15 @@ def prepare_image(source: Path, destination: Path, chroma: str | None, chroma_to
     image.putdata(cleaned)
     destination.parent.mkdir(parents=True, exist_ok=True)
     image.save(destination, format="PNG", optimize=False, compress_level=9)
+
+
+def clean_exact_chroma(image: Image.Image) -> Image.Image:
+    """Remove reserved exact keys after resampling, without widening color tolerance."""
+    result = image.convert("RGBA")
+    result.putdata([(0, 0, 0, 0) if not alpha or (red, green, blue) in {(0, 255, 0), (255, 0, 255)}
+                    else (red, green, blue, alpha)
+                    for red, green, blue, alpha in pixel_data(result)])
+    return result
 
 
 def clean_resampled_chroma(image: Image.Image, chroma: str | None, tolerance: int) -> Image.Image:
@@ -4253,8 +4273,45 @@ def _validated_generation_lineage(store: Store, attempt: dict[str, Any]) -> dict
 
 
 def _validate_recontract_processing(store: Store, attempt: dict[str, Any], candidate: dict[str, str], processing: Any) -> None:
+    if isinstance(processing, dict) and processing.get("schemaVersion") == 2:
+        required = {"schemaVersion", "operation", "sourceAttemptId", "sourcePreparedSha256",
+                    "outputSha256", "maxAlpha", "pixels"}
+        source = attempt.get("artifacts", {}).get("prepared", {})
+        if (set(processing) != required
+                or processing.get("operation") != "deterministic-exact-chroma-pixel-cleanup"
+                or processing.get("sourceAttemptId") != attempt.get("attemptId")
+                or processing.get("sourcePreparedSha256") != source.get("sha256")
+                or processing.get("outputSha256") != candidate.get("sha256")
+                or not _artifact_binding_matches(store, source)
+                or not _artifact_binding_matches(store, candidate)):
+            raise PipelineError("exact chroma processing schema or source/output binding is invalid")
+        max_alpha, changes = processing["maxAlpha"], processing["pixels"]
+        if type(max_alpha) is not int or not 1 <= max_alpha <= 3 or not isinstance(changes, list) or len(changes) != 2:
+            raise PipelineError("exact chroma processing requires two pixels and maxAlpha between 1 and 3")
+        with Image.open(store.absolute(source["path"])) as original, Image.open(store.absolute(candidate["path"])) as output:
+            if original.mode != "RGBA" or output.mode != "RGBA" or original.size != output.size:
+                raise PipelineError("exact chroma processing requires equal native RGBA dimensions")
+            expected = original.copy()
+            seen = set()
+            for change in changes:
+                if not isinstance(change, dict) or set(change) != {"x", "y", "rgba"}:
+                    raise PipelineError("exact chroma processing pixel declaration is invalid")
+                x, y, rgba = change["x"], change["y"], change["rgba"]
+                if (type(x) is not int or type(y) is not int
+                        or not 0 <= x < original.width or not 0 <= y < original.height
+                        or (x, y) in seen or not isinstance(rgba, list) or len(rgba) != 4
+                        or any(type(channel) is not int for channel in rgba)
+                        or tuple(rgba[:3]) not in {(0, 255, 0), (255, 0, 255)}
+                        or not 0 < rgba[3] <= max_alpha
+                        or original.getpixel((x, y)) != tuple(rgba)):
+                    raise PipelineError("exact chroma processing may only clear distinct bound low-alpha exact key pixels")
+                seen.add((x, y))
+                expected.putpixel((x, y), (0, 0, 0, 0))
+            if pixel_data(expected) != pixel_data(output):
+                raise PipelineError("exact chroma candidate is not the declared two-pixel replay output")
+        return
     if not isinstance(processing, dict) or processing.get("schemaVersion") != 1:
-        raise PipelineError("reviewed recontract processing must use supported schemaVersion 1")
+        raise PipelineError("reviewed recontract processing must use supported schemaVersion 1 or 2")
     if (processing.get("operation") != "deterministic-green-fringe-cleanup"
             or processing.get("sourceAttemptId") != attempt.get("attemptId")
             or processing.get("sourcePreparedSha256") != attempt.get("artifacts", {}).get("prepared", {}).get("sha256")
@@ -4276,6 +4333,63 @@ def _validate_recontract_processing(store: Store, attempt: dict[str, Any], candi
                 expected.append((red, min(green, max(red, blue) + 4), blue, alpha))
         if expected != pixel_data(candidate_image):
             raise PipelineError("reviewed recontract candidate is not the declared deterministic processing output")
+
+
+def _bind_recontract_equipment_report(store: Store, attempt: dict[str, Any], contract: dict[str, Any]) -> None:
+    """Measure an exact processed master without resizing or rewriting its pixels."""
+    spec = contract["equipmentProductionSpec"]
+    profile = _equipment_style_profile(store, contract)
+    candidate = attempt["artifacts"]["prepared"]
+    candidate_path = store.absolute(candidate["path"], must_exist=True)
+    technical, hard_issues = inspect_technical(candidate_path, contract["kind"],
+        expected_master_size=tuple(contract.get("canvasSpec", {}).get("masterSize", [256, 256])))
+    with Image.open(candidate_path) as opened:
+        image = opened.convert("RGBA")
+    bbox = image.getchannel("A").getbbox()
+    metrics = _interior_style_metrics(image)
+    metrics.update({"visibleBbox": list(bbox) if bbox else None,
+                    "visibleSize": [bbox[2] - bbox[0], bbox[3] - bbox[1]] if bbox else None,
+                    "baseline": bbox[3] - 1 if bbox else None})
+    minimum, maximum = spec["visibleHeightRange"]
+    if not bbox or not minimum <= bbox[3] - bbox[1] <= maximum:
+        hard_issues.append("equipment_visible_height_out_of_range")
+    if not bbox or bbox[3] - 1 != int(profile.get("baseline", 236)):
+        hard_issues.append("equipment_baseline_mismatch")
+    if hard_issues:
+        raise PipelineError("recontract equipment technical gate failed: " + ", ".join(sorted(set(hard_issues))))
+    preview_image = clean_exact_chroma(make_preview(image))
+    preview_path = store.pipeline / "artifacts" / attempt["jobId"] / attempt["attemptId"] / "equipment-preview.png"
+    preview_path.parent.mkdir(parents=True, exist_ok=True)
+    if preview_path.exists():
+        with Image.open(preview_path) as existing:
+            if existing.mode != "RGBA" or existing.size != preview_image.size or existing.tobytes() != preview_image.tobytes():
+                raise PipelineError("recontract equipment preview collision")
+    else:
+        preview_image.save(preview_path, format="PNG", optimize=False, compress_level=9)
+    preview = _bound_artifact(store, str(preview_path))
+    _, preview_issues = inspect_technical(preview_path, contract["kind"], require_master_canvas=False)
+    if preview_issues:
+        raise PipelineError("recontract equipment preview technical gate failed: " + ", ".join(preview_issues))
+    limits = profile.get("hardGates", {})
+    advisories = []
+    if metrics["interiorColorBins"] > int(limits.get("maxInteriorColorBins", 40)):
+        advisories.append("equipment_palette_complexity_review")
+    if metrics["smoothGradientRatio"] > float(limits.get("maxSmoothGradientRatio", 0.12)):
+        advisories.append("equipment_smooth_gradient_review")
+    payload = {"contractId": contract["contractId"],
+               "contractSha256": sha256_file(store.record("contracts", contract["contractId"])),
+               "profile": {"path": spec["profilePath"], "sha256": spec["profileSha256"]},
+               "source": candidate, "candidate": candidate, "preview": preview, "metrics": metrics,
+               "processingMode": "exact-reviewed-recontract-no-resize", "quantized": False,
+               "reviewedRecontractId": attempt["reviewedRecontractId"], "technical": technical,
+               "hardIssues": [], "advisories": advisories, "issues": [], "passed": True}
+    report_id = stable_id("equipment-style-report", payload)
+    report_path = store.record("style-reports", report_id)
+    write_json_idempotent(report_path, {"schemaVersion": 1, "styleReportId": report_id, **payload}, immutable=True)
+    update_provenance(store, [candidate, preview], contract)
+    attempt["artifacts"]["equipmentPreview"] = preview
+    attempt["equipmentStyleReportId"] = report_id
+    attempt["report"] = {"path": store.relative(report_path), "sha256": sha256_file(report_path)}
 
 
 def recontract_reviewed_attempt(store: Store, args: argparse.Namespace) -> dict[str, Any]:
@@ -4325,7 +4439,6 @@ def recontract_reviewed_attempt(store: Store, args: argparse.Namespace) -> dict[
     }
     receipt_id = stable_id("reviewed-recontract", payload)
     receipt = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "reviewedRecontractId": receipt_id, **payload}
-    write_json_idempotent(store.record("reviewed-recontracts", receipt_id), receipt, immutable=True)
     job_payload = {"contractId": args.contract_id, "reviewedRecontractId": receipt_id, "sourceMode": "reviewed_recontract"}
     job_id = stable_id("job", job_payload)
     job = {
@@ -4336,7 +4449,6 @@ def recontract_reviewed_attempt(store: Store, args: argparse.Namespace) -> dict[
         "series": None, "conceptOnly": False, "contractRequirements": None,
         "requiresInvocation": False, "sourceMode": "reviewed_recontract", "reviewedRecontractId": receipt_id,
     }
-    write_json_idempotent(store.record("jobs", job_id), job, immutable=True)
     attempt_id = f"{job_id}-a001"
     artifacts = {key: value for key, value in source_attempt.get("artifacts", {}).items()
                  if key in {"source", "raw"}}
@@ -4352,6 +4464,10 @@ def recontract_reviewed_attempt(store: Store, args: argparse.Namespace) -> dict[
         "artifacts": artifacts, "calibration": None,
         "report": None, "approvalId": None, "feedbackId": None,
     }
+    if target_contract.get("equipmentProductionSpec"):
+        _bind_recontract_equipment_report(store, attempt, target_contract)
+    write_json_idempotent(store.record("reviewed-recontracts", receipt_id), receipt, immutable=True)
+    write_json_idempotent(store.record("jobs", job_id), job, immutable=True)
     write_json_idempotent(store.record("attempts", attempt_id), attempt, immutable=True)
     return {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "receipt": receipt, "job": job, "attempt": attempt}
 
@@ -5497,7 +5613,7 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
                              and (record.get("sourceLineage") is None or record.get("sourceLineage") == lineage))
                     if record.get("processing"):
                         processing = record["processing"]
-                        valid = (_artifact_binding_matches(store, processing)
+                        valid = (valid and _artifact_binding_matches(store, processing)
                                  and processing.get("parameters") == load_json(store.absolute(processing["path"])))
                         if valid:
                             _validate_recontract_processing(store, source_attempt, record["candidate"], processing["parameters"])
@@ -5547,6 +5663,19 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
         else:
             job_record = load_json(store.record("jobs", attempt["jobId"]))
             contract_record = load_json(store.record("contracts", job_record["contractId"]))
+            if (contract_record.get("equipmentProductionSpec") or contract_record.get("styleSpec")) and attempt.get("state") in {"approved", "promoted"}:
+                artifacts = attempt.get("artifacts", {})
+                outputs = [candidate_artifact(attempt), artifacts.get("equipmentPreview"),
+                           artifacts.get("review", {}).get("preview128"),
+                           *artifacts.get("promoted", {}).values()]
+                for output in outputs:
+                    if not output or not store.absolute(output["path"]).is_file():
+                        continue  # Missing files remain errors in the binding checks above.
+                    _, pixel_issues = inspect_technical(store.absolute(output["path"]), contract_record["kind"],
+                                                        require_master_canvas=False)
+                    for issue in pixel_issues:
+                        if issue in {"exact_chroma_residue", "transparent_rgb_nonzero"}:
+                            issues.append(f"equipment_{issue}:{attempt['attemptId']}:{output['path']}")
             if contract_record.get("assetRole") == "component" and attempt.get("state") == "promoted":
                 issues.append(f"component_promoted:{attempt.get('attemptId')}")
         if attempt.get("state") in {"approved", "rejected", "promoted"} and not attempt.get("approvalId"):
