@@ -1,5 +1,9 @@
 # Tactics Knowledge Update Log
 
+## 2026-09-11
+* **Sync**: `godot-agent-workflow` 已同步到来源指纹 `sha256:34dcb9bcae224102d52fd47b8c6eb2c0faf08c0bd47dd4ffdaa0a744ab4d613a`。
+* **Update**: 受审计的 godot-ai EditorPlugin 从 v3.2.5 升级到 v4.0.4；项目级 Codex Attach 同步采用 capability 认证与隔离的 public-PyPI uvx 解析策略。
+
 ## 2026-08-28
 * **Sync**: `godot-agent-workflow` 已同步到来源指纹 `sha256:271dd95c722c2a779339c673397ec1cbec13fd50d4a70907f88984a00362982e`。
 * **Sync**: `project-architecture` 已同步到来源指纹 `sha256:4169e117c64f8fc886a15d3bdb8b8e6dc4d21b661846377947a1015f78c799a6`。
