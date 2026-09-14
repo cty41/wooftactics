@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-12ca8cca66a45b45",
+  "attemptId": "job-75ce23e75e7159f7-a001",
+  "candidateSha256": "dd22b18f828b3b67def1f77c77eaec483b68f41410a507ba94bf691c66ed4cf8",
+  "reviewer": "pipeline-agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "The visible front paw is pulled much farther into the torso, most handle and the ring pommel are hidden, the guard sits at the body edge, the slash is raised, and no scabbard appears."
+  ],
+  "defects": [
+    "Only one distinct front paw remains visible/labelable; the far front paw is missing, so the required two-paw grip is not demonstrated.",
+    "The model again redraws the selected body outside the local patch instead of preserving it exactly.",
+    "The sword remains a broad symmetric double-edged fantasy blade rather than the approved narrow single-edged Tang dao.",
+    "Validation also fails core center/continuity/size, hand side, pose axis and diagonal blade-width checks."
+  ],
+  "nextPromptDelta": "Stop after showing the 256 calibrated candidate.",
+  "recordedAt": "2026-09-13T00:45:10+08:00",
+  "authorType": "agent",
+  "categories": [
+    "topology",
+    "identity",
+    "equipment_scale",
+    "core_geometry",
+    "pose_axis"
+  ],
+  "disposition": "technical_failed",
+  "frozenInvariants": [
+    "Retain the deeper body-edge grip concept, hidden pommel/handle, raised slash and absent scabbard only as review learning."
+  ],
+  "pendingFixes": [
+    "Obtain cty41 judgment; do not retry, approve, promote or bind runtime automatically."
+  ]
+}

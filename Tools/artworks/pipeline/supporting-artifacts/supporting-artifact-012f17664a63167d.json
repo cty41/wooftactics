@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-012f17664a63167d",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_high_guard_mockup_v8_near_upright_128.png",
+    "sha256": "cf5749ca9dc85419a0384df507c944afed1a356caa6067775ffbf41bdb1c1f44"
+  },
+  "role": "supporting-derived",
+  "note": "128 derivative of intermediate near-upright DR review; superseded by calibrated v9.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

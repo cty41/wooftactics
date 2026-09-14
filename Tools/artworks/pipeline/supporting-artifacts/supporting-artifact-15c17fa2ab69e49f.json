@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-15c17fa2ab69e49f",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v8_visible_two_paw_grip_128.png",
+    "sha256": "f40efd5f210a38f79c1be97188d4a2e6218d9326c2c62d583035d2d9a791c131"
+  },
+  "role": "supporting-derived",
+  "note": "128 derivative of superseded fragment-bearing UL hand patch.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "reviewOnly": true,
+  "assetId": "poet-melee-dr-high-guard-mockup-v11-upright-calibrated",
+  "parentMockup": "poet-melee-dr-high-guard-mockup-v10-upright",
+  "source": {"path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_high_guard_mockup_v10_upright.png", "sha256": "9fcab3541ad4a914200d295e31b361708e4c6c50a6063b355b15c197dc3ab81e"},
+  "postRotationTranslation": [0, -5],
+  "expectedAlphaBbox": [58, 108, 199, 236],
+  "equipmentState": {"blade": "visible", "scabbard": "absent", "staticEffects": "absent"},
+  "notes": "Deterministic review-only calibration: translate the total 10-degree upright-corrected composite up 5px to restore baseline y=236."
+}

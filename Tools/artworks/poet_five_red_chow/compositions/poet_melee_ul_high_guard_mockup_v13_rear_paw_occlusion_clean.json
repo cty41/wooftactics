@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "reviewOnly": true,
+  "assetId": "poet-melee-ul-high-guard-mockup-v13-rear-paw-occlusion-clean",
+  "supersedes": "poet-melee-ul-high-guard-mockup-v12-rear-paw-occlusion",
+  "sourceConstructionSpec": "Tools/artworks/poet_five_red_chow/compositions/poet_melee_ul_high_guard_mockup_v9_dr_corresponding_hands.json",
+  "correction": {
+    "replaceFormalMaskColors": [[255,0,255,255],[0,200,0,255]],
+    "retainFormalNearHand": true,
+    "secondRearPawSource": "mirrored DR near-hand label",
+    "secondRearPawAdditionalTranslation": [-8,0],
+    "layerOrder": ["equipment", "secondRearPaw", "cleanedFormalUlWithRetainedNearHand"],
+    "purpose": "avoid replacing the approved left near-hand area with differently shaded clean-body pixels; retain its native mostly occluded paw and add only the second paw below the body"
+  },
+  "poseTransform": {"preRotationTranslation": [0,-4], "wholeCompositeRotationDegreesCounterClockwise": 5, "rotationCenterFootAnchor": [128,236], "postRotationTranslation": [0,-1]},
+  "expectedAlphaBbox": [36,93,186,236],
+  "equipmentState": {"blade": "visible", "scabbard": "absent", "staticEffects": "absent"},
+  "notes": "Deterministic review-only v13. Retain the formal UL near paw and all surrounding body shading. Remove only old equipment and the old opposite-side far paw, then add one mirrored DR paw behind the body below the retained near paw. Reapply the accepted 5-degree pose and baseline calibration."
+}

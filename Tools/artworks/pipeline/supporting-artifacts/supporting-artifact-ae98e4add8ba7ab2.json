@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-ae98e4add8ba7ab2",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_death_hunter_horizontal_v1_a001_quick_scale_review.png",
+    "sha256": "5d306117ecbaa357de2f0a612f5aad9c80b49fc39d4170e3b351e91dc58b33c9"
+  },
+  "role": "supporting-derived",
+  "note": "Deterministic centered game-scale review of Poet Death a001. Clear Death and correct four-paw/equipment state; long thin dao, curled core, identity simplification and footprint risk recorded in feedback-6da83888ab2c0136.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

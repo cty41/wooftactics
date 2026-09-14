@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-2fa1e11b1b0af0d6",
+  "attemptId": "job-15a2cb63c7062bee-a001",
+  "candidateSha256": "9b1da81859dc7ca14e7283e2c4f4dfd324e9d4acbf762351ba530cb388c8be63",
+  "reviewer": "pipeline-agent",
+  "verdict": "retry",
+  "strengths": [
+    "The user-requested Demonbound-like placement is achieved: the compact fully sheathed ring-pommel dao sits tight against and slightly beneath the corpse, with no green gap, ring left and tip right.",
+    "The Death read remains immediate; head points upper-right, X eyes and slack mouth are clear, and exactly four paws remain visibly attached with no arms, bare blade, blood or FX."
+  ],
+  "defects": [
+    "Identity still drifts toward a smooth generic orange Chow; the approved five-red facial value grouping and dense broad ruff are simplified.",
+    "The core is improved but still mildly pear/bean shaped, widening around the lower-left tail side instead of remaining a consistently short-thick straight capsule.",
+    "At game scale the dao ring and guard are readable, but the sheath tip sits very near the right corpse edge and could visually merge with the lower paw contour."
+  ],
+  "nextPromptDelta": "Preserve the entire current pose and close equipment layout. Copy Image 1 broad ruff and five-red face values more literally, and straighten the lower-left core contour without moving the four attached paws or dao.",
+  "recordedAt": "2026-09-14T14:19:09.3905179+08:00",
+  "authorType": "agent",
+  "categories": [],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "Keep the successful close-body detached fully sheathed dao placement, upper-right Death direction, X eyes, slack mouth, four attached paws and complete absence of bare blade or FX."
+  ],
+  "pendingFixes": [
+    "cty41 visual verdict on revised Poet Death v2 a001: promote or retry for more literal five-red identity and straighter core."
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "canvas": [256, 256],
+  "bodyLayer": false,
+  "coreBbox": [85, 96, 190, 232],
+  "coreAxis": {"bottom": [128, 229], "top": [140, 104], "tiltDegrees": [3.0, 8.0]},
+  "footCenter": [128, 236],
+  "weapon": {
+    "hiddenGrip": [149, 169],
+    "exitWindow": [126, 151, 174, 188],
+    "tipRegion": [190, 118, 222, 148],
+    "guardWindow": [116, 174, 151, 205],
+    "bladeCenterline": [96, 132, 209, 210],
+    "maxBladeWidthPx": 20,
+    "maxGemAreaPx": 0,
+    "screenAxis": [[96, 210], [209, 132]],
+    "tipMayBeOccluded": false
+  },
+  "forbiddenRegions": [
+    {"name": "face-equipment-exclusion", "rect": [108, 91, 178, 143]},
+    {"name": "wrong-lower-right-scabbard-tip", "rect": [184, 184, 255, 255]},
+    {"name": "wrong-upper-left-scabbard-tip", "rect": [0, 0, 100, 118]}
+  ],
+  "requiredHiddenLabels": [],
+  "visibleAreaCaps": {},
+  "equipmentState": {"scabbard": "present", "blade": "fully-sheathed", "staticEffects": "absent"},
+  "actionDesign": {
+    "silhouette": [[90, 204], [91, 151], [108, 113], [137, 96], [169, 106], [188, 139], [188, 207], [174, 231], [143, 236], [108, 230]],
+    "lineOfAction": [[128, 229], [140, 104]],
+    "centerOfMass": [134, 178],
+    "supportFoot": [151, 235],
+    "driveFoot": [108, 233],
+    "compressionLine": [[106, 196], [134, 178], [166, 165]],
+    "counterbalanceLine": [[119, 182], [92, 173], [76, 158]],
+    "pawContactZones": {
+      "farHand": [[124, 155], [149, 155], [149, 178], [124, 178]],
+      "nearHand": [[148, 160], [176, 160], [176, 185], [148, 185]],
+      "farFoot": [[96, 220], [124, 220], [124, 241], [96, 241]],
+      "nearFoot": [[142, 221], [174, 221], [174, 242], [142, 242]]
+    }
+  },
+  "screenSpaceIntent": {
+    "direction": "native down-right front three-quarter facing",
+    "visualMoment": "unified casting release hold; not Idle, attack, Hit or recover",
+    "playerRead": "poet gathers both front paws at chest height around the middle of one fully sheathed Tang dao and uses the whole sheathed weapon as a short ritual focus",
+    "bodyDynamics": "compact near-upright capsule leans about five degrees toward the target while both hind paws stay grounded at y236",
+    "heldDao": "one completely sheathed straight ring-pommel Tang dao crosses from lower-left to upper-right; scabbard tip is the upper-right focus endpoint and ring pommel remains lower-left",
+    "grip": "two small round front paws gather at chest height on opposite sides of the weapon midpoint, directly overlapping the body edge with broad multi-pixel contact; no arms, elbows, thin connectors or human hands",
+    "identity": "Image 1 only; five-red chow, cinnamon-red coat, broad lion head, short muzzle, compact furry capsule, curled tail, exactly four attached paws; no clothing, hat, gourd, wineskin, guqin or jewelry",
+    "effects": "none"
+  },
+  "renderForbiddenRegions": false
+}

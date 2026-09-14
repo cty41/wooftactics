@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "briefKind": "asset",
+  "briefId": "poet-melee-dr-close-grip-v6",
+  "assetId": "poet-five-red-chow-melee-dr-close-grip-v6",
+  "family": "actor",
+  "purpose": "Perform one tightly scoped edit of the cty41-selected body: replace only the two front paws, place the approved unsheathed Tang dao through them, keep the paws close to the body, raise the slash, and hide the scabbard. The project requires a clear melee read rather than strict action-game timing.",
+  "firstRead": ["five-red-chow-poet", "close-two-paw-grip", "raised-down-right-tang-dao", "readable-melee-attack", "no-scabbard"],
+  "targetContexts": ["master-256-review", "preview-128-review"],
+  "identityInvariants": [
+    "Image 1 is the exact selected body and owns every pixel outside the two-front-paw and grip edit region",
+    "preserve Image 1 head, face, ears, torso, tail, hind paws, shading, scale, placement and silhouette",
+    "replace both front paws with two small round paws attached at the body's right edge; they must not form a chain extending away from the torso",
+    "Image 2 solely owns the narrow straight single-edged ring-pommel Tang dao form",
+    "the handle passes between both paws; far paw is partly behind the handle and near paw clearly overlaps the handle",
+    "Image 3 owns the close-grip positions and moderately raised down-right blade axis",
+    "exactly one sword and no scabbard or other equipment"
+  ],
+  "shapeStrategy": "Local edit only around both front paws, handle and sword. Preserve the rest of Image 1 exactly. Seat both paws against the torso and route the approved handle between them.",
+  "colorStrategy": "Do not recolor or relight Image 1. New paw pixels match adjacent fur; sword colors follow Image 2.",
+  "materialStrategy": "Preserve existing accepted body rendering; do not add gradients or highlights.",
+  "attentionRole": "primary",
+  "allowedVariation": ["two front paws may be redrawn smaller and closer to the torso", "Tang dao may be uniformly scaled and projected along Image 3 axis"],
+  "forbidden": ["change to head", "change to face", "change to torso", "change to tail", "change to hind paws", "body rescale", "body reposition", "new lighting", "front paws chained away from body", "floating paw", "one-paw grip", "human hand", "arm", "leg", "broad double-edged sword", "scabbard", "second weapon", "clothing", "vessel", "guqin", "VFX", "text", "watermark", "crop", "guide marks"],
+  "resolvedHistory": "Review mockup v1 read as low and about to leave the paws; v2 raised the sword but remained unnatural. cty41 identified the true cause as both generated front paws sitting too far from the original body. Those mockups are negative review evidence only and are not ImageGen inputs.",
+  "referenceResponsibilities": [
+    {"role": "image-1-cty41-selected-body-exact-preservation", "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a008/calibrated.png", "sha256": "e6feabd6ca60bf75701528c30056103e7781cb6fe5234de353c14caf41ef0404", "responsibility": "Exact selected body appearance, placement and all pixels outside the local two-front-paw/grip region."},
+    {"role": "image-2-approved-unsheathed-tang-dao-form", "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v02.png", "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1", "responsibility": "Sole weapon-form, ring-pommel, guard, blade proportion and color authority; no scabbard."},
+    {"role": "image-3-close-grip-raised-blade-guide", "path": "Tools/artworks/poet_five_red_chow/guides/poet_melee_dr_close_grip_pose_guide_v6.png", "sha256": "e5ba41d603f184422cda41b3d29858ccc983e56620b85bfac3cea212e536770a", "responsibility": "Only the two close paw zones, hidden grip, guard/exit windows and moderately raised down-right blade axis. Never render guide marks."}
+  ],
+  "requiredReviewPanels": ["candidate-master", "preview-128", "identity-overlay", "close-grip", "weapon-form", "equipment-state"],
+  "acceptanceCases": [
+    {"caseId": "POET-MELEE-V6-PRESERVE-001", "evidence": ["candidate-master", "identity-overlay"], "automatedFacts": ["canvas and baseline remain valid"], "humanChecks": ["head, body, tail, hind paws, scale and shading match Image 1"], "passCriteria": "Only the front-paw/grip/weapon region changes."},
+    {"caseId": "POET-MELEE-V6-GRIP-001", "evidence": ["candidate-master", "close-grip", "preview-128"], "automatedFacts": ["both front paws contact core or equipment"], "humanChecks": ["both paws sit against the torso", "handle passes between them", "weapon does not read as leaving the paws"], "passCriteria": "The grip reads naturally at 256 and 128."},
+    {"caseId": "POET-MELEE-V6-WEAPON-001", "evidence": ["candidate-master", "weapon-form"], "automatedFacts": ["one equipment region remains within canvas"], "humanChecks": ["weapon remains the approved narrow single-edged Tang dao", "raised angle reads as melee"], "passCriteria": "Weapon form and attack read are acceptable."},
+    {"caseId": "POET-MELEE-V6-STATE-001", "evidence": ["equipment-state"], "automatedFacts": ["blade is visible and static effects absent"], "humanChecks": ["no scabbard or second weapon appears"], "passCriteria": "Exactly one unsheathed sword is visible and the scabbard is hidden."}
+  ]
+}

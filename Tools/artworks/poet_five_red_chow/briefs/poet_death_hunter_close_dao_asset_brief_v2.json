@@ -1,0 +1,28 @@
+{
+  "schemaVersion":1,"briefKind":"asset","briefId":"poet-death-hunter-close-dao-v2","assetId":"poet-five-red-chow-death-hunter-close-dao-v2","family":"actor",
+  "purpose":"Retry Poet Death with the confirmed Hunter capsule pose and Demonbound-like close-body dropped-weapon spacing while keeping a fully sheathed compact Poet dao.",
+  "firstRead":["dead-five-red-chow-poet","short-thick-supine-capsule","head-upper-right","four-attached-paws","close-detached-sheathed-dao"],
+  "targetContexts":["master-256","preview-128","future-centered-death-tile"],
+  "identityInvariants":["Image 1 solely owns Poet identity, volume, palette and style","body ears and exactly four attached paws form one continuous generated silhouette","one complete fully sheathed ring-pommel Tang dao detached but tucked directly against/partly under lower corpse","no arms, legs, active grip, bare blade, wine vessel, guqin or FX"],
+  "shapeStrategy":"Image 2 alone owns straight short-thick supine capsule Death pose. Image 3 alone owns compact sheathed dao form. Image 4 supplies only Demonbound close dropped-weapon spacing, never its body, identity or bare sword. Image 5 owns all final geometry.",
+  "colorStrategy":"Copy Image 1 palette on exact #00ff00.","materialStrategy":"Bold dark outline, flat controlled values, restrained pixel detail.","attentionRole":"primary",
+  "allowedVariation":["native supine redraw","X eyes","slack mouth","natural attached paw splay","slight corpse overlap over detached sheath"],
+  "forbidden":["standing","side curl","bean body","arched core","missing or floating paw","arms","legs","human hands","active grip","large green gap between corpse and dao","long thin staff-like dao","bare blade","second weapon","shield","blood","wound","tears","stars","particles","VFX","text","watermark"],
+  "resolvedHistory":"a001 succeeded in Death read and topology but its dao was long, thin and separated. cty41 explicitly requested Demonbound-like close-body weapon placement. v2 shortens/thickens the sheathed dao and tucks it against the corpse.",
+  "referenceResponsibilities":[
+    {"role":"image-1-approved-poet-identity-volume","path":"Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png","sha256":"e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3","responsibility":"Sole Poet identity, compact volume, palette, ruff, tail, four-paw topology and style; not standing pose."},
+    {"role":"image-2-approved-hunter-death-pose-only","path":"Tools/artworks/doge/calibrated/doge_capsule_hunter_death_color_v04.png","sha256":"f5997651edd71cc78b926d5824ef4ac178f28604f5d7c9846f5a81ee0a2b3d19","responsibility":"Only straight short-thick supine Death axis, head direction, X-eye and attached-paw language; no Shiba identity or shield."},
+    {"role":"image-3-approved-sheathed-dao-form","path":"Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_dr_v02.png","sha256":"eb4acedf50fe56d2c216e932a7364686de603a4df40c9bc5f1fe10c22ab55999","responsibility":"Only compact complete fully sheathed ring-pommel dao form."},
+    {"role":"image-4-approved-demonbound-death-spacing-only","path":"Tools/artworks/doge/calibrated/doge_capsule_demonbound_death_v01.png","sha256":"90218c756be1a4e3a40d8221667536f53d665447c24cca597f5f01eef0b462a0","responsibility":"Only close-body detached weapon spacing and slight overlap; never body pose, identity, colors, bare blade, sword form or proportions."},
+    {"role":"image-5-deterministic-poet-death-v2-guide","path":"Tools/artworks/poet_five_red_chow/guides/poet_death_hunter_close_dao_pose_guide_v2.png","sha256":"0936f526aa766f5636675718194f96c7b8a0c87966b11cd8839468ccf5f21e05","responsibility":"Sole final screen geometry, corpse axis, four paw zones and compact close-dao axis."}
+  ],
+  "requiredReviewPanels":["candidate-master","preview-128","identity-overlay","death-direction","core-topology","weapon-inspection","paw-contact","tile-review","style-anchor-context"],
+  "acceptanceCases":[
+    {"caseId":"POET-DEATH-V2-IDENTITY-001","evidence":["candidate-master","identity-overlay"],"automatedFacts":["bound Poet anchor"],"humanChecks":["five-red Chow identity"],"passCriteria":"Poet identity survives."},
+    {"caseId":"POET-DEATH-V2-POSE-001","evidence":["death-direction","core-topology"],"automatedFacts":["upper-right axis"],"humanChecks":["straight short-thick supine Death"],"passCriteria":"Death pose holds."},
+    {"caseId":"POET-DEATH-V2-TOPOLOGY-001","evidence":["paw-contact"],"automatedFacts":["no arms"],"humanChecks":["exactly four attached paws"],"passCriteria":"Topology holds."},
+    {"caseId":"POET-DEATH-V2-EQUIPMENT-001","evidence":["weapon-inspection"],"automatedFacts":["fully sheathed state"],"humanChecks":["compact detached dao touches/partly under corpse, ring left, tip right"],"passCriteria":"Confirmed v2 placement holds."},
+    {"caseId":"POET-DEATH-V2-CONTEXT-001","evidence":["preview-128","tile-review"],"automatedFacts":["RGBA/AABB"],"humanChecks":["centered compact footprint"],"passCriteria":"Context passes."},
+    {"caseId":"POET-DEATH-V2-EXCLUSION-001","evidence":["candidate-master","style-anchor-context"],"automatedFacts":["role-separated sources"],"humanChecks":["no Demonbound body/bare blade, no extra prop or FX"],"passCriteria":"Exclusions hold."}
+  ]
+}

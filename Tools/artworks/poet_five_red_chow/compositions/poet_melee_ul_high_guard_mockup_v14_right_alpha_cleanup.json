@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "reviewOnly": true,
+  "assetId": "poet-melee-ul-high-guard-mockup-v14-right-alpha-cleanup",
+  "parentAcceptedDepthMockup": "poet-melee-ul-high-guard-mockup-v13-rear-paw-occlusion-clean",
+  "humanFeedback": "A gray-background review exposes obvious uncleared residual coating/ghost pixels behind the body's right side.",
+  "sourceConstructionSpec": "Tools/artworks/poet_five_red_chow/compositions/poet_melee_ul_high_guard_mockup_v13_rear_paw_occlusion_clean.json",
+  "cleanup": {
+    "preTransformRect": [155,120,190,185],
+    "silhouetteWhitelist": {"path": "Tools/artworks/pipeline/artifacts/job-9a531767f319b957/job-9a531767f319b957-a001/calibrated.png", "sha256": "9c37f61930aefd4aac08ad6f82a2e1ff6282faf90ca5f0ed42dbfb3e4d29a387"},
+    "operation": "within the bound rectangle, clear every formal-UL pixel whose corresponding approved clean-body alpha is zero; preserve formal-UL pixels wherever clean-body alpha is nonzero",
+    "measuredPreCleanupOutsideWhitelistPixels": 644,
+    "measuredPreCleanupAlphaRange": [1,255]
+  },
+  "retained": ["5-degree UL pose", "rear-layer paw depth", "approved high-left Tang dao", "no scabbard", "baseline y=236"],
+  "expectedAlphaBbox": [36,93,186,236],
+  "notes": "Deterministic review-only v14. The cleanup is confined to the user-marked right-rear region and is evaluated again on a solid gray background."
+}

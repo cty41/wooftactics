@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 4,
+  "jobId": "job-5d93780ad8556eb4",
+  "state": "ready",
+  "contractId": "contract-6d7aeb8aab485d8d",
+  "contractSha256": "b3ee9c70b3097b03f0790c5e67106c031485ee08c1845ec5ad11cbb0a3a4e90d",
+  "prompt": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/poet_cast_dr_vertical_guard_grip_prompt_v2.md",
+    "sha256": "18d2e4340717dea1c2d97da249c3cafd990fd02d3f7ae82e90c88447c4fc9325"
+  },
+  "inputs": [
+    {
+      "role": "image-1-approved-poet-identity-volume-dr",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+      "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+    },
+    {
+      "role": "image-2-approved-fully-sheathed-dao-form",
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_dr_v02.png",
+      "sha256": "eb4acedf50fe56d2c216e932a7364686de603a4df40c9bc5f1fe10c22ab55999"
+    },
+    {
+      "role": "image-3-deterministic-vertical-guard-grip-guide",
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_cast_dr_vertical_guard_grip_pose_guide_v2.png",
+      "sha256": "ae4f96af30ace1e6654f65c039f3ad3f0b8e2fca5cfb2faf175437d6f44cd5aa"
+    }
+  ],
+  "target": {
+    "direction": "down-right",
+    "pose": "cast"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": true,
+  "poseGuide": {
+    "poseGuideId": "pose-guide-81e8f49e368cd0f5",
+    "sha256": "d1a8605053897238d0f1069742adb245d2a128f752535582e5e314ab130e74e4"
+  },
+  "localReferences": []
+}

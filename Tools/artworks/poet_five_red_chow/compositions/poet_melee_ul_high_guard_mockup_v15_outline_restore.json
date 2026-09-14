@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "reviewOnly": true,
+  "assetId": "poet-melee-ul-high-guard-mockup-v15-outline-restore",
+  "parentCleanedMockup": {"path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v14_right_alpha_cleanup.png", "sha256": "17fb636eb8e4264b343eaaaa235fec69cda48625c59c1cae9c6e17f7dd98528a"},
+  "preCleanupReference": {"path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v13_rear_paw_occlusion_clean.png", "sha256": "8d73db10f35431c7a337aff75d7f205345372ab9123f36073c1c045704f23d0f"},
+  "humanFeedback": "The broad v14 cleanup removed legitimate black body-edge pixels, causing two obvious outline breaks.",
+  "restoration": {
+    "operation": "for pixels reduced by v14, restore exact v13 RGBA only when the pixel lies within Chebyshev radius 2 of a v14 alpha>=128 subject pixel",
+    "removedPixelCount": 312,
+    "restoredAdjacencyRadius": 2,
+    "expectedRestoredPixelCount": 64,
+    "purpose": "restore connected body outline and edge antialiasing while leaving disconnected right-rear ghost residue removed"
+  },
+  "retained": ["5-degree pose", "rear-layer paw depth", "approved Tang dao", "no scabbard", "baseline y=236"],
+  "notes": "Deterministic review-only v15. No generative or freehand repainting; restored pixels are exact bytes from the pre-cleanup reviewed source and must be adjacent to the retained opaque subject."
+}

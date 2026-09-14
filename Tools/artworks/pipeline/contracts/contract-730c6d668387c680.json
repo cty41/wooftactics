@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 2,
+  "contractId": "contract-730c6d668387c680",
+  "assetId": "poet-five-red-chow-melee-ul-high-guard-v1",
+  "approvedAssetId": "poet-five-red-chow-melee-ul-high-guard-v1",
+  "kind": "action_pose",
+  "direction": "up-left",
+  "pose": "melee-high-guard",
+  "anchor": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+    "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+  },
+  "maskRequired": false,
+  "noArms": true,
+  "handSides": {
+    "near_hand": "left",
+    "far_hand": "right"
+  },
+  "occlusion": {
+    "layerRules": {
+      "near_hand": "behind-core",
+      "far_hand": "behind-core",
+      "equipment": "behind-core"
+    },
+    "visibilityCaps": {
+      "near_hand": 0.22,
+      "far_hand": 0.08,
+      "equipment": 0.35
+    }
+  },
+  "compositionSpec": {
+    "compositionId": "composition-5eab1dfe941cae23",
+    "sha256": "6d996466b0d4cab4687944ca1d6aafc17fc0c6c99e81098cca869ec12f4bbf8f"
+  },
+  "identitySpec": null,
+  "requiresInvocation": false,
+  "canvasSpec": {
+    "masterSize": [
+      256,
+      256
+    ]
+  },
+  "tilePlacementSpec": null,
+  "styleSpec": null,
+  "equipmentProductionSpec": null,
+  "tolerances": {
+    "sizePx": 3,
+    "centerPx": 2
+  },
+  "outputs": {
+    "master": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_melee_ul_high_guard_v01.png",
+    "preview": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_melee_ul_high_guard_v01_128.png"
+  },
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-reviewed-deterministic-assembly-import"
+  }
+}

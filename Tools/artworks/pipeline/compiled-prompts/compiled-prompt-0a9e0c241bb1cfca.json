@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "compiledPromptId": "compiled-prompt-0a9e0c241bb1cfca",
+  "jobId": "job-a598e3685963e74d",
+  "poseGuideId": "pose-guide-0e745c478ed8149e",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/compiled/poet_hit_dr_hunter_recoil_v1_a001.md",
+    "sha256": "6217e669c4356b4d26bcd06975e1d4d1d165985b10000326046cba51735e0e03"
+  }
+}

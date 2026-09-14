@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-d2bc3646dea0368c",
+  "attemptId": "job-0a890f2b18e97967-a005",
+  "candidateSha256": "b0dbad7109e56fa6a65825c91ec74774152d551e4048b0cb7d3b4cefa01a3649",
+  "reviewer": "pipeline-agent",
+  "verdict": "retry",
+  "strengths": [
+    "The semantic mask geometry itself passes all deterministic checks."
+  ],
+  "defects": [
+    "Although the report passes, the interior-hull height changed calibration scale and made the selected body about eight percent larger than the 256 image cty41 accepted; this violates the preserve-existing-body requirement."
+  ],
+  "nextPromptDelta": "Calibration-preserving mask remediation only; no ImageGen and no source pixel edits.",
+  "recordedAt": "2026-09-12T17:13:11+08:00",
+  "authorType": "agent",
+  "categories": [
+    "processing"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "Preserve cty41's accepted calibrated body scale and visual framing from a003 while retaining the passing mask topology."
+  ],
+  "pendingFixes": [
+    "Restore the original 621-pixel core height with a continuous top run inside opaque ear pixels so calibration returns to the accepted scale."
+  ]
+}

@@ -1,4 +1,12 @@
+---
+title: Pure Run 单帧动作姿态设计（退役 Unity）
+status: historical
+verified_revision: c9ff3a710fd9
+---
+
 # Pure Run 单帧动作姿态设计
+
+> 状态：`historical / FrozenOracle-only`。本文记录退役 Unity 的 `UnitPoseFamily`、ReleaseTime、PoseRestoreTime、Prefab 与 SpriteRenderer 行为，不再是当前 Godot 权威。当前实现由 `GodotBattlePresentationPlayer`、`GodotUnitActor`、`StandardUnitPresentationResource` 与 `PresentationCueKind` 定义；缺图回退方向 Idle。本文只用于历史意图追溯，新美术合同必须重新核对当前 Godot 行为。
 
 ## 目标
 

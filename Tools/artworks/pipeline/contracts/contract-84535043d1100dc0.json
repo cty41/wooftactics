@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 4,
+  "contractId": "contract-84535043d1100dc0",
+  "assetId": "poet-five-red-chow-cast-ul-vertical-guard-grip-v1",
+  "approvedAssetId": "poet-five-red-chow-cast-ul-vertical-guard-grip-v1",
+  "kind": "action_pose",
+  "direction": "up-left",
+  "pose": "cast",
+  "anchor": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_ul_v07.png",
+    "sha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512",
+    "maskPath": "Tools/artworks/pipeline/artifacts/job-4affd0d3e702d0d0/job-4affd0d3e702d0d0-a001/calibrated-mask.png",
+    "maskSha256": "edae09310bdfc2d9738685f542f5797b59782824adc2c67bde2c73bc4f0cf6b2"
+  },
+  "maskRequired": true,
+  "noArms": true,
+  "handSides": {
+    "near_hand": "left",
+    "far_hand": "right"
+  },
+  "occlusion": {
+    "layerRules": {
+      "near_hand": "behind-core",
+      "far_hand": "behind-core",
+      "equipment": "behind-core"
+    },
+    "visibilityCaps": {
+      "near_hand": 0.22,
+      "far_hand": 0.08,
+      "equipment": 0.35
+    }
+  },
+  "compositionSpec": {
+    "compositionId": "composition-383e649c831f68ea",
+    "sha256": "7dda4961841ed2135e76ac798cb2e5848a89e22f7d66e053f79561bba90ca386"
+  },
+  "identitySpec": null,
+  "requiresInvocation": true,
+  "canvasSpec": {
+    "masterSize": [
+      256,
+      256
+    ]
+  },
+  "tilePlacementSpec": null,
+  "styleSpec": {
+    "profileId": "pure-run-project-art-direction-v1",
+    "profilePath": "Tools/artworks/pure_run/art_direction/project_art_direction_v1.json",
+    "profileSha256": "4820888ee25ac6865705ef130abdbec64ed597c6b126d96e6361a01960ec13fb",
+    "targetVisibleHeight": 143,
+    "visibleHeightRange": [
+      123,
+      158
+    ]
+  },
+  "equipmentProductionSpec": null,
+  "tolerances": {
+    "sizePx": 6,
+    "centerPx": 4
+  },
+  "outputs": {
+    "master": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_cast_ul_vertical_guard_grip_v01.png",
+    "preview": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_cast_ul_vertical_guard_grip_v01_128.png"
+  },
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "gpt-generated-from-approved-poet-ul-identity-approved-cast-moment-approved-sheathed-dao-and-user-confirmed-rear-layer-guide"
+  },
+  "artDirectionSpec": {
+    "profileId": "pure-run-project-art-direction-v1",
+    "path": "Tools/artworks/pure_run/art_direction/project_art_direction_v1.json",
+    "sha256": "4820888ee25ac6865705ef130abdbec64ed597c6b126d96e6361a01960ec13fb"
+  },
+  "materialLanguageSpec": {
+    "profileId": "pure-run-material-language-v1",
+    "path": "Tools/artworks/pure_run/art_direction/material_language_v1.json",
+    "sha256": "3efa1e523c20c41f407ff142759a0bc18bb874392266006c704c314fd13dfd83"
+  },
+  "familyProfileSpec": {
+    "profileId": "pure-run-actor-family-v1",
+    "family": "actor",
+    "path": "Tools/artworks/pure_run/art_direction/families/actor_v1.json",
+    "sha256": "a5214ad32ea193569198cac822ddac860adcdf8f4e03f24d455d9aee3099f95d"
+  },
+  "briefSpec": {
+    "briefId": "poet-cast-ul-vertical-guard-grip-v1",
+    "kind": "asset",
+    "path": "Tools/artworks/poet_five_red_chow/briefs/poet_cast_ul_vertical_guard_grip_asset_brief_v1.json",
+    "sha256": "28e94b6485d12724cfbc77f37c6d581665ca810de7f1c992731131d86b710f64"
+  },
+  "themeProfileSpec": null,
+  "artDirectionManifestSpec": {
+    "manifestId": "pure-run-art-direction-manifest-v1",
+    "path": "Tools/artworks/pure_run/art_direction/art_direction_manifest_v1.json",
+    "sha256": "dfc6e9a0cd517287f5cfa10d7ad36393908eed4c7cb92c2c03ede403f95d71f9"
+  },
+  "anchorVerdictIds": [
+    "anchor-verdict-305fcdf7408810ba",
+    "anchor-verdict-028dbccd36a5264b"
+  ],
+  "requiredReviewPanels": [
+    "candidate-master",
+    "preview-128",
+    "identity-overlay",
+    "direction-action",
+    "weapon-inspection",
+    "grip-contact",
+    "occlusion-review",
+    "tile-review",
+    "style-anchor-context"
+  ],
+  "acceptanceCaseIds": [
+    "POET-CAST-UL-IDENTITY-001",
+    "POET-CAST-UL-ACTION-001",
+    "POET-CAST-UL-OCCLUSION-001",
+    "POET-CAST-UL-EQUIPMENT-001",
+    "POET-CAST-UL-CONTEXT-001",
+    "POET-CAST-UL-EXCLUSION-001"
+  ]
+}

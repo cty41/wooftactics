@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-cfed12e9bb542b14",
+  "attemptId": "job-0a890f2b18e97967-a002",
+  "candidateSha256": "e6feabd6ca60bf75701528c30056103e7781cb6fe5234de353c14caf41ef0404",
+  "reviewer": "pipeline-agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "The selected visual bytes remain unchanged and the prior core width, lower-width and semantic-mask containment failures are resolved."
+  ],
+  "defects": [
+    "The unchanged selected body now matches core size and mask containment, but the remediation mask still splits core rows around head-appendage labels and gives the near foot fewer than three contact pixels."
+  ],
+  "nextPromptDelta": "Technical mask remediation only; do not regenerate or alter the selected body image.",
+  "recordedAt": "2026-09-12T17:09:01+08:00",
+  "authorType": "agent",
+  "categories": [
+    "processing",
+    "topology"
+  ],
+  "disposition": "technical_failed",
+  "frozenInvariants": [
+    "Keep the exact selected body image bytes and the improved narrow core measurement."
+  ],
+  "pendingFixes": [
+    "Remove unnecessary ear labels from the technical mask and enlarge the near-foot/core shared boundary without changing image pixels."
+  ]
+}

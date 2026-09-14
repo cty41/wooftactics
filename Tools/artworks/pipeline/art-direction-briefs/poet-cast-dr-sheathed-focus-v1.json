@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "registryId": "asset-brief-5d71cecf7a10b0d9",
+  "sourceId": "poet-cast-dr-sheathed-focus-v1",
+  "sourceType": "asset",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/briefs/poet_cast_dr_sheathed_focus_asset_brief_v1.json",
+    "sha256": "9f2b62a0bd0ff5f68cea7d349931fbaa2106cf293fda3914645b9ce91ac2d20b"
+  }
+}

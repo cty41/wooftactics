@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-1a75a0bda9927200",
+  "attemptId": "job-a598e3685963e74d-a001",
+  "candidateSha256": "ff69e6d02d28e988a34e2440fb09511dd23e0990b00a5af1b84bd2af17ec9a4b",
+  "reviewer": "pipeline-agent",
+  "verdict": "retry",
+  "strengths": [
+    "The Hunter-derived Hit read is immediately clear at game scale: whole-body screen-right recoil, folded-ear inertia, widened eyes, tiny pupils, tense mouth and two blue-white tear streaks.",
+    "The candidate keeps one ring-pommel object fully sheathed, retains four paws and adds no blood, impact flash, damage number or spell VFX."
+  ],
+  "defects": [
+    "Identity and volume drift: generic smooth Chow face and ruff, bright forehead oval, taller pear-shaped torso and smaller hind paws differ from the approved compact five-red Poet.",
+    "The tear streaks are too long and thick relative to the approved Hunter standard and dominate the 128-scale silhouette instead of remaining short facial reaction marks.",
+    "Equipment-state error: the near front paw visibly wraps the sheath as if actively holding it; the accepted plan requires the sheathed dao to remain passively worn and tilt with the body.",
+    "The front paws are oversized and circular; the near paw/equipment overlap weakens direct body contact and risks reading as a separate hand on a staff."
+  ],
+  "nextPromptDelta": "Copy Image 1 face, ruff and compact capsule much more literally. Remove the forehead highlight oval. Shorten both tear streaks by about half and reduce thickness. Shrink both front paws and merge them broadly into the body edge. Move the complete sheathed dao behind the front paw/body layer so no paw wraps or grips it; it remains strapped/worn while sharing the recoil tilt.",
+  "recordedAt": "2026-09-14T10:01:49.7797719+08:00",
+  "authorType": "agent",
+  "categories": [],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "Keep the clear Hunter-style recoil direction, widened-eye tense-mouth reaction, exactly two tear streaks, fully sheathed ring-pommel dao, no impact VFX and four-paw no-arm topology."
+  ],
+  "pendingFixes": [
+    "cty41 visual verdict on Hit DR a001: accept or retry for literal Poet identity, shorter tears and passively worn sheathed dao."
+  ]
+}

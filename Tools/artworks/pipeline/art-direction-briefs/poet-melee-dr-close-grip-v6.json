@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "registryId": "asset-brief-9472e0d66cb9b620",
+  "sourceId": "poet-melee-dr-close-grip-v6",
+  "sourceType": "asset",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/briefs/poet_melee_dr_close_grip_asset_brief_v6.json",
+    "sha256": "6ffcb943b0f4db1929344b520e79cf1f62701333c1a86a230954e22cf30275b6"
+  }
+}

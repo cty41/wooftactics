@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "briefKind": "asset",
+  "briefId": "poet-cast-ul-vertical-guard-grip-v1",
+  "assetId": "poet-five-red-chow-cast-ul-vertical-guard-grip-v1",
+  "family": "actor",
+  "purpose": "Create the native up-left/back three-quarter counterpart of the human-approved unified Poet Cast DR moment. The short fully sheathed ring-pommel Tang dao and both paws are in front of the chest in world space and therefore behind the capsule body from the rear camera.",
+  "firstRead": ["five-red-chow-poet-back-view", "native-up-left", "firm-vertical-cast-brace", "rear-layer-paws-and-sheathed-dao"],
+  "targetContexts": ["master-256", "preview-128", "future-cast-runtime-window"],
+  "identityInvariants": [
+    "Image 1 is the sole native UL identity, volume, anatomy, palette and style authority",
+    "compact cinnamon-red furry capsule; back of broad lion head and two small upright ears; high-set curled plume tail",
+    "exactly four small round paws directly attached to body; no arms, elbows, leg connectors or human hands",
+    "one completely sheathed compact ring-pommel Tang dao at approved sword/body ratio",
+    "feet centered at x128 on y236 baseline",
+    "no face turn toward camera, props, clothing, bare blade or VFX"
+  ],
+  "shapeStrategy": "Image 4 owns geometry. Body is a native UL redraw with slight forward brace. Equipment and both front paws are behind the core: only the ring/guard at the left shoulder edge, tiny attached paw outer arcs and limited sheath strips/lower tip may show. The body must remain a continuous compact capsule.",
+  "colorStrategy": "Use Image 1 character palette and Image 3 equipment palette on exact #00ff00 removable background.",
+  "materialStrategy": "Preserve Pure Run bold dark outlines, flat controlled values and restrained pixel detail.",
+  "attentionRole": "primary",
+  "allowedVariation": ["slight forward brace", "small left-edge paw arcs", "limited behind-body equipment visibility"],
+  "forbidden": ["front-layer paws", "front-layer equipment", "arms", "forearms", "elbows", "human hands", "floating paws", "missing paw", "extra paw", "staff-length weapon", "grounded sheath tip", "bare blade", "second weapon", "face toward camera", "forehead highlights", "pear torso", "hat", "clothing", "gourd", "wineskin", "guqin", "glow", "runes", "VFX", "text", "watermark", "guide marks"],
+  "resolvedHistory": "cty41 selected Cast UL and explicitly chose true rear-view depth: weapon and both paws behind the capsule. Cast DR is a consciously accepted action-moment reference with known arm, staff-length, grounded-tip, grip and identity defects; none of those defects may migrate into UL.",
+  "referenceResponsibilities": [
+    {"role":"image-1-approved-idle-ul-identity-volume","path":"Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_ul_v07.png","sha256":"519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512","responsibility":"Sole UL identity, volume, rear anatomy, palette, tail, four paws and style; not pose or equipment placement."},
+    {"role":"image-2-approved-cast-dr-action-moment-only","path":"Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_cast_dr_vertical_guard_grip_v01.png","sha256":"7cd072d554222d24c1cc4b357f3220260c01016c47be51d21c34e045d4139883","responsibility":"Only the firm vertical Cast hold moment and fully sheathed equipment state. Do not copy identity, arm, long weapon, grounded tip or grip geometry."},
+    {"role":"image-3-approved-sheathed-dao-form","path":"Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_dr_v02.png","sha256":"eb4acedf50fe56d2c216e932a7364686de603a4df40c9bc5f1fe10c22ab55999","responsibility":"Sole ring-pommel Tang dao form, original length, palette and details; geometry and depth belong to Image 4."},
+    {"role":"image-4-deterministic-cast-ul-guide","path":"Tools/artworks/poet_five_red_chow/guides/poet_cast_ul_vertical_guard_grip_pose_guide_v1.png","sha256":"c633fd8742ecf2b3db7d7d046ded8d64185009d3f0633cc77c76a1e08b58f8c1","responsibility":"Sole native UL placement, vertical axis, guard-throat grip, y236 baseline and rear-layer occlusion geometry."}
+  ],
+  "requiredReviewPanels": ["candidate-master", "preview-128", "identity-overlay", "direction-action", "weapon-inspection", "grip-contact", "occlusion-review", "tile-review", "style-anchor-context"],
+  "acceptanceCases": [
+    {"caseId":"POET-CAST-UL-IDENTITY-001","evidence":["candidate-master","identity-overlay"],"automatedFacts":["bound UL identity hash"],"humanChecks":["approved native UL identity and compact volume"],"passCriteria":"Unmistakably approved Poet UL."},
+    {"caseId":"POET-CAST-UL-ACTION-001","evidence":["direction-action","preview-128"],"automatedFacts":["bound vertical guide"],"humanChecks":["firm Cast hold reads from back"],"passCriteria":"Cast, not Idle or attack."},
+    {"caseId":"POET-CAST-UL-OCCLUSION-001","evidence":["occlusion-review","grip-contact"],"automatedFacts":["rear-layer rules and caps"],"humanChecks":["paws and equipment stay behind continuous body"],"passCriteria":"True rear-view depth without arms."},
+    {"caseId":"POET-CAST-UL-EQUIPMENT-001","evidence":["weapon-inspection"],"automatedFacts":["fully sheathed state"],"humanChecks":["short dao, ring up, tip above ground"],"passCriteria":"Approved sheathed dao form survives."},
+    {"caseId":"POET-CAST-UL-CONTEXT-001","evidence":["preview-128","tile-review"],"automatedFacts":["256 RGBA and y236"],"humanChecks":["readable and uncropped at game scale"],"passCriteria":"Passes game-scale review."},
+    {"caseId":"POET-CAST-UL-EXCLUSION-001","evidence":["candidate-master","style-anchor-context"],"automatedFacts":["four role-bound inputs"],"humanChecks":["no DR defects, extra props, bare blade or VFX"],"passCriteria":"All exclusions hold."}
+  ]
+}

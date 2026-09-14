@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "feedbackAddendumId": "feedback-addendum-946a8b215c0dc90a",
+  "attemptId": "job-1f834522a953c67a-a001",
+  "parentFeedbackId": "feedback-7a603e9f226904a3",
+  "reviewer": "cty41",
+  "defects": [
+    "cty41 explicitly selected Cast UL a001 for promotion after reviewing the displayed game-scale candidate. Acceptance consciously retains the documented side-profile bias, oversized cylindrical core, tiny hind paws, weak sheath-tip clearance and style drift; the successful behind-core weapon/paw depth and no-arm topology are retained."
+  ],
+  "recordedAt": "2026-09-14T01:21:58.8470483+08:00",
+  "authorType": "human",
+  "disposition": "selected"
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-50dc7fb2d588323c",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_selected_body_sword_mockup_v4_high_guard.png",
+    "sha256": "896691e49d5102bb1a18de6d467b1dc159a5aa7ee7d3950e7101954be5bd2ec7"
+  },
+  "role": "supporting-derived",
+  "note": "Superseded deterministic transform draft; full-canvas rotation translated the resized sword unexpectedly; review-only and never approved.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

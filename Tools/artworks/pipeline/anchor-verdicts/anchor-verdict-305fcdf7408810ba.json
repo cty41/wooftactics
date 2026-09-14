@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 4,
+  "anchorVerdictId": "anchor-verdict-305fcdf7408810ba",
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_ul_v07.png",
+    "sha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512"
+  },
+  "family": "actor",
+  "responsibilities": [
+    "Sole Poet native UL identity, rear-view compact core volume, back of head and ears, cinnamon-red palette, curled tail, grounded exactly-four-paw topology and style for Cast UL."
+  ],
+  "excludedUses": [
+    "Do not copy Idle pose or Idle equipment placement. Cast DR contributes only the selected vertical hold moment and equipment state, never identity, anatomy, arm topology, weapon length, ground contact or grip geometry. The deterministic UL guide owns placement and rear-layer occlusion."
+  ],
+  "review": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_ul_source_responsibility_review_v01.png",
+    "sha256": "f6d70bde709b2914c2a224c2f8d07ea5d140f02288976eb5ae1aef80d1d46bb4"
+  },
+  "decision": "approved-anchor",
+  "reviewer": "cty41",
+  "reason": "cty41 selected Cast UL next and confirmed that both paws and the vertical sheathed dao use true rear-layer depth behind the body; the already approved Idle UL is the unique native rear-view identity authority.",
+  "decidedAt": "2026-09-13T22:16:10.1752045+08:00"
+}

@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 2,
+  "contractId": "contract-97e614a21f39dd29",
+  "assetId": "poet-five-red-chow-cast-ul-vertical-guard-grip-reviewed-v1",
+  "approvedAssetId": "poet-five-red-chow-cast-ul-vertical-guard-grip-reviewed-v1",
+  "kind": "action_pose",
+  "direction": "up-left",
+  "pose": "cast",
+  "anchor": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_ul_v07.png",
+    "sha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512"
+  },
+  "maskRequired": false,
+  "noArms": true,
+  "handSides": {
+    "near_hand": "left",
+    "far_hand": "right"
+  },
+  "occlusion": null,
+  "compositionSpec": {
+    "compositionId": "composition-383e649c831f68ea",
+    "sha256": "7dda4961841ed2135e76ac798cb2e5848a89e22f7d66e053f79561bba90ca386"
+  },
+  "identitySpec": null,
+  "requiresInvocation": false,
+  "canvasSpec": {
+    "masterSize": [
+      256,
+      256
+    ]
+  },
+  "tilePlacementSpec": null,
+  "styleSpec": null,
+  "equipmentProductionSpec": null,
+  "tolerances": {
+    "sizePx": 6,
+    "centerPx": 4
+  },
+  "outputs": {
+    "master": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_cast_ul_vertical_guard_grip_v01.png",
+    "preview": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_cast_ul_vertical_guard_grip_v01_128.png"
+  },
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-reviewed-generated-cast-ul-import-with-known-deviations"
+  }
+}

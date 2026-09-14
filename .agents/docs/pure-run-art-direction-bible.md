@@ -5,7 +5,7 @@ status: active
 
 # Pure Run 项目美术圣经
 
-本文是 Pure Run 静态美术与整体视觉表现的最高层设计契约。具体 Sprite 尺寸与姿态规则继续由 [Pure Run 角色美术指南](pure-run-artwork-guidelines.md) 约束；机器状态、血缘与审核门禁由 [项目级美术方向状态机](pure-run-art-direction-state-machine-design.md) 约束；UI 细则见 [Pure Run UI Design Guide](pure-run-ui-design-guide.md)。
+本文是 Pure Run 静态美术与整体视觉表现的最高层设计契约。具体 Sprite 尺寸与姿态规则继续由 [Pure Run 角色美术指南](pure-run-artwork-guidelines.md) 约束；机器状态、血缘与审核门禁由 [项目级美术方向状态机](pure-run-art-direction-state-machine-design.md) 约束；UI 细则见 [Pure Run UI Design Guide](pure-run-ui-design-guide.md)。下一代生产系统在选择具体 AI 或状态模型前，先以[游戏美术生产第一性原则](game-art-production-first-principles.md)界定运行时玩家信息、角色状态集与验收层次；该 draft 不覆盖本文件的项目视觉权威。
 
 ## 一句话方向
 

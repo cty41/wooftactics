@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-1c8d6ac38b2b6e4d",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_death_hunter_close_dao_v2_a001_quick_scale_review.png",
+    "sha256": "b0d8c8204614f035abeb1f3fbcdb155b33b4249609d7da2399361db5eecb63e7"
+  },
+  "role": "supporting-derived",
+  "note": "Centered game-scale review of revised Poet Death v2 a001. Requested close-body fully sheathed dao placement succeeds; remaining identity/core risks are recorded in feedback.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

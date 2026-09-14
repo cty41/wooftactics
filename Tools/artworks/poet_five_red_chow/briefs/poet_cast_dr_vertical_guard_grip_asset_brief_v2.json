@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "briefKind": "asset",
+  "briefId": "poet-cast-dr-vertical-guard-grip-v2",
+  "assetId": "poet-five-red-chow-cast-dr-vertical-guard-grip-v2",
+  "family": "actor",
+  "purpose": "Create one unified Cast DR sprite for five Poet skill families. The Poet braces one short completely sheathed ring-pommel Tang dao vertically and stacks both front paws immediately below the guard on the sheath throat. Preserve sword/body ratio and keep the sheathed tip above ground.",
+  "firstRead": ["five-red-chow-poet", "native-down-right-facing", "firm-vertical-cast-brace", "two-paws-stacked-below-guard", "short-fully-sheathed-dao"],
+  "targetContexts": ["master-256", "preview-128", "current-godot-static-context-96x48-scale-0.34", "future-cast-runtime-window"],
+  "identityInvariants": [
+    "Image 1 is the sole identity, volume, palette and native DR-facing authority",
+    "cinnamon-red five-red Chow Chow with broad lion-like head, short wide muzzle, small upright triangular ears, dark eyes and restrained confident mouth",
+    "compact furry capsule body with thick high-set curled plume tail",
+    "exactly four small round paws attached directly to the body with broad multi-pixel contact; no arms, forearms, elbows, leg connectors, human hands or humanoid torso",
+    "no hat, clothing, gourd, wineskin, guqin, jewelry or spell effect",
+    "one completely sheathed ring-pommel Tang dao at approved sword/body ratio; no bare blade and no separate scabbard",
+    "feet remain centered at x128 with baseline y236"
+  ],
+  "shapeStrategy": "Redraw one coherent sprite. Image 3 owns the accepted v07 geometry: short vertical sheathed dao in front-right of the chest; ring pommel and grip above the guard; both paws stacked immediately below the guard around the sheath mouth; complete sheathed tip visibly above ground. The supplied Gandalf screenshot contributes only the firm vertical blocking silhouette, never human anatomy, clothing, staff length or likeness.",
+  "colorStrategy": "Preserve Image 1 character palette and Image 2 equipment palette on exact #00ff00 removable background.",
+  "materialStrategy": "Preserve Pure Run bold dark outlines, compact readable masses, flat controlled values and restrained pixel detail.",
+  "attentionRole": "primary",
+  "allowedVariation": ["slight forward bracing lean", "two front paws stacked below the guard", "approved sheathed dao rotated vertical", "minor hind-paw stance adjustment while retaining y236 baseline"],
+  "forbidden": ["staff-length weapon", "ground-contacting sheath tip", "mid-sheath grip", "grip above guard", "generic forehead highlights", "hat", "clothing", "gourd", "wineskin", "guqin", "jewelry", "arm", "forearm", "elbow", "leg connector", "human hand", "floating paw", "thin connector", "missing paw", "extra paw", "bare blade", "drawn sword", "empty side scabbard", "second weapon", "crystal", "motion blur", "glow", "runes", "VFX", "text", "watermark", "cropped silhouette", "guide marks"],
+  "resolvedHistory": "The diagonal midpoint-grip a001 is rejected by human correction. cty41 accepted v07: Gandalf-like firm vertical brace, but with the approved short sword/body ratio, tip above ground, and both paws gripping the sheath throat immediately below the guard.",
+  "referenceResponsibilities": [
+    {"role": "image-1-approved-poet-identity-volume-dr", "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png", "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3", "responsibility": "Sole Poet identity, compact volume, palette, native DR anatomy, four attached paws, curled tail and style. Do not copy Idle pose or weapon placement."},
+    {"role": "image-2-approved-fully-sheathed-dao-form", "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_dr_v02.png", "sha256": "eb4acedf50fe56d2c216e932a7364686de603a4df40c9bc5f1fe10c22ab55999", "responsibility": "Sole equipment form, ring, grip, guard, sheath, proportions, palette and detail authority; Image 3 owns vertical placement and grip."},
+    {"role": "image-3-deterministic-vertical-guard-grip-guide", "path": "Tools/artworks/poet_five_red_chow/guides/poet_cast_dr_vertical_guard_grip_pose_guide_v2.png", "sha256": "ae4f96af30ace1e6654f65c039f3ad3f0b8e2fca5cfb2faf175437d6f44cd5aa", "responsibility": "Accepted v07 geometry only: vertical short sheathed dao, ring up, tip above ground, two paws stacked on sheath throat immediately below guard, compact grounded body."}
+  ],
+  "requiredReviewPanels": ["candidate-master", "preview-128", "identity-overlay", "direction-action", "weapon-inspection", "grip-contact", "tile-review", "current-godot-static-context", "style-anchor-context"],
+  "acceptanceCases": [
+    {"caseId": "POET-CAST-DR-V2-IDENTITY-001", "evidence": ["candidate-master", "identity-overlay"], "automatedFacts": ["bound identity hash"], "humanChecks": ["approved five-red identity, face, volume, tail and four paws survive"], "passCriteria": "Unmistakably the approved Poet."},
+    {"caseId": "POET-CAST-DR-V2-ACTION-001", "evidence": ["candidate-master", "direction-action", "preview-128"], "automatedFacts": ["vertical contracted axis"], "humanChecks": ["firm vertical Cast brace reads without VFX"], "passCriteria": "Reads as unified Cast rather than Idle or attack."},
+    {"caseId": "POET-CAST-DR-V2-TOPOLOGY-001", "evidence": ["candidate-master", "grip-contact"], "automatedFacts": ["no arms and paw contact required"], "humanChecks": ["both front paws attach to body; both hind paws grounded"], "passCriteria": "Exactly-four-paw no-arm topology holds."},
+    {"caseId": "POET-CAST-DR-V2-EQUIPMENT-001", "evidence": ["candidate-master", "weapon-inspection", "grip-contact"], "automatedFacts": ["one fully sheathed weapon"], "humanChecks": ["approved sword/body ratio", "both paws immediately below guard", "tip above ground"], "passCriteria": "Short sheathed Tang dao is vertically braced with correct grip."},
+    {"caseId": "POET-CAST-DR-V2-CONTEXT-001", "evidence": ["preview-128", "tile-review"], "automatedFacts": ["256 RGBA and y236"], "humanChecks": ["readable and uncropped at game scale"], "passCriteria": "Survives game-scale review."},
+    {"caseId": "POET-CAST-DR-V2-EXCLUSION-001", "evidence": ["candidate-master", "style-anchor-context"], "automatedFacts": ["three role-separated inputs"], "humanChecks": ["no staff length, ground contact, extra props, VFX or guide leakage"], "passCriteria": "All exclusions hold."}
+  ]
+}

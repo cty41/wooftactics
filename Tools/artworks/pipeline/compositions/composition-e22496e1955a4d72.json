@@ -1,0 +1,293 @@
+{
+  "schemaVersion": 2,
+  "compositionId": "composition-e22496e1955a4d72",
+  "assetId": "poet-five-red-chow-hit-dr-hunter-recoil-v1",
+  "spec": {
+    "canvas": [
+      256,
+      256
+    ],
+    "bodyLayer": false,
+    "coreBbox": [
+      84,
+      98,
+      192,
+      232
+    ],
+    "coreAxis": {
+      "bottom": [
+        128,
+        229
+      ],
+      "top": [
+        148,
+        104
+      ],
+      "tiltDegrees": [
+        7.0,
+        13.0
+      ]
+    },
+    "footCenter": [
+      128,
+      236
+    ],
+    "weapon": {
+      "hiddenGrip": [
+        125,
+        199
+      ],
+      "exitWindow": [
+        88,
+        158,
+        163,
+        232
+      ],
+      "tipRegion": [
+        145,
+        218,
+        168,
+        238
+      ],
+      "guardWindow": [
+        92,
+        160,
+        116,
+        184
+      ],
+      "bladeCenterline": [
+        88,
+        158,
+        169,
+        238
+      ],
+      "maxBladeWidthPx": 18,
+      "maxGemAreaPx": 0,
+      "screenAxis": [
+        [
+          92,
+          164
+        ],
+        [
+          159,
+          231
+        ]
+      ],
+      "tipMayBeOccluded": false
+    },
+    "forbiddenRegions": [
+      {
+        "name": "bare-blade",
+        "rect": [
+          25,
+          80,
+          80,
+          220
+        ]
+      },
+      {
+        "name": "impact-vfx",
+        "rect": [
+          190,
+          70,
+          255,
+          190
+        ]
+      }
+    ],
+    "requiredHiddenLabels": [],
+    "visibleAreaCaps": {},
+    "equipmentState": {
+      "scabbard": "present",
+      "blade": "fully-sheathed",
+      "staticEffects": "absent"
+    },
+    "actionDesign": {
+      "silhouette": [
+        [
+          87,
+          204
+        ],
+        [
+          91,
+          150
+        ],
+        [
+          114,
+          111
+        ],
+        [
+          147,
+          98
+        ],
+        [
+          177,
+          111
+        ],
+        [
+          192,
+          150
+        ],
+        [
+          189,
+          202
+        ],
+        [
+          171,
+          230
+        ],
+        [
+          141,
+          237
+        ],
+        [
+          104,
+          230
+        ]
+      ],
+      "lineOfAction": [
+        [
+          128,
+          229
+        ],
+        [
+          148,
+          104
+        ]
+      ],
+      "centerOfMass": [
+        139,
+        179
+      ],
+      "supportFoot": [
+        111,
+        235
+      ],
+      "driveFoot": [
+        155,
+        235
+      ],
+      "pawContactZones": {
+        "farHand": [
+          [
+            91,
+            157
+          ],
+          [
+            116,
+            153
+          ],
+          [
+            121,
+            176
+          ],
+          [
+            96,
+            181
+          ]
+        ],
+        "nearHand": [
+          [
+            169,
+            154
+          ],
+          [
+            192,
+            160
+          ],
+          [
+            190,
+            184
+          ],
+          [
+            166,
+            178
+          ]
+        ],
+        "farFoot": [
+          [
+            96,
+            221
+          ],
+          [
+            124,
+            219
+          ],
+          [
+            126,
+            240
+          ],
+          [
+            98,
+            242
+          ]
+        ],
+        "nearFoot": [
+          [
+            141,
+            220
+          ],
+          [
+            171,
+            220
+          ],
+          [
+            174,
+            240
+          ],
+          [
+            143,
+            242
+          ]
+        ]
+      },
+      "compressionLine": [
+        [
+          101,
+          189
+        ],
+        [
+          137,
+          177
+        ],
+        [
+          177,
+          159
+        ]
+      ],
+      "counterbalanceLine": [
+        [
+          125,
+          184
+        ],
+        [
+          94,
+          181
+        ],
+        [
+          75,
+          164
+        ]
+      ]
+    },
+    "screenSpaceIntent": {
+      "direction": "native down-right front three-quarter facing",
+      "visualMoment": "same medium chibi impact peak as approved Hunter Hit DR: rigid whole-body recoil toward screen-right, ears folded by inertia, widened eyes with tiny pupils, exactly two short blue-white tear streaks and a tense small wavy mouth",
+      "playerRead": "Poet has just been struck and recoils as one compact body; not casting, attacking or guarding",
+      "bodyDynamics": "compact capsule tilts screen-right without stretching; both hind paws remain attached and contact y236 baseline; front paws flinch outward but stay broadly attached to body edge",
+      "heldDao": "one original compact fully sheathed ring-pommel Tang dao remains worn diagonally across the body and tilts rigidly with the whole character; no draw, drop, duplicate or staff conversion",
+      "grip": "no active weapon grip; exactly two small front paws attached directly to body with no arms or connectors",
+      "identity": "approved Poet Idle DR only; preserve five-red Chow face, lion ruff, short muzzle, compact volume, curled tail and exact palette",
+      "effects": "only two short facial tear streaks inherited from project Hit language; no impact flash, stars, damage numbers, blood, particles or weapon FX"
+    },
+    "renderForbiddenRegions": false
+  },
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/compositions/poet_hit_dr_hunter_recoil_composition_v1.json",
+    "sha256": "1d0b4f4b8689b7452db1a553ac6c4b651e925e816c9fd898e226680304740849"
+  },
+  "anchor": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+    "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+  }
+}

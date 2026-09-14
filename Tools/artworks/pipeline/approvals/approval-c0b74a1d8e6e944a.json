@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 2,
+  "approvalId": "approval-c0b74a1d8e6e944a",
+  "attemptId": "job-72d7ec1c23adfbdc-a001",
+  "candidateSha256": "22d198c91f1578e1ed19c491c2b54f1106704b6317c1a59eff49bc422a58f591",
+  "maskSha256": null,
+  "reviewer": "cty41",
+  "reviewSha256": {
+    "sizeComparison": "cf78b42ceab261098e6e4c1944d73b2549c10dcc554c5b3230667f539202710e"
+  },
+  "decision": "approved",
+  "reason": "cty41 selected the previously accepted upright DR v11 for promotion to complete the Melee pair. Deterministic exact-green cleanup changed only low-alpha edge residue; the accepted body, high guard, two-paw grip, no scabbard and y236 baseline remain.",
+  "decidedAt": "2026-09-13T17:40:11.4715535+08:00",
+  "annotation": null,
+  "reportSha256": "ce5027326b659a347f6472aec875f0dc3b802314fa0dca8f7b9bc4b843b66d9d"
+}

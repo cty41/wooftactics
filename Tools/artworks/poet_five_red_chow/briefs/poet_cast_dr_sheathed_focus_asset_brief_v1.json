@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "briefKind": "asset",
+  "briefId": "poet-cast-dr-sheathed-focus-v1",
+  "assetId": "poet-five-red-chow-cast-dr-sheathed-focus-v1",
+  "family": "actor",
+  "purpose": "Create one unified Cast DR sprite for five Poet skill families. At the release hold, both front paws gather at chest height around the midpoint of one completely sheathed ring-pommel Tang dao, using the whole sheathed weapon as a short ritual focus. This is not a skill-specific drinking, music, sword-rain VFX, attack, Hit or Idle frame.",
+  "firstRead": ["five-red-chow-poet", "native-down-right-facing", "unified-cast-release", "two-paw-centered-focus-grip", "fully-sheathed-dao-lower-left-to-upper-right"],
+  "targetContexts": ["master-256", "preview-128", "current-godot-static-context-96x48-scale-0.34", "future-cast-runtime-window"],
+  "identityInvariants": [
+    "Image 1 is the sole identity, volume, palette, native DR-facing and carried-character style authority",
+    "cinnamon-red five-red native Chow Chow with broad lion-like head, short wide muzzle, small upright triangular ears, two small dark eyes and restrained confident mouth",
+    "compact furry capsule body with thick high-set curled plume tail",
+    "exactly four small round paws attached directly to the body with broad multi-pixel contact; no arms, forearms, elbows, leg connectors, human hands or humanoid torso",
+    "poet profession is expressed through dignified temperament, not clothing or extra props",
+    "no hat, clothing, gourd, wineskin, guqin, jewelry or spell effect",
+    "one and only one completely sheathed ring-pommel Tang dao; no bare blade and no separate empty scabbard",
+    "all feet remain within the 256 canvas and preserve the offline y236 ground-anchor envelope"
+  ],
+  "shapeStrategy": "Redraw one coherent action sprite from separated responsibilities. Follow Image 3 for the B stick-pose geometry: compact near-upright body, both paws gathered at chest height, and one complete sheathed dao crossing lower-left to upper-right through the midpoint grip. Do not copy guide colors, labels, boxes or abstract marks. Keep head, body, tail and all four paws as one coherent five-red-chow silhouette.",
+  "colorStrategy": "Preserve Image 1 cinnamon-red character palette and Image 2 sheathed equipment palette. Use a flat exact #00ff00 removable background only; do not introduce guide colors into the sprite.",
+  "materialStrategy": "Preserve Pure Run bold dark outlines, compact readable masses, flat controlled values and restrained pixel detail at game scale.",
+  "attentionRole": "primary",
+  "allowedVariation": ["about five degrees of forward casting lean", "both front paws gathered at chest height", "fully sheathed dao reoriented from lower-left to upper-right", "natural partial occlusion where the two paws clasp the weapon midpoint", "minor hind-paw stance adjustment while retaining y236 baseline"],
+  "forbidden": ["upright Idle display", "generic gray-white forehead blaze", "heterochromic ear", "half-body alternate coat color", "hat", "clothing", "gourd", "wineskin", "guqin", "jewelry", "arm", "forearm", "elbow", "leg connector", "human hand", "floating paw", "thin grip connector", "missing paw", "extra paw", "bare blade", "drawn sword", "empty side scabbard", "second weapon", "broad double-edged fantasy sword", "curved katana", "staff crystal", "motion blur", "spell glow", "runes", "VFX", "text", "watermark", "cropped silhouette", "pose-guide lines or labels"],
+  "resolvedHistory": "The user selected stick option B and explicitly chose a fully sheathed dao held at its middle like a staff, with the screen axis from lower-left to upper-right. Other proposed Cast poses and cross-character Cast sprites are review-only and must not enter ImageGen.",
+  "referenceResponsibilities": [
+    {
+      "role": "image-1-approved-poet-identity-volume-dr",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+      "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3",
+      "responsibility": "Sole character identity, compact volume, cinnamon-red palette, native DR facing, exactly four attached paws, curled tail and facial restraint. Do not copy the Idle paw placement or weapon placement as the target action."
+    },
+    {
+      "role": "image-2-approved-fully-sheathed-dao-form",
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_dr_v02.png",
+      "sha256": "eb4acedf50fe56d2c216e932a7364686de603a4df40c9bc5f1fe10c22ab55999",
+      "responsibility": "Sole equipment-form authority: completely sheathed straight ring-pommel Tang dao, palette, proportions and detail budget. It does not prescribe the mounted grip; Image 3 owns the new two-paw midpoint grip and screen axis."
+    },
+    {
+      "role": "image-3-deterministic-unified-cast-guide",
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_cast_dr_sheathed_focus_pose_guide_v1.png",
+      "sha256": "47ed30369fb33f6afb1607184ceac72cf7bb657d730efb8ecbc52948d3c92640",
+      "responsibility": "Action geometry only: option B two-paw chest-height gathering, approximately five-degree body lean, lower-left ring pommel, upper-right sheathed tip, midpoint grip and grounded hind paws. Do not render guide colors, boxes, arrows or labels."
+    }
+  ],
+  "requiredReviewPanels": ["candidate-master", "preview-128", "identity-overlay", "direction-action", "weapon-inspection", "grip-contact", "tile-review", "current-godot-static-context", "style-anchor-context"],
+  "acceptanceCases": [
+    {"caseId": "POET-CAST-DR-V1-IDENTITY-001", "evidence": ["candidate-master", "identity-overlay"], "automatedFacts": ["identity anchor and candidate hashes remain bound"], "humanChecks": ["five-red-chow identity, face, palette, curled tail and exactly four attached paws survive", "no clothing, hat, drinking vessel, guqin or foreign character identity appears"], "passCriteria": "The candidate is unmistakably the approved Poet."},
+    {"caseId": "POET-CAST-DR-V1-ACTION-001", "evidence": ["candidate-master", "direction-action", "preview-128"], "automatedFacts": ["core axis, midpoint grip and upper-right focus endpoint remain in contracted regions"], "humanChecks": ["B pose reads as a unified Cast release rather than Idle or Melee", "both paws visibly gather at chest height around the focus midpoint"], "passCriteria": "Casting reads immediately without skill-specific VFX."},
+    {"caseId": "POET-CAST-DR-V1-TOPOLOGY-001", "evidence": ["candidate-master", "grip-contact", "identity-overlay"], "automatedFacts": ["no arm labels and multi-pixel paw/body contact are required"], "humanChecks": ["both front paws attach directly to the body around the midpoint grip", "two hind paws remain attached and grounded", "no connector limbs or human hands"], "passCriteria": "The pose preserves the no-arm exactly-four-paw topology."},
+    {"caseId": "POET-CAST-DR-V1-EQUIPMENT-001", "evidence": ["candidate-master", "weapon-inspection", "grip-contact"], "automatedFacts": ["one fully sheathed weapon and no bare blade are required"], "humanChecks": ["ring pommel is lower-left and complete sheathed tip is upper-right", "two paws hold the middle without creating a second weapon or empty scabbard"], "passCriteria": "The completely sheathed Tang dao clearly functions as the unified casting focus."},
+    {"caseId": "POET-CAST-DR-V1-CONTEXT-001", "evidence": ["preview-128", "tile-review", "current-godot-static-context"], "automatedFacts": ["256x256 RGBA, transparent prepared output and y236 envelope are required"], "humanChecks": ["identity and Cast silhouette remain readable at current static scale", "silhouette remains uncropped"], "passCriteria": "The pose survives game-scale review."},
+    {"caseId": "POET-CAST-DR-V1-EXCLUSION-001", "evidence": ["candidate-master", "style-anchor-context"], "automatedFacts": ["exactly three ordered role-separated inputs are bound"], "humanChecks": ["no bare blade, guide marks, arms, extra props, VFX, text or reference leakage"], "passCriteria": "All source and content exclusions hold."}
+  ]
+}

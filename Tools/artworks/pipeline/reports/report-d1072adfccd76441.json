@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "attemptId": "job-0a6c57acd0d21d59-a002",
+  "inputSha256": "5fbda220f2528522d030c927788822024943fabf6c9d9013d8cdeae45beb161f",
+  "maskSha256": "50fbe7a866d193f158a0ca04c7f137ca6b1399fb15bf549f3ca58ebcec23aa97",
+  "technical": {
+    "size": [
+      256,
+      256
+    ],
+    "alphaBbox": [
+      63,
+      117,
+      217,
+      256
+    ]
+  },
+  "geometry": {
+    "boxes": {
+      "core": [
+        89,
+        120,
+        164,
+        230
+      ],
+      "head_appendage": [
+        64,
+        120,
+        162,
+        194
+      ],
+      "near_hand": [
+        126,
+        184,
+        147,
+        208
+      ],
+      "far_hand": [
+        141,
+        191,
+        160,
+        214
+      ],
+      "near_foot": [
+        78,
+        216,
+        103,
+        236
+      ],
+      "far_foot": [
+        125,
+        217,
+        147,
+        235
+      ],
+      "equipment": [
+        68,
+        183,
+        216,
+        255
+      ],
+      "wings": null,
+      "effect": null,
+      "near_arm": null,
+      "far_arm": null,
+      "near_leg": null,
+      "far_leg": null
+    },
+    "core": {
+      "bbox": [
+        89,
+        120,
+        164,
+        230
+      ],
+      "center": [
+        126.5,
+        175.0
+      ],
+      "bandMaxWidths": [
+        71,
+        74,
+        73
+      ]
+    },
+    "occlusion": {
+      "intrusionPixels": {},
+      "visibleAreaRatios": {}
+    },
+    "composition": {
+      "coreTiltDegrees": 3.3134253997927496,
+      "bladeWidthPx": 70,
+      "bladeLengthPx": 70
+    }
+  },
+  "issues": [
+    "core_row_disconnected",
+    "core_size_out_of_tolerance",
+    "equipment_enters_forbidden_detached-lower-left-weapon",
+    "equipment_enters_forbidden_too-horizontal-right-blade",
+    "near_foot_contact_lt_3",
+    "near_hand_wrong_side",
+    "pose_axis_out_of_range",
+    "semantic_mask_outside_subject",
+    "weapon_blade_too_wide"
+  ],
+  "passed": false
+}

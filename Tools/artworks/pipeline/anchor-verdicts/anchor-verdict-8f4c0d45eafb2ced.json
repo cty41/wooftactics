@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 4,
+  "anchorVerdictId": "anchor-verdict-8f4c0d45eafb2ced",
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_ul_v07.png",
+    "sha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512"
+  },
+  "family": "actor",
+  "responsibilities": [
+    "Sole Poet native UL identity, rear-view compact volume, palette, tail, four attached paws and style for Hit UL."
+  ],
+  "excludedUses": [
+    "Do not copy Idle pose. Approved Poet Hit DR supplies only frozen recoil intensity and reaction timing. Hunter Hit UL supplies only native UL directional projection. Guide owns Poet screen geometry and rear equipment occlusion."
+  ],
+  "review": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_hit_ul_source_responsibility_review_v01.png",
+    "sha256": "5838981b56d854a1c84d46ca4709d76f8dc6aec6a1b621f9a82b6c9b954324f4"
+  },
+  "decision": "approved-anchor",
+  "reviewer": "cty41",
+  "reason": "Hit UL follows the user-approved Hit DR action family; the approved Idle UL remains the unique native rear-view identity authority and only anatomically visible facial reaction may appear.",
+  "decidedAt": "2026-09-14T10:12:07.5006287+08:00"
+}

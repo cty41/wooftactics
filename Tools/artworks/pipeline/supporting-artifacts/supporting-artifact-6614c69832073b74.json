@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-6614c69832073b74",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v10_five_degree_forward.png",
+    "sha256": "732f07f229f989b511adefeded0fe5afc061114fbd12d4b3d14abf5e416dc402"
+  },
+  "role": "supporting-derived",
+  "note": "Intermediate deterministic UL review rotating the corrected two-paw high-guard pose 5 degrees toward attack direction per cty41 choice; superseded by baseline-calibrated v11.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

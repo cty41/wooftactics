@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-0a890f2b18e97967-a006",
+  "jobId": "job-0a890f2b18e97967",
+  "ordinal": 6,
+  "generationRound": 1,
+  "parentAttemptId": "job-0a890f2b18e97967-a005",
+  "retryFeedbackId": "feedback-d2bc3646dea0368c",
+  "promptDelta": "Calibration-preserving mask remediation only; no ImageGen and no source pixel edits.",
+  "technicalRemediation": true,
+  "state": "technical_failed",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/incoming/poet_melee_dr_release_impact_body_v4_raw_a001.png",
+      "sha256": "5d6f8caf61c1c315d4310f509eea26d6a7f0270e0a35603b9999859f1fb201a0"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a006/raw.png",
+      "sha256": "5d6f8caf61c1c315d4310f509eea26d6a7f0270e0a35603b9999859f1fb201a0"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a006/prepared.png",
+      "sha256": "412264764d1444866950b01e5fcf26c157f338d5b9c153f8718adac1c88fbe71"
+    },
+    "maskSource": {
+      "path": "Tools/artworks/poet_five_red_chow/masks/poet_melee_dr_release_impact_body_v4_raw_mask_a006.png",
+      "sha256": "8c8b9facc8d47006361f5a5a413d51ff9bcad01394b4cd0f96f440476cd7af70"
+    },
+    "mask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a006/mask.png",
+      "sha256": "8c8b9facc8d47006361f5a5a413d51ff9bcad01394b4cd0f96f440476cd7af70"
+    },
+    "calibrated": {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a006/calibrated.png",
+      "sha256": "3088c92137ea1b9dee9e05e55316080baa21056d915eb843f194e231d6263437"
+    },
+    "calibratedMask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a006/calibrated-mask.png",
+      "sha256": "8ccffefb7d35dd634e62cbc04111cc37df9d01b7618bb40ff6c14ee98ed1cf08"
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-2eb4fd06c0524bc9.json",
+    "sha256": "ecf0977c11120006228be0a383293f3cfbb56b9efb4e630e4d647f83d2e2f0a2"
+  },
+  "approvalId": null,
+  "feedbackId": "feedback-79482a654aa8b9af",
+  "generationInvocationId": "generation-invocation-2253f86a96c27e0d",
+  "generationDeliveryId": "generation-delivery-6cb66bda0875f21d",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 48
+  },
+  "calibration": {
+    "method": "uniform-core-height",
+    "scale": 0.17845659163987138,
+    "offset": [
+      8,
+      49
+    ],
+    "sourceCoreBbox": [
+      500,
+      403,
+      835,
+      1024
+    ],
+    "anchorCoreBbox": [
+      94,
+      121,
+      160,
+      231
+    ],
+    "anchorMask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-34f6747e5a1f30d0/job-34f6747e5a1f30d0-a001/mask.png",
+      "sha256": "30350db22426bd078b09d9095ad797d69eceb3ccd7c83f8f4bb960193e440fa0"
+    }
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-0a890f2b18e97967-a005",
+  "jobId": "job-0a890f2b18e97967",
+  "ordinal": 5,
+  "generationRound": 1,
+  "parentAttemptId": "job-0a890f2b18e97967-a004",
+  "retryFeedbackId": "feedback-3c3d152f34f2d518",
+  "promptDelta": "One final mask-only correction; no visual pixel change.",
+  "technicalRemediation": true,
+  "state": "review_pending",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/incoming/poet_melee_dr_release_impact_body_v4_raw_a001.png",
+      "sha256": "5d6f8caf61c1c315d4310f509eea26d6a7f0270e0a35603b9999859f1fb201a0"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a005/raw.png",
+      "sha256": "5d6f8caf61c1c315d4310f509eea26d6a7f0270e0a35603b9999859f1fb201a0"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a005/prepared.png",
+      "sha256": "412264764d1444866950b01e5fcf26c157f338d5b9c153f8718adac1c88fbe71"
+    },
+    "maskSource": {
+      "path": "Tools/artworks/poet_five_red_chow/masks/poet_melee_dr_release_impact_body_v4_raw_mask_a005.png",
+      "sha256": "d802aefe985187857d1746a0c90b4587d93a4b2e31d7c2adf05db4e5469afb64"
+    },
+    "mask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a005/mask.png",
+      "sha256": "d802aefe985187857d1746a0c90b4587d93a4b2e31d7c2adf05db4e5469afb64"
+    },
+    "calibrated": {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a005/calibrated.png",
+      "sha256": "b0dbad7109e56fa6a65825c91ec74774152d551e4048b0cb7d3b4cefa01a3649"
+    },
+    "calibratedMask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a005/calibrated-mask.png",
+      "sha256": "c9365cab04677fb4f2a9da3db05038b1b3765076c061aab6441d4c96907ce608"
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-7267e9a4262a9b76.json",
+    "sha256": "29997ac274f15a285697e38a124735100d7ab95bac825f1d382e08a2348f455d"
+  },
+  "approvalId": null,
+  "feedbackId": "feedback-d2bc3646dea0368c",
+  "generationInvocationId": "generation-invocation-2253f86a96c27e0d",
+  "generationDeliveryId": "generation-delivery-6cb66bda0875f21d",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 48
+  },
+  "calibration": {
+    "method": "uniform-core-height",
+    "scale": 0.19337979094076654,
+    "offset": [
+      -2,
+      34
+    ],
+    "sourceCoreBbox": [
+      500,
+      449,
+      835,
+      1022
+    ],
+    "anchorCoreBbox": [
+      94,
+      121,
+      160,
+      231
+    ],
+    "anchorMask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-34f6747e5a1f30d0/job-34f6747e5a1f30d0-a001/mask.png",
+      "sha256": "30350db22426bd078b09d9095ad797d69eceb3ccd7c83f8f4bb960193e440fa0"
+    }
+  }
+}

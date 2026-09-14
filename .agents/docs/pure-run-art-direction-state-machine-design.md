@@ -5,6 +5,8 @@ status: active
 
 # Pure Run 项目级美术方向状态机设计
 
+> 本文继续描述当前 schema v4 的项目级设计，不因 vNext 研究而失效。下一代设计尚未确定；当前事实见[策略地图](generative-art-current-strategy-map.md)，复杂度见[复杂性审计](generative-art-state-machine-complexity-audit.md)，目标原则见[游戏美术生产第一性原则](game-art-production-first-principles.md)。在领域对象与状态关系另行确认前，不新增 vNext schema 或具体 AI 生产策略。
+
 ## 目标
 
 在现有 artwork contract/job/attempt、技术校准、固定 Review、人工 approval 和不可变 receipt 之上，增加项目级美术方向与用例驱动验收，防止资产单独可用却在角色实装或最终场景中发生媒介、细节密度和注意力层级漂移。

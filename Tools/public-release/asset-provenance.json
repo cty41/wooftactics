@@ -23785,6 +23785,1878 @@
       "rightsHolder": "cty41",
       "license": "project-owned",
       "provenance": "project-owned-migrated-runtime-art"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_melee_dr_release_impact_pose_guide_v3.png",
+      "sha256": "8b88f44ee38e01728e9471fef2c5424bf2b34086499f99bd89f3608435d5d421",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-supporting-derived"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_v3_source_responsibility_review.png",
+      "sha256": "b8c2c5dc4cf399beefbb227e967968fdb76c5a645bc3ca8858b0ac4aeefe0d23",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/incoming/poet_melee_dr_release_impact_v3_raw_a001.png",
+      "sha256": "5227b327a5fdfd9a5fad8e6b285e55a43eb2da015cd3fbdc5c3eeebd122b10f0",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a6c57acd0d21d59/job-0a6c57acd0d21d59-a001/raw.png",
+      "sha256": "5227b327a5fdfd9a5fad8e6b285e55a43eb2da015cd3fbdc5c3eeebd122b10f0",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a6c57acd0d21d59/job-0a6c57acd0d21d59-a001/prepared.png",
+      "sha256": "6e4a0dd9e775ab01dacd5ff183ebef653d640a7230bef76a53534d2000fe7d3b",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/masks/poet_melee_dr_release_impact_v3_raw_mask_a001.png",
+      "sha256": "39c7d232d785916e7437595162b065a204bd4e7d217f2264d5617eefe473d013",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a6c57acd0d21d59/job-0a6c57acd0d21d59-a001/mask.png",
+      "sha256": "39c7d232d785916e7437595162b065a204bd4e7d217f2264d5617eefe473d013",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a6c57acd0d21d59/job-0a6c57acd0d21d59-a001/calibrated.png",
+      "sha256": "80b25b4f09763b61f1c605f13a7a99b746f9389e4e7fe4cb0ba430f3476871b8",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a6c57acd0d21d59/job-0a6c57acd0d21d59-a001/calibrated-mask.png",
+      "sha256": "8f45617e740a6ba2b5c7d1f4f08974c01b39a2c917580912dd6f190e84a63875",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-0a6c57acd0d21d59-a001/overlay.png",
+      "sha256": "dc6ac0a2c4bdf1f832e2acd2a3f754d2aa7ec68a39d498daf7e8b398ba16ac49",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-0a6c57acd0d21d59-a001/preview128.png",
+      "sha256": "5490bfb6492152c9b1626621a43a660ba5e2ca6094f5a0f776941d2e7a4e80e4",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-0a6c57acd0d21d59-a001/tile64x32.png",
+      "sha256": "3b401187894af1c3a6f49832f0c3af4196c2900b9decea31de4c127ce4e7272c",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/incoming/poet_melee_dr_release_impact_v3_raw_a002.png",
+      "sha256": "7cded81f1e469db706e504237f0b93e67131e675c4987a1f26f8ca09d346ee4b",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a6c57acd0d21d59/job-0a6c57acd0d21d59-a002/raw.png",
+      "sha256": "7cded81f1e469db706e504237f0b93e67131e675c4987a1f26f8ca09d346ee4b",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a6c57acd0d21d59/job-0a6c57acd0d21d59-a002/prepared.png",
+      "sha256": "0d5934a4f216fa6600d50ea8b125fa6935c9dab409e4d9309a556e6187b2a217",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/masks/poet_melee_dr_release_impact_v3_raw_mask_a002.png",
+      "sha256": "aaea5ea59e84aaff990ce604f57530210ef9a7aa2e2676670d890f17376ac377",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a6c57acd0d21d59/job-0a6c57acd0d21d59-a002/mask.png",
+      "sha256": "aaea5ea59e84aaff990ce604f57530210ef9a7aa2e2676670d890f17376ac377",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a6c57acd0d21d59/job-0a6c57acd0d21d59-a002/calibrated.png",
+      "sha256": "5fbda220f2528522d030c927788822024943fabf6c9d9013d8cdeae45beb161f",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a6c57acd0d21d59/job-0a6c57acd0d21d59-a002/calibrated-mask.png",
+      "sha256": "50fbe7a866d193f158a0ca04c7f137ca6b1399fb15bf549f3ca58ebcec23aa97",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-0a6c57acd0d21d59-a002/overlay.png",
+      "sha256": "db9c72183d88980587b294fb1c8662134b2852e0ec80de52045d43c7e2f4ffaa",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-0a6c57acd0d21d59-a002/preview128.png",
+      "sha256": "70fd883e95d61c83f09c45cb9b4cd556517a39f745cebf134749fbcf3e08b609",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-0a6c57acd0d21d59-a002/tile64x32.png",
+      "sha256": "57249ec8ce4f4d7896769535df354c733c7c129d533d801461497a1fbbb1c635",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_melee_dr_release_impact_body_pose_guide_v4.png",
+      "sha256": "0440642e2b76e638b214a942d20dc7e74a127ded56c800d5dd5154ce5feaeda8",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-supporting-derived"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/incoming/poet_melee_dr_release_impact_body_v4_raw_a001.png",
+      "sha256": "5d6f8caf61c1c315d4310f509eea26d6a7f0270e0a35603b9999859f1fb201a0",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a001/raw.png",
+      "sha256": "5d6f8caf61c1c315d4310f509eea26d6a7f0270e0a35603b9999859f1fb201a0",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a001/prepared.png",
+      "sha256": "412264764d1444866950b01e5fcf26c157f338d5b9c153f8718adac1c88fbe71",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/masks/poet_melee_dr_release_impact_body_v4_raw_mask_a001.png",
+      "sha256": "de853982bd83d4235ce132458e819c1afce1bd57b2bc9355f80efab846c3e525",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a001/mask.png",
+      "sha256": "de853982bd83d4235ce132458e819c1afce1bd57b2bc9355f80efab846c3e525",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a001/calibrated.png",
+      "sha256": "97b4776abd5a1a6a7fa61c6c46ab6fbb29de6fdc1e752fce021aabaabe3fd82a",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a001/calibrated-mask.png",
+      "sha256": "962ac1f16b102da1e09087be2734d007cd8afb808e3e16e1753383bdd43fb1ec",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-0a890f2b18e97967-a001/overlay.png",
+      "sha256": "f2aed2c84ad31fee2937d900991c2a186d94aedeb6dbbd58ead3b9bc1a89a3af",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-0a890f2b18e97967-a001/preview128.png",
+      "sha256": "d2acff5b6ee31b2013ffe1b0203d8205e41b343dec8118afab8d4b6ec67e6b35",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-0a890f2b18e97967-a001/tile64x32.png",
+      "sha256": "55a9a5b5997bd25624b365c2b369f45d22d8b98deb113e35b3dd50a78f4f5e35",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a002/raw.png",
+      "sha256": "5d6f8caf61c1c315d4310f509eea26d6a7f0270e0a35603b9999859f1fb201a0",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a002/prepared.png",
+      "sha256": "412264764d1444866950b01e5fcf26c157f338d5b9c153f8718adac1c88fbe71",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/masks/poet_melee_dr_release_impact_body_v4_raw_mask_a002.png",
+      "sha256": "a582df373bb8d74e476580cbaf4ed3fee98b1b6ddbb577b492090c59ba604e96",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a002/mask.png",
+      "sha256": "a582df373bb8d74e476580cbaf4ed3fee98b1b6ddbb577b492090c59ba604e96",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a002/calibrated.png",
+      "sha256": "e6feabd6ca60bf75701528c30056103e7781cb6fe5234de353c14caf41ef0404",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a002/calibrated-mask.png",
+      "sha256": "bfdb054d124d83b25b58e1b69553d7ef5908209e34f2055d933a63171747b79e",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a003/raw.png",
+      "sha256": "5d6f8caf61c1c315d4310f509eea26d6a7f0270e0a35603b9999859f1fb201a0",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a003/prepared.png",
+      "sha256": "412264764d1444866950b01e5fcf26c157f338d5b9c153f8718adac1c88fbe71",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/masks/poet_melee_dr_release_impact_body_v4_raw_mask_a003.png",
+      "sha256": "a9e64d0273595e653452428ae246b22d97fdd35990b3757c265ed103886bda19",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a003/mask.png",
+      "sha256": "a9e64d0273595e653452428ae246b22d97fdd35990b3757c265ed103886bda19",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a003/calibrated.png",
+      "sha256": "e6feabd6ca60bf75701528c30056103e7781cb6fe5234de353c14caf41ef0404",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a003/calibrated-mask.png",
+      "sha256": "d82ae8dc99fecd9579a2b5652d94d2de0f85fe0abfc6fe58a65aa4c916571117",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a004/raw.png",
+      "sha256": "5d6f8caf61c1c315d4310f509eea26d6a7f0270e0a35603b9999859f1fb201a0",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a004/prepared.png",
+      "sha256": "412264764d1444866950b01e5fcf26c157f338d5b9c153f8718adac1c88fbe71",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/masks/poet_melee_dr_release_impact_body_v4_raw_mask_a004.png",
+      "sha256": "1b877d4c0171a24a2cbc0f0bfc00a13f325439bfebe1cd811418a02f579dfb4c",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a004/mask.png",
+      "sha256": "1b877d4c0171a24a2cbc0f0bfc00a13f325439bfebe1cd811418a02f579dfb4c",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a004/calibrated.png",
+      "sha256": "b0dbad7109e56fa6a65825c91ec74774152d551e4048b0cb7d3b4cefa01a3649",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a004/calibrated-mask.png",
+      "sha256": "66c45083c0278cee5800e8e70cfcbbdbe920318702800d71247f7efd1703f2e8",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a005/raw.png",
+      "sha256": "5d6f8caf61c1c315d4310f509eea26d6a7f0270e0a35603b9999859f1fb201a0",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a005/prepared.png",
+      "sha256": "412264764d1444866950b01e5fcf26c157f338d5b9c153f8718adac1c88fbe71",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/masks/poet_melee_dr_release_impact_body_v4_raw_mask_a005.png",
+      "sha256": "d802aefe985187857d1746a0c90b4587d93a4b2e31d7c2adf05db4e5469afb64",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a005/mask.png",
+      "sha256": "d802aefe985187857d1746a0c90b4587d93a4b2e31d7c2adf05db4e5469afb64",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a005/calibrated.png",
+      "sha256": "b0dbad7109e56fa6a65825c91ec74774152d551e4048b0cb7d3b4cefa01a3649",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a005/calibrated-mask.png",
+      "sha256": "c9365cab04677fb4f2a9da3db05038b1b3765076c061aab6441d4c96907ce608",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a006/raw.png",
+      "sha256": "5d6f8caf61c1c315d4310f509eea26d6a7f0270e0a35603b9999859f1fb201a0",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a006/prepared.png",
+      "sha256": "412264764d1444866950b01e5fcf26c157f338d5b9c153f8718adac1c88fbe71",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/masks/poet_melee_dr_release_impact_body_v4_raw_mask_a006.png",
+      "sha256": "8c8b9facc8d47006361f5a5a413d51ff9bcad01394b4cd0f96f440476cd7af70",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a006/mask.png",
+      "sha256": "8c8b9facc8d47006361f5a5a413d51ff9bcad01394b4cd0f96f440476cd7af70",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a006/calibrated.png",
+      "sha256": "3088c92137ea1b9dee9e05e55316080baa21056d915eb843f194e231d6263437",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a006/calibrated-mask.png",
+      "sha256": "8ccffefb7d35dd634e62cbc04111cc37df9d01b7618bb40ff6c14ee98ed1cf08",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a007/raw.png",
+      "sha256": "5d6f8caf61c1c315d4310f509eea26d6a7f0270e0a35603b9999859f1fb201a0",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a007/prepared.png",
+      "sha256": "412264764d1444866950b01e5fcf26c157f338d5b9c153f8718adac1c88fbe71",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/masks/poet_melee_dr_release_impact_body_v4_raw_mask_a007.png",
+      "sha256": "f3db1aa5ada2bf0ae1148494df2c1666af6bcaf55e1fd403a3920299fb4341ed",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a007/mask.png",
+      "sha256": "f3db1aa5ada2bf0ae1148494df2c1666af6bcaf55e1fd403a3920299fb4341ed",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a007/calibrated.png",
+      "sha256": "e6feabd6ca60bf75701528c30056103e7781cb6fe5234de353c14caf41ef0404",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a007/calibrated-mask.png",
+      "sha256": "c615d7acae7210ba413e9fe35d7753cd5fba0c32b681ce39034fe77ec4cd63c2",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-0a890f2b18e97967-a007/overlay.png",
+      "sha256": "df3985861c3e392fc8924d42d00a54c746be46f8172682d71cf1e1585a15a413",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-0a890f2b18e97967-a007/preview128.png",
+      "sha256": "b16863cdb8a9ace511cbc8e3c99134341b4f542357d52648001f2bf4207e2ec1",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-0a890f2b18e97967-a007/tile64x32.png",
+      "sha256": "361ae6be73c945909306744159891750478b0f915f9075a932996a5e1159bb3b",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a008/raw.png",
+      "sha256": "5d6f8caf61c1c315d4310f509eea26d6a7f0270e0a35603b9999859f1fb201a0",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a008/prepared.png",
+      "sha256": "412264764d1444866950b01e5fcf26c157f338d5b9c153f8718adac1c88fbe71",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/masks/poet_melee_dr_release_impact_body_v4_raw_mask_a008.png",
+      "sha256": "6bc9552813277d8128ae69a6976a46a00b224af33cdcc12da97071eb76daa726",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a008/mask.png",
+      "sha256": "6bc9552813277d8128ae69a6976a46a00b224af33cdcc12da97071eb76daa726",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a008/calibrated.png",
+      "sha256": "e6feabd6ca60bf75701528c30056103e7781cb6fe5234de353c14caf41ef0404",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a008/calibrated-mask.png",
+      "sha256": "e91824130da09117232553a4ef32482c695e7feab7a88778d7e84b5d2fa4a972",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-0a890f2b18e97967-a008/overlay.png",
+      "sha256": "15f598a2b4c076b17dc250a069dfddcb408d3f756c3dd76971358d1d30e3f536",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-0a890f2b18e97967-a008/preview128.png",
+      "sha256": "b16863cdb8a9ace511cbc8e3c99134341b4f542357d52648001f2bf4207e2ec1",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-0a890f2b18e97967-a008/tile64x32.png",
+      "sha256": "361ae6be73c945909306744159891750478b0f915f9075a932996a5e1159bb3b",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_selected_body_sword_mockup_v1.png",
+      "sha256": "bc301e63ca68fb68dac9950de644e479a1415bb9b8d409948d508e7a2f58370d",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_selected_body_sword_mockup_v1_128.png",
+      "sha256": "8115af9d691074c1f7d9509e6683e666b52d5f32864c93ed462d11cd0783963f",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_selected_body_sword_mockup_v2.png",
+      "sha256": "1af365b1796213d876507ceccd950d4b4bcd051ca54945c674ed84d8f5376dcc",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_selected_body_sword_mockup_v2_128.png",
+      "sha256": "f8cd330435b0abf30b41669ccc1a26bd95944110a8dc6a3c7dc8e49860d047ae",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_melee_dr_close_grip_pose_guide_v6.png",
+      "sha256": "e5ba41d603f184422cda41b3d29858ccc983e56620b85bfac3cea212e536770a",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-supporting-derived"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/incoming/poet_melee_dr_close_grip_v6_raw_a001.png",
+      "sha256": "99896541ec4557dc35089834fd89cfb0b8fb652f0707b76534277e29e4e398e8",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-6a95f820a37e8586/job-6a95f820a37e8586-a001/raw.png",
+      "sha256": "99896541ec4557dc35089834fd89cfb0b8fb652f0707b76534277e29e4e398e8",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-6a95f820a37e8586/job-6a95f820a37e8586-a001/prepared.png",
+      "sha256": "3f81924c75e70c78fc284990784d19cb23029989197422dbc3ef076e54aff419",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/masks/poet_melee_dr_close_grip_v6_raw_mask_a001.png",
+      "sha256": "37273aac8aff3333c2459049b881b5e2c4b4e1321117617d8635bcb8cb0ee910",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-6a95f820a37e8586/job-6a95f820a37e8586-a001/mask.png",
+      "sha256": "37273aac8aff3333c2459049b881b5e2c4b4e1321117617d8635bcb8cb0ee910",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-6a95f820a37e8586/job-6a95f820a37e8586-a001/calibrated.png",
+      "sha256": "03f988b362b2061c444b1b4778dd84c6764f2413d034581ab29c3ed7f358e6b9",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-6a95f820a37e8586/job-6a95f820a37e8586-a001/calibrated-mask.png",
+      "sha256": "278d556d11649d867d9b2dc19af74cd8a7e3e3747fb77e4213d1cb9aab9bd3ad",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-6a95f820a37e8586-a001/overlay.png",
+      "sha256": "3167ecf1e36f6717818e3eb9ae7810ec1574e8fe25b0fcf83ebfb226260d364d",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-6a95f820a37e8586-a001/preview128.png",
+      "sha256": "7099323cb2dd9b2f0e66a945a9bb11c09ec5f06e281db6d6c3fbf5d18f245143",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-6a95f820a37e8586-a001/tile64x32.png",
+      "sha256": "11e455f891a07c7e063cce62cbb9c89289d5d99454f924158d336ad0c11aabf8",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_melee_dr_deep_grip_pose_guide_v7.png",
+      "sha256": "01b1bb580d031bdc87727b8742de1d7e1658d4f54c3134ceef12ffc4c3f3ad91",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-supporting-derived"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/incoming/poet_melee_dr_deep_grip_v7_raw_a001.png",
+      "sha256": "cdd6fab859806f86a4f8d4e90ee8e73edb46b98f7f86e10547af88c493434c76",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-75ce23e75e7159f7/job-75ce23e75e7159f7-a001/raw.png",
+      "sha256": "cdd6fab859806f86a4f8d4e90ee8e73edb46b98f7f86e10547af88c493434c76",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-75ce23e75e7159f7/job-75ce23e75e7159f7-a001/prepared.png",
+      "sha256": "a5755789f71b5022d4bdcd0bf65f472e79a46916d74b13153925bea515aa130c",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/masks/poet_melee_dr_deep_grip_v7_raw_mask_a001.png",
+      "sha256": "4202fd2dd31044fdf2424e4138712d55aaf350459c3a269f07a13514a80b0c16",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-75ce23e75e7159f7/job-75ce23e75e7159f7-a001/mask.png",
+      "sha256": "4202fd2dd31044fdf2424e4138712d55aaf350459c3a269f07a13514a80b0c16",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-semantic-mask"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-75ce23e75e7159f7/job-75ce23e75e7159f7-a001/calibrated.png",
+      "sha256": "dd22b18f828b3b67def1f77c77eaec483b68f41410a507ba94bf691c66ed4cf8",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-75ce23e75e7159f7/job-75ce23e75e7159f7-a001/calibrated-mask.png",
+      "sha256": "9c8f4c99ad579452a3792c49e81757d80350c1155a2ca02dcab3723139bdd9bc",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-deterministically-core-calibrated-artwork"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-75ce23e75e7159f7-a001/overlay.png",
+      "sha256": "16f52c0d2b427ece34813afe5b37b5b2b8016310016641562a35b1aa14245c20",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-75ce23e75e7159f7-a001/preview128.png",
+      "sha256": "b303b5b739e5288d46bc1cdb1f98c96ae13f9bb78c32785b57327a6c218711b8",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/pipeline/reviews/job-75ce23e75e7159f7-a001/tile64x32.png",
+      "sha256": "fec8812798ee30ed2d61e6b064d84cea0a887cb7796b80a63f356490083de178",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_selected_body_sword_mockup_v3_high_guard.png",
+      "sha256": "e81a4b223d3177d220ceba520e5687a2a2c27e30feffb00ce73264d4c58f16c0",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_selected_body_sword_mockup_v3_high_guard_128.png",
+      "sha256": "b07a4b05b717826410da77570a050c55c93421337312259ee8d3f2432036948b",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_selected_body_sword_mockup_v4_high_guard.png",
+      "sha256": "896691e49d5102bb1a18de6d467b1dc159a5aa7ee7d3950e7101954be5bd2ec7",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_selected_body_sword_mockup_v4_high_guard_128.png",
+      "sha256": "cb494c38926a45c2bf7232a4235d5ecd288b9b0cc436a34104da913418ec014d",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_selected_body_sword_mockup_v5_high_guard.png",
+      "sha256": "c53dcf020fbce4481a140af7e58034ad6735fcf1f2a81d6360d93e8acbe0f887",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_selected_body_sword_mockup_v5_high_guard_128.png",
+      "sha256": "fc9725a682b7bb36c072df9264ab213b0b48df145eb2147c087310c17489e6f6",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_component_mockup_v1.png",
+      "sha256": "2c67d5de65acbefc2d3fa85bf306df02378e1ab9bcdbe4f9d5cbf780746f5570",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_component_mockup_v1_128.png",
+      "sha256": "4a1086ff58e2aedae2e5cce2d01c9b9ca8f820d746fac06a13ec35270234367d",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v2.png",
+      "sha256": "db67dd932993f73467fd283476cfac8369f814cf3c09aed6035922086e747c92",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v2_128.png",
+      "sha256": "8cd5079ecdaa8b7880ccc5905c705363cd7d8f929ec66a2aea045e375469518a",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v3_forward_lean.png",
+      "sha256": "4cf132b462ea6ce57048aa39940a7f9984f8c6a6fc15c70c036ea66bb42397eb",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v3_forward_lean_128.png",
+      "sha256": "178eeac4c2969d25f6c70be5e6094c5e67f857d61961ea179027fd9833d655ce",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v4_forward_lean_calibrated.png",
+      "sha256": "acea6146e00a20e70864ce68b4c907c8f4096ce5af10ff421dcb1f2e0997485e",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v4_forward_lean_calibrated_128.png",
+      "sha256": "5af8d9b3720ff706c1a21d4d6d2e546c38e973f1346b105c8f17c4bc18401f94",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_high_guard_mockup_v6_reduced_lean.png",
+      "sha256": "9c19cc66ea629575742bfe1cd890a21b608248cb8ebd4fd85c2e533dc0361288",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_high_guard_mockup_v6_reduced_lean_128.png",
+      "sha256": "5b039a52807d41ad3964449f9122aef1d853cd23669f4a22f4bd113637d68e38",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_high_guard_mockup_v7_reduced_lean_calibrated.png",
+      "sha256": "9b16e45726d96018684c4ce17115656a2e64729e0abc11a504979a5204b9455e",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_high_guard_mockup_v7_reduced_lean_calibrated_128.png",
+      "sha256": "a405e69827525fa83ee837e50096c8d267b07e102c5db44165af68b928ef466b",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_high_guard_mockup_v8_near_upright.png",
+      "sha256": "a859282a5e6af33b9f4d7e876880a994b6dfdf54f3feca20a03864a880c91047",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_high_guard_mockup_v8_near_upright_128.png",
+      "sha256": "cf5749ca9dc85419a0384df507c944afed1a356caa6067775ffbf41bdb1c1f44",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_high_guard_mockup_v9_near_upright_calibrated.png",
+      "sha256": "f97b13fcc99f25477efb13c4b9127d9f734393469ffd1282c9400019c38edbc6",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_high_guard_mockup_v9_near_upright_calibrated_128.png",
+      "sha256": "9b56255bf326760a62a833ade00d67df79036ca5d13afd2271ae111ac162cfb9",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_high_guard_mockup_v10_upright.png",
+      "sha256": "9fcab3541ad4a914200d295e31b361708e4c6c50a6063b355b15c197dc3ab81e",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_high_guard_mockup_v10_upright_128.png",
+      "sha256": "ed2b5cd69e0e563260dff1c71cdab9f7f3ea7b872f58b577a724d4a43753d809",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_high_guard_mockup_v11_upright_calibrated.png",
+      "sha256": "113cad67f8305d6c12f6c322a91a79c755faecc15bfff15acbfee5a3909bd4bf",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_high_guard_mockup_v11_upright_calibrated_128.png",
+      "sha256": "f1153e83d1864c0acf9efb0e52e574b596092535f100a84882137ecac529770d",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v5_upright_calibrated.png",
+      "sha256": "7f3585d4e4740b9420a853f030bdf0112499086a102bd15e6e599b5aa0dd0428",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v5_upright_calibrated_128.png",
+      "sha256": "34e5dcfbc8b01154eef850d48bc5bfe62068f191bad863beeff428a1b0b85ab6",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v6_two_paw_reconstruction.png",
+      "sha256": "a40de16eb97dc952e74dbf2f3a2aac746ca02c2a54f40a57042bedebf7d1cd4e",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v6_two_paw_reconstruction_128.png",
+      "sha256": "e699354132ca0104c90e126133823db7401c63de20086652b287b4552dae23f7",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v7_two_paw_patch.png",
+      "sha256": "1e671114044442a262f594f415979bdfdd9136cc02f959792a385c895a14679a",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v7_two_paw_patch_128.png",
+      "sha256": "197710c71eb1a88490bdc262344ed79ca5d381abc16135d070a41779b2493a1e",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v8_visible_two_paw_grip.png",
+      "sha256": "d57a60aa82f7cd1d0dc93b0ad1d9db45cc456481393967629827ef4e2ed54b1f",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v8_visible_two_paw_grip_128.png",
+      "sha256": "f40efd5f210a38f79c1be97188d4a2e6218d9326c2c62d583035d2d9a791c131",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v9_dr_corresponding_hands.png",
+      "sha256": "5f5e67c5d1e9648f6cc34f833a50a060b909726541b0bf1848c7b853bd3d565d",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v9_dr_corresponding_hands_128.png",
+      "sha256": "99bbee04a7e4de857520244c3ef5602fc7ae5aaf283f29428055949a648f40b4",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v10_five_degree_forward.png",
+      "sha256": "732f07f229f989b511adefeded0fe5afc061114fbd12d4b3d14abf5e416dc402",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v10_five_degree_forward_128.png",
+      "sha256": "4d23c4531cfed3affd16c97d251132ebdb6c404e45d036ad98e64f70658aeec7",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v11_five_degree_calibrated.png",
+      "sha256": "1528d299bc7e3ebeeda43718ee82c52444da7d494519fd8d2202cf5b36e6a474",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v11_five_degree_calibrated_128.png",
+      "sha256": "5ad3a661d5559d335aa752b1e634dc322507753da9b386a5d6ff1f09d248a18d",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v12_rear_paw_occlusion.png",
+      "sha256": "6c6f06bfdcc32e28457d3390178281c2ac954000eef04898ef7a66dc13a1dca0",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v12_rear_paw_occlusion_128.png",
+      "sha256": "e7427ec7dec5c60788603000fd138d2493f634bdba67f36b7eaa1850570e9937",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v13_rear_paw_occlusion_clean.png",
+      "sha256": "8d73db10f35431c7a337aff75d7f205345372ab9123f36073c1c045704f23d0f",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v13_rear_paw_occlusion_clean_128.png",
+      "sha256": "576ad2b9e78d23e3e178403be8797167f6332e5ab4697572bae74781d1b42215",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v14_right_alpha_cleanup.png",
+      "sha256": "17fb636eb8e4264b343eaaaa235fec69cda48625c59c1cae9c6e17f7dd98528a",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v14_right_alpha_cleanup_128.png",
+      "sha256": "6719a0d749fac6cbed47373c554bef80602b7e1cf3f8bd94042da0c2757ab58f",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v14_right_alpha_cleanup_gray.png",
+      "sha256": "a5a30ecec8bc4d18e70273c25e1e80eb10052fe6b82f1377087299b87e239230",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v15_outline_restore.png",
+      "sha256": "595bc79b1e2fc797b55ad86b3b7bed9b52370435df6ab10c5da1c27f976c6dfa",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v15_outline_restore_128.png",
+      "sha256": "cda95859918e032c153221dca6b1d778dc622cea7f40c3e39cb37c9fe80a5b0e",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v15_outline_restore_gray.png",
+      "sha256": "70cec5aef75f164409bea5668e5c8e62052acc29f7c06fbbaad0fc18fb0bf391",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v16_outline_restore_radius4.png",
+      "sha256": "bf2a3fabbbf66f278b68b843732a777fea3924bc112ca41d6f9c9ef1dfe1aa24",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v16_outline_restore_radius4_128.png",
+      "sha256": "8c6675707b2fdde065cb398fc59ccd2c3af3b00fb7a84bb42d561853d5658dff",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v16_outline_restore_radius4_gray.png",
+      "sha256": "a43882b24c4cadecf53accd2e5042e89c06ba830da7093eeacbf71f4b25c888d",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_v01_size_comparison.png",
+      "sha256": "cade16762bcee2bad2058b3c33aa1c9271b328ce30f3927be1d40386cfb8cf77",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_melee_ul_high_guard_v01_reviewed_clean.png",
+      "sha256": "595bc79b1e2fc797b55ad86b3b7bed9b52370435df6ab10c5da1c27f976c6dfa",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-supporting-derived"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_melee_ul_high_guard_v01_reviewed_clean_128.png",
+      "sha256": "6e1ea2f9567a2be3165e378351685d5c0d6c0d781c4f5725ec4a33f625dc1513",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-supporting-derived"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_v01_clean_size_comparison.png",
+      "sha256": "cade16762bcee2bad2058b3c33aa1c9271b328ce30f3927be1d40386cfb8cf77",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_melee_ul_high_guard_v01.png",
+      "sha256": "7fde40f9dc57fd367589ffdc99e35ac49bad6f07b77a9fb1ff2453612056d5b7",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-reviewed-deterministic-assembly-import"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_melee_ul_high_guard_v01_128.png",
+      "sha256": "cda95859918e032c153221dca6b1d778dc622cea7f40c3e39cb37c9fe80a5b0e",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-reviewed-deterministic-assembly-import"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_high_guard_v01_size_comparison.png",
+      "sha256": "cf78b42ceab261098e6e4c1944d73b2549c10dcc554c5b3230667f539202710e",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_melee_dr_high_guard_v01.png",
+      "sha256": "22d198c91f1578e1ed19c491c2b54f1106704b6317c1a59eff49bc422a58f591",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-reviewed-deterministic-assembly-import"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_melee_dr_high_guard_v01_128.png",
+      "sha256": "f9bd0ec7fe3cfdad3ffacc77146892c6d24971a4b3730a9942ad99799fc83808",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-reviewed-deterministic-assembly-import"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_cast_dr_sheathed_focus_pose_guide_v1.png",
+      "sha256": "47ed30369fb33f6afb1607184ceac72cf7bb657d730efb8ecbc52948d3c92640",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-supporting-derived"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/incoming/poet_cast_dr_sheathed_focus_v1_raw_a001.png",
+      "sha256": "0032d3290ff94431a3e9e301945ccb83a6e115a74aae5cc188a9b9960648ae98",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-5ceb11280e5973fa/job-5ceb11280e5973fa-a001/raw.png",
+      "sha256": "0032d3290ff94431a3e9e301945ccb83a6e115a74aae5cc188a9b9960648ae98",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-5ceb11280e5973fa/job-5ceb11280e5973fa-a001/prepared.png",
+      "sha256": "1b96aadda1891dd05964598004e886ddd06a5427ad3ee5c30e1233c3fc4c2fa3",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_three_pose_stick_preview_v01.png",
+      "sha256": "0b4fc04f8d59f73b6f84d014e7d237e924c36537b1556b1b262af7e5e05b4def",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_three_pose_stick_preview_v02.png",
+      "sha256": "7b3a65ce5a8b5f4dad67616a0ac1c9f860805a20447662f747e823fa126e3870",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_three_pose_stick_preview_v03.png",
+      "sha256": "857961904deb11d123b4fb4aaccc8926fdfc5393ba6e3be8036d5c4f65350bb6",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_source_responsibility_review_v01.png",
+      "sha256": "51b78ae5016dc766ed1f027ddb932ce265e60cdc3a0300d0fc06493314702aab",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_sheathed_focus_a001_quick_scale_review.png",
+      "sha256": "64998f2cd143319bceaa82800fb156bb0d8f9f610751b66863b6a3cdead51de6",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_vertical_two_hand_stick_preview_v04.png",
+      "sha256": "9bdb83958c7765f845461c67d6b44137fd4a4ad51c64f56b75b4a5d1ac804449",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_vertical_two_hand_stick_preview_v05.png",
+      "sha256": "2b35e1d4a4e983aa2f579c4b53c0c7d5a6b1fd5560cd4db69f780a5619c5571e",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_vertical_two_hand_stick_preview_v06_sword_scale.png",
+      "sha256": "5b132648ca5f90ce5b8a251fc6b39a97f317835e4a51554a1038b7001a603c17",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_vertical_guard_grip_stick_preview_v07.png",
+      "sha256": "3acea8cc74645f669ae6e4324a5f9bf8769314663fa4bf6194f81a5a61a13268",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_cast_dr_vertical_guard_grip_pose_guide_v2.png",
+      "sha256": "ae4f96af30ace1e6654f65c039f3ad3f0b8e2fca5cfb2faf175437d6f44cd5aa",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-supporting-derived"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/incoming/poet_cast_dr_vertical_guard_grip_v2_raw_a001.png",
+      "sha256": "97a40c58b81ea12a6b0e0777b71d9afde3a0efafbd92f7fdf9ce35a81e2a75fa",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-5d93780ad8556eb4/job-5d93780ad8556eb4-a001/raw.png",
+      "sha256": "97a40c58b81ea12a6b0e0777b71d9afde3a0efafbd92f7fdf9ce35a81e2a75fa",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-5d93780ad8556eb4/job-5d93780ad8556eb4-a001/prepared.png",
+      "sha256": "c5f738bdc0f8fd78c033876b3b4a27689e36793e0c164f2104922d9126b7056e",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_vertical_guard_grip_v2_a001_quick_scale_review.png",
+      "sha256": "205fb41759f8c5ac05ea0c0987dd601b1ffd3904a7a15458851a34ff08752d8e",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_vertical_source_responsibility_review_v02.png",
+      "sha256": "0c0bd575de23797df85250e2c92f3af2f591fca3982081a4c0d543da1e303149",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_vertical_guard_grip_v01_size_comparison.png",
+      "sha256": "f9405a29a6547e0dd1c6ba839b6caa0015fdd3532807d37777a5283b3f6346fe",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_cast_dr_vertical_guard_grip_v01.png",
+      "sha256": "7cd072d554222d24c1cc4b357f3220260c01016c47be51d21c34e045d4139883",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-reviewed-generated-cast-import-with-known-deviations"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_cast_dr_vertical_guard_grip_v01_128.png",
+      "sha256": "4484f6e763572acf4115adb14ce355b3c96b4eb4af2aa2c46d9775baa4769cda",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-reviewed-generated-cast-import-with-known-deviations"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_cast_ul_vertical_guard_grip_pose_guide_v1.png",
+      "sha256": "c633fd8742ecf2b3db7d7d046ded8d64185009d3f0633cc77c76a1e08b58f8c1",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-supporting-derived"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/incoming/poet_cast_ul_vertical_guard_grip_v1_raw_a001.png",
+      "sha256": "d69400061c083ea039c381b47ae434cfe3084253e31fb158467f3280ce79c671",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-1f834522a953c67a/job-1f834522a953c67a-a001/raw.png",
+      "sha256": "d69400061c083ea039c381b47ae434cfe3084253e31fb158467f3280ce79c671",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-1f834522a953c67a/job-1f834522a953c67a-a001/prepared.png",
+      "sha256": "3ce6dc5efb5c9999be94c927b109c4142b6bfebb97e24261173a937d0e4219a1",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_ul_source_responsibility_review_v01.png",
+      "sha256": "f6d70bde709b2914c2a224c2f8d07ea5d140f02288976eb5ae1aef80d1d46bb4",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_ul_vertical_guard_grip_v1_a001_quick_scale_review.png",
+      "sha256": "82efcd7e796d297c1eb705ceb7851df40dc5dba18832a63d2ee3a76f5be23ff1",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_ul_vertical_guard_grip_v01_size_comparison.png",
+      "sha256": "d67930be17924ba395a4948676af694773d0c381a6d21d86365895a83e380c34",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_cast_ul_vertical_guard_grip_v01.png",
+      "sha256": "b0a4abd6330b60090edd771fd5c168aaf99c5b9e5c9ecb3e4cd935c4fa4fbfce",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-reviewed-generated-cast-ul-import-with-known-deviations"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_cast_ul_vertical_guard_grip_v01_128.png",
+      "sha256": "7efa64d4b81d15dc5f9b90a5e1d06a9308627ac5d8b9344fd14d047802dc1e8c",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-reviewed-generated-cast-ul-import-with-known-deviations"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_hit_dr_cross_class_pose_review_v01.png",
+      "sha256": "7bbdab913f414483a4de144fcdcd70dcb13a3eb1183b599f2830581bf1e0439a",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_hit_dr_hunter_recoil_pose_guide_v1.png",
+      "sha256": "60e3e2fb3a90d7a2d66ba497637b0eeb14e98fa9abc0e8b7723eb0335e4569cb",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-supporting-derived"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/incoming/poet_hit_dr_hunter_recoil_v1_raw_a001.png",
+      "sha256": "7ae665f483f46ed80c16f181bdaf541a5600d3637808556efad4c2f6cf542256",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-a598e3685963e74d/job-a598e3685963e74d-a001/raw.png",
+      "sha256": "7ae665f483f46ed80c16f181bdaf541a5600d3637808556efad4c2f6cf542256",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-a598e3685963e74d/job-a598e3685963e74d-a001/prepared.png",
+      "sha256": "ff69e6d02d28e988a34e2440fb09511dd23e0990b00a5af1b84bd2af17ec9a4b",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_hit_dr_source_responsibility_review_v01.png",
+      "sha256": "5e41dcf55d369adcdc05c370e6aee31ea29455ac4e152c2cbcfd623f67839658",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_hit_dr_hunter_recoil_v1_a001_quick_scale_review.png",
+      "sha256": "2b522d9ab57f5475be40fab4664d1e359500188ca941c7cf2f0e939b10ed8144",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_hit_dr_hunter_recoil_v01_size_comparison.png",
+      "sha256": "3197edcee9e8dadb8333ec1b48ad23faedf0dbc5a7513df909297ef00a12df52",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_hit_dr_hunter_recoil_v01.png",
+      "sha256": "4d8b87f7407295f9f6c166086acde62d7976393de172a7061fbff77909edb92d",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-reviewed-generated-poet-hit-dr-import-with-known-deviations"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_hit_dr_hunter_recoil_v01_128.png",
+      "sha256": "14a038ea34dedc150a9788ac53bd7c3bbc9fe9a808ad57bad3aedf100dde4278",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-reviewed-generated-poet-hit-dr-import-with-known-deviations"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_hit_ul_hunter_recoil_pose_guide_v1.png",
+      "sha256": "f54eab6d7fbae45e88ef484147cb8af6bc9f37dc1118188d637782099afee549",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-supporting-derived"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/incoming/poet_hit_ul_hunter_recoil_v1_raw_a001.png",
+      "sha256": "0c47987132bdcbe6e1a54218737c37e58bf78171e01845bd7f84a353c9e51ab9",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-f173ef66666f90e0/job-f173ef66666f90e0-a001/raw.png",
+      "sha256": "0c47987132bdcbe6e1a54218737c37e58bf78171e01845bd7f84a353c9e51ab9",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-f173ef66666f90e0/job-f173ef66666f90e0-a001/prepared.png",
+      "sha256": "7adc872e188154c9ea75696d31357b60c81a867e7c4b730e647d45626bc8ff21",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_hit_ul_source_responsibility_review_v01.png",
+      "sha256": "5838981b56d854a1c84d46ca4709d76f8dc6aec6a1b621f9a82b6c9b954324f4",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_hit_ul_hunter_recoil_v1_a001_quick_scale_review.png",
+      "sha256": "d0ee608c129f0f3d93d97797a8228c2d5b59a02b6e65543837f4424f420b8bf9",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_hit_ul_hunter_recoil_v01_size_comparison.png",
+      "sha256": "d4494ae18ed63fa99e76a763fc423f32df776f665372889a3291b864597bc4bb",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_hit_ul_hunter_recoil_v01.png",
+      "sha256": "f1f9049ba256d1e649cafc742391f184d000547b47f442e557b19156adf3a9ac",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-reviewed-generated-poet-hit-ul-import-with-known-deviations"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_hit_ul_hunter_recoil_v01_128.png",
+      "sha256": "2495c504bc2ab04c8a35d5842ac8657640bb80a79392b4e4958ceb0b3f4c9125",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-reviewed-generated-poet-hit-ul-import-with-known-deviations"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_death_cross_class_pose_review_v01.png",
+      "sha256": "18497dcf3ba714abde47ab68781350f7c5d30974e070b55cdd1df15a7c3ba2e2",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_death_hunter_horizontal_pose_guide_v1.png",
+      "sha256": "5ede27b5a7b8635848dcff27da80e91aa97e07bb718372ce4379352e6efb6a29",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-supporting-derived"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/incoming/poet_death_hunter_horizontal_v1_raw_a001.png",
+      "sha256": "f08e79c22d213f62d553a9c6c573eeef6e5716131c37c11a57cfa370e70b53e8",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-1102150ebf2aacd4/job-1102150ebf2aacd4-a001/raw.png",
+      "sha256": "f08e79c22d213f62d553a9c6c573eeef6e5716131c37c11a57cfa370e70b53e8",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-1102150ebf2aacd4/job-1102150ebf2aacd4-a001/prepared.png",
+      "sha256": "288422b1108a8f504a63fc3a96b31c5108344f59f8a938bafe6e62f9cb669551",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_death_source_responsibility_review_v01.png",
+      "sha256": "c441dad8fb530d9fae0e06c15b7084b7a365c673861427f0634163247a4af8e9",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_death_hunter_horizontal_v1_a001_quick_scale_review.png",
+      "sha256": "5d306117ecbaa357de2f0a612f5aad9c80b49fc39d4170e3b351e91dc58b33c9",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_death_hunter_close_dao_pose_guide_v2.png",
+      "sha256": "0936f526aa766f5636675718194f96c7b8a0c87966b11cd8839468ccf5f21e05",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-supporting-derived"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/incoming/poet_death_hunter_close_dao_v2_raw_a001.png",
+      "sha256": "2746b1c8ac7e202760e5e50f1c1f838d1ef1eb520689b8244e62b0769b8dba04",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-15a2cb63c7062bee/job-15a2cb63c7062bee-a001/raw.png",
+      "sha256": "2746b1c8ac7e202760e5e50f1c1f838d1ef1eb520689b8244e62b0769b8dba04",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-gpt-generated"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-15a2cb63c7062bee/job-15a2cb63c7062bee-a001/prepared.png",
+      "sha256": "9b1da81859dc7ca14e7283e2c4f4dfd324e9d4acbf762351ba530cb388c8be63",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-derived-artwork"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_death_hunter_close_dao_v2_a001_quick_scale_review.png",
+      "sha256": "b0d8c8204614f035abeb1f3fbcdb155b33b4249609d7da2399361db5eecb63e7",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_death_hunter_close_dao_v02_size_comparison.png",
+      "sha256": "474ab9ea31f6faea9b960c0f7b0a678c88d58d854c7c4dd23f3378d0096f94fe",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "project-owned-artwork-review"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_death_hunter_close_dao_v02.png",
+      "sha256": "235922e278fd3946e74763084e7576a0b1eed8128195b03361939f13c0a8940e",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-reviewed-generated-poet-death-v2-import-with-known-deviations"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_death_hunter_close_dao_v02_128.png",
+      "sha256": "cae1bb361b0312980e22a5601d86cc4c5f6e524b3f2283e558a4747f3faa0b5a",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "project-owned",
+      "provenance": "cty41-reviewed-generated-poet-death-v2-import-with-known-deviations"
     }
   ]
 }

@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-77cbac471a36f39e",
+  "attemptId": "job-0a6c57acd0d21d59-a002",
+  "candidateSha256": "5fbda220f2528522d030c927788822024943fabf6c9d9013d8cdeae45beb161f",
+  "reviewer": "pipeline-agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "The retry restores the compact upright capsule construction, removes the long quadruped torso and connecting leg masses, keeps the cinnamon-red poet identity, and makes the empty rear scabbard more legible.",
+    "Exactly four visible paws remain and the blade has more canvas margin than a001 before calibration."
+  ],
+  "defects": [
+    "The successful committed Release-to-Impact weight shift from a001 is lost; the core is nearly vertical and reads as an Idle character presenting a weapon rather than striking.",
+    "The weapon remains a broad symmetric double-edged fantasy sword rather than the narrow straight single-edged Tang dao from Image 2.",
+    "The two front paws read as oversized circular hands placed in front of the body instead of small attached capsule paws transmitting force through the grip.",
+    "After calibration the blade/subject still reaches the lower canvas boundary, and deterministic validation fails core continuity/size, forbidden equipment regions, paw contact/side, pose axis, mask containment and weapon width."
+  ],
+  "nextPromptDelta": "Do not automatically generate again. A future strategy must reconcile dynamic weight transfer with the upright capsule and may need a stronger weapon-preservation method than full-sprite multi-reference generation.",
+  "recordedAt": "2026-09-12T12:43:01+08:00",
+  "authorType": "agent",
+  "categories": [
+    "pose_axis",
+    "equipment_scale",
+    "equipment_state",
+    "topology",
+    "core_geometry",
+    "processing"
+  ],
+  "disposition": "technical_failed",
+  "frozenInvariants": [
+    "Keep the restored upright compact capsule topology, cinnamon-red poet identity, exactly four paws and readable empty side/back scabbard."
+  ],
+  "pendingFixes": [
+    "Recover the committed forward-right center of mass and compression without turning the body into a quadruped.",
+    "Match the narrow single-edged ring-pommel Tang dao and keep the complete tip away from the canvas edge."
+  ]
+}

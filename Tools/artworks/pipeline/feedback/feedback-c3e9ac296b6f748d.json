@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-c3e9ac296b6f748d",
+  "attemptId": "job-0a6c57acd0d21d59-a001",
+  "candidateSha256": "80b25b4f09763b61f1c605f13a7a99b746f9389e4e7fe4cb0ba430f3476871b8",
+  "reviewer": "pipeline-agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "Release-to-Impact reads strongly: weight travels down-right, the rear paw trails, and the strike has visible commitment.",
+    "Cinnamon-red Chow identity, curled tail and four visible paws survive without the polluted hat clothing or gourd requirements."
+  ],
+  "defects": [
+    "The torso becomes a horizontal realistic-quadruped body with leg masses instead of the approved upright compact no-arm no-leg capsule topology.",
+    "The weapon becomes a broad symmetric double-edged fantasy sword rather than the narrow straight single-edged ring-pommel Tang dao.",
+    "The blade reaches the bottom-right canvas boundary after calibration and loses a safe complete-tip margin.",
+    "Rear equipment is mostly a detached ring-and-grip shape; the required empty side/back scabbard is ambiguous and may read as a second weapon.",
+    "Validation failed core continuity and size, forbidden equipment regions, near-foot contact, pose axis, semantic-mask containment and weapon-width gates."
+  ],
+  "nextPromptDelta": "If cty41 authorizes a retry, keep the successful committed weight shift but restore one compact upright capsule core, eliminate connecting legs, reserve more lower-right canvas margin, and reproduce the narrow single-edged Tang dao plus clearly empty partly occluded scabbard.",
+  "recordedAt": "2026-09-12T12:18:51+08:00",
+  "authorType": "agent",
+  "categories": [
+    "topology",
+    "equipment_state",
+    "equipment_scale",
+    "core_geometry",
+    "pose_axis",
+    "processing"
+  ],
+  "disposition": "technical_failed",
+  "frozenInvariants": [
+    "Keep the committed down-right weight shift, rear drive paw, support-paw base, cinnamon-red poet identity and absence of polluted clothing/drinking-vessel requirements."
+  ],
+  "pendingFixes": [
+    "Restore one compact upright capsule core with no connecting legs.",
+    "Reproduce the narrow single-edged Tang dao and a clearly empty partly occluded scabbard with safe canvas margins."
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 4,
+  "anchorVerdictId": "anchor-verdict-2322272c67c2d8d1",
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+    "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+  },
+  "family": "actor",
+  "responsibilities": [
+    "Sole Poet DR identity, compact core volume, five-red Chow face, palette, tail, four attached paws and style for Hit DR."
+  ],
+  "excludedUses": [
+    "Do not copy Idle pose. Hunter supplies only standard Hit recoil and facial reaction. Equipment image supplies only sheathed-dao form. Guide owns Poet recoil geometry."
+  ],
+  "review": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_hit_dr_source_responsibility_review_v01.png",
+    "sha256": "5e41dcf55d369adcdc05c370e6aee31ea29455ac4e152c2cbcfd623f67839658"
+  },
+  "decision": "approved-anchor",
+  "reviewer": "cty41",
+  "reason": "cty41 explicitly confirmed Hunter Hit DR as the sole action source, Poet Idle DR as sole identity/volume source and the fully sheathed dao moving rigidly with the body.",
+  "decidedAt": "2026-09-14T09:34:15.1921749+08:00"
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-237835ae3be23f7a",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_hit_dr_hunter_recoil_v1_a001_quick_scale_review.png",
+    "sha256": "2b522d9ab57f5475be40fab4664d1e359500188ca941c7cf2f0e939b10ed8144"
+  },
+  "role": "supporting-derived",
+  "note": "Deterministic game-scale review of Poet Hit DR a001. Clear Hit read but identity, tear length, active sheath grip and paw scale issues are recorded in feedback-1a75a0bda9927200.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

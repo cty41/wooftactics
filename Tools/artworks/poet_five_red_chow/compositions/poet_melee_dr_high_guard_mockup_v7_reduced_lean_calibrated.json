@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "reviewOnly": true,
+  "assetId": "poet-melee-dr-high-guard-mockup-v7-reduced-lean-calibrated",
+  "parentMockup": "poet-melee-dr-high-guard-mockup-v6-reduced-lean",
+  "source": {"path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_high_guard_mockup_v6_reduced_lean.png", "sha256": "9c19cc66ea629575742bfe1cd890a21b608248cb8ebd4fd85c2e533dc0361288"},
+  "postRotationTranslation": [0, -4],
+  "expectedAlphaBbox": [63, 111, 208, 236],
+  "equipmentState": {"blade": "visible", "scabbard": "absent", "staticEffects": "absent"},
+  "notes": "Deterministic review-only calibration: translate the reduced-lean composite upward 4 pixels so the complete alpha bbox returns to baseline y=236."
+}

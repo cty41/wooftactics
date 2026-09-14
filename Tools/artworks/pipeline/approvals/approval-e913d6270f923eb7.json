@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 2,
+  "approvalId": "approval-e913d6270f923eb7",
+  "attemptId": "job-7bafde3439fd4e9f-a001",
+  "candidateSha256": "7fde40f9dc57fd367589ffdc99e35ac49bad6f07b77a9fb1ff2453612056d5b7",
+  "maskSha256": null,
+  "reviewer": "cty41",
+  "reviewSha256": {
+    "sizeComparison": "cade16762bcee2bad2058b3c33aa1c9271b328ce30f3927be1d40386cfb8cf77"
+  },
+  "decision": "approved",
+  "reason": "cty41 explicitly requested promotion and accepted v15 as usable after visual review; deterministic cleanup removed only one invisible exact-green alpha-2 pixel. Known minor outline discontinuity is accepted, while v16 is rejected.",
+  "decidedAt": "2026-09-13T15:47:20.3090145+08:00",
+  "annotation": null,
+  "reportSha256": "68a6020648be3192d0b698b6a31b881177b5317411a0b43fe0557838323113a4"
+}

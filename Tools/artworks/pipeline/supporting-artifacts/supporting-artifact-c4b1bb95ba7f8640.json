@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-c4b1bb95ba7f8640",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_hit_dr_cross_class_pose_review_v01.png",
+    "sha256": "7bbdab913f414483a4de144fcdcd70dcb13a3eb1183b599f2830581bf1e0439a"
+  },
+  "role": "supporting-derived",
+  "note": "Review-only comparison of runtime-bound Hunter, Mage, Necromancer and Demonbound Hit DR poses. Proposed Poet action authority is Hunter Hit DR due closest canine capsule morphology; awaiting cty41 source confirmation. Other three remain review-only.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

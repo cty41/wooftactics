@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "sizeComparisonId": "size-comparison-03681723e73fffed",
+  "inputs": [
+    {
+      "label": "Identity",
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+        "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+      }
+    },
+    {
+      "label": "Previous",
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/guides/poet_melee_dr_downslash_pose_guide_v2.png",
+        "sha256": "4fbb3b09faf09d5bff2aa559ca14ac9ac058598032495527a97d3830cd46eb8f"
+      }
+    },
+    {
+      "label": "Pose reference",
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v02.png",
+        "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1"
+      }
+    },
+    {
+      "label": "Candidate",
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/guides/poet_melee_dr_release_impact_pose_guide_v3.png",
+        "sha256": "8b88f44ee38e01728e9471fef2c5424bf2b34086499f99bd89f3608435d5d421"
+      }
+    }
+  ],
+  "measurements": [
+    {
+      "label": "Identity",
+      "bbox": [
+        40,
+        57,
+        82,
+        121
+      ],
+      "bboxSize": [
+        42,
+        64
+      ]
+    },
+    {
+      "label": "Previous",
+      "bbox": [
+        44,
+        55,
+        122,
+        121
+      ],
+      "bboxSize": [
+        78,
+        66
+      ]
+    },
+    {
+      "label": "Pose reference",
+      "bbox": [
+        41,
+        70,
+        87,
+        119
+      ],
+      "bboxSize": [
+        46,
+        49
+      ]
+    },
+    {
+      "label": "Candidate",
+      "bbox": [
+        36,
+        45,
+        117,
+        122
+      ],
+      "bboxSize": [
+        81,
+        77
+      ]
+    }
+  ],
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_v3_source_responsibility_review.png",
+    "sha256": "b8c2c5dc4cf399beefbb227e967968fdb76c5a645bc3ca8858b0ac4aeefe0d23"
+  }
+}

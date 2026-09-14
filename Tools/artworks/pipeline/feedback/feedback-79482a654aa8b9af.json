@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-79482a654aa8b9af",
+  "attemptId": "job-0a890f2b18e97967-a006",
+  "candidateSha256": "3088c92137ea1b9dee9e05e55316080baa21056d915eb843f194e231d6263437",
+  "reviewer": "pipeline-agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "The calibrated framing now matches the user-reviewed body scale and all continuity/contact/baseline checks pass."
+  ],
+  "defects": [
+    "The selected calibration and center are restored and every other gate passes, but the conservative core hull is seven pixels narrower than the approved anchor width."
+  ],
+  "nextPromptDelta": "Width-only semantic mask correction; no visual change.",
+  "recordedAt": "2026-09-12T17:14:13+08:00",
+  "authorType": "agent",
+  "categories": [
+    "processing"
+  ],
+  "disposition": "technical_failed",
+  "frozenInvariants": [
+    "Keep the 621-pixel core height, selected body scale and passing topology."
+  ],
+  "pendingFixes": [
+    "Widen only the interior semantic core hull to the approved width without changing source or calibrated image pixels."
+  ]
+}

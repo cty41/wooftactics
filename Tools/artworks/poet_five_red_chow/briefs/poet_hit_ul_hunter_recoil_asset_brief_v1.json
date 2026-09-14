@@ -1,0 +1,27 @@
+{
+  "schemaVersion":1,"briefKind":"asset","briefId":"poet-hit-ul-hunter-recoil-v1","assetId":"poet-five-red-chow-hit-ul-hunter-recoil-v1","family":"actor",
+  "purpose":"Create the native up-left/back three-quarter counterpart of the approved Poet Hit DR recoil, with only anatomically visible facial reaction and the worn sheathed dao behind the core.",
+  "firstRead":["five-red-chow-poet-back-view","native-up-left","screen-left-hit-recoil","one-visible-eye-one-short-tear","rear-layer-sheathed-dao"],
+  "targetContexts":["master-256","preview-128","future-hit-runtime-window"],
+  "identityInvariants":["Image 1 is sole Poet UL identity, volume, palette and style authority","compact rear-view furry capsule with curled tail and exactly four attached paws","no arms, elbows, leg connectors or human hands","one compact fully sheathed ring-pommel Tang dao behind core","feet on y236 baseline"],
+  "shapeStrategy":"Image 2 supplies only accepted Poet Hit timing/intensity; Image 3 only native UL recoil projection; Image 4 owns Poet geometry. Recoil toward screen-left without stretching. Show only one anatomically visible widened eye, tiny pupil, one short tear and tiny tense mouth sliver.",
+  "colorStrategy":"Use Image 1 palette and its worn equipment palette on exact #00ff00 background.","materialStrategy":"Pure Run bold outlines, flat values and restrained pixel detail.","attentionRole":"primary",
+  "allowedVariation":["screen-left rigid recoil","ear inertia","one visible eye and tear","small edge flinch paws","limited rear-layer equipment visibility"],
+  "forbidden":["full front face","two visible eyes","two tears","front-layer weapon","active grip","arms","legs","human hands","floating paw","missing paw","extra paw","bare blade","second weapon","blood","impact flash","stars","numbers","particles","VFX","text","watermark","body stretch"],
+  "resolvedHistory":"Hit DR was explicitly promoted by cty41 with known deviations. UL must transfer only its frozen impact moment, not its front anatomy or deviations. Canonical Hunter Hit UL supplies direction only.",
+  "referenceResponsibilities":[
+    {"role":"image-1-approved-poet-idle-ul-identity-volume","path":"Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_ul_v07.png","sha256":"519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512","responsibility":"Sole UL identity, rear anatomy, compact volume, palette, paws, tail and style; not pose."},
+    {"role":"image-2-approved-poet-hit-dr-moment-only","path":"Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_hit_dr_hunter_recoil_v01.png","sha256":"4d8b87f7407295f9f6c166086acde62d7976393de172a7061fbff77909edb92d","responsibility":"Only frozen Hit intensity and equipment state; do not copy front face, tears, volume, grip or style defects."},
+    {"role":"image-3-approved-hunter-hit-ul-direction-only","path":"godot/assets/units/actions/doge_hunter_hit_ul.png","sha256":"0eb88380ebee80e99d1208b0adf5dca6b91ed368c94039ae298b9c4bb0c297af","responsibility":"Only canonical screen-left UL recoil and anatomical visibility; no Shiba identity or shield."},
+    {"role":"image-4-deterministic-poet-hit-ul-guide","path":"Tools/artworks/poet_five_red_chow/guides/poet_hit_ul_hunter_recoil_pose_guide_v1.png","sha256":"f54eab6d7fbae45e88ef484147cb8af6bc9f37dc1118188d637782099afee549","responsibility":"Sole Poet screen geometry, paw contacts, rear-layer equipment and baseline."}
+  ],
+  "requiredReviewPanels":["candidate-master","preview-128","identity-overlay","direction-action","weapon-inspection","paw-contact","occlusion-review","tile-review","style-anchor-context"],
+  "acceptanceCases":[
+    {"caseId":"POET-HIT-UL-IDENTITY-001","evidence":["candidate-master","identity-overlay"],"automatedFacts":["bound UL identity"],"humanChecks":["native UL identity and compact volume"],"passCriteria":"Approved Poet UL."},
+    {"caseId":"POET-HIT-UL-ACTION-001","evidence":["direction-action","preview-128"],"automatedFacts":["screen-left recoil"],"humanChecks":["same Hit moment as DR"],"passCriteria":"Reads as Hit UL."},
+    {"caseId":"POET-HIT-UL-TOPOLOGY-001","evidence":["paw-contact","occlusion-review"],"automatedFacts":["no arms"],"humanChecks":["four attached paws and rear equipment"],"passCriteria":"Topology/depth hold."},
+    {"caseId":"POET-HIT-UL-EXPRESSION-001","evidence":["candidate-master"],"automatedFacts":["one visible eye region"],"humanChecks":["one eye and one short tear only"],"passCriteria":"Anatomical expression holds."},
+    {"caseId":"POET-HIT-UL-CONTEXT-001","evidence":["preview-128","tile-review"],"automatedFacts":["256 RGBA y236"],"humanChecks":["game-scale readability"],"passCriteria":"Context passes."},
+    {"caseId":"POET-HIT-UL-EXCLUSION-001","evidence":["candidate-master","style-anchor-context"],"automatedFacts":["role-separated inputs"],"humanChecks":["no foreign identity, bare blade or FX"],"passCriteria":"Exclusions hold."}
+  ]
+}

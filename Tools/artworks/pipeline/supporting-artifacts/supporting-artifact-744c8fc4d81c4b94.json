@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-744c8fc4d81c4b94",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v15_outline_restore.png",
+    "sha256": "595bc79b1e2fc797b55ad86b3b7bed9b52370435df6ab10c5da1c27f976c6dfa"
+  },
+  "role": "supporting-derived",
+  "note": "cty41-authorized deterministic review-only correction of v14 outline breaks: restore 64 exact pre-cleanup edge pixels only within radius 2 of retained opaque subject, while preserving right-rear ghost cleanup, accepted pose, paw depth, sword, no scabbard and baseline.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

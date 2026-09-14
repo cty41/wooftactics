@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "reviewOnly": true,
+  "assetId": "poet-melee-ul-high-guard-mockup-v4-forward-lean-calibrated",
+  "parentMockup": "poet-melee-ul-high-guard-mockup-v3-forward-lean",
+  "visualMoment": "native up-left high guard immediately before a downward cut, with DR-corresponding forward commitment",
+  "sourceTransformSpec": "Tools/artworks/poet_five_red_chow/compositions/poet_melee_ul_high_guard_mockup_v3_forward_lean.json",
+  "sourceTransformSpecSha256": "e7d91ef887e1420bc46c854e400837428dbb539a866a79fb40fa20244090bff3",
+  "postRotationTranslation": [4, -6],
+  "expectedAlphaBbox": [16, 91, 188, 236],
+  "equipmentState": {"blade": "visible", "scabbard": "absent", "staticEffects": "absent"},
+  "notes": "Deterministic review-only calibration of v3: after the 7-degree whole-composite forward rotation, translate 4px right for sword-tip safety and 6px up to restore the bottom alpha edge to y=236."
+}

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "feedbackAddendumId": "feedback-addendum-2e377a97a411506a",
+  "attemptId": "job-5d93780ad8556eb4-a001",
+  "parentFeedbackId": "feedback-58247b43b74838b8",
+  "reviewer": "cty41",
+  "defects": [
+    "cty41 explicitly said this displayed Cast DR candidate can be promoted and requested the next image. This is a conscious human acceptance despite the recorded arm, weapon-length/ground-contact, grip and identity deviations; those defects remain truthful known limitations and are not reclassified as technical passes."
+  ],
+  "recordedAt": "2026-09-13T21:54:28.8497841+08:00",
+  "authorType": "human",
+  "disposition": "selected"
+}

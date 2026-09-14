@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "reviewOnly": true,
+  "assetId": "poet-melee-dr-selected-body-sword-mockup-v3-high-guard",
+  "visualMoment": "raised sword at the highest preparation point immediately before a downward cut",
+  "body": {
+    "attemptId": "job-0a890f2b18e97967-a008",
+    "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a008/calibrated.png",
+    "sha256": "e6feabd6ca60bf75701528c30056103e7781cb6fe5234de353c14caf41ef0404",
+    "maskPath": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a008/calibrated-mask.png",
+    "maskSha256": "e91824130da09117232553a4ef32482c695e7feab7a88778d7e84b5d2fa4a972"
+  },
+  "equipment": {
+    "assetId": "poet-ring-pommel-tang-dao-unsheathed-v02",
+    "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v02.png",
+    "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1",
+    "sourceBbox": [83, 141, 173, 237],
+    "scalePercent": 65,
+    "initialTopLeft": [139, 200],
+    "rotationDegreesCounterClockwise": 90,
+    "rotationCenter": [144, 205],
+    "expectedTipRegion": [195, 145, 207, 158]
+  },
+  "layerOrder": ["selected-body-exact", "approved-unsheathed-tang-dao-high-guard", "far-hand-overlay", "near-hand-overlay"],
+  "scabbard": "absent",
+  "notes": "Deterministic review mockup only. The body file is copied as the base without resampling or repainting. The approved sword is cropped, uniformly scaled, rotated around its ring-pommel anchor and placed below the two original front-paw pixels. No scabbard layer exists. Rotation is review-only and is not claimed as a schema-v3 Assembly transform."
+}

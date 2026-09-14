@@ -1,0 +1,27 @@
+{
+  "schemaVersion":1,"briefKind":"asset","briefId":"poet-hit-dr-hunter-recoil-v1","assetId":"poet-five-red-chow-hit-dr-hunter-recoil-v1","family":"actor",
+  "purpose":"Create one Poet Hit DR frame using the approved Hunter Hit DR only for the standard medium-chibi recoil peak and facial reaction.",
+  "firstRead":["five-red-chow-poet","native-down-right","screen-right-hit-recoil","widened-eyes-two-tears","fully-sheathed-dao"],
+  "targetContexts":["master-256","preview-128","future-hit-runtime-window"],
+  "identityInvariants":["Image 1 is sole Poet identity, volume, palette and style authority","compact furry capsule with broad lion head, short muzzle, curled tail and exactly four attached paws","no arms, elbows, leg connectors or human hands","one compact fully sheathed ring-pommel Tang dao moves with body","feet remain on y236 baseline"],
+  "shapeStrategy":"Image 2 supplies only the rigid whole-body screen-right lean, ear inertia, widened-eye small-pupil reaction, exactly two short blue-white tear streaks and tense mouth. Image 4 owns Poet geometry. Preserve compact volume without stretching.",
+  "colorStrategy":"Use Image 1 character palette and Image 3 equipment palette on exact #00ff00 background.","materialStrategy":"Pure Run bold outlines, flat controlled values and restrained pixel detail.","attentionRole":"primary",
+  "allowedVariation":["whole-body recoil","ears fold with inertia","front paws flinch outward while attached","sheathed dao rotates rigidly with body"],
+  "forbidden":["Hunter identity","shield","spear","arms","legs","human hands","floating paws","missing paw","extra paw","bare blade","dropped weapon","second weapon","staff","blood","impact flash","stars","damage numbers","particles","VFX","text","watermark","body stretch"],
+  "resolvedHistory":"cty41 confirmed Hunter Hit DR as sole action source, Poet Idle DR as sole identity/volume source and the fully sheathed dao moving with the body. Other class Hit images are review-only.",
+  "referenceResponsibilities":[
+    {"role":"image-1-approved-poet-idle-dr-identity-volume","path":"Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png","sha256":"e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3","responsibility":"Sole Poet identity, volume, anatomy, palette, tail, paws and style; not pose."},
+    {"role":"image-2-approved-hunter-hit-dr-action-only","path":"godot/assets/units/actions/doge_hunter_hit_dr.png","sha256":"a921486bec40be843d02efdce8617e2a1b764c33e6a9e8e4278cf76c92fa9e01","responsibility":"Only recoil peak, ear inertia, widened eyes, two tear streaks and tense mouth; no Shiba identity, shield or proportions."},
+    {"role":"image-3-approved-sheathed-dao-form","path":"Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_dr_v02.png","sha256":"eb4acedf50fe56d2c216e932a7364686de603a4df40c9bc5f1fe10c22ab55999","responsibility":"Sole equipment form, length, palette and details; guide owns placement."},
+    {"role":"image-4-deterministic-poet-hit-guide","path":"Tools/artworks/poet_five_red_chow/guides/poet_hit_dr_hunter_recoil_pose_guide_v1.png","sha256":"60e3e2fb3a90d7a2d66ba497637b0eeb14e98fa9abc0e8b7723eb0335e4569cb","responsibility":"Sole Poet recoil geometry, paw contacts, worn-dao axis and baseline."}
+  ],
+  "requiredReviewPanels":["candidate-master","preview-128","identity-overlay","direction-action","weapon-inspection","paw-contact","tile-review","style-anchor-context"],
+  "acceptanceCases":[
+    {"caseId":"POET-HIT-DR-IDENTITY-001","evidence":["candidate-master","identity-overlay"],"automatedFacts":["bound identity"],"humanChecks":["Poet identity and compact volume"],"passCriteria":"Unmistakably approved Poet."},
+    {"caseId":"POET-HIT-DR-ACTION-001","evidence":["direction-action","preview-128"],"automatedFacts":["recoil axis"],"humanChecks":["standard Hit read"],"passCriteria":"Reads as Hit."},
+    {"caseId":"POET-HIT-DR-TOPOLOGY-001","evidence":["paw-contact"],"automatedFacts":["no arms"],"humanChecks":["four attached paws"],"passCriteria":"No-arm topology holds."},
+    {"caseId":"POET-HIT-DR-EQUIPMENT-001","evidence":["weapon-inspection"],"automatedFacts":["fully sheathed"],"humanChecks":["dao remains worn and intact"],"passCriteria":"Equipment state holds."},
+    {"caseId":"POET-HIT-DR-CONTEXT-001","evidence":["preview-128","tile-review"],"automatedFacts":["256 RGBA y236"],"humanChecks":["game-scale readability"],"passCriteria":"Context passes."},
+    {"caseId":"POET-HIT-DR-EXCLUSION-001","evidence":["candidate-master","style-anchor-context"],"automatedFacts":["role-separated inputs"],"humanChecks":["no foreign identity or impact FX"],"passCriteria":"Exclusions hold."}
+  ]
+}

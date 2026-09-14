@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-da1e6e7295771c76",
+  "attemptId": "job-6a95f820a37e8586-a001",
+  "candidateSha256": "03f988b362b2061c444b1b4778dd84c6764f2413d034581ab29c3ed7f358e6b9",
+  "reviewer": "pipeline-agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "The local edit materially improves the main user-reported issue: both front paws now sit close to the torso, overlap the same handle, and no longer form a detached chain; the scabbard is absent and the raised attack direction is readable."
+  ],
+  "defects": [
+    "The model did not preserve Image 1 exactly outside the edit region: torso/head proportions, tail, hind-paw placement and body rendering were redrawn.",
+    "The weapon still reads as a broad symmetric double-edged fantasy sword rather than the approved narrow single-edged Tang dao.",
+    "Deterministic validation fails core continuity/size, near-hand side, pose axis and the current diagonal-blade width gate."
+  ],
+  "nextPromptDelta": "Do not generate automatically; show the 256 candidate and obtain cty41's visual judgment.",
+  "recordedAt": "2026-09-12T23:46:55+08:00",
+  "authorType": "agent",
+  "categories": [
+    "identity",
+    "equipment_scale",
+    "topology",
+    "pose_axis",
+    "core_geometry"
+  ],
+  "disposition": "technical_failed",
+  "frozenInvariants": [
+    "Keep the successful close-to-body two-paw grip, one shared handle, raised slash and hidden scabbard."
+  ],
+  "pendingFixes": [
+    "Restore exact selected-body preservation and approved Tang dao form if another strategy is authorized."
+  ]
+}

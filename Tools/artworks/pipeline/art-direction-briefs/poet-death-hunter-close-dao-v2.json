@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "registryId": "asset-brief-fa67cc5d4a8813e7",
+  "sourceId": "poet-death-hunter-close-dao-v2",
+  "sourceType": "asset",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/briefs/poet_death_hunter_close_dao_asset_brief_v2.json",
+    "sha256": "d0cbb23af119a04d2430b364d3068e8f69b7acc002d9a48518bad5abd9b05ed3"
+  }
+}

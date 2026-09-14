@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-f173ef66666f90e0-a001",
+  "jobId": "job-f173ef66666f90e0",
+  "ordinal": 1,
+  "generationRound": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "prepared",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/incoming/poet_hit_ul_hunter_recoil_v1_raw_a001.png",
+      "sha256": "0c47987132bdcbe6e1a54218737c37e58bf78171e01845bd7f84a353c9e51ab9"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-f173ef66666f90e0/job-f173ef66666f90e0-a001/raw.png",
+      "sha256": "0c47987132bdcbe6e1a54218737c37e58bf78171e01845bd7f84a353c9e51ab9"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-f173ef66666f90e0/job-f173ef66666f90e0-a001/prepared.png",
+      "sha256": "7adc872e188154c9ea75696d31357b60c81a867e7c4b730e647d45626bc8ff21"
+    }
+  },
+  "report": null,
+  "approvalId": null,
+  "feedbackId": "feedback-56ddd0e96a223ade",
+  "generationInvocationId": "generation-invocation-e8dbf034ba664f80",
+  "generationDeliveryId": "generation-delivery-b48d49b1b2519c4f",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 35
+  },
+  "feedbackAddendumIds": [
+    "feedback-addendum-558171eabe829a8c"
+  ]
+}

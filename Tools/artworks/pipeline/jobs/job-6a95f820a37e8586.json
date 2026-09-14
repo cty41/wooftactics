@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 4,
+  "jobId": "job-6a95f820a37e8586",
+  "state": "ready",
+  "contractId": "contract-d8a94b4327db2072",
+  "contractSha256": "80acbfe968ac0a1078c1468df4b8de0f61dbbd38172de21397591129d12b8542",
+  "prompt": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/poet_melee_dr_close_grip_v6.txt",
+    "sha256": "43807d33f15b2e659a6afd22be7929cff54ead496175e2042045acb43c725364"
+  },
+  "inputs": [
+    {
+      "role": "image-1-cty41-selected-body-exact-preservation",
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a008/calibrated.png",
+      "sha256": "e6feabd6ca60bf75701528c30056103e7781cb6fe5234de353c14caf41ef0404"
+    },
+    {
+      "role": "image-2-approved-unsheathed-tang-dao-form",
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v02.png",
+      "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1"
+    },
+    {
+      "role": "image-3-close-grip-raised-blade-guide",
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_melee_dr_close_grip_pose_guide_v6.png",
+      "sha256": "e5ba41d603f184422cda41b3d29858ccc983e56620b85bfac3cea212e536770a"
+    }
+  ],
+  "target": {
+    "direction": "down-right",
+    "pose": "melee"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": true,
+  "poseGuide": {
+    "poseGuideId": "pose-guide-98eff3199fa852c9",
+    "sha256": "30a872b54d58858590649ccebbc5ed628c3dbee67be6b036a4f69585252804b4"
+  },
+  "localReferences": []
+}

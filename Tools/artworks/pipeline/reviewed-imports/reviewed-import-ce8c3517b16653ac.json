@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 2,
+  "reviewedImportId": "reviewed-import-ce8c3517b16653ac",
+  "contractId": "contract-0f025021aa4b2995",
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_death_hunter_close_dao_v2_a001_quick_scale_review.png",
+    "sha256": "b0d8c8204614f035abeb1f3fbcdb155b33b4249609d7da2399361db5eecb63e7"
+  },
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/candidates/poet_death_hunter_close_dao_v02_reviewed_clean.png",
+    "sha256": "235922e278fd3946e74763084e7576a0b1eed8128195b03361939f13c0a8940e"
+  },
+  "preview": {
+    "path": "Tools/artworks/poet_five_red_chow/candidates/poet_death_hunter_close_dao_v02_reviewed_clean_128.png",
+    "sha256": "cae1bb361b0312980e22a5601d86cc4c5f6e524b3f2283e558a4747f3faa0b5a"
+  },
+  "sizeComparison": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_death_hunter_close_dao_v02_size_comparison.png",
+    "sha256": "474ab9ea31f6faea9b960c0f7b0a678c88d58d854c7c4dd23f3378d0096f94fe"
+  },
+  "reviewer": "cty41",
+  "reason": "cty41 explicitly selected revised Poet Death v2 for promotion. Acceptance retains identity simplification, mild pear/bean core and sheath-tip proximity. Deterministic processing clears low-alpha exact chroma and centers the corpse AABB preview.",
+  "acceptedAt": "2026-09-14T14:23:28.3860764+08:00",
+  "sourceMode": "reviewed_import"
+}

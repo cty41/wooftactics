@@ -707,6 +707,53 @@ class ArtworkPipelineTests(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertEqual("supporting-derived", first["role"])
 
+    def test_pose_guide_renders_validated_action_design(self):
+        anchor = self.png("Tools/artworks/approved/action-anchor.png")
+        spec_path = self.root / "Tools/artworks/specs/action-design.json"
+        spec_path.parent.mkdir(parents=True, exist_ok=True)
+        spec_path.write_text(json.dumps({
+            "canvas": [256, 256],
+            "coreAxis": {"bottom": [122, 232], "top": [148, 116], "tiltDegrees": [10, 18]},
+            "footCenter": [128, 236],
+            "weapon": {"hiddenGrip": [150, 158], "exitWindow": [140, 145, 165, 175], "tipRegion": [198, 202, 242, 238]},
+            "forbiddenRegions": [],
+            "equipmentState": {"scabbard": "present"},
+            "actionDesign": {
+                "silhouette": [[95, 216], [102, 145], [132, 112], [166, 145], [171, 205], [145, 229]],
+                "lineOfAction": [[112, 224], [151, 119]],
+                "centerOfMass": [137, 177],
+                "pawContactZones": {
+                    "nearHand": [[153, 154], [166, 158], [164, 171], [151, 168]],
+                    "farHand": [[142, 158], [153, 160], [151, 172], [140, 169]],
+                    "nearFoot": [[108, 225], [122, 224], [124, 236], [108, 236]],
+                    "farFoot": [[137, 222], [151, 224], [153, 236], [138, 236]]
+                },
+                "compressionLine": [[105, 190], [137, 177], [164, 161]],
+                "counterbalanceLine": [[120, 166], [91, 143], [72, 126]]
+            }
+        }), encoding="utf-8")
+        composition = pipeline.create_composition(self.store, self.ns(
+            asset_id="hero-action-design", spec=str(spec_path), anchor=str(anchor)))
+        guide = pipeline.render_pose_guide(self.store, self.ns(
+            composition_id=composition["compositionId"], output="Tools/artworks/guides/action-design.png"))
+        rendered = Image.open(self.store.absolute(guide["artifact"]["path"])).convert("RGBA")
+        self.assertGreater(rendered.getpixel((137, 177))[3], 0)
+        self.assertGreater(rendered.getpixel((116, 233))[2], 150)
+        detached = json.loads(spec_path.read_text(encoding="utf-8"))
+        detached["weapon"]["hiddenGrip"] = None
+        spec_path.write_text(json.dumps(detached), encoding="utf-8")
+        detached_composition = pipeline.create_composition(self.store, self.ns(
+            asset_id="detached-weapon-action-design", spec=str(spec_path), anchor=str(anchor)))
+        detached_guide = pipeline.render_pose_guide(self.store, self.ns(
+            composition_id=detached_composition["compositionId"], output="Tools/artworks/guides/detached-action-design.png"))
+        self.assertTrue(self.store.absolute(detached_guide["artifact"]["path"]).exists())
+        broken = json.loads(spec_path.read_text(encoding="utf-8"))
+        broken["actionDesign"]["centerOfMass"] = [300, 177]
+        spec_path.write_text(json.dumps(broken), encoding="utf-8")
+        with self.assertRaisesRegex(pipeline.PipelineError, "invalid point"):
+            pipeline.create_composition(self.store, self.ns(
+                asset_id="broken-action-design", spec=str(spec_path), anchor=str(anchor)))
+
     def test_guard_gem_window_rejects_tip_pommel_missing_extra_and_oversized_gems(self):
         weapon = {
             "gemWindow": [122, 168, 132, 178],
@@ -843,6 +890,47 @@ class ArtworkPipelineTests(unittest.TestCase):
         text = self.store.absolute(compiled["artifact"]["path"]).read_text(encoding="utf-8")
         self.assertIn("near-round spherical flying core", text)
         self.assertNotIn("exactly four paws", text)
+
+    def test_v4_compile_prompt_uses_brief_invariants_and_role_bindings(self):
+        composition = self.v2_composition()
+        guide = pipeline.render_pose_guide(self.store, self.ns(
+            composition_id=composition["compositionId"], output="Tools/artworks/reviews/v4-guide.png"))
+        anchor = self.root / "Tools/artworks/approved/v2-anchor.png"
+        prompt = self.root / "Tools/artworks/prompts/poet-v4.md"
+        prompt.parent.mkdir(parents=True, exist_ok=True)
+        prompt.write_text("one coherent poet action sprite", encoding="utf-8")
+        brief_path = self.root / "Tools/artworks/briefs/poet-v4.json"
+        brief_path.parent.mkdir(parents=True, exist_ok=True)
+        role = "image-1-poet-identity-only"
+        brief = {
+            "schemaVersion": 1, "briefKind": "asset", "briefId": "poet-v4", "family": "actor",
+            "purpose": "Show the poet committing to a melee impact.",
+            "firstRead": ["poet", "impact"],
+            "identityInvariants": ["approved five-red chow face", "exactly four attached paws", "no clothing or drinking vessel"],
+            "forbidden": ["generic gray-white forehead blaze", "heterochromic ear"],
+            "referenceResponsibilities": [{"role": role, "path": self.store.relative(anchor),
+                "sha256": pipeline.sha256_file(anchor), "responsibility": "identity and volume only"}],
+        }
+        brief_path.write_text(json.dumps(brief), encoding="utf-8")
+        contract_id = "contract-v4-prompt"
+        pipeline.write_json_idempotent(self.store.record("contracts", contract_id), {
+            "schemaVersion": 4, "contractId": contract_id,
+            "compositionSpec": {"compositionId": composition["compositionId"]},
+            "briefSpec": {"briefId": "poet-v4", "path": self.store.relative(brief_path), "sha256": pipeline.sha256_file(brief_path)},
+        })
+        job_id = "job-v4-prompt"
+        pipeline.write_json_idempotent(self.store.record("jobs", job_id), {
+            "schemaVersion": 4, "jobId": job_id, "contractId": contract_id,
+            "prompt": {"path": self.store.relative(prompt), "sha256": pipeline.sha256_file(prompt)},
+            "inputs": [{"role": role, "path": self.store.relative(anchor), "sha256": pipeline.sha256_file(anchor)}],
+        })
+        compiled = pipeline.compile_prompt(self.store, self.ns(
+            job_id=job_id, pose_guide_id=guide["poseGuideId"], output="Tools/artworks/reviews/poet-v4-prompt.md"))
+        text = self.store.absolute(compiled["artifact"]["path"]).read_text(encoding="utf-8")
+        self.assertIn("approved five-red chow face", text)
+        self.assertIn("identity and volume only", text)
+        self.assertIn("generic gray-white forehead blaze", text)
+        self.assertNotIn("half-body alternate coat color", text)
 
     def test_end_to_end_is_idempotent_and_promotes(self):
         _, job, _ = self.contract_and_job()
@@ -1620,7 +1708,7 @@ class ArtworkPipelineTests(unittest.TestCase):
     def test_death_recipe_cli_is_retired_but_reviewed_import_promotes_exact_bytes(self):
         parser = pipeline.build_parser()
         self.assertNotIn("render-death-recipe", parser._subparsers._group_actions[0].choices)
-        contract, _job, _job_args = self.contract_and_job()
+        contract, _job = self.occlusion_contract_and_job()
         source = self.png("Tools/artworks/concepts/death-source.png")
         candidate_path = self.root / "Tools/artworks/candidates/death.png"; candidate_path.parent.mkdir(parents=True)
         candidate = Image.new("RGBA", (256, 256), (0, 0, 0, 0)); ImageDraw.Draw(candidate).ellipse((73, 81, 182, 174), fill=(80, 70, 65, 255)); candidate.save(candidate_path)
@@ -1634,6 +1722,7 @@ class ArtworkPipelineTests(unittest.TestCase):
             size_comparison=comparison["artifact"]["path"], reviewer="cty41", reason="visual size accepted",
             accepted_at="2026-08-21T00:00:00+08:00"))
         attempt_id = adopted["attempt"]["attemptId"]
+        self.assertIsNone(adopted["job"]["contractRequirements"])
         pipeline.decide(self.store, self.ns(attempt_id=attempt_id, reviewer="cty41", reason="visual size accepted",
                                              decided_at="2026-08-21T00:00:00+08:00"), "approved")
         master_output = self.store.absolute(contract["outputs"]["master"]); master_output.parent.mkdir(parents=True, exist_ok=True)

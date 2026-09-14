@@ -1,0 +1,243 @@
+{
+  "schemaVersion": 2,
+  "compositionId": "composition-cdee2509ef117712",
+  "assetId": "poet-five-red-chow-melee-dr-release-impact-body-v4",
+  "spec": {
+    "canvas": [
+      256,
+      256
+    ],
+    "bodyLayer": true,
+    "coreBbox": [
+      90,
+      96,
+      181,
+      232
+    ],
+    "coreAxis": {
+      "bottom": [
+        113,
+        228
+      ],
+      "top": [
+        153,
+        107
+      ],
+      "tiltDegrees": [
+        12.0,
+        23.0
+      ]
+    },
+    "footCenter": [
+      128,
+      236
+    ],
+    "weapon": {
+      "hiddenGrip": [
+        162,
+        165
+      ],
+      "exitWindow": [
+        150,
+        150,
+        178,
+        181
+      ],
+      "tipRegion": [
+        196,
+        207,
+        232,
+        242
+      ],
+      "tipMayBeOccluded": true
+    },
+    "forbiddenRegions": [],
+    "requiredHiddenLabels": [],
+    "visibleAreaCaps": {},
+    "equipmentState": {
+      "scabbard": "absent",
+      "blade": "absent",
+      "staticEffects": "absent"
+    },
+    "actionDesign": {
+      "silhouette": [
+        [
+          91,
+          218
+        ],
+        [
+          91,
+          157
+        ],
+        [
+          106,
+          116
+        ],
+        [
+          128,
+          96
+        ],
+        [
+          153,
+          103
+        ],
+        [
+          173,
+          128
+        ],
+        [
+          181,
+          169
+        ],
+        [
+          174,
+          211
+        ],
+        [
+          153,
+          231
+        ],
+        [
+          111,
+          232
+        ]
+      ],
+      "lineOfAction": [
+        [
+          108,
+          229
+        ],
+        [
+          153,
+          108
+        ]
+      ],
+      "centerOfMass": [
+        139,
+        177
+      ],
+      "pawContactZones": {
+        "nearHand": [
+          [
+            153,
+            151
+          ],
+          [
+            178,
+            156
+          ],
+          [
+            176,
+            177
+          ],
+          [
+            151,
+            172
+          ]
+        ],
+        "farHand": [
+          [
+            142,
+            163
+          ],
+          [
+            164,
+            163
+          ],
+          [
+            165,
+            183
+          ],
+          [
+            143,
+            181
+          ]
+        ],
+        "nearFoot": [
+          [
+            91,
+            216
+          ],
+          [
+            116,
+            216
+          ],
+          [
+            118,
+            237
+          ],
+          [
+            92,
+            237
+          ]
+        ],
+        "farFoot": [
+          [
+            137,
+            216
+          ],
+          [
+            161,
+            218
+          ],
+          [
+            162,
+            237
+          ],
+          [
+            138,
+            237
+          ]
+        ]
+      },
+      "compressionLine": [
+        [
+          104,
+          201
+        ],
+        [
+          139,
+          177
+        ],
+        [
+          164,
+          160
+        ]
+      ],
+      "counterbalanceLine": [
+        [
+          118,
+          171
+        ],
+        [
+          91,
+          148
+        ],
+        [
+          72,
+          130
+        ]
+      ]
+    },
+    "screenSpaceIntent": {
+      "direction": "native down-right front three-quarter facing",
+      "visualMoment": "body-only Release-to-Impact peak",
+      "capsule": "one upright compact capsule whose height remains greater than width; the whole capsule leans forward-right without becoming a horizontal quadruped torso",
+      "paws": "exactly four small round paw pads overlap the capsule boundary inside the four colored contact polygons; no space or limb may exist between any paw and the capsule",
+      "frontPaws": "two front paws cluster at the right-front grip corridor but no handle, blade or scabbard is drawn in this body component",
+      "bodyDynamics": "shift the whole capsule mass forward-right and compress its lower-left side; do not describe or draw support legs, drive legs, thighs, shins, shoulders or hips",
+      "counterbalance": "curled tail/rear fur opens upper-left while remaining attached to the capsule",
+      "valueStructure": "match Image 1 flat controlled value grouping; no smooth body gradient, airbrush shadow, volumetric lighting, glossy highlight patch or extra forehead/body highlight",
+      "equipment": "none; body component contains no sword, handle, guard, blade, scabbard, clothing, vessel, guqin, jewelry or VFX"
+    },
+    "renderForbiddenRegions": false
+  },
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/compositions/poet_melee_dr_release_impact_body_composition_v4.json",
+    "sha256": "c8b96ccc66f9d949c2a60d4613655595be42b752d6b6fbdb89e79aeb6c387d7f"
+  },
+  "anchor": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+    "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+  }
+}

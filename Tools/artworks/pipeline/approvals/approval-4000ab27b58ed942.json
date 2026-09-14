@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 2,
+  "approvalId": "approval-4000ab27b58ed942",
+  "attemptId": "job-45467bc1b4100e53-a001",
+  "candidateSha256": "b0a4abd6330b60090edd771fd5c168aaf99c5b9e5c9ecb3e4cd935c4fa4fbfce",
+  "maskSha256": null,
+  "reviewer": "cty41",
+  "reviewSha256": {
+    "sizeComparison": "d67930be17924ba395a4948676af694773d0c381a6d21d86365895a83e380c34"
+  },
+  "decision": "approved",
+  "reason": "cty41 explicitly said promote after reviewing Cast UL a001. This is a conscious visual acceptance of the recorded side-profile bias, oversized cylindrical core, tiny hind paws, weak tip clearance and style drift; the successful rear-layer depth and no-arm topology are preserved.",
+  "decidedAt": "2026-09-14T01:28:46.3923855+08:00",
+  "annotation": null,
+  "reportSha256": "87dd1e5f972f939e85e9effbc8a3573000ac8a68beaa78a9e60e93e05a5d9901"
+}

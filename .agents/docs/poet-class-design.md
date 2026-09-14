@@ -1,6 +1,6 @@
 # 诗人职业设计与实现合同
 
-状态：`verified_current`（已接入获批五红土松装备版 Idle DR/UL；独立动作与正式分身美术延期）
+状态：`verified_current`（已接入获批五红土松装备版 Idle DR/UL；Melee、Cast、Hit 的 DR/UL 及一张通用 Death 均已离线晋升但尚未接入；正式分身美术延期）
 
 ## 职业定位
 
@@ -81,4 +81,4 @@ dsl_support: unsupported
 
 ## Godot 表现边界
 
-诗人和分身均为 Godot-owned ResourceSaver 内容。诗人运行时 Idle 使用已由 `cty41` 批准的五红土松装备版 DR v03 / UL v07 原图字节，BodyTint 为白色；南/西取 DR、北/东取 UL，仅东/西镜像。Melee、Ranged、Cast、Hit 方向对保持空值并由 Actor 回退到对应 Idle；Death 暂以不镜像的 Idle DR 和 DR offset 占位。分身继承同一 Idle 身份并保留半透明青色 tint，但显式清空动作与死亡字段且不产生尸体。独立动作、正式死亡与正式分身美术仍待后续人工生产和验收；技能逻辑不依赖剑或琴装备。
+诗人和分身均为 Godot-owned ResourceSaver 内容。诗人运行时 Idle 使用已由 `cty41` 批准的五红土松装备版 DR v03 / UL v07 原图字节，BodyTint 为白色；南/西取 DR、北/东取 UL，仅东/西镜像。Melee DR/UL、统一垂直握鞘 Cast DR/UL、标准漫画受击 Hit DR/UL 与贴身入鞘唐刀通用 Death 已于 2026-09-14 离线晋升，但尚未获得运行时接入授权；当前 Melee、Ranged、Cast、Hit 方向对仍保持空值并由 Actor 回退到对应 Idle，Death 暂以不镜像的 Idle DR 和 DR offset 占位。六个诗人技能族只消费 Melee 或 Cast Cue，不存在 Ranged/Thrown execution：侠客行和普通攻击复用 Melee，其余五族复用统一 Cast；无需新增特殊角色动作槽。分身继承同一 Idle 身份并保留半透明青色 tint，但显式清空动作与死亡字段且不产生尸体。正式分身美术仍待后续人工生产和验收；剑雨独特性应由独立 VFX 表达，分身独特性应由独立单位美术/消失 FX 表达，技能逻辑不依赖剑或琴装备。

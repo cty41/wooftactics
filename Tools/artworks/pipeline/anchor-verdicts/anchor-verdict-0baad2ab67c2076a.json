@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 4,
+  "anchorVerdictId": "anchor-verdict-0baad2ab67c2076a",
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+    "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+  },
+  "family": "actor",
+  "responsibilities": [
+    "Poet identity, compact volume, native DR facing, cinnamon-red palette, exactly-four-attached-paw topology, curled-tail silhouette, and carried empty-scabbard relationship only for the Melee DR v3 experiment."
+  ],
+  "excludedUses": [
+    "Do not copy the upright Idle pose, current paw positions, or sheathed-blade state as the target action pose."
+  ],
+  "review": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_v3_source_responsibility_review.png",
+    "sha256": "b8c2c5dc4cf399beefbb227e967968fdb76c5a645bc3ca8858b0ac4aeefe0d23"
+  },
+  "decision": "approved-anchor",
+  "reviewer": "cty41",
+  "reason": "cty41 confirmed the three-source strategy: this formal equipped Idle DR is Image 1 and the sole identity/volume authority; the new deterministic guide owns action design and Demonbound is excluded.",
+  "decidedAt": "2026-09-12T12:09:43+08:00"
+}

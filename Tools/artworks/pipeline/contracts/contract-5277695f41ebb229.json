@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 4,
+  "contractId": "contract-5277695f41ebb229",
+  "assetId": "poet-five-red-chow-melee-dr-release-impact-v3",
+  "approvedAssetId": "poet-five-red-chow-melee-dr-release-impact-v3",
+  "kind": "action_pose",
+  "direction": "down-right",
+  "pose": "melee",
+  "anchor": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+    "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3",
+    "maskPath": "Tools/artworks/pipeline/artifacts/job-34f6747e5a1f30d0/job-34f6747e5a1f30d0-a001/mask.png",
+    "maskSha256": "30350db22426bd078b09d9095ad797d69eceb3ccd7c83f8f4bb960193e440fa0"
+  },
+  "maskRequired": true,
+  "noArms": true,
+  "handSides": {
+    "near_hand": "left",
+    "far_hand": "right"
+  },
+  "occlusion": null,
+  "compositionSpec": {
+    "compositionId": "composition-632266b9dd38fea2",
+    "sha256": "698e8b2898a12a467517b7fbcf2b5f648b7d3b0ec99374621a0bc8a62f96ade7"
+  },
+  "identitySpec": null,
+  "requiresInvocation": true,
+  "canvasSpec": {
+    "masterSize": [
+      256,
+      256
+    ]
+  },
+  "tilePlacementSpec": null,
+  "styleSpec": {
+    "profileId": "pure-run-project-art-direction-v1",
+    "profilePath": "Tools/artworks/pure_run/art_direction/project_art_direction_v1.json",
+    "profileSha256": "4820888ee25ac6865705ef130abdbec64ed597c6b126d96e6361a01960ec13fb",
+    "targetVisibleHeight": 140,
+    "visibleHeightRange": [
+      120,
+      155
+    ]
+  },
+  "equipmentProductionSpec": null,
+  "tolerances": {
+    "sizePx": 6,
+    "centerPx": 4
+  },
+  "outputs": {
+    "master": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_melee_dr_release_impact_v03.png",
+    "preview": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_melee_dr_release_impact_v03_128.png"
+  },
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "gpt-generated-from-approved-identity-approved-weapon-and-deterministic-action-guide"
+  },
+  "artDirectionSpec": {
+    "profileId": "pure-run-project-art-direction-v1",
+    "path": "Tools/artworks/pure_run/art_direction/project_art_direction_v1.json",
+    "sha256": "4820888ee25ac6865705ef130abdbec64ed597c6b126d96e6361a01960ec13fb"
+  },
+  "materialLanguageSpec": {
+    "profileId": "pure-run-material-language-v1",
+    "path": "Tools/artworks/pure_run/art_direction/material_language_v1.json",
+    "sha256": "3efa1e523c20c41f407ff142759a0bc18bb874392266006c704c314fd13dfd83"
+  },
+  "familyProfileSpec": {
+    "profileId": "pure-run-actor-family-v1",
+    "family": "actor",
+    "path": "Tools/artworks/pure_run/art_direction/families/actor_v1.json",
+    "sha256": "a5214ad32ea193569198cac822ddac860adcdf8f4e03f24d455d9aee3099f95d"
+  },
+  "briefSpec": {
+    "briefId": "poet-melee-dr-release-impact-v3",
+    "kind": "asset",
+    "path": "Tools/artworks/poet_five_red_chow/briefs/poet_melee_dr_release_impact_asset_brief_v3.json",
+    "sha256": "5045df2cf3c5a94cd5cc985c74785fb35a1ea71c9ceb45e6299a33495d811fe5"
+  },
+  "themeProfileSpec": null,
+  "artDirectionManifestSpec": {
+    "manifestId": "pure-run-art-direction-manifest-v1",
+    "path": "Tools/artworks/pure_run/art_direction/art_direction_manifest_v1.json",
+    "sha256": "dfc6e9a0cd517287f5cfa10d7ad36393908eed4c7cb92c2c03ede403f95d71f9"
+  },
+  "anchorVerdictIds": [
+    "anchor-verdict-0baad2ab67c2076a",
+    "anchor-verdict-7d63dc0c53bc6c4a"
+  ],
+  "requiredReviewPanels": [
+    "candidate-master",
+    "preview-128",
+    "identity-overlay",
+    "direction-action",
+    "weapon-inspection",
+    "grip-contact",
+    "scabbard-occlusion",
+    "tile-review",
+    "current-godot-static-context",
+    "style-anchor-context"
+  ],
+  "acceptanceCaseIds": [
+    "POET-MELEE-DR-V3-IDENTITY-001",
+    "POET-MELEE-DR-V3-ACTION-001",
+    "POET-MELEE-DR-V3-TOPOLOGY-001",
+    "POET-MELEE-DR-V3-WEAPON-001",
+    "POET-MELEE-DR-V3-CONTEXT-001",
+    "POET-MELEE-DR-V3-EXCLUSION-001"
+  ]
+}

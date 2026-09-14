@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 2,
+  "poseGuideId": "pose-guide-d303f007d0c9df7c",
+  "compositionId": "composition-4bb4da6b699a8bb7",
+  "compositionSha256": "b10c2a33f0b61934a008f8100cbadec6b5e90daa1b1bb78565c8b0d4155ffd4a",
+  "anchorSha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/guides/poet_hit_ul_hunter_recoil_pose_guide_v1.png",
+    "sha256": "f54eab6d7fbae45e88ef484147cb8af6bc9f37dc1118188d637782099afee549"
+  },
+  "role": "supporting-derived"
+}

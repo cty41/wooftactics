@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 2,
+  "feedbackAddendumId": "feedback-addendum-f5c38406b7ea9695",
+  "attemptId": "job-0a6c57acd0d21d59-a002",
+  "parentFeedbackId": "feedback-77cbac471a36f39e",
+  "reviewer": "cty41",
+  "defects": [
+    "The feet have grown connecting limbs again; the pose does not preserve the required paws-only topology with each paw attached directly to the capsule body.",
+    "The body contains more modeled lighting and shading than expected and visibly more than the previously approved poet source art; preserve the flatter source value structure and restrained material treatment."
+  ],
+  "recordedAt": "2026-09-12T12:59:55+08:00",
+  "authorType": "human",
+  "disposition": null
+}

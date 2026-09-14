@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-a598e3685963e74d-a001",
+  "jobId": "job-a598e3685963e74d",
+  "ordinal": 1,
+  "generationRound": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "prepared",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/incoming/poet_hit_dr_hunter_recoil_v1_raw_a001.png",
+      "sha256": "7ae665f483f46ed80c16f181bdaf541a5600d3637808556efad4c2f6cf542256"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-a598e3685963e74d/job-a598e3685963e74d-a001/raw.png",
+      "sha256": "7ae665f483f46ed80c16f181bdaf541a5600d3637808556efad4c2f6cf542256"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-a598e3685963e74d/job-a598e3685963e74d-a001/prepared.png",
+      "sha256": "ff69e6d02d28e988a34e2440fb09511dd23e0990b00a5af1b84bd2af17ec9a4b"
+    }
+  },
+  "report": null,
+  "approvalId": null,
+  "feedbackId": "feedback-1a75a0bda9927200",
+  "generationInvocationId": "generation-invocation-e88dffbc71486149",
+  "generationDeliveryId": "generation-delivery-796022911e419bcf",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 35
+  },
+  "feedbackAddendumIds": [
+    "feedback-addendum-c1ec1d7714d4b013"
+  ]
+}

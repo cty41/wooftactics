@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "reviewOnly": true,
+  "assetId": "poet-melee-ul-high-guard-mockup-v12-rear-paw-occlusion",
+  "parentPose": "poet-melee-ul-high-guard-mockup-v11-five-degree-calibrated",
+  "humanFeedback": "The pose is acceptable, but both paws are currently painted in front of the body. They belong behind the body and should be mostly occluded, with only small outer contact arcs visible.",
+  "sourceConstructionSpec": "Tools/artworks/poet_five_red_chow/compositions/poet_melee_ul_high_guard_mockup_v9_dr_corresponding_hands.json",
+  "pawDepthCorrection": {
+    "farHandAdditionalTranslation": [0,0],
+    "nearHandAdditionalTranslation": [-8,0],
+    "correctedLayerOrder": ["equipment", "mirroredDrFarHand", "mirroredDrNearHandShifted", "cleanedFormalUl"],
+    "purpose": "place both paws below the body layer; shift the near paw slightly outward so each retains only a small visible crescent while most pixels are body-occluded"
+  },
+  "poseTransform": {"preRotationTranslation": [0,-4], "wholeCompositeRotationDegreesCounterClockwise": 5, "rotationCenterFootAnchor": [128,236], "postRotationTranslation": [0,-1]},
+  "retained": ["native UL identity", "accepted 5-degree forward pose", "approved high-left Tang dao", "shared DR-corresponding grip", "no scabbard", "baseline y=236"],
+  "equipmentState": {"blade": "visible", "scabbard": "absent", "staticEffects": "absent"},
+  "notes": "Deterministic review-only v12. Rebuild from approved sources; do not reuse v11 foreground-paw pixels. Both paw layers are alpha-composited before the cleaned complete UL body, then the accepted pose transform is reapplied."
+}

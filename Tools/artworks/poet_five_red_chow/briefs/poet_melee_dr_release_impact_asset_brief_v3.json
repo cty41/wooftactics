@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "briefKind": "asset",
+  "briefId": "poet-melee-dr-release-impact-v3",
+  "assetId": "poet-five-red-chow-melee-dr-release-impact-v3",
+  "family": "actor",
+  "purpose": "Create one complete Melee DR sprite for the Release-to-Impact peak: the poet has committed body weight into a steep down-right Tang-dao strike. This is not an Idle, windup, recover, or VFX frame.",
+  "firstRead": ["five-red-chow-poet", "native-down-right-facing", "committed-body-weight", "release-to-impact-downslash", "drawn-ring-pommel-tang-dao"],
+  "targetContexts": ["master-256", "preview-128", "current-godot-static-context-96x48-scale-0.34", "future-release-to-impact-runtime-window"],
+  "identityInvariants": [
+    "Image 1 is the sole identity, volume, palette and native DR-facing authority",
+    "cinnamon-red five-red native Chow Chow with broad lion-like head, short wide muzzle, small upright triangular ears, two small dark eyes and restrained confident mouth",
+    "compact furry capsule body with thick high-set curled plume tail",
+    "exactly four small round paws attached directly to the body with broad multi-pixel contact; no arms, forearms, elbows, leg connectors, human hands or humanoid torso",
+    "poet profession is expressed through dignified temperament, not clothing or extra equipment",
+    "no hat, clothing, gourd, wineskin, guqin, jewelry or spell effect",
+    "one empty carried side/back scabbard remains mostly behind the body",
+    "all feet remain within the 256 canvas and preserve the offline y236 ground-anchor envelope"
+  ],
+  "shapeStrategy": "Redraw one coherent action sprite from the three separated responsibilities. Follow Image 3 for the action mass, line of action, forward center of mass, support/drive feet, body compression and upper-left counterbalance. Do not copy its guide colors, boxes or abstract marks. Keep the head, body, tail and all four paws as one coherent five-red-chow silhouette.",
+  "colorStrategy": "Preserve Image 1 cinnamon-red character palette and Image 2 weapon palette. Use a flat exact #00ff00 removable background only; do not introduce guide colors into the sprite.",
+  "materialStrategy": "Preserve Pure Run bold dark outlines, compact readable masses, flat controlled values and restrained pixel detail at game scale.",
+  "attentionRole": "primary",
+  "allowedVariation": ["forward-right core lean required by the strike", "compressed body middle", "right/down support-paw placement", "rear-left drive-paw trail", "tail opening upper-left as counterbalance", "natural partial occlusion of the empty scabbard"],
+  "forbidden": ["upright Idle weapon display", "generic gray-white forehead blaze", "heterochromic ear", "half-body alternate coat color", "hat", "clothing", "gourd", "wineskin", "guqin", "jewelry", "Demonbound identity", "arm", "forearm", "elbow", "leg connector", "human hand", "floating paw", "thin grip connector", "missing paw", "extra paw", "horizontal sword axis", "broad double-edged fantasy sword", "curved katana", "second blade", "missing empty scabbard", "motion blur", "slash trail", "glow", "VFX", "text", "watermark", "cropped silhouette", "pose-guide lines or boxes"],
+  "resolvedHistory": "Historical Melee v1/v2 contracts incorrectly invented hat, clothing and gourd identity requirements and used Demonbound as a positive action input. Those records remain immutable negative history but provide no positive source facts. This v3 experiment starts from the formally confirmed three-source split and permits exactly one new candidate.",
+  "referenceResponsibilities": [
+    {
+      "role": "image-1-approved-poet-identity-volume-dr",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+      "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3",
+      "responsibility": "Sole character identity, compact volume, cinnamon-red palette, native DR facing, four attached paws, curled tail, facial restraint and carried empty-scabbard relationship. Do not copy the upright Idle pose or sheathed-blade state."
+    },
+    {
+      "role": "image-2-approved-unsheathed-tang-dao-form",
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v02.png",
+      "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1",
+      "responsibility": "Sole drawn weapon authority: ring pommel, grip, guard, straight single-edged Tang-dao blade, proportions, tip, colors and detail budget. Do not copy isolated canvas placement as body pose."
+    },
+    {
+      "role": "image-3-deterministic-release-impact-action-guide",
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_melee_dr_release_impact_pose_guide_v3.png",
+      "sha256": "8b88f44ee38e01728e9471fef2c5424bf2b34086499f99bd89f3608435d5d421",
+      "responsibility": "Action design only: down-right committed line of action, forward center of mass, right/down support paw, rear-left drive paw, compressed body middle, upper-left counterbalance and steep blade endpoints. Do not render guide colors, boxes or abstract marks."
+    }
+  ],
+  "requiredReviewPanels": ["candidate-master", "preview-128", "identity-overlay", "direction-action", "weapon-inspection", "grip-contact", "scabbard-occlusion", "tile-review", "current-godot-static-context", "style-anchor-context"],
+  "acceptanceCases": [
+    {"caseId": "POET-MELEE-DR-V3-IDENTITY-001", "evidence": ["candidate-master", "identity-overlay"], "automatedFacts": ["identity anchor and candidate hashes remain bound"], "humanChecks": ["five-red-chow identity, face, palette, curled tail and exactly four attached paws survive", "no clothing, hat, drinking vessel, guqin or foreign character identity appears"], "passCriteria": "The candidate is unmistakably the approved poet rather than a generic dog or another class."},
+    {"caseId": "POET-MELEE-DR-V3-ACTION-001", "evidence": ["candidate-master", "direction-action", "preview-128"], "automatedFacts": ["blade exits the body-adjacent grip and terminates in the lower-right tip region"], "humanChecks": ["center of mass visibly commits toward the target", "support and drive paws create a stable attack base", "body compression and counterbalance prevent an upright display-pose read"], "passCriteria": "Release-to-impact downslash reads immediately without relying on VFX."},
+    {"caseId": "POET-MELEE-DR-V3-TOPOLOGY-001", "evidence": ["candidate-master", "grip-contact", "identity-overlay"], "automatedFacts": ["no arm labels and multi-pixel paw/body contact are required"], "humanChecks": ["both front paws attach directly to the body around the grip", "two hind paws remain attached and grounded", "no connector limbs or human hands"], "passCriteria": "The action preserves the project's no-arm exactly-four-paw topology."},
+    {"caseId": "POET-MELEE-DR-V3-WEAPON-001", "evidence": ["candidate-master", "weapon-inspection", "scabbard-occlusion"], "automatedFacts": ["one drawn blade and one empty scabbard are required"], "humanChecks": ["ring-pommel straight single-edged Tang-dao form matches Image 2", "blade axis is steep down-right and tip is complete", "empty scabbard remains side/back without reading as a second blade"], "passCriteria": "Weapon form, direction and state are unambiguous."},
+    {"caseId": "POET-MELEE-DR-V3-CONTEXT-001", "evidence": ["preview-128", "tile-review", "current-godot-static-context"], "automatedFacts": ["256x256 RGBA, transparent prepared output and offline y236 envelope are required"], "humanChecks": ["identity and committed strike remain readable at current Godot 96x48/.34 static scale", "silhouette remains uncropped"], "passCriteria": "The pose survives current static Game View scale; temporal runtime validation remains pending until the cue timing is implemented."},
+    {"caseId": "POET-MELEE-DR-V3-EXCLUSION-001", "evidence": ["candidate-master", "style-anchor-context"], "automatedFacts": ["exactly three ordered role-separated inputs are bound and Demonbound is absent"], "humanChecks": ["no guide marks, arms, extra equipment, VFX, text or reference leakage"], "passCriteria": "All source and content exclusions hold."}
+  ]
+}

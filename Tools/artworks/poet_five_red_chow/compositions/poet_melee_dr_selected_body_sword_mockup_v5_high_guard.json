@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "reviewOnly": true,
+  "assetId": "poet-melee-dr-selected-body-sword-mockup-v5-high-guard",
+  "supersedesTransformDraft": "poet-melee-dr-selected-body-sword-mockup-v4-high-guard",
+  "visualMoment": "raised sword at the highest preparation point immediately before a downward cut",
+  "body": {
+    "attemptId": "job-0a890f2b18e97967-a008",
+    "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a008/calibrated.png",
+    "sha256": "e6feabd6ca60bf75701528c30056103e7781cb6fe5234de353c14caf41ef0404",
+    "maskPath": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a008/calibrated-mask.png",
+    "maskSha256": "e91824130da09117232553a4ef32482c695e7feab7a88778d7e84b5d2fa4a972"
+  },
+  "equipment": {
+    "assetId": "poet-ring-pommel-tang-dao-unsheathed-v02",
+    "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v02.png",
+    "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1",
+    "sourceBbox": [83, 141, 173, 237],
+    "scalePercent": 85,
+    "rotateCropDegreesCounterClockwise": 90,
+    "transformedRingAnchor": [7, 69],
+    "destinationRingAnchor": [141, 205],
+    "destinationTopLeft": [134, 136],
+    "expectedTipRegion": [210, 133, 217, 142]
+  },
+  "layerOrder": ["selected-body-exact", "approved-unsheathed-tang-dao-high-guard", "far-hand-overlay", "near-hand-overlay"],
+  "scabbard": "absent",
+  "notes": "Deterministic review-only v5. Rotate the cropped/resized sword with expand=true before aligning its transformed ring anchor. This avoids the full-canvas rotation translation seen in the superseded v4 transform draft. Body pixels remain unresampled and unpainted."
+}

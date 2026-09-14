@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 2,
+  "reportId": "report-4608be5781ff37c1",
+  "passed": true,
+  "issues": [],
+  "candidateGeometry": {
+    "bbox": [
+      58,
+      108,
+      199,
+      236
+    ],
+    "bboxSize": [
+      141,
+      128
+    ],
+    "center": [
+      128.0,
+      171.5
+    ]
+  },
+  "previewGeometry": {
+    "bbox": [
+      28,
+      53,
+      101,
+      119
+    ],
+    "bboxSize": [
+      73,
+      66
+    ],
+    "center": [
+      64.0,
+      85.5
+    ]
+  },
+  "reviewedImportId": "reviewed-import-172a0bc5f32c399b"
+}

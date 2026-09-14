@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-ee754935364946c2",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_vertical_guard_grip_v2_a001_quick_scale_review.png",
+    "sha256": "205fb41759f8c5ac05ea0c0987dd601b1ffd3904a7a15458851a34ff08752d8e"
+  },
+  "role": "supporting-derived",
+  "note": "Deterministic game-scale quick review of vertical guard-grip Cast v2 a001; review-only and non-promotable. Hard arm, grounded-tip, staff-length, grip and identity defects are recorded in feedback-58247b43b74838b8.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

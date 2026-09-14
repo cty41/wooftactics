@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-3284abb54c9e7b62",
+  "attemptId": "job-5ceb11280e5973fa-a001",
+  "candidateSha256": "1b96aadda1891dd05964598004e886ddd06a5427ad3ee5c30e1233c3fc4c2fa3",
+  "reviewer": "pipeline-agent",
+  "verdict": "retry",
+  "strengths": [
+    "Selected B composition reads clearly: both front paws gather around the middle of one fully sheathed focus; ring pommel is lower-left, sheathed tip upper-right; no extra props, bare blade or VFX."
+  ],
+  "defects": [
+    "Image 1 identity fidelity is too weak: head/muzzle/ruff and value grouping became a smoother generic Chow, forehead acquired two bright oval highlight marks, body became a taller pear-shaped humanoid torso, and the tiny hind paws are not the approved directly attached capsule topology.",
+    "Both front paws are oversized complete circles drawn over the torso rather than small paw pads broadly attached at the body edge; their closed outlines make them read as floating medallions.",
+    "The sheathed dao form is oversimplified: ring pommel is too small, scabbard fittings are rearranged, and the upper-right tip resembles a capped baton more than Image 2.",
+    "Chroma preparation leaves visible bright-green fringe around the silhouette; this is technical cleanup only after visual identity is corrected."
+  ],
+  "nextPromptDelta": "Preserve Image 1 identity much more literally: same broad lion-like head, short wide muzzle, compact upper/mid/lower body widths, coarse ruff shapes, restrained flat highlights and small attached hind paws. Remove all forehead highlight ovals. Make each front paw smaller and partially merge its inner contour into the body edge, while still clasping opposite sides of the weapon midpoint. Copy Image 2 ring size, fitting order and sheath-tip shape exactly. Keep all frozen B-pose geometry unchanged.",
+  "recordedAt": "2026-09-13T19:43:36.2053398+08:00",
+  "authorType": "agent",
+  "categories": [],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "Keep B pose, chest-height two-paw midpoint grip, fully sheathed single dao, lower-left ring pommel, upper-right sheathed tip, no bare blade, no extra prop and no VFX."
+  ],
+  "pendingFixes": [
+    "Human confirmation of whether the B action direction itself should remain."
+  ]
+}

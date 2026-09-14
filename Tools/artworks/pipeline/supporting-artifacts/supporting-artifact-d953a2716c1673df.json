@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-d953a2716c1673df",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v3_forward_lean.png",
+    "sha256": "4cf132b462ea6ce57048aa39940a7f9984f8c6a6fc15c70c036ea66bb42397eb"
+  },
+  "role": "supporting-derived",
+  "note": "Intermediate deterministic UL forward-lean review responding to cty41 DR/UL correspondence feedback; superseded by baseline/margin-calibrated v4.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

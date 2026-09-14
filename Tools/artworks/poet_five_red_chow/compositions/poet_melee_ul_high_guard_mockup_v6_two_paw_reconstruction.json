@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "reviewOnly": true,
+  "assetId": "poet-melee-ul-high-guard-mockup-v6-two-paw-reconstruction",
+  "correspondenceAnchor": {"path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_high_guard_mockup_v11_upright_calibrated.png", "sha256": "113cad67f8305d6c12f6c322a91a79c755faecc15bfff15acbfee5a3909bd4bf"},
+  "formalUl": {"path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_ul_v07.png", "sha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512", "maskPath": "Tools/artworks/pipeline/artifacts/job-4affd0d3e702d0d0/job-4affd0d3e702d0d0-a001/calibrated-mask.png", "maskSha256": "edae09310bdfc2d9738685f542f5797b59782824adc2c67bde2c73bc4f0cf6b2"},
+  "body": {"path": "Tools/artworks/pipeline/artifacts/job-9a531767f319b957/job-9a531767f319b957-a001/calibrated.png", "sha256": "9c37f61930aefd4aac08ad6f82a2e1ff6282faf90ca5f0ed42dbfb3e4d29a387"},
+  "feet": {
+    "near": {"path": "Tools/artworks/pipeline/artifacts/job-653c0afd75df4daf/job-653c0afd75df4daf-a001/prepared.png", "sha256": "6aaab932cbb581ae851d36b3451533febacb5abdabe7fd0f26e3cb28f6472a76"},
+    "far": {"path": "Tools/artworks/pipeline/artifacts/job-5823e4943138e2b2/job-5823e4943138e2b2-a001/prepared.png", "sha256": "36a73f0af19e8a189ef65ef292912518b805337c442104f66f750b5b9e4b4e5f"}
+  },
+  "hands": {"nearMaskColor": [0,255,0,255], "farMaskColor": [0,200,0,255], "nearTranslation": [0,0], "farTranslation": [-64,8], "layering": "both behind body; far hand then near hand"},
+  "identityDetail": {"source": "formalUl", "region": [80,90,166,167], "excludeMaskColors": [[255,0,255,255],[0,255,0,255],[0,200,0,255]], "purpose": "restore exact approved UL face, ears and head rendering above the reconstructed clean body"},
+  "equipment": {"path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v02.png", "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1", "sourceBbox": [83,141,173,237], "scalePercent": 85, "rotateCropDegrees": 180, "destinationTopLeft": [27,115]},
+  "layerOrder": ["equipment", "farHandMoved", "nearHand", "farFoot", "body", "identityDetail", "nearFoot"],
+  "expectedAlphaBbox": [27,95,183,237],
+  "equipmentState": {"blade": "visible", "scabbard": "absent", "staticEffects": "absent"},
+  "notes": "Deterministic review reconstruction. Do not use the full equipped Idle UL as the body layer, thereby removing its old right-side hand/equipment state. Extract both approved hand pixels by semantic labels, move the far hand next to the near hand around the shared high-guard grip, keep both behind the clean approved body, and restore only approved head identity details."
+}

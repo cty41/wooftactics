@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "compiledPromptId": "compiled-prompt-91dcde2d3906536e",
+  "jobId": "job-75ce23e75e7159f7",
+  "poseGuideId": "pose-guide-5aadb8da167168b8",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/compiled/poet_melee_dr_deep_grip_v7.md",
+    "sha256": "405cefcfb648723fc01c4a4455adec4e2d210f8658b9dc1f19eb1b577e3be9de"
+  }
+}

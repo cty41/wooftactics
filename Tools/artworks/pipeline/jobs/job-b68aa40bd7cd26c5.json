@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 2,
+  "jobId": "job-b68aa40bd7cd26c5",
+  "state": "ready",
+  "contractId": "contract-86caccabf4d6f9f9",
+  "contractSha256": "822db02c319791a018318dc09b6dd07d8a7bc8e15b51265b53b477049858ed05",
+  "prompt": null,
+  "inputs": [
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_hit_dr_hunter_recoil_v1_a001_quick_scale_review.png",
+      "sha256": "2b522d9ab57f5475be40fab4664d1e359500188ca941c7cf2f0e939b10ed8144"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_hit_dr_hunter_recoil_v01_reviewed_clean.png",
+      "sha256": "4d8b87f7407295f9f6c166086acde62d7976393de172a7061fbff77909edb92d"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_hit_dr_hunter_recoil_v01_reviewed_clean_128.png",
+      "sha256": "14a038ea34dedc150a9788ac53bd7c3bbc9fe9a808ad57bad3aedf100dde4278"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_hit_dr_hunter_recoil_v01_size_comparison.png",
+      "sha256": "3197edcee9e8dadb8333ec1b48ad23faedf0dbc5a7513df909297ef00a12df52"
+    }
+  ],
+  "target": {
+    "direction": "down-right",
+    "pose": "hit"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": false,
+  "sourceMode": "reviewed_import",
+  "reviewedImportId": "reviewed-import-a977b61f988a263b"
+}

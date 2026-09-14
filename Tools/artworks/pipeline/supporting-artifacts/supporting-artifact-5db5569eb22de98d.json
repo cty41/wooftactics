@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-5db5569eb22de98d",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_hit_ul_hunter_recoil_v1_a001_quick_scale_review.png",
+    "sha256": "d0ee608c129f0f3d93d97797a8228c2d5b59a02b6e65543837f4424f420b8bf9"
+  },
+  "role": "supporting-derived",
+  "note": "Deterministic game-scale review of Poet Hit UL a001. One-eye/one-tear and rear equipment succeed; missing second front-paw arc, identity/volume, weak recoil and paw-scale issues are recorded in feedback-56ddd0e96a223ade.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

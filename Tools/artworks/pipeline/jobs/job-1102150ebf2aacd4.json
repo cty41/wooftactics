@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 4,
+  "jobId": "job-1102150ebf2aacd4",
+  "state": "ready",
+  "contractId": "contract-a19e2ce716a68c10",
+  "contractSha256": "6131ca643b559d143005a5a0cb44b5301916ffaf3c7c1a4333cc83a0a92daf0c",
+  "prompt": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/poet_death_hunter_horizontal_prompt_v1.md",
+    "sha256": "d2953597b4cc2197f7b184a7b05697b8e2997076c54496ef307206d6138c8478"
+  },
+  "inputs": [
+    {
+      "role": "image-1-approved-poet-identity-volume",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+      "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+    },
+    {
+      "role": "image-2-approved-hunter-death-pose-only",
+      "path": "Tools/artworks/doge/calibrated/doge_capsule_hunter_death_color_v04.png",
+      "sha256": "f5997651edd71cc78b926d5824ef4ac178f28604f5d7c9846f5a81ee0a2b3d19"
+    },
+    {
+      "role": "image-3-approved-sheathed-dao-form",
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_dr_v02.png",
+      "sha256": "eb4acedf50fe56d2c216e932a7364686de603a4df40c9bc5f1fe10c22ab55999"
+    },
+    {
+      "role": "image-4-deterministic-poet-death-guide",
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_death_hunter_horizontal_pose_guide_v1.png",
+      "sha256": "5ede27b5a7b8635848dcff27da80e91aa97e07bb718372ce4379352e6efb6a29"
+    }
+  ],
+  "target": {
+    "direction": "down-right",
+    "pose": "death"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": true,
+  "poseGuide": {
+    "poseGuideId": "pose-guide-be23aba538f72bbb",
+    "sha256": "515e8f38675e3ef7ce0090262223af463785e19b73b40c381c960d7b11d14acd"
+  },
+  "localReferences": []
+}

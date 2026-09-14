@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "registryId": "asset-brief-afcc2cab0857afa6",
+  "sourceId": "poet-cast-dr-vertical-guard-grip-v2",
+  "sourceType": "asset",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/briefs/poet_cast_dr_vertical_guard_grip_asset_brief_v2.json",
+    "sha256": "0eba655aa12f8c691c37b956cfa39dd0da8ee00ea1a4283c0ec458b5a284e1bd"
+  }
+}

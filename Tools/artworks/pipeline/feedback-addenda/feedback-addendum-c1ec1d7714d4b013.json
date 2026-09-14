@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "feedbackAddendumId": "feedback-addendum-c1ec1d7714d4b013",
+  "attemptId": "job-a598e3685963e74d-a001",
+  "parentFeedbackId": "feedback-1a75a0bda9927200",
+  "reviewer": "cty41",
+  "defects": [
+    "cty41 explicitly selected the displayed Poet Hit DR a001 for promotion and requested the next action. Acceptance consciously retains identity drift, pear-shaped core, oversized tears, active-looking sheath grip and oversized front paws; these remain documented known deviations."
+  ],
+  "recordedAt": "2026-09-14T10:04:05.4779446+08:00",
+  "authorType": "human",
+  "disposition": "selected"
+}

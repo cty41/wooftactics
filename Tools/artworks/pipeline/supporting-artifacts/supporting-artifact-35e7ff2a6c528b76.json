@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-35e7ff2a6c528b76",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v16_outline_restore_radius4_128.png",
+    "sha256": "8c6675707b2fdde065cb398fc59ccd2c3af3b00fb7a84bb42d561853d5658dff"
+  },
+  "role": "supporting-derived",
+  "note": "128 derivative of UL v16 radius-4 outline restoration; no approval, promotion or runtime binding.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

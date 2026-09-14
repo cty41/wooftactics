@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 2,
+  "annotationId": "annotations-48df9b2e67e47d3f",
+  "attemptId": "job-0a6c57acd0d21d59-a002",
+  "candidateSha256": "5fbda220f2528522d030c927788822024943fabf6c9d9013d8cdeae45beb161f",
+  "maskSha256": "50fbe7a866d193f158a0ca04c7f137ca6b1399fb15bf549f3ca58ebcec23aa97",
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/annotations/poet_melee_dr_release_impact_v3_a002.json",
+    "sha256": "29769c0d7932703604769c1d2d295c8a3d8d4902504d719ffd9043f243baf13e"
+  },
+  "regions": {
+    "eyeRegion": [
+      135,
+      140,
+      167,
+      166
+    ],
+    "weaponExit": [
+      143,
+      166,
+      176,
+      198
+    ],
+    "weaponTip": [
+      204,
+      216,
+      229,
+      241
+    ],
+    "gemRegion": null,
+    "weaponBlade": [
+      158,
+      179,
+      227,
+      240
+    ],
+    "guardRegion": [
+      151,
+      174,
+      180,
+      202
+    ],
+    "scabbard": [
+      64,
+      175,
+      105,
+      222
+    ],
+    "staticEffect": null
+  }
+}

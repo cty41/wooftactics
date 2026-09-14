@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-2e00646fe2341c2e",
+  "attemptId": "job-0a890f2b18e97967-a003",
+  "candidateSha256": "e6feabd6ca60bf75701528c30056103e7781cb6fe5234de353c14caf41ef0404",
+  "reviewer": "pipeline-agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "The selected visual remains byte-identical and all other deterministic geometry gates pass."
+  ],
+  "defects": [
+    "Removing ear labels did not clear core row discontinuity, and the near-foot mask still has insufficient direct contact; use a conservative interior core hull and a broader shared foot boundary while keeping image bytes unchanged."
+  ],
+  "nextPromptDelta": "Final semantic-mask-only remediation; never alter or regenerate the selected image.",
+  "recordedAt": "2026-09-12T17:10:18+08:00",
+  "authorType": "agent",
+  "categories": [
+    "processing",
+    "topology"
+  ],
+  "disposition": "technical_failed",
+  "frozenInvariants": [
+    "Keep the exact selected body image and current calibration."
+  ],
+  "pendingFixes": [
+    "Replace the alpha-following ellipse core with a conservative continuous interior polygon and increase near-foot adjacency."
+  ]
+}

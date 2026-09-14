@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "briefKind": "asset",
+  "briefId": "poet-melee-dr-deep-grip-v7",
+  "assetId": "poet-five-red-chow-melee-dr-deep-grip-v7",
+  "family": "actor",
+  "purpose": "One final tightly scoped grip retry: embed both front paws mostly inside the selected body's torso silhouette, overlap the paws, hide the ring pommel and most handle, keep the guard against the body edge, show one raised approved Tang dao, and hide the scabbard.",
+  "firstRead": ["five-red-chow-poet", "deep-overlapping-two-paw-grip", "raised-down-right-tang-dao", "no-scabbard"],
+  "targetContexts": ["master-256-review", "preview-128-review"],
+  "identityInvariants": [
+    "Image 1 owns all body appearance and placement outside a tiny front-paw/grip patch",
+    "preserve head, face, torso, tail, hind paws, shading, scale and framing",
+    "two small front paws sit mostly inside and broadly overlap the torso silhouette; only outer paw arcs remain visible",
+    "the paws overlap each other instead of forming two complete circles beside the body",
+    "ring pommel and most handle remain hidden under torso/paws; handle passes between both paws; guard touches torso edge",
+    "Image 2 solely owns the narrow single-edged Tang dao form",
+    "Image 3 solely owns deep paw zones and raised blade placement",
+    "one sword, no scabbard"
+  ],
+  "shapeStrategy": "Edit only the smallest front-paw/grip patch. Pull both paws inward until most of each paw overlaps the body, overlap the paws, and expose the blade only after a guard seated at the body edge.",
+  "colorStrategy": "Preserve Image 1; new paw pixels match adjacent fur and weapon follows Image 2.",
+  "materialStrategy": "No body relighting or repainting.",
+  "attentionRole": "primary",
+  "allowedVariation": ["front paws may be redrawn smaller, overlapping and mostly hidden by torso", "sword may be uniformly projected along the raised guide axis"],
+  "forbidden": ["two full circular paws outside torso", "paw chain", "loose grip", "visible ring pommel outside paws", "long exposed handle", "change to head", "change to torso", "change to tail", "change to hind paws", "body rescale", "body reposition", "arm", "leg", "human hand", "floating paw", "broad double-edged sword", "scabbard", "second weapon", "clothing", "VFX", "text", "watermark", "crop", "guide marks"],
+  "resolvedHistory": "v6 moved both paws closer but cty41 still judged the grip wrong and the paws insufficiently retracted. v7 moves both target zones further inward and requires each paw to be mostly occluded by the torso and by the other paw.",
+  "referenceResponsibilities": [
+    {"role": "image-1-selected-body-preserve", "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a008/calibrated.png", "sha256": "e6feabd6ca60bf75701528c30056103e7781cb6fe5234de353c14caf41ef0404", "responsibility": "Exact body appearance and all pixels outside the smallest front-paw/grip patch."},
+    {"role": "image-2-approved-tang-dao", "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v02.png", "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1", "responsibility": "Sole weapon form and color authority; no scabbard."},
+    {"role": "image-3-deep-grip-guide", "path": "Tools/artworks/poet_five_red_chow/guides/poet_melee_dr_deep_grip_pose_guide_v7.png", "sha256": "01b1bb580d031bdc87727b8742de1d7e1658d4f54c3134ceef12ffc4c3f3ad91", "responsibility": "Deep overlapping paw zones, hidden grip, body-edge guard and raised blade axis only; never render guide marks."}
+  ],
+  "requiredReviewPanels": ["candidate-master", "preview-128", "identity-overlay", "deep-grip", "weapon-form", "equipment-state"],
+  "acceptanceCases": [
+    {"caseId": "POET-MELEE-V7-PRESERVE-001", "evidence": ["candidate-master", "identity-overlay"], "automatedFacts": ["canvas and baseline valid"], "humanChecks": ["all non-grip body regions match Image 1"], "passCriteria": "Only the smallest front-paw/grip patch changes."},
+    {"caseId": "POET-MELEE-V7-GRIP-001", "evidence": ["candidate-master", "deep-grip", "preview-128"], "automatedFacts": ["both paws contact core/equipment"], "humanChecks": ["both paws are mostly inside torso", "paws overlap", "handle passes between them", "guard touches torso"], "passCriteria": "Grip reads secure and compact."},
+    {"caseId": "POET-MELEE-V7-WEAPON-001", "evidence": ["weapon-form"], "automatedFacts": ["one equipment region inside canvas"], "humanChecks": ["narrow single-edged Tang dao and raised melee axis"], "passCriteria": "Weapon form and direction pass."},
+    {"caseId": "POET-MELEE-V7-STATE-001", "evidence": ["equipment-state"], "automatedFacts": ["blade visible, effects absent"], "humanChecks": ["no scabbard or second weapon"], "passCriteria": "Equipment state is correct."}
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-5ceb11280e5973fa-a001",
+  "jobId": "job-5ceb11280e5973fa",
+  "ordinal": 1,
+  "generationRound": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "prepared",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/incoming/poet_cast_dr_sheathed_focus_v1_raw_a001.png",
+      "sha256": "0032d3290ff94431a3e9e301945ccb83a6e115a74aae5cc188a9b9960648ae98"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-5ceb11280e5973fa/job-5ceb11280e5973fa-a001/raw.png",
+      "sha256": "0032d3290ff94431a3e9e301945ccb83a6e115a74aae5cc188a9b9960648ae98"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-5ceb11280e5973fa/job-5ceb11280e5973fa-a001/prepared.png",
+      "sha256": "1b96aadda1891dd05964598004e886ddd06a5427ad3ee5c30e1233c3fc4c2fa3"
+    }
+  },
+  "report": null,
+  "approvalId": null,
+  "feedbackId": "feedback-3284abb54c9e7b62",
+  "generationInvocationId": "generation-invocation-2720ba281dd207cb",
+  "generationDeliveryId": "generation-delivery-8efaa4cc46842529",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 35
+  },
+  "feedbackAddendumIds": [
+    "feedback-addendum-05fce1681fbed9df"
+  ]
+}

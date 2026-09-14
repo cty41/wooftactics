@@ -1,9 +1,21 @@
 # Tactics Knowledge Update Log
 
+## 2026-09-14
+* **Sync**: `pure-run-artwork` 已同步到来源指纹 `sha256:59610758e6167a0aa446fe7c605f45b09f6f0d56bf7074c0308870a6a4a96ec7`。
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:f661f74f7f30763905541a94818a68d650176b451174b941838afd4e41cf9baf`。
+
+## 2026-09-13
+* **Sync**: `pure-run-artwork` 已同步到来源指纹 `sha256:ffbc1385017cd3a7e55e2d7ff4e1f341de2bc9a1130a6202e43331401ffdfa03`。
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:fc54d45e2e930044e4f8798f810241f4d214131a725d82e7bb2f64cd5169bdf5`。
+
+## 2026-09-12
+* **Sync**: `pure-run-artwork` 已同步到来源指纹 `sha256:344b4dced9dd4b1f329ca158c8dcda5b177498544091a4edd8d0a6f26dea0406`。
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:2c16979a8ba551c709d14736eda910d8c94f0b68308fbf17a684061132aac7c9`。
+
 ## 2026-09-11
+* **Sync**: `pure-run-artwork` 已同步到来源指纹 `sha256:d84638387d0370bd2a42e7024d6251833eae362469177f5c063f062214160c37`。
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:4bc47cb8ef821acb3886166743c26731cfbe4b2947d677e1c926796fb1f356da`。
 * **Sync**: `battle-system` 已同步到来源指纹 `sha256:b0cf670d2f9c81cc3b7d9f8dafb55fc7ea62386cbcc8a1844c5d00846d2d40bb`。
-* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:2a3a944dae4a646989c0c12a9d314d4170c1488bfbb4694cd1d410a595024962`。
-* **Sync**: `pure-run-artwork` 已同步到来源指纹 `sha256:aa3cb758ee04c543adbd499d76bb7ee14aebdee6a439e6b2cddb42014eefedbf`。
 * **Sync**: `skill-graph` 已同步到来源指纹 `sha256:b90228fb558ef2e6248f5afad1a0c18925930b6849a3f076d0ab736276dd674c`。
 * **Sync**: `roguelike-run` 已同步到来源指纹 `sha256:350e0ff06d4eb863b0bf5ea28b90b9ebf4221fcdca68564755b9fcefd19505f1`。
 * **Sync**: `project-architecture` 已同步到来源指纹 `sha256:c1e4e5eaa7a4730c2bd68d3d97c55f6a618ebe93063265a395a0b00065d31cd9`。

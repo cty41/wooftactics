@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "briefKind": "asset",
+  "briefId": "poet-melee-dr-release-impact-body-v4",
+  "assetId": "poet-five-red-chow-melee-dr-release-impact-body-v4",
+  "family": "actor",
+  "purpose": "Create one equipment-free body component for the Poet Melee DR Release-to-Impact peak. Prove that dynamic commitment, the upright capsule topology, directly attached paws and approved flat value structure can coexist before any weapon assembly.",
+  "firstRead": ["five-red-chow-poet", "upright-leaning-capsule", "committed-down-right-body-action", "four-paws-overlapping-capsule", "equipment-free-body-component"],
+  "targetContexts": ["master-256-body-review", "preview-128-body-review", "future-deterministic-equipment-assembly"],
+  "identityInvariants": [
+    "Image 1 is the sole identity, volume, palette, outline and value-structure authority",
+    "cinnamon-red five-red native Chow Chow with broad lion-like head, short wide muzzle, small upright triangular ears, two small dark eyes, restrained mouth and thick curled tail",
+    "one upright compact furry capsule whose height remains greater than width even while the whole mass leans forward-right",
+    "exactly four small round paws overlap the capsule boundary at the four Image 2 contact zones; no limbs, arms, legs, shoulders, hips, elbows, knees, ankles, human hands, gaps or thin connectors",
+    "two front paws remain small body-edge paw pads clustered at the future grip corridor; two hind paws remain small body-bottom paw pads",
+    "body value grouping matches Image 1: few flat discrete fur values, restrained simple shadow shapes and bold dark outlines",
+    "no smooth body gradient, airbrush shadow, volumetric lighting, glossy highlight patch, extra forehead highlight or chest/belly modeling",
+    "the body component contains no sword, handle, guard, blade, scabbard, clothing, hat, gourd, wineskin, guqin, jewelry or VFX"
+  ],
+  "shapeStrategy": "Redraw one coherent equipment-free actor body. Image 2 directly owns the complete capsule silhouette, whole-mass lean, line of action, compression, counterbalance and all four paw/body overlap polygons. Dynamic force must come from the capsule mass and tail, never from extending limbs.",
+  "colorStrategy": "Copy Image 1's cinnamon-red palette and sparse discrete value groups. Use a perfectly flat exact #00ff00 background for removal. Do not transfer colored guide marks.",
+  "materialStrategy": "Match the approved source's flat controlled game-art treatment; prohibit high-resolution illustration modeling that disappears or muddies at 256/128 scale.",
+  "attentionRole": "primary",
+  "allowedVariation": ["whole capsule leans forward-right", "lower-left capsule compression", "head and upper core reach toward the future grip corridor", "curled tail opens upper-left as attached counterbalance"],
+  "forbidden": ["horizontal quadruped torso", "realistic animal back", "shoulder", "hip", "arm", "forearm", "elbow", "leg", "thigh", "shin", "knee", "ankle", "human hand", "floating paw", "separated paw", "thin connector", "extra paw", "missing paw", "oversized fist", "upright Idle read", "smooth gradient", "airbrush shading", "volumetric light", "specular body highlight", "extra forehead highlight", "chest highlight", "belly modeling", "sword", "handle", "guard", "blade", "scabbard", "clothing", "hat", "gourd", "wineskin", "guqin", "jewelry", "VFX", "text", "watermark", "guide marks", "cropped silhouette"],
+  "resolvedHistory": "Full-sprite v3 a001 traded capsule identity for action, while a002 restored the capsule but lost action and still drifted weapon form, limb topology and shading. Neither candidate is a positive input. This body-first job removes weapon complexity and uses only approved identity plus a deterministic capsule/paw-overlap guide.",
+  "referenceResponsibilities": [
+    {"role": "image-1-approved-poet-identity-flat-values", "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png", "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3", "responsibility": "Sole identity, native DR face, compact volume, cinnamon-red palette, curled tail, bold outline, sparse flat shading and direct-attached paw style. Ignore its Idle pose and all visible equipment."},
+    {"role": "image-2-deterministic-capsule-paw-contact-guide", "path": "Tools/artworks/poet_five_red_chow/guides/poet_melee_dr_release_impact_body_pose_guide_v4.png", "sha256": "0440642e2b76e638b214a942d20dc7e74a127ded56c800d5dd5154ce5feaeda8", "responsibility": "Action-body geometry only: complete upright leaning capsule, line of action, compression, attached counterbalance and exactly four paw/body overlap polygons. Never render guide colors, lines, boxes or circles."}
+  ],
+  "requiredReviewPanels": ["candidate-master", "preview-128", "identity-overlay", "direction-action", "paw-contact", "flat-value-comparison", "equipment-absence", "style-anchor-context"],
+  "acceptanceCases": [
+    {"caseId": "POET-MELEE-BODY-V4-IDENTITY-001", "evidence": ["candidate-master", "identity-overlay"], "automatedFacts": ["approved identity anchor remains hash-bound"], "humanChecks": ["five-red-chow face, palette, curled tail and compact identity survive"], "passCriteria": "The body is unmistakably the approved poet."},
+    {"caseId": "POET-MELEE-BODY-V4-ACTION-001", "evidence": ["candidate-master", "direction-action", "preview-128"], "automatedFacts": ["core tilt remains within the composition range"], "humanChecks": ["whole capsule commits forward-right", "compression and counterbalance read without limb extension", "pose is not Idle"], "passCriteria": "Release-to-Impact body commitment reads before equipment is added."},
+    {"caseId": "POET-MELEE-BODY-V4-PAWS-001", "evidence": ["candidate-master", "paw-contact"], "automatedFacts": ["exactly four semantic paw regions touch the core and arm/leg labels are absent"], "humanChecks": ["each paw is a small round block overlapping the capsule edge", "no limbs, joints, gaps, connectors or oversized fists"], "passCriteria": "Paws-only topology is preserved."},
+    {"caseId": "POET-MELEE-BODY-V4-VALUES-001", "evidence": ["candidate-master", "flat-value-comparison", "preview-128"], "automatedFacts": ["palette metrics remain advisory"], "humanChecks": ["body uses the source's sparse flat value grouping", "no smooth gradient, airbrush modeling or added highlight patches"], "passCriteria": "The candidate matches approved game-scale flat shading."},
+    {"caseId": "POET-MELEE-BODY-V4-EQUIPMENT-001", "evidence": ["candidate-master", "equipment-absence"], "automatedFacts": ["equipment semantic labels are absent"], "humanChecks": ["no sword, handle, blade, scabbard or other equipment is visible"], "passCriteria": "The body is clean for later deterministic assembly."}
+  ]
+}

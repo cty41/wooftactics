@@ -3069,9 +3069,11 @@ def geometry_checks(store: Store, contract: dict[str, Any], attempt: dict[str, A
                         issues.append("guard_outside_window")
                 equipment_box = boxes.get("equipment")
                 if equipment_box:
-                    for forbidden in spec["forbiddenRegions"]:
-                        if overlap(list(equipment_box), forbidden["rect"]):
-                            issues.append(f"equipment_enters_forbidden_{forbidden['name']}")
+                    for index, forbidden in enumerate(spec["forbiddenRegions"]):
+                        rect = forbidden["rect"] if isinstance(forbidden, dict) else forbidden
+                        name = forbidden.get("name", f"region-{index + 1}") if isinstance(forbidden, dict) else f"region-{index + 1}"
+                        if overlap(list(equipment_box), rect):
+                            issues.append(f"equipment_enters_forbidden_{name}")
                 if not spec.get("bodyLayer"):
                     issues.extend(composition_gem_issues(spec["weapon"], regions))
                     if spec["equipmentState"].get("scabbard") == "absent" and regions.get("scabbard"):
@@ -3804,6 +3806,37 @@ def create_composition(store: Store, args: argparse.Namespace) -> dict[str, Any]
         raise PipelineError("composition equipmentState.scabbard is invalid")
     if "tipMayBeOccluded" in spec["weapon"] and not isinstance(spec["weapon"]["tipMayBeOccluded"], bool):
         raise PipelineError("composition weapon.tipMayBeOccluded must be boolean")
+    action_design = spec.get("actionDesign")
+    if action_design is not None:
+        required_action = {"silhouette", "lineOfAction", "centerOfMass", "compressionLine", "counterbalanceLine"}
+        if not isinstance(action_design, dict) or required_action - set(action_design):
+            raise PipelineError("composition actionDesign is missing required fields")
+        width, height = spec["canvas"]
+        def validate_points(name: str, points: Any, minimum: int) -> None:
+            if not isinstance(points, list) or len(points) < minimum:
+                raise PipelineError(f"composition actionDesign.{name} is invalid")
+            for point in points:
+                if (not isinstance(point, list) or len(point) != 2
+                        or not all(isinstance(value, (int, float)) for value in point)
+                        or not (0 <= point[0] < width and 0 <= point[1] < height)):
+                    raise PipelineError(f"composition actionDesign.{name} contains an invalid point")
+        validate_points("silhouette", action_design["silhouette"], 3)
+        validate_points("lineOfAction", action_design["lineOfAction"], 2)
+        validate_points("compressionLine", action_design["compressionLine"], 2)
+        validate_points("counterbalanceLine", action_design["counterbalanceLine"], 2)
+        validate_points("centerOfMass", [action_design["centerOfMass"]], 1)
+        paw_zones = action_design.get("pawContactZones")
+        if paw_zones is not None:
+            required_paws = {"nearHand", "farHand", "nearFoot", "farFoot"}
+            if not isinstance(paw_zones, dict) or set(paw_zones) != required_paws:
+                raise PipelineError("composition actionDesign.pawContactZones must define exactly four paws")
+            for name, points in paw_zones.items():
+                validate_points(f"pawContactZones.{name}", points, 3)
+        elif "supportFoot" in action_design and "driveFoot" in action_design:
+            validate_points("supportFoot", [action_design["supportFoot"]], 1)
+            validate_points("driveFoot", [action_design["driveFoot"]], 1)
+        else:
+            raise PipelineError("composition actionDesign requires pawContactZones or supportFoot/driveFoot")
     anchor_rel = store.relative(args.anchor, must_exist=True)
     payload = {
         "assetId": args.asset_id,
@@ -3824,6 +3857,26 @@ def render_pose_guide(store: Store, args: argparse.Namespace) -> dict[str, Any]:
     width, height = spec.get("canvas", [256, 256])
     image = Image.new("RGBA", (width, height), (0, 0, 0, 0))
     draw = ImageDraw.Draw(image, "RGBA")
+    action_design = spec.get("actionDesign")
+    if action_design:
+        draw.polygon([tuple(point) for point in action_design["silhouette"]], fill=(0, 145, 220, 55), outline=(0, 190, 255, 235))
+        draw.line([tuple(point) for point in action_design["lineOfAction"]], fill=(255, 70, 70, 255), width=5)
+        draw.line([tuple(point) for point in action_design["compressionLine"]], fill=(225, 80, 255, 245), width=3)
+        draw.line([tuple(point) for point in action_design["counterbalanceLine"]], fill=(255, 210, 0, 245), width=3)
+        center = action_design["centerOfMass"]
+        draw.ellipse((center[0] - 6, center[1] - 6, center[0] + 6, center[1] + 6), fill=(255, 70, 70, 180), outline=(255, 255, 255, 255), width=2)
+        paw_zones = action_design.get("pawContactZones")
+        if paw_zones:
+            colors = {
+                "nearHand": (0, 255, 0, 180), "farHand": (0, 200, 0, 180),
+                "nearFoot": (0, 128, 255, 180), "farFoot": (0, 0, 255, 180),
+            }
+            for key, points in paw_zones.items():
+                draw.polygon([tuple(point) for point in points], fill=colors[key], outline=(255, 255, 255, 255))
+        else:
+            for key, color in (("supportFoot", (0, 255, 100, 255)), ("driveFoot", (255, 150, 0, 255))):
+                foot_point = action_design[key]
+                draw.ellipse((foot_point[0] - 5, foot_point[1] - 3, foot_point[0] + 5, foot_point[1] + 3), fill=color, outline=(255, 255, 255, 255), width=1)
     axis = spec["coreAxis"]
     draw.line([tuple(axis["bottom"]), tuple(axis["top"])], fill=(0, 220, 255, 255), width=3)
     if spec.get("coreBbox"):
@@ -3831,16 +3884,18 @@ def render_pose_guide(store: Store, args: argparse.Namespace) -> dict[str, Any]:
     foot = spec["footCenter"]
     draw.ellipse((foot[0] - 3, foot[1] - 3, foot[0] + 3, foot[1] + 3), fill=(255, 220, 0, 255))
     weapon = spec["weapon"]
-    grip = weapon["hiddenGrip"]
-    draw.ellipse((grip[0] - 3, grip[1] - 3, grip[0] + 3, grip[1] + 3), fill=(255, 0, 255, 255))
-    for key, color in (("exitWindow", (0, 255, 0, 150)), ("tipRegion", (255, 128, 0, 150))):
-        draw.rectangle(tuple(weapon[key]), outline=color, width=2)
-    if weapon.get("guardWindow"):
-        draw.rectangle(tuple(weapon["guardWindow"]), outline=(255, 255, 0, 180), width=2)
-    if weapon.get("bladeCenterline"):
-        draw.rectangle(tuple(weapon["bladeCenterline"]), outline=(120, 140, 255, 180), width=1)
-    if weapon.get("screenAxis"):
-        draw.line([tuple(point) for point in weapon["screenAxis"]], fill=(255, 255, 255, 240), width=3)
+    if not spec.get("bodyLayer"):
+        grip = weapon.get("hiddenGrip")
+        if grip is not None:
+            draw.ellipse((grip[0] - 3, grip[1] - 3, grip[0] + 3, grip[1] + 3), fill=(255, 0, 255, 255))
+        for key, color in (("exitWindow", (0, 255, 0, 150)), ("tipRegion", (255, 128, 0, 150))):
+            draw.rectangle(tuple(weapon[key]), outline=color, width=2)
+        if weapon.get("guardWindow"):
+            draw.rectangle(tuple(weapon["guardWindow"]), outline=(255, 255, 0, 180), width=2)
+        if weapon.get("bladeCenterline"):
+            draw.rectangle(tuple(weapon["bladeCenterline"]), outline=(120, 140, 255, 180), width=1)
+        if weapon.get("screenAxis"):
+            draw.line([tuple(point) for point in weapon["screenAxis"]], fill=(255, 255, 255, 240), width=3)
     if spec.get("renderForbiddenRegions", True):
         for region in spec["forbiddenRegions"]:
             draw.rectangle(tuple(region["rect"]), outline=(255, 0, 0, 220), fill=(255, 0, 0, 40), width=2)
@@ -3883,34 +3938,62 @@ def compile_prompt(store: Store, args: argparse.Namespace) -> dict[str, Any]:
         if feedback_id:
             feedback = load_json(store.record("feedback", feedback_id))
             unresolved.extend(feedback.get("pendingFixes", feedback.get("defects", [])))
-    approved_asset_id = contract.get("approvedAssetId")
-    anchor_path = (contract.get("anchor") or {}).get("path", "")
-    is_tomb_maw_bat = approved_asset_id == "tomb-maw-bat" or "tomb_maw_bat" in anchor_path
-    if contract.get("componentKind") == "death_expression_overlay":
-        invariants = [
-            "transparent expression overlay only", "exactly two compact crossed-eye marks",
-            "no face, coat, ears, mouth, collar, paws, equipment, effects, text, or watermark",
-        ]
-    elif is_tomb_maw_bat:
-        invariants = [
-            "near-round spherical flying core locked to the approved bat anchor",
-            "exactly two pointed ears and exactly two membrane wings attached to the core",
-            "no paws, arms, legs, humanoid torso, or tail",
-            "dark plum body, red wing membranes, yellow eyes, and ivory fangs",
-            "preserve the approved hover height and virtual tile landing axis",
-        ]
+    brief_context = []
+    forbidden = []
+    if contract.get("schemaVersion") == 4:
+        brief_ref = contract.get("briefSpec") or {}
+        brief_path = store.absolute(brief_ref.get("path", ""), must_exist=True)
+        if not bound_input_hash_matches(brief_path, brief_ref.get("sha256")):
+            raise PipelineError("v4 brief hash mismatch during prompt compilation")
+        brief = load_json(brief_path)
+        invariants = brief.get("identityInvariants")
+        if not isinstance(invariants, list) or not invariants or not all(isinstance(item, str) for item in invariants):
+            raise PipelineError("v4 prompt requires non-empty brief identityInvariants")
+        forbidden = brief.get("forbidden", [])
+        if not isinstance(forbidden, list) or not all(isinstance(item, str) for item in forbidden):
+            raise PipelineError("v4 brief forbidden list is invalid")
+        responsibilities = {item.get("role"): item for item in brief.get("referenceResponsibilities", []) if isinstance(item, dict)}
+        reference_lines = []
+        for item in job["inputs"]:
+            responsibility = responsibilities.get(item["role"])
+            if not responsibility:
+                raise PipelineError(f"v4 brief is missing responsibility for job input role: {item['role']}")
+            if responsibility.get("path") != item["path"] or responsibility.get("sha256") != item["sha256"]:
+                raise PipelineError(f"v4 brief responsibility binding mismatch: {item['role']}")
+            reference_lines.append(f"- {item['role']}: {responsibility.get('responsibility', '').strip()} [{item['path']} @ {item['sha256']}]")
+        brief_context = [f"Purpose: {brief.get('purpose', '')}", "First read: " + ", ".join(brief.get("firstRead", []))]
     else:
-        invariants = [
-            "equal-width rigid capsule body", "exactly four paws directly attached to the body",
-            "no arms and no legs between paws and body",
-            "gray-white forehead blaze and heterochromic ear", "half-body alternate coat color",
-        ]
+        approved_asset_id = contract.get("approvedAssetId")
+        anchor_path = (contract.get("anchor") or {}).get("path", "")
+        is_tomb_maw_bat = approved_asset_id == "tomb-maw-bat" or "tomb_maw_bat" in anchor_path
+        if contract.get("componentKind") == "death_expression_overlay":
+            invariants = [
+                "transparent expression overlay only", "exactly two compact crossed-eye marks",
+                "no face, coat, ears, mouth, collar, paws, equipment, effects, text, or watermark",
+            ]
+        elif is_tomb_maw_bat:
+            invariants = [
+                "near-round spherical flying core locked to the approved bat anchor",
+                "exactly two pointed ears and exactly two membrane wings attached to the core",
+                "no paws, arms, legs, humanoid torso, or tail",
+                "dark plum body, red wing membranes, yellow eyes, and ivory fangs",
+                "preserve the approved hover height and virtual tile landing axis",
+            ]
+        else:
+            invariants = [
+                "equal-width rigid capsule body", "exactly four paws directly attached to the body",
+                "no arms and no legs between paws and body",
+                "gray-white forehead blaze and heterochromic ear", "half-body alternate coat color",
+            ]
+        reference_lines = [f"- {item['role']}: {item['path']} @ {item['sha256']}" for item in job["inputs"]]
     if composition["spec"]["equipmentState"].get("scabbard") == "absent":
         invariants.append("no scabbard anywhere")
     sections = [
         "# Deterministic ImageGen Task Packet",
+        "## Brief intent\n" + ("\n".join(brief_context) or "legacy contract"),
         "## Frozen invariants\n" + "\n".join(f"- {item}" for item in invariants),
-        "## Reference responsibilities\n" + "\n".join(f"- {item['role']}: {item['path']} @ {item['sha256']}" for item in job["inputs"]),
+        "## Forbidden\n" + ("\n".join(f"- {item}" for item in forbidden) or "- none beyond the frozen contract"),
+        "## Reference responsibilities\n" + "\n".join(reference_lines),
         "## Composition\n```json\n" + json.dumps(composition["spec"], ensure_ascii=False, sort_keys=True, indent=2) + "\n```",
         "## Unresolved fixes\n" + ("\n".join(f"- {item}" for item in unresolved) or "- none"),
         "## Base prompt\n" + store.absolute(job["prompt"]["path"]).read_text(encoding="utf-8"),
@@ -5791,7 +5874,7 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
             issues.append(f"job_contract_hash:{job.get('jobId')}")
         else:
             contract = load_json(contract_path)
-            expected_requirements = None if job.get("sourceMode") == "reviewed_recontract" or not contract.get("occlusion") else {
+            expected_requirements = None if job.get("sourceMode") in {"reviewed_import", "reviewed_recontract"} or not contract.get("occlusion") else {
                 "occlusion": contract["occlusion"],
                 "imageGenDirective": "Draw behind-core equipment and both hand paws first, then draw the capsule body over their inner portions; only outer arcs may remain visible.",
             }

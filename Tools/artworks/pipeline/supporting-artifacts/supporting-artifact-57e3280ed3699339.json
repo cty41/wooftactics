@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-57e3280ed3699339",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v5_upright_calibrated.png",
+    "sha256": "7f3585d4e4740b9420a853f030bdf0112499086a102bd15e6e599b5aa0dd0428"
+  },
+  "role": "supporting-derived",
+  "note": "cty41-authorized deterministic review-only upright Melee UL counterpart to accepted DR v11; approved native UL identity, approved Tang dao behind body/paw, scabbard absent, baseline y=236; no ImageGen or runtime binding.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 4,
+  "jobId": "job-75ce23e75e7159f7",
+  "state": "ready",
+  "contractId": "contract-a3ae892a4eb513b0",
+  "contractSha256": "33024059eea045bcf82e47d8bf7747479cf2f3d5661d7123c5e2d276cc131f9d",
+  "prompt": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/poet_melee_dr_deep_grip_v7.txt",
+    "sha256": "7f160648877155112a46a0d76d30715edc3bca3fc0fbe941b95412ba803a5886"
+  },
+  "inputs": [
+    {
+      "role": "image-1-selected-body-preserve",
+      "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a008/calibrated.png",
+      "sha256": "e6feabd6ca60bf75701528c30056103e7781cb6fe5234de353c14caf41ef0404"
+    },
+    {
+      "role": "image-2-approved-tang-dao",
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v02.png",
+      "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1"
+    },
+    {
+      "role": "image-3-deep-grip-guide",
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_melee_dr_deep_grip_pose_guide_v7.png",
+      "sha256": "01b1bb580d031bdc87727b8742de1d7e1658d4f54c3134ceef12ffc4c3f3ad91"
+    }
+  ],
+  "target": {
+    "direction": "down-right",
+    "pose": "melee"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": true,
+  "poseGuide": {
+    "poseGuideId": "pose-guide-5aadb8da167168b8",
+    "sha256": "9d402e01f0e721e0de9e6b5df6167f3ef9e14e423d18d57c285532dbe38a3f83"
+  },
+  "localReferences": []
+}

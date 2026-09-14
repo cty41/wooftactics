@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 4,
+  "anchorVerdictId": "anchor-verdict-7d63dc0c53bc6c4a",
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v02.png",
+    "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1"
+  },
+  "family": "equipment",
+  "responsibilities": [
+    "Drawn ring-pommel Tang dao form, proportions, straight single-edged blade, guard, grip, tip, colors, and detail budget only for the Melee DR v3 experiment."
+  ],
+  "excludedUses": [
+    "Do not copy its isolated canvas placement as character pose, body identity, grip topology, or scabbard state."
+  ],
+  "review": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_v3_source_responsibility_review.png",
+    "sha256": "b8c2c5dc4cf399beefbb227e967968fdb76c5a645bc3ca8858b0ac4aeefe0d23"
+  },
+  "decision": "approved-anchor",
+  "reviewer": "cty41",
+  "reason": "cty41 confirmed the three-source strategy: this promoted unsheathed dao is Image 2 and only owns weapon form; the poet Idle owns identity and the new guide owns action design.",
+  "decidedAt": "2026-09-12T12:09:43+08:00"
+}

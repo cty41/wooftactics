@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-0a6c57acd0d21d59-a002",
+  "jobId": "job-0a6c57acd0d21d59",
+  "ordinal": 2,
+  "generationRound": 2,
+  "parentAttemptId": "job-0a6c57acd0d21d59-a001",
+  "retryFeedbackId": "feedback-c3e9ac296b6f748d",
+  "promptDelta": "If cty41 authorizes a retry, keep the successful committed weight shift but restore one compact upright capsule core, eliminate connecting legs, reserve more lower-right canvas margin, and reproduce the narrow single-edged Tang dao plus clearly empty partly occluded scabbard.",
+  "technicalRemediation": false,
+  "state": "technical_failed",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/incoming/poet_melee_dr_release_impact_v3_raw_a002.png",
+      "sha256": "7cded81f1e469db706e504237f0b93e67131e675c4987a1f26f8ca09d346ee4b"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a6c57acd0d21d59/job-0a6c57acd0d21d59-a002/raw.png",
+      "sha256": "7cded81f1e469db706e504237f0b93e67131e675c4987a1f26f8ca09d346ee4b"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a6c57acd0d21d59/job-0a6c57acd0d21d59-a002/prepared.png",
+      "sha256": "0d5934a4f216fa6600d50ea8b125fa6935c9dab409e4d9309a556e6187b2a217"
+    },
+    "maskSource": {
+      "path": "Tools/artworks/poet_five_red_chow/masks/poet_melee_dr_release_impact_v3_raw_mask_a002.png",
+      "sha256": "aaea5ea59e84aaff990ce604f57530210ef9a7aa2e2676670d890f17376ac377"
+    },
+    "mask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a6c57acd0d21d59/job-0a6c57acd0d21d59-a002/mask.png",
+      "sha256": "aaea5ea59e84aaff990ce604f57530210ef9a7aa2e2676670d890f17376ac377"
+    },
+    "calibrated": {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a6c57acd0d21d59/job-0a6c57acd0d21d59-a002/calibrated.png",
+      "sha256": "5fbda220f2528522d030c927788822024943fabf6c9d9013d8cdeae45beb161f"
+    },
+    "calibratedMask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a6c57acd0d21d59/job-0a6c57acd0d21d59-a002/calibrated-mask.png",
+      "sha256": "50fbe7a866d193f158a0ca04c7f137ca6b1399fb15bf549f3ca58ebcec23aa97"
+    },
+    "review": {
+      "overlay": {
+        "path": "Tools/artworks/pipeline/reviews/job-0a6c57acd0d21d59-a002/overlay.png",
+        "sha256": "db9c72183d88980587b294fb1c8662134b2852e0ec80de52045d43c7e2f4ffaa"
+      },
+      "preview128": {
+        "path": "Tools/artworks/pipeline/reviews/job-0a6c57acd0d21d59-a002/preview128.png",
+        "sha256": "70fd883e95d61c83f09c45cb9b4cd556517a39f745cebf134749fbcf3e08b609"
+      },
+      "tile64x32": {
+        "path": "Tools/artworks/pipeline/reviews/job-0a6c57acd0d21d59-a002/tile64x32.png",
+        "sha256": "57249ec8ce4f4d7896769535df354c733c7c129d533d801461497a1fbbb1c635"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-d1072adfccd76441.json",
+    "sha256": "f59d049d4463d6d5b7fdf3cb98995664a438a9b869bacb7804a42652c621d216"
+  },
+  "approvalId": null,
+  "feedbackId": "feedback-77cbac471a36f39e",
+  "generationInvocationId": "generation-invocation-0051536782fedcaf",
+  "generationDeliveryId": "generation-delivery-66ae2c903ba5dd0d",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 48
+  },
+  "calibration": {
+    "method": "uniform-core-height",
+    "scale": 0.20441988950276244,
+    "offset": [
+      -3,
+      32
+    ],
+    "sourceCoreBbox": [
+      452,
+      432,
+      824,
+      974
+    ],
+    "anchorCoreBbox": [
+      94,
+      121,
+      160,
+      231
+    ],
+    "anchorMask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-34f6747e5a1f30d0/job-34f6747e5a1f30d0-a001/mask.png",
+      "sha256": "30350db22426bd078b09d9095ad797d69eceb3ccd7c83f8f4bb960193e440fa0"
+    }
+  },
+  "annotationId": "annotations-48df9b2e67e47d3f",
+  "feedbackAddendumIds": [
+    "feedback-addendum-f5c38406b7ea9695"
+  ]
+}

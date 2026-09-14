@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "compiledPromptId": "compiled-prompt-dd21e43148ffca8c",
+  "jobId": "job-1102150ebf2aacd4",
+  "poseGuideId": "pose-guide-be23aba538f72bbb",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/compiled/poet_death_hunter_horizontal_v1_a001.md",
+    "sha256": "75ac09a0509fb0efa25b1e7a5c4a662eba911b7cd55cd67a6d3118a1a75635dc"
+  }
+}

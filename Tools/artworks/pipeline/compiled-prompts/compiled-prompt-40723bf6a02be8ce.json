@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "compiledPromptId": "compiled-prompt-40723bf6a02be8ce",
+  "jobId": "job-5ceb11280e5973fa",
+  "poseGuideId": "pose-guide-58f829e24a467c90",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/compiled/poet_cast_dr_sheathed_focus_v1_a001.md",
+    "sha256": "123a0d71e72be6ccee88ca86af42cd45c2264162484fc7e1b12bbc0a37bb9892"
+  }
+}

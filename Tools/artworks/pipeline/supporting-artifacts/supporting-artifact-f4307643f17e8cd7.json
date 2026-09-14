@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-f4307643f17e8cd7",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v14_right_alpha_cleanup.png",
+    "sha256": "17fb636eb8e4264b343eaaaa235fec69cda48625c59c1cae9c6e17f7dd98528a"
+  },
+  "role": "supporting-derived",
+  "note": "cty41-authorized deterministic review-only UL cleanup: in user-marked right-rear region, remove every pixel outside approved clean-body alpha whitelist while retaining accepted pose, paw depth, Tang dao, no scabbard and baseline.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

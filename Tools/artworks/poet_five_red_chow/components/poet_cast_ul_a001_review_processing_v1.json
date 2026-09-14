@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "operation": "deterministic-chroma-prepare-uniform-scale-and-baseline-placement",
+  "sourceAttemptId": "job-1f834522a953c67a-a001",
+  "sourcePreparedSha256": "3ce6dc5efb5c9999be94c927b109c4142b6bfebb97e24261173a937d0e4219a1",
+  "sourceAlphaBbox": [425, 479, 894, 1090],
+  "masterTransform": "crop source alpha bbox; uniform Lanczos scale to visible height 143 px; horizontally center at x=128; set visible bottom to y=236",
+  "masterResultBbox": [73, 93, 183, 236],
+  "cleanupRule": "after chroma preparation, exact #00ff00 or #ff00ff pixels with alpha>0 become transparent black",
+  "cleanupCount": 83,
+  "cleanupMaxAlpha": 29,
+  "previewTransform": "uniform Lanczos resize 256 to 128; clear exact chroma residue; integer translate to horizontal center x=64 and visible bottom y=118",
+  "previewCleanupCount": 7,
+  "previewCleanupMaxAlpha": 7,
+  "geometryChange": "uniform scale and integer placement only; no local deformation, repainting or topology change",
+  "authorizedVisual": "cty41 selected displayed Cast UL a001 for promotion",
+  "knownAcceptedDeviations": ["side-profile bias", "oversized cylindrical core", "tiny hind paws", "weak sheath-tip clearance", "style drift"]
+}

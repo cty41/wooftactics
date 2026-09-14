@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-952eec604c43f633",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_high_guard_mockup_v9_near_upright_calibrated.png",
+    "sha256": "f97b13fcc99f25477efb13c4b9127d9f734393469ffd1282c9400019c38edbc6"
+  },
+  "role": "supporting-derived",
+  "note": "cty41-authorized deterministic review-only DR high-guard candidate with total 8-degree lean correction, baseline y=236, approved Tang dao and no scabbard; no ImageGen or runtime binding.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-134d83d79c58f535",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_three_pose_stick_preview_v01.png",
+    "sha256": "0b4fc04f8d59f73b6f84d014e7d237e924c36537b1556b1b262af7e5e05b4def"
+  },
+  "role": "supporting-derived",
+  "note": "Superseded first deterministic Cast pose explanation board; user clarified that previews must use pure stick-figure language.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}
