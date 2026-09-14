@@ -146,7 +146,7 @@ Pure Run 当前 Godot 由 `PresentationCueKind`、`GodotUnitActionPose`、`Godot
 
 当冻结时刻、力线、重心、接触或负形尚未被人确认时，先用最终方向和大致占位绘制少量纯橙单色火柴人草图，在真实战场尺度选择姿态，再投入身份化生成。草图只证明动作，不携带身份、配色、装备造型或检测框；精确 Composition 在姿态通过后才补充。这样可以在最低成本层否决错误动作，避免让生成模型同时承担动作设计、身份恢复、装备复现和几何校准而来回振荡。
 
-最小人工决策链是 Visual Moment → Pose Proof → 来源职责 → 单张候选 → 完整上下文 → promotion/runtime 分离批准。未选的 pose option、临时 review board 与 prompt 修订不进入正式状态机；状态机从有成本且必须追责的 generation invocation、候选血缘、确定性处理、rights 和批准开始。
+最小人工决策链是 Visual Moment → Pose Proof → 来源职责 → 单张候选 → 完整上下文 → promotion/runtime 分离批准。Pose Proof 已由 `scripts/pose_proof.py` 实现为确定性 Draft 看板与 128 预览，并由 `cty41` 的精简 Action Card 绑定进新动作 Composition schema v3。未选的 pose option 完整几何、临时 review board 与 prompt 修订不进入正式状态机；状态机从有成本且必须追责的 generation invocation、候选血缘、确定性处理、rights 和批准开始。
 
 ## 7. 运行时上下文高于孤立图
 

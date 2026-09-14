@@ -12,6 +12,7 @@ description: "Use when generating, editing, chroma-keying, calibrating, reviewin
 | 读取尺寸契约 | `references/sprite-size-contract.md` |
 | 规划 ImageGen 单图迭代 | `references/imagegen-iteration.md` |
 | 生产 Melee / Thrown / Cast / Hit 单帧动作 | `references/single-frame-action-poses.md` |
+| 正式生成前用火柴人选择姿态 | `references/pose-proof.md`；`python scripts/pose_proof.py render-options|select-option ...`；豁免走 `create-pose-proof-exemption` |
 | 规划四方向静态图 | `references/imagegen-iteration.md` 的“方向变体 / 双原生视图” |
 | 核对运行时四向映射 | `references/imagegen-iteration.md` 的“运行时双原生图接入” |
 | 查看正反案例与正式母图 | `references/review-casebook.md` 与 `examples/cases.json` |
@@ -54,7 +55,9 @@ description: "Use when generating, editing, chroma-keying, calibrating, reviewin
 
 0. **先确认来源，再建立合同与 job。** 创建新生成任务前，必须检索同角色、同装备、同姿态族的 `approved`/`promoted` Attempt 和既有 Assembly，不能只按文件名猜来源。向用户展示一张来源对比或简明来源表，逐项写清：身份、体量、方向、装备、风格分别由哪张图负责，以及该图是 ImageGen 输入、仅 Review 对照还是确定性 Assembly 组件。用户明确要求查看、来源互相冲突、或存在多个可能权威时，必须等待 `cty41` 确认；不得先调用 `begin-generation`。已确认且职责不变的来源可在后续同一闭环中复用，无需每轮重复询问，但每次汇报仍要列出实际使用的来源。
 
-   **再建立合同与 job。** 读取器兼容且不重写 schema v1/v2；普通新合同沿用 v2，组件化资产写 schema v3。`action_pose`、`death_pose`、遮挡任务或使用姿态参考的 job 必须先 `create-composition`，再 `render-pose-guide`；导引是 `supporting-derived`，不能晋升为 Sprite。`create-contract` 固定核心锚点、构图规范、容差、发布路径与授权，`create-job` 固定每张输入图的职责与 SHA-256。随后用 `compile-prompt` 重复冻结不变量并只合并待修项。ImageGen 不属于 CLI；每次外部调用必须先 `begin-generation`，成功图使用匹配的 `invocation-id` 摄取，交付失败则用 `record-generation-failure` 留证且不计 raw 版本。
+   **新动作先通过 Pose Proof。** 当冻结时刻、力线、重心、接触或负形尚未由人确认时，按 `references/pose-proof.md` 在临时目录确定性渲染 `1–4` 个纯橙火柴人方案和 128 预览。`cty41` 选择后只提交所选方案 Action Card；未选完整几何与临时 PNG 不进入 Attempt、Series、provenance 或 Git。火柴线不是身份、装备、最终解剖或 ImageGen 输入；Composition/Pose Guide 在选择后负责把它翻译成精确可测几何。无手臂角色的连线也只是力线抽象。只有同一目标 asset/pose/direction 已有批准姿态、仅技术修复或 Idle 微调时，才可用 `create-pose-proof-exemption` 生成绑定目标 Visual Moment 及完整 cty41 Approval→Attempt→Job→Contract 链的不可变豁免；裸图或其他资产的 Approval 不能充当证据。确定性 Assembly 若没有该目标的既有批准链，仍需至少建立单方案 Action Card。
+
+   **再建立合同与 job。** 读取器兼容且不重写历史 schema v1/v2；新 `action_pose` 使用包含 `poseProofDecision` 或受控 `poseProofExemption` 的 Composition schema v3。历史 v2 Composition 只有已经被历史 Contract 引用时才能继续复用，不能新建 v2 Composition 绕过门禁。`action_pose`、`death_pose`、遮挡任务或使用姿态参考的 job 必须先 `create-composition`，再 `render-pose-guide`；导引是 `supporting-derived`，不能晋升为 Sprite。`create-contract` 固定核心锚点、构图规范、容差、发布路径与授权，`create-job` 固定每张输入图的职责与 SHA-256。随后用 `compile-prompt` 重复冻结不变量并只合并待修项。ImageGen 不属于 CLI；每次外部调用必须先 `begin-generation`，成功图使用匹配的 `invocation-id` 摄取，交付失败则用 `record-generation-failure` 留证且不计 raw 版本。
 
    多姿态任务先用 `create-series` 固定顺序；`maxUniqueOutputs: null` 表示无限迭代，正整数表示显式预算。每个不同 raw SHA 计一次输出；相同 SHA 的重新摄取、去幕、蒙版或验证不增加计数。每个已摄取 attempt 都必须用 `record-feedback` 记录优点、缺陷、技术结论、选择及下一版 prompt delta；`retry --feedback-id` 和 `advance-series` 均不得绕过该记录。只有有限预算达到上限后才能进入 `exhausted`；只有耗尽的首个 `idle-dr` 可显式选择 provisional anchor，且其下游 job 自动标记 `conceptOnly`，禁止批准或晋升。已创建 series 的预算变化必须通过 `set-series-output-limit` 写入审核人、原因和时间，不得手改注册表。
 

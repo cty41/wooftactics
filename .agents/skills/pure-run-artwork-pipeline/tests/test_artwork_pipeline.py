@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
+from concurrent.futures import ThreadPoolExecutor
 import json
 import sys
 import tempfile
@@ -767,7 +768,7 @@ class ArtworkPipelineTests(unittest.TestCase):
         anchor = self.png("Tools/artworks/approved/v2-anchor.png")
         spec_path = self.root / "Tools/artworks/specs/action.json"
         spec_path.parent.mkdir(parents=True, exist_ok=True)
-        spec_path.write_text(json.dumps({
+        spec = {
             "canvas": [256, 256],
             "coreAxis": {"bottom": [127, 236], "top": [127, 116], "tiltDegrees": [-3, 3]},
             "footCenter": [127, 236],
@@ -775,9 +776,87 @@ class ArtworkPipelineTests(unittest.TestCase):
                        "tipRegion": [175, 90, 230, 160], "maxGemAreaPx": 36},
             "forbiddenRegions": [{"name": "eyes", "rect": [105, 125, 150, 155]}],
             "equipmentState": {"scabbard": "absent"}
-        }), encoding="utf-8")
+        }
+        spec_path.write_text(json.dumps(spec), encoding="utf-8")
         return pipeline.create_composition(self.store, self.ns(
             asset_id="hero-action", spec=str(spec_path), anchor=str(anchor)))
+
+    def v3_pose_proof_composition(self, gate="decision"):
+        anchor = self.png("Tools/artworks/approved/v3-pose-anchor.png")
+        example = Path(pipeline.pose_proof.__file__).resolve().parents[1] / "examples" / "pose-proof-cast-dr-v1.json"
+        draft = json.loads(example.read_text(encoding="utf-8")); draft.pop("historicalEvidence", None)
+        draft["assetId"] = f"hero-{gate}"
+        card = pipeline.pose_proof.select_option(
+            draft, "B", "cty41", "compact cast silhouette", {"A": "too open", "C": "too tall"},
+            "2026-09-15T10:00:00+08:00")
+        card_path = self.root / f"Tools/artworks/hero/pose-proofs/cast-{gate}.json"
+        pipeline.pose_proof.write_card(card, card_path)
+        spec = {
+            "schemaVersion": 3, "poseProofContext": draft["visualMoment"], "canvas": [256, 256],
+            "coreAxis": {"bottom": [127, 236], "top": [127, 116], "tiltDegrees": [-3, 3]},
+            "footCenter": [127, 236],
+            "weapon": {"hiddenGrip": [127, 175], "exitWindow": [150, 140, 175, 190],
+                       "tipRegion": [175, 90, 230, 160], "maxGemAreaPx": 36},
+            "forbiddenRegions": [], "equipmentState": {"scabbard": "present"},
+        }
+        if gate in {"decision", "both"}:
+            spec["poseProofDecision"] = {"path": self.store.relative(card_path), "sha256": pipeline.sha256_file(card_path),
+                                         "poseProofId": card["poseProofId"]}
+        if gate in {"exemption", "both"}:
+            contract_payload = {"assetId": f"hero-{gate}", "pose": "cast", "direction": "down-right"}
+            source_contract_id = pipeline.stable_id("contract", contract_payload)
+            source_contract_path = self.store.record("contracts", source_contract_id)
+            pipeline.write_json_idempotent(source_contract_path, {"schemaVersion": 1, "contractId": source_contract_id,
+                                                                   **contract_payload})
+            job_payload = {"contractId": source_contract_id, "contractSha256": pipeline.sha256_file(source_contract_path),
+                           "prompt": None, "inputs": [],
+                           "target": {"direction": "down-right", "pose": "cast"}, "series": None,
+                           "conceptOnly": False, "contractRequirements": None, "requiresInvocation": False,
+                           "poseGuide": None, "localReferences": []}
+            job_id = pipeline.stable_id("job", job_payload)
+            pipeline.write_json_idempotent(self.store.record("jobs", job_id), {
+                "schemaVersion": 1, "jobId": job_id, "state": "ready", **job_payload})
+            attempt_id = f"fixture-{gate}"
+            candidate = {"path": self.store.relative(anchor), "sha256": pipeline.sha256_file(anchor)}
+            approval_payload = {"attemptId": attempt_id, "candidateSha256": candidate["sha256"], "maskSha256": None,
+                                "reviewer": "cty41", "decision": "approved", "reason": "fixture approved pose",
+                                "decidedAt": "2026-09-15T09:00:00+08:00"}
+            approval_id = pipeline.stable_id("approval", approval_payload)
+            approval_path = self.store.record("approvals", approval_id)
+            approval = {"schemaVersion": 1, "approvalId": approval_id, **approval_payload}
+            pipeline.write_json_idempotent(approval_path, approval)
+            pipeline.write_json_idempotent(self.store.record("attempts", attempt_id), {
+                "schemaVersion": 3, "attemptId": attempt_id, "state": "promoted", "approvalId": approval_id,
+                "jobId": job_id, "artifacts": {"prepared": candidate}})
+            exemption = pipeline.create_pose_proof_exemption(self.store, self.ns(
+                asset_id=f"hero-{gate}", pose="cast", direction="down-right",
+                consumer=draft["visualMoment"]["consumer"], phase=draft["visualMoment"]["phase"],
+                sprite_role=draft["visualMoment"]["spriteRole"], category="existing-approved-pose",
+                approval_id=[approval["approvalId"]], reviewer="cty41", reason="assembly retains an approved pose",
+                decided_at="2026-09-15T10:00:00+08:00"))
+            exemption_path = self.store.record("pose-proof-exemptions", exemption["exemptionId"])
+            spec["poseProofExemption"] = {"path": self.store.relative(exemption_path),
+                                           "sha256": pipeline.sha256_file(exemption_path),
+                                           "exemptionId": exemption["exemptionId"]}
+        spec_path = self.root / f"Tools/artworks/specs/v3-{gate}.json"
+        spec_path.parent.mkdir(parents=True, exist_ok=True); spec_path.write_text(json.dumps(spec), encoding="utf-8")
+        return pipeline.create_composition(self.store, self.ns(asset_id=f"hero-{gate}", spec=str(spec_path), anchor=str(anchor)))
+
+    def action_contract_for_composition(self, composition):
+        anchor = self.store.absolute(composition["anchor"]["path"])
+        inventory_path = self.store.pipeline / "legacy-assets.json"
+        inventory_path.write_text(json.dumps({"schemaVersion": 1, "assets": [{
+            "path": composition["anchor"]["path"], "sha256": pipeline.sha256_file(anchor),
+            "state": "legacy-approved", "lineage": None}]}), encoding="utf-8")
+        return pipeline.create_contract(self.store, self.ns(
+            asset_id=composition["assetId"], approved_asset_id=None, kind="action_pose", direction="down-right", pose="cast",
+            anchor=str(anchor), anchor_mask=None, mask_required=False, no_arms=True,
+            near_hand_side="left", far_hand_side="right", size_tolerance=6, center_tolerance=4,
+            layer_rule=[], visibility_cap=[], composition_id=composition["compositionId"], identity_anchor_mask=None,
+            forehead_blaze_min_iou=0.45, pose_reference=True,
+            output_master="Tools/artworks/approved/hero-cast.png", output_preview="Tools/artworks/approved/hero-cast-128.png",
+            rights_holder="cty41", license="project-owned", provenance="project-owned-gpt-generated",
+            asset_role=None, component_kind=None, source_mode=None))
 
     def test_v1_and_v2_records_load_without_rewriting_v1(self):
         v1_path = self.store.record("contracts", "legacy")
@@ -787,6 +866,85 @@ class ArtworkPipelineTests(unittest.TestCase):
         composition = self.v2_composition()
         self.assertEqual(2, composition["schemaVersion"])
         self.assertEqual(before, v1_path.read_bytes())
+
+    def test_v3_pose_proof_decision_and_exemption_gate_action_contracts(self):
+        decision = self.v3_pose_proof_composition("decision")
+        self.assertEqual(3, decision["schemaVersion"])
+        self.assertEqual("action_pose", self.action_contract_for_composition(decision)["kind"])
+        exemption = self.v3_pose_proof_composition("exemption")
+        self.assertEqual("action_pose", self.action_contract_for_composition(exemption)["kind"])
+        with self.assertRaisesRegex(pipeline.PipelineError, "exactly one"):
+            self.v3_pose_proof_composition("both")
+        with self.assertRaisesRegex(pipeline.PipelineError, "exactly one"):
+            self.v3_pose_proof_composition("missing")
+        decision_spec = json.loads(self.store.absolute(decision["source"]["path"]).read_text(encoding="utf-8"))
+        with self.assertRaisesRegex(pipeline.PipelineError, "asset"):
+            pipeline.create_composition(self.store, self.ns(asset_id="other-asset", spec=decision["source"]["path"],
+                                                            anchor=str(self.store.absolute(decision["anchor"]["path"]))))
+        bare_exemption = json.loads(self.store.absolute(decision["source"]["path"]).read_text(encoding="utf-8"))
+        bare_exemption.pop("poseProofDecision")
+        bare_exemption["poseProofExemption"] = {"category": "existing-approved-pose", "reviewer": "cty41",
+                                                  "reason": "bare image bypass", "decidedAt": "2026-09-15T10:00:00+08:00",
+                                                  "evidence": [decision["anchor"]]}
+        bare_path = self.root / "Tools/artworks/specs/v3-bare-exemption.json"
+        bare_path.write_text(json.dumps(bare_exemption), encoding="utf-8")
+        with self.assertRaisesRegex(pipeline.PipelineError, "binding is invalid"):
+            pipeline.create_composition(self.store, self.ns(asset_id=decision["assetId"], spec=str(bare_path),
+                                                            anchor=str(self.store.absolute(decision["anchor"]["path"]))))
+        decision_spec["poseProofContext"]["phase"] = "wrong-phase"
+        mismatch_path = self.root / "Tools/artworks/specs/v3-context-mismatch.json"
+        mismatch_path.write_text(json.dumps(decision_spec), encoding="utf-8")
+        with self.assertRaisesRegex(pipeline.PipelineError, "Visual Moment"):
+            pipeline.create_composition(self.store, self.ns(asset_id=decision["assetId"], spec=str(mismatch_path),
+                                                            anchor=str(self.store.absolute(decision["anchor"]["path"]))))
+        card_path = self.root / decision["spec"]["poseProofDecision"]["path"]
+        broken = json.loads(card_path.read_text(encoding="utf-8")); broken["selection"]["reason"] = "tampered"
+        card_path.write_text(json.dumps(broken), encoding="utf-8")
+        for fixture_attempt in (self.store.pipeline / "attempts").glob("fixture-*.json"):
+            fixture_attempt.unlink()
+        issues = pipeline.strict_check(self.store, False)["issues"]
+        self.assertIn(f"composition_pose_proof_invalid:{decision['compositionId']}", issues)
+        self.assertIn("pose_proof_card_invalid:Tools/artworks/hero/pose-proofs/cast-decision.json", issues)
+
+    def test_new_v2_action_composition_cannot_bypass_pose_proof(self):
+        composition = self.v2_composition()
+        with self.assertRaisesRegex(pipeline.PipelineError, "schema v3 Pose Proof"):
+            self.action_contract_for_composition(composition)
+        grandfather = {"schemaVersion": 1, "cutoffRevision": "d48b70ba969386620c0671f5c8ff19ab59d2ab79",
+                       "authorizedBy": "cty41", "decidedAt": "2026-09-15T10:00:00+08:00",
+                       "reason": "fixture freezes a pre-gate composition", "entries": [{
+                           "compositionId": composition["compositionId"],
+                           "sha256": pipeline.sha256_file(self.store.record("compositions", composition["compositionId"]))}]}
+        (self.store.pipeline / "pose-proof-grandfathers.json").write_text(json.dumps(grandfather), encoding="utf-8")
+        with self.assertRaisesRegex(pipeline.PipelineError, "schema v3 Pose Proof"):
+            self.action_contract_for_composition(composition)
+        self.assertIn("pose_proof_grandfather_registry_invalid", pipeline.strict_check(self.store, False)["issues"])
+
+    def test_immutable_json_publish_is_collision_safe_under_concurrency(self):
+        path = self.root / "Tools/artworks/pipeline/pose-proof-exemptions/race.json"
+        values = ({"schemaVersion": 1, "value": "A"}, {"schemaVersion": 1, "value": "B"})
+        def publish(value):
+            try:
+                pipeline.write_json_idempotent(path, value, immutable=True); return "ok"
+            except pipeline.PipelineError:
+                return "collision"
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            outcomes = list(pool.map(publish, values))
+        self.assertEqual(["collision", "ok"], sorted(outcomes))
+        self.assertIn(json.loads(path.read_text(encoding="utf-8")), values)
+
+    def test_strict_reports_malformed_composition_without_traceback(self):
+        malformed = self.store.record("compositions", "composition-malformed")
+        malformed.parent.mkdir(parents=True, exist_ok=True); malformed.write_text("{", encoding="utf-8")
+        contract_id = "contract-malformed-composition"
+        pipeline.write_json_idempotent(self.store.record("contracts", contract_id), {
+            "schemaVersion": 3, "contractId": contract_id, "kind": "action_pose", "assetId": "broken",
+            "compositionSpec": {"compositionId": "composition-malformed", "sha256": pipeline.sha256_file(malformed)}})
+        issues = pipeline.strict_check(self.store, False)["issues"]
+        self.assertIn("composition_record_invalid:composition-malformed", issues)
+        self.assertIn("contract_composition_invalid:contract-malformed-composition", issues)
+        with self.assertRaisesRegex(pipeline.PipelineError, "composition_record_invalid:composition-malformed"):
+            pipeline.strict_check(self.store, True)
 
     def test_pose_guide_is_deterministic_and_bound_to_composition(self):
         composition = self.v2_composition()
@@ -947,7 +1105,17 @@ class ArtworkPipelineTests(unittest.TestCase):
         anchor = self.root / "Tools/artworks/approved/anchor.png"
         spec_path = self.root / "Tools/artworks/specs/bat-action.json"
         spec_path.parent.mkdir(parents=True)
+        example = Path(pipeline.pose_proof.__file__).resolve().parents[1] / "examples" / "pose-proof-cast-dr-v1.json"
+        draft = json.loads(example.read_text(encoding="utf-8")); draft.pop("historicalEvidence", None)
+        draft.update({"assetId": "tomb-maw-bat-melee", "characterId": "tomb-maw-bat", "poseId": "melee"})
+        card = pipeline.pose_proof.select_option(draft, "B", "cty41", "fixture pose", {"A": "no", "C": "no"},
+                                                 "2026-09-15T10:00:00+08:00")
+        card_path = self.root / "Tools/artworks/tomb-maw-bat/pose-proofs/melee.json"
+        pipeline.pose_proof.write_card(card, card_path)
         spec_path.write_text(json.dumps({
+            "schemaVersion": 3, "poseProofContext": draft["visualMoment"],
+            "poseProofDecision": {"path": self.store.relative(card_path), "sha256": pipeline.sha256_file(card_path),
+                                  "poseProofId": card["poseProofId"]},
             "canvas": [256, 256],
             "coreAxis": {"top": [128, 90], "bottom": [128, 180], "tiltDegrees": [-8, 8]},
             "footCenter": [128, 236],

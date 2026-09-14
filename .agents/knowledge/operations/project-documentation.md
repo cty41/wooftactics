@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics/tree/main/.agents/docs
 title: Project Documentation
 description: 当前设计、活跃计划、统一缺口与 OKF 综合层的文档生命周期。
 tags: [operations, documentation, plans, knowledge]
-timestamp: "2026-09-14T16:59:02+08:00"
+timestamp: "2026-09-14T19:43:32+08:00"
 status: active
 catalog_scope: project-documentation
 repo_paths:
@@ -12,7 +12,7 @@ repo_paths:
   - .agents/plans
   - .agents/skills/manual-qa-handoff/SKILL.md
 verified_revision: c9ff3a710fd9
-source_fingerprint: sha256:b8024841224646c29114f2a96804e718f9107584404308800ca0b2e1e25b29f7
+source_fingerprint: sha256:00bf96537c54ec7960b27228343ac0ec7ef19e9eb5115766a455f459e22e60fe
 ---
 
 # Current State
@@ -23,7 +23,7 @@ source_fingerprint: sha256:b8024841224646c29114f2a96804e718f9107584404308800ca0b
 
 Pure Run 新装备的独立生产策略记录在 `.agents/docs/2026-08-25-pure-run-equipment-production-state-machine-design.md`：共享基础风格与品类锚点、正式生成血缘、本机第三方参考 descriptor、保真后处理、child remediation 和 cty41 风格 verdict 构成端到端门禁；历史装备记录保持兼容。
 
-下一代生图状态机暂不进入 schema 或代码设计。`.agents/docs/game-art-production-first-principles.md`、`.agents/docs/generative-art-current-strategy-map.md` 与 `.agents/docs/generative-art-state-machine-complexity-audit.md` 组成经 cty41 确认十项原则、但仍保持 draft 的分析集：以 Visual Moment、角色视觉状态集、真实 Godot 上下文、时间合同、成本和分层验收为中心；独立 GitHub 仓只承载通用协议/引擎，Pure Run 资产、历史与 `256/128/y236/64×32` 项目适配留在本仓，其中 `64×32` 相对当前 `96×48`/.34 Game View 的有效性待重验。旧 `.agents/docs/pure-run-single-frame-action-pose-design.md` 的 Unity `UnitPoseFamily/ReleaseTime/PoseRestoreTime` 已标记为历史，不是当前 Godot 权威。当前动作生产新增低成本 Pose Proof 原则：在 ImageGen 前用少量纯橙火柴人草图只确认动作时点、力线、重心和负形，未选草图不进入正式状态机；身份、装备、几何与最终批准保持职责分离。
+下一代生图状态机暂不进入 schema 或代码设计。`.agents/docs/game-art-production-first-principles.md`、`.agents/docs/generative-art-current-strategy-map.md` 与 `.agents/docs/generative-art-state-machine-complexity-audit.md` 组成经 cty41 确认十项原则、但仍保持 draft 的分析集：以 Visual Moment、角色视觉状态集、真实 Godot 上下文、时间合同、成本和分层验收为中心；独立 GitHub 仓只承载通用协议/引擎，Pure Run 资产、历史与 `256/128/y236/64×32` 项目适配留在本仓，其中 `64×32` 相对当前 `96×48`/.34 Game View 的有效性待重验。旧 `.agents/docs/pure-run-single-frame-action-pose-design.md` 的 Unity `UnitPoseFamily/ReleaseTime/PoseRestoreTime` 已标记为历史，不是当前 Godot 权威。当前动作生产已实现低成本 Pose Proof 门禁：`pose_proof.py` 在 ImageGen 前由轻量 Draft 确定性输出 1–4 个纯橙火柴人方案及 128 预览，只确认动作时点、力线、重心和负形；cty41 选择后只保存 Action Card，未选完整几何/临时 PNG 不进入正式状态机或 Git。新 action_pose Composition schema v3 必须绑定 Card 或受控证据豁免，历史 v2 记录保持兼容；身份、装备、精确几何与最终批准继续职责分离。
 
 魔剑士 `Demonbound` 已从职业 brainstorm 迁入 `.agents/docs/demonbound-class-design.md` 作为唯一权威设计，并由 `.agents/plans/demonbound-loop-development.md` 持续跟踪非大师实现、自动样本与人工门禁。腐化满后的恶魔失控形态规格（六维+5 派生重构、已学技能临时满级、敌友统一目标池、幸运修正永久死亡、墓碑记录、缺员继续）已实现在 `.agents/plans/demonbound-possessed-form-implementation.md`，六份 `DEMONBOUND-POSSESSED-*` 合同全部升级为 `verified_current`；30 固定样本已由自动测试覆盖，三局人工 Run 由 `.agents/docs/demonbound-possession-manual-checklist.md` 承接并在验收账本保持 `pending`。死亡来源的正式存档字段仍需单独立项。三个大师技能及正式美术/完整表现仍由[项目已知缺口](../plans/project-known-gaps.md)导航；在人工账本通过前不得把自动绿灯表述为体验验收。
 

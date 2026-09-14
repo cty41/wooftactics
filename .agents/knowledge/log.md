@@ -1,8 +1,11 @@
 # Tactics Knowledge Update Log
 
+## 2026-09-15
+* **Update**: 纯橙火柴人 Pose Proof 已从诗人 Cast 一次性做法升格为正式前置流程：新增安全确定性 Draft/看板/128 预览与 cty41 Action Card 工具，新 action_pose Composition schema v3 强绑定 asset/pose/direction/Visual Moment；跳过草图只能用引用有效 cty41 Approval 的不可变豁免 receipt，历史 v2 兼容范围由 cutoff revision 与 40 份 Composition SHA 冻结。Cast B 已回填案例且不改写旧生成血缘。
+
 ## 2026-09-14
-* **Sync**: `pure-run-artwork` 已同步到来源指纹 `sha256:c8a5096f187f3928b4a2f033bc7823f17ae701af39219499bad785aa40cfff89`。
-* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:b8024841224646c29114f2a96804e718f9107584404308800ca0b2e1e25b29f7`。
+* **Sync**: `pure-run-artwork` 已同步到来源指纹 `sha256:36cf40c3f60e869a5bf0c545da85584082c9046a7105089c9143b75e04692778`。
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:00bf96537c54ec7960b27228343ac0ec7ef19e9eb5115766a455f459e22e60fe`。
 * **Update**: 诗人动作试点沉淀纯橙火柴人 Pose Proof：先于 ImageGen 只确认时点、力线、重心、接触、负形与剪影，再分别绑定身份、装备和 Composition 几何；未选草图不进入状态机，逐图人工暂停，连续同类失败或可确定性 Assembly 时换策略。
 * **Update**: 经 cty41 明确授权，8 组历史 Poet 装备 candidate/calibrated 的低 alpha exact-chroma 残留已通过 8 份确定性 remediation receipt 清零并保留旧 SHA/像素/授权血缘；Poet approved public artwork 通过 license receipts 迁为 CC-BY-4.0，Poet public-release 错误归零，Artwork strict 恢复 363/0。
 

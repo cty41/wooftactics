@@ -14,6 +14,7 @@ import math
 import os
 import shutil
 import sys
+import tempfile
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -25,6 +26,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 import artwork_review
+import pose_proof
 
 
 SCHEMA_VERSION = 3
@@ -138,10 +140,23 @@ def write_json_idempotent(path: Path, value: Any, immutable: bool = False) -> bo
         if immutable:
             raise PipelineError(f"immutable record differs: {path}")
     path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_name(f".{path.name}.tmp")
-    temporary.write_bytes(data)
-    os.replace(temporary, path)
-    return True
+    handle, temporary_name = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".tmp", dir=path.parent)
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(handle, "wb") as stream:
+            stream.write(data); stream.flush(); os.fsync(stream.fileno())
+        if immutable:
+            try:
+                os.link(temporary, path)
+                return True
+            except FileExistsError:
+                if path.read_bytes() == data:
+                    return False
+                raise PipelineError(f"immutable record differs: {path}")
+        os.replace(temporary, path)
+        return True
+    finally:
+        temporary.unlink(missing_ok=True)
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -907,10 +922,20 @@ def create_contract(store: Store, args: argparse.Namespace) -> dict[str, Any]:
     composition_id = getattr(args, "composition_id", None)
     if composition_id:
         composition_record = load_json(store.record("compositions", composition_id))
+        if args.kind == "action_pose":
+            if composition_record.get("schemaVersion") == 3:
+                if composition_record.get("assetId") != args.asset_id:
+                    raise PipelineError("action composition assetId does not match the contract")
+                _validate_pose_proof_gate(store, composition_record.get("spec"), expected_asset_id=args.asset_id,
+                                          expected_pose=args.pose, expected_direction=args.direction)
+            elif not _composition_is_grandfathered(store, composition_id):
+                raise PipelineError("new action_pose contracts require a schema v3 Pose Proof composition")
         composition = {
             "compositionId": composition_id,
             "sha256": sha256_file(store.record("compositions", composition_id)),
         }
+    elif args.kind == "action_pose":
+        raise PipelineError("new action_pose contracts require a Pose Proof composition")
     asset_role = getattr(args, "asset_role", None)
     component_kind = getattr(args, "component_kind", None)
     source_mode = getattr(args, "source_mode", None)
@@ -1897,7 +1922,7 @@ def _artifact_binding_matches(store: Store, artifact: Any) -> bool:
     try:
         target = store.absolute(artifact["path"])
         return target.is_file() and sha256_file(target) == artifact["sha256"]
-    except (PipelineError, OSError):
+    except (PipelineError, OSError, TypeError, ValueError):
         return False
 
 
@@ -3878,12 +3903,195 @@ def relicense_public_artifacts(store: Store, args: argparse.Namespace) -> dict[s
 
 
 def _iso_timestamp(value: str, option: str) -> None:
+    if not isinstance(value, str):
+        raise PipelineError(f"{option} must be an ISO-8601 timestamp")
     try:
         parsed = datetime.fromisoformat(value)
     except ValueError as exc:
         raise PipelineError(f"{option} must be an ISO-8601 timestamp") from exc
     if parsed.tzinfo is None:
         raise PipelineError(f"{option} must include a timezone offset")
+
+
+POSE_PROOF_EXEMPTIONS = {"existing-approved-pose", "technical-remediation", "idle-adjustment"}
+POSE_PROOF_GRANDFATHER_CUTOFF = "d48b70ba969386620c0671f5c8ff19ab59d2ab79"
+POSE_PROOF_GRANDFATHER_ENTRIES_ID = "pose-proof-grandfathers-30cb7536777fa90e"
+
+
+def _pose_context_matches(context: Any, visual_moment: Any) -> bool:
+    return (isinstance(context, dict) and set(context) == {"consumer", "phase", "spriteRole"}
+            and all(isinstance(value, str) and value.strip() for value in context.values())
+            and context == visual_moment)
+
+
+def _approved_pose_evidence_matches(store: Store, evidence: list[Any], *, asset_id: str, pose: str,
+                                    direction: str) -> bool:
+    found_approval = False
+    for item in evidence:
+        if not isinstance(item, dict) or set(item) != {"path", "sha256"} or not _artifact_binding_matches(store, item):
+            return False
+        path = Path(item["path"])
+        if path.parent.as_posix() == "Tools/artworks/pipeline/approvals":
+            approval = load_json(store.absolute(item["path"]))
+            if not isinstance(approval, dict):
+                return False
+            approval_payload = {key: value for key, value in approval.items() if key not in {"schemaVersion", "approvalId"}}
+            if (approval.get("approvalId") != path.stem
+                    or approval.get("approvalId") != stable_id("approval", approval_payload)
+                    or approval.get("decision") != "approved" or approval.get("reviewer") != "cty41"):
+                return False
+            attempt_path = store.record("attempts", approval.get("attemptId", ""))
+            if not attempt_path.is_file():
+                return False
+            attempt = load_json(attempt_path)
+            candidate = candidate_artifact(attempt)
+            job_path = store.record("jobs", attempt.get("jobId", ""))
+            if (attempt.get("attemptId") != attempt_path.stem or approval.get("attemptId") != attempt.get("attemptId")
+                    or attempt.get("approvalId") != approval["approvalId"] or attempt.get("state") not in {"approved", "promoted"}
+                    or candidate.get("sha256") != approval.get("candidateSha256") or not _artifact_binding_matches(store, candidate)
+                    or not job_path.is_file()):
+                return False
+            job = load_json(job_path)
+            job_identity_fields = ("contractId", "contractSha256", "prompt", "inputs", "target", "series", "conceptOnly",
+                                   "contractRequirements", "requiresInvocation", "poseGuide", "localReferences")
+            job_payload = {key: job.get(key) for key in job_identity_fields}
+            contract_path = store.record("contracts", job.get("contractId", ""))
+            if (job.get("jobId") != job_path.stem or job.get("jobId") != stable_id("job", job_payload)
+                    or job.get("target") != {"direction": direction, "pose": pose}
+                    or not contract_path.is_file() or job.get("contractSha256") != sha256_file(contract_path)):
+                return False
+            contract = load_json(contract_path)
+            contract_payload = {key: value for key, value in contract.items() if key not in {"schemaVersion", "contractId"}}
+            if (contract.get("contractId") != contract_path.stem
+                    or contract.get("contractId") != stable_id("contract", contract_payload)
+                    or contract.get("assetId") != asset_id or contract.get("pose") != pose
+                    or contract.get("direction") != direction):
+                return False
+            found_approval = True
+    return found_approval
+
+
+def create_pose_proof_exemption(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    if args.reviewer != "cty41" or args.category not in POSE_PROOF_EXEMPTIONS:
+        raise PipelineError("pose proof exemption requires cty41 and a supported category")
+    _iso_timestamp(args.decided_at, "--decided-at")
+    if not all(isinstance(value, str) and value.strip() for value in
+               (args.asset_id, args.pose, args.direction, args.consumer, args.phase, args.sprite_role, args.reason)):
+        raise PipelineError("pose proof exemption fields must be non-empty strings")
+    evidence = []
+    for approval_id in args.approval_id:
+        path = store.record("approvals", approval_id)
+        if not path.is_file():
+            raise PipelineError(f"pose proof exemption approval missing: {approval_id}")
+        evidence.append({"path": store.relative(path), "sha256": sha256_file(path)})
+    if not _approved_pose_evidence_matches(store, evidence, asset_id=args.asset_id, pose=args.pose, direction=args.direction):
+        raise PipelineError("pose proof exemption requires valid cty41 approved evidence")
+    payload = {"assetId": args.asset_id, "pose": args.pose, "direction": args.direction,
+               "visualMoment": {"consumer": args.consumer, "phase": args.phase, "spriteRole": args.sprite_role},
+               "category": args.category, "reviewer": args.reviewer, "reason": args.reason,
+               "decidedAt": args.decided_at, "evidence": evidence}
+    exemption_id = stable_id("pose-proof-exemption", payload)
+    record = {"schemaVersion": 1, "exemptionId": exemption_id, **payload}
+    write_json_idempotent(store.record("pose-proof-exemptions", exemption_id), record, immutable=True)
+    return record
+
+
+def _validate_pose_proof_gate(store: Store, spec: Any, *, expected_asset_id: str | None = None,
+                              expected_pose: str | None = None, expected_direction: str | None = None) -> None:
+    if not isinstance(spec, dict) or spec.get("schemaVersion") != 3:
+        raise PipelineError("new action composition must use schemaVersion 3")
+    context = spec.get("poseProofContext")
+    if not isinstance(context, dict) or set(context) != {"consumer", "phase", "spriteRole"}:
+        raise PipelineError("composition poseProofContext is invalid")
+    decision, exemption = spec.get("poseProofDecision"), spec.get("poseProofExemption")
+    if (decision is None) == (exemption is None):
+        raise PipelineError("composition requires exactly one poseProofDecision or poseProofExemption")
+    if decision is not None:
+        if not isinstance(decision, dict) or set(decision) != {"path", "sha256", "poseProofId"}:
+            raise PipelineError("poseProofDecision binding is invalid")
+        if not _artifact_binding_matches(store, decision):
+            raise PipelineError("poseProofDecision hash binding is invalid")
+        try:
+            card = pose_proof.validate_card(load_json(store.absolute(decision["path"])))
+        except (PipelineError, pose_proof.PoseProofError, OSError, TypeError, ValueError, json.JSONDecodeError) as exc:
+            raise PipelineError(f"poseProofDecision card is invalid: {exc}") from exc
+        if card["poseProofId"] != decision["poseProofId"] or not _pose_context_matches(context, card["visualMoment"]):
+            raise PipelineError("poseProofDecision identity or Visual Moment does not match the composition")
+        if expected_asset_id is not None and card["assetId"] != expected_asset_id:
+            raise PipelineError("poseProofDecision asset does not match the composition or contract")
+        if expected_pose is not None and card["poseId"] != expected_pose:
+            raise PipelineError("poseProofDecision pose does not match the contract")
+        if expected_direction is not None and card["direction"] != expected_direction:
+            raise PipelineError("poseProofDecision direction does not match the contract")
+        historical = card.get("historicalEvidence")
+        if historical and not _artifact_binding_matches(store, historical):
+            raise PipelineError("poseProofDecision historical evidence hash is invalid")
+        return
+    if not isinstance(exemption, dict) or set(exemption) != {"path", "sha256", "exemptionId"} or not _artifact_binding_matches(store, exemption):
+        raise PipelineError("poseProofExemption binding is invalid")
+    receipt = load_json(store.absolute(exemption["path"]))
+    required = {"schemaVersion", "exemptionId", "assetId", "pose", "direction", "visualMoment", "category",
+                "reviewer", "reason", "decidedAt", "evidence"}
+    if (not isinstance(receipt, dict) or set(receipt) != required or receipt.get("schemaVersion") != 1
+            or receipt.get("exemptionId") != exemption.get("exemptionId")
+            or any(not isinstance(receipt.get(key), str) or not receipt[key].strip()
+                   for key in ("assetId", "pose", "direction"))
+            or receipt.get("category") not in POSE_PROOF_EXEMPTIONS or receipt.get("reviewer") != "cty41"
+            or not isinstance(receipt.get("reason"), str) or not receipt["reason"].strip()
+            or not isinstance(receipt.get("evidence"), list) or not receipt["evidence"]
+            or not _pose_context_matches(context, receipt.get("visualMoment"))
+            or stable_id("pose-proof-exemption", {key: value for key, value in receipt.items()
+                                                    if key not in {"schemaVersion", "exemptionId"}}) != receipt.get("exemptionId")
+            or not _approved_pose_evidence_matches(store, receipt["evidence"], asset_id=receipt.get("assetId"),
+                                                    pose=receipt.get("pose"), direction=receipt.get("direction"))):
+        raise PipelineError("poseProofExemption receipt is invalid")
+    _iso_timestamp(receipt.get("decidedAt"), "poseProofExemption.decidedAt")
+    if expected_asset_id is not None and receipt["assetId"] != expected_asset_id:
+        raise PipelineError("poseProofExemption asset does not match the composition or contract")
+    if expected_pose is not None and receipt["pose"] != expected_pose:
+        raise PipelineError("poseProofExemption pose does not match the contract")
+    if expected_direction is not None and receipt["direction"] != expected_direction:
+        raise PipelineError("poseProofExemption direction does not match the contract")
+
+
+def _validated_pose_proof_grandfathers(store: Store) -> dict[str, str]:
+    path = store.pipeline / "pose-proof-grandfathers.json"
+    record = load_json(path)
+    if (not isinstance(record, dict)
+            or set(record) != {"schemaVersion", "cutoffRevision", "authorizedBy", "decidedAt", "reason", "entries"}
+            or record.get("schemaVersion") != 1 or record.get("authorizedBy") != "cty41"
+            or record.get("cutoffRevision") != POSE_PROOF_GRANDFATHER_CUTOFF
+            or not isinstance(record.get("reason"), str) or not record["reason"].strip()
+            or not isinstance(record.get("entries"), list)
+            or stable_id("pose-proof-grandfathers", record.get("entries")) != POSE_PROOF_GRANDFATHER_ENTRIES_ID):
+        raise PipelineError("pose proof grandfather registry is invalid")
+    _iso_timestamp(record.get("decidedAt"), "pose proof grandfather decidedAt")
+    result: dict[str, str] = {}
+    for entry in record["entries"]:
+        if (not isinstance(entry, dict) or set(entry) != {"compositionId", "sha256"}
+                or not isinstance(entry.get("compositionId"), str) or not isinstance(entry.get("sha256"), str)
+                or entry["compositionId"] in result):
+            raise PipelineError("pose proof grandfather registry entry is invalid")
+        target = store.record("compositions", entry["compositionId"])
+        if not target.is_file() or sha256_file(target) != entry["sha256"] or load_json(target).get("schemaVersion") != 2:
+            raise PipelineError("pose proof grandfather registry binding is invalid")
+        result[entry["compositionId"]] = entry["sha256"]
+    referenced = set()
+    for contract_path in (store.pipeline / "contracts").glob("*.json"):
+        contract = load_json(contract_path)
+        ref = contract.get("compositionSpec") or {}
+        if contract.get("kind") == "action_pose" and isinstance(ref.get("compositionId"), str):
+            referenced.add(ref["compositionId"])
+    if set(result) - referenced:
+        raise PipelineError("pose proof grandfather registry contains an unreferenced composition")
+    return result
+
+
+def _composition_is_grandfathered(store: Store, composition_id: str) -> bool:
+    try:
+        return composition_id in _validated_pose_proof_grandfathers(store)
+    except (PipelineError, OSError, TypeError, ValueError, KeyError, AttributeError, json.JSONDecodeError):
+        return False
 
 
 def create_composition(store: Store, args: argparse.Namespace) -> dict[str, Any]:
@@ -3894,7 +4102,12 @@ def create_composition(store: Store, args: argparse.Namespace) -> dict[str, Any]
         raise PipelineError(f"cannot read composition spec: {exc}") from exc
     required = {"canvas", "coreAxis", "footCenter", "weapon", "forbiddenRegions", "equipmentState"}
     if not isinstance(spec, dict) or required - set(spec):
-        raise PipelineError("composition spec is missing required v2 fields")
+        raise PipelineError("composition spec is missing required fields")
+    spec_version = spec.get("schemaVersion", 2)
+    if spec_version not in {2, 3}:
+        raise PipelineError("composition spec schemaVersion must be 2 or 3")
+    if spec_version == 3:
+        _validate_pose_proof_gate(store, spec, expected_asset_id=args.asset_id)
     if spec["equipmentState"].get("scabbard") not in {"present", "absent", "optional"}:
         raise PipelineError("composition equipmentState.scabbard is invalid")
     if "tipMayBeOccluded" in spec["weapon"] and not isinstance(spec["weapon"]["tipMayBeOccluded"], bool):
@@ -3938,7 +4151,7 @@ def create_composition(store: Store, args: argparse.Namespace) -> dict[str, Any]
         "anchor": {"path": anchor_rel, "sha256": sha256_file(store.absolute(anchor_rel))},
     }
     composition_id = stable_id("composition", payload)
-    record = {"schemaVersion": 2, "compositionId": composition_id, **payload}
+    record = {"schemaVersion": spec_version, "compositionId": composition_id, **payload}
     write_json_idempotent(store.record("compositions", composition_id), record, immutable=True)
     return record
 
@@ -5780,6 +5993,12 @@ def _strict_reviewer_records(store: Store, issues: list[str],
 def strict_check(store: Store, strict: bool) -> dict[str, Any]:
     issues = []
     remediations = _validated_exact_chroma_remediations(store, issues)
+    pose_proof_grandfathers: dict[str, str] = {}
+    if (store.pipeline / "pose-proof-grandfathers.json").is_file():
+        try:
+            pose_proof_grandfathers = _validated_pose_proof_grandfathers(store)
+        except (PipelineError, OSError, TypeError, ValueError, json.JSONDecodeError):
+            issues.append("pose_proof_grandfather_registry_invalid")
     relicensed_paths = _validated_relicensed_paths(store, issues, remediations)
     _strict_art_direction_sources(store, issues)
     _strict_reviewer_records(store, issues, remediations)
@@ -6115,6 +6334,46 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
             for attempt in list_attempts(store, job["jobId"]):
                 if attempt.get("state") in {"approved", "promoted"}:
                     issues.append(f"concept_only_formal:{attempt.get('attemptId')}")
+    for path in sorted((store.pipeline / "pose-proof-exemptions").glob("*.json")):
+        try:
+            receipt = load_json(path)
+            binding = {"path": store.relative(path), "sha256": sha256_file(path),
+                       "exemptionId": receipt.get("exemptionId")}
+            synthetic_spec = {"schemaVersion": 3, "poseProofContext": receipt.get("visualMoment"),
+                              "poseProofExemption": binding}
+            _validate_pose_proof_gate(store, synthetic_spec, expected_asset_id=receipt.get("assetId"),
+                                      expected_pose=receipt.get("pose"), expected_direction=receipt.get("direction"))
+        except (PipelineError, OSError, TypeError, ValueError, KeyError, AttributeError, json.JSONDecodeError):
+            issues.append(f"pose_proof_exemption_invalid:{path.stem}")
+    for path in sorted((store.root / "Tools/artworks").rglob("pose-proofs/*.json")):
+        try:
+            card = pose_proof.validate_card(load_json(path))
+            historical = card.get("historicalEvidence")
+            if historical and not _artifact_binding_matches(store, historical):
+                raise PipelineError("pose proof historical evidence hash is invalid")
+        except (PipelineError, pose_proof.PoseProofError, OSError, TypeError, ValueError, KeyError, AttributeError, json.JSONDecodeError):
+            issues.append(f"pose_proof_card_invalid:{store.relative(path)}")
+    for path in sorted((store.pipeline / "compositions").glob("*.json")):
+        try:
+            composition = load_json(path)
+            if not isinstance(composition, dict):
+                raise PipelineError("composition is not an object")
+            payload = {key: value for key, value in composition.items() if key not in {"schemaVersion", "compositionId"}}
+            valid_identity = (composition.get("schemaVersion") in {2, 3}
+                              and composition.get("compositionId") == path.stem == stable_id("composition", payload))
+            if not valid_identity:
+                issues.append(f"composition_record_invalid:{path.stem}")
+            elif composition.get("schemaVersion") == 3:
+                valid_bindings = (_artifact_binding_matches(store, composition.get("source", {}))
+                                  and _effective_artifact_binding_matches(store, composition.get("anchor", {}), remediations))
+                if not valid_bindings:
+                    issues.append(f"composition_record_invalid:{path.stem}")
+                try:
+                    _validate_pose_proof_gate(store, composition.get("spec"), expected_asset_id=composition.get("assetId"))
+                except (PipelineError, OSError, TypeError, ValueError, KeyError, AttributeError):
+                    issues.append(f"composition_pose_proof_invalid:{path.stem}")
+        except (PipelineError, OSError, TypeError, ValueError, KeyError, AttributeError, json.JSONDecodeError):
+            issues.append(f"composition_record_invalid:{path.stem}")
     for path in sorted((store.pipeline / "contracts").glob("*.json")):
         contract = load_json(path)
         equipment_spec = contract.get("equipmentProductionSpec")
@@ -6155,15 +6414,30 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
                 issues.append(f"contract_assembled_shape:{contract.get('contractId')}")
             if contract.get("sourceMode") not in SOURCE_MODES:
                 issues.append(f"contract_source_mode:{contract.get('contractId')}")
-        if (contract.get("schemaVersion") == 2 and contract.get("requiresInvocation")
-                and not contract.get("equipmentProductionSpec")):
-            composition_ref = contract.get("compositionSpec")
-            if not composition_ref:
-                issues.append(f"contract_composition_missing:{contract.get('contractId')}")
+        composition_ref = contract.get("compositionSpec")
+        composition_required = (contract.get("schemaVersion") == 2 and contract.get("requiresInvocation")
+                                and not contract.get("equipmentProductionSpec"))
+        if composition_required and not composition_ref:
+            issues.append(f"contract_composition_missing:{contract.get('contractId')}")
+        if composition_ref:
+            target = store.record("compositions", composition_ref.get("compositionId", ""))
+            if not target.is_file() or sha256_file(target) != composition_ref.get("sha256"):
+                issues.append(f"contract_composition_hash:{contract.get('contractId')}")
             else:
-                target = store.record("compositions", composition_ref.get("compositionId", ""))
-                if not target.is_file() or sha256_file(target) != composition_ref.get("sha256"):
-                    issues.append(f"contract_composition_hash:{contract.get('contractId')}")
+                try:
+                    composition_record = load_json(target)
+                    if not isinstance(composition_record, dict):
+                        raise PipelineError("composition is not an object")
+                    if contract.get("kind") == "action_pose" and composition_record.get("schemaVersion") == 2:
+                        if composition_record.get("compositionId") not in pose_proof_grandfathers:
+                            issues.append(f"contract_pose_proof_grandfather_missing:{contract.get('contractId')}")
+                    elif contract.get("kind") == "action_pose" and composition_record.get("schemaVersion") == 3:
+                        if composition_record.get("assetId") != contract.get("assetId"):
+                            raise PipelineError("action composition asset mismatch")
+                        _validate_pose_proof_gate(store, composition_record.get("spec"), expected_asset_id=contract.get("assetId"),
+                                                  expected_pose=contract.get("pose"), expected_direction=contract.get("direction"))
+                except (PipelineError, OSError, TypeError, ValueError, KeyError, AttributeError, json.JSONDecodeError):
+                    issues.append(f"contract_composition_invalid:{contract.get('contractId')}")
         occlusion = contract.get("occlusion")
         if occlusion:
             if set(occlusion.get("layerRules", {})) - OCCLUSION_LABELS:
@@ -6525,6 +6799,14 @@ def build_parser() -> argparse.ArgumentParser:
     exception.add_argument("--decided-at", required=True, help="explicit ISO-8601 timestamp")
     promote_p = commands.add_parser("promote"); promote_p.add_argument("--attempt-id", required=True)
     refresh_p = commands.add_parser("refresh-promoted-preview"); refresh_p.add_argument("--attempt-id", required=True)
+    pose_exemption = commands.add_parser("create-pose-proof-exemption")
+    pose_exemption.add_argument("--asset-id", required=True); pose_exemption.add_argument("--pose", required=True)
+    pose_exemption.add_argument("--direction", required=True); pose_exemption.add_argument("--consumer", required=True)
+    pose_exemption.add_argument("--phase", required=True); pose_exemption.add_argument("--sprite-role", required=True)
+    pose_exemption.add_argument("--category", choices=sorted(POSE_PROOF_EXEMPTIONS), required=True)
+    pose_exemption.add_argument("--approval-id", action="append", required=True)
+    pose_exemption.add_argument("--reviewer", required=True); pose_exemption.add_argument("--reason", required=True)
+    pose_exemption.add_argument("--decided-at", required=True)
     composition = commands.add_parser("create-composition"); composition.add_argument("--asset-id", required=True)
     composition.add_argument("--spec", required=True); composition.add_argument("--anchor", required=True)
     guide = commands.add_parser("render-pose-guide"); guide.add_argument("--composition-id", required=True); guide.add_argument("--output", required=True)
@@ -6703,6 +6985,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "reject": lambda s, a: decide(s, a, "rejected"),
         "approve-exception": approve_exception, "promote": promote,
         "refresh-promoted-preview": refresh_promoted_preview,
+        "create-pose-proof-exemption": create_pose_proof_exemption,
         "create-composition": create_composition, "render-pose-guide": render_pose_guide,
         "compile-prompt": compile_prompt, "begin-generation": begin_generation,
         "compile-equipment-prompt": compile_equipment_prompt,

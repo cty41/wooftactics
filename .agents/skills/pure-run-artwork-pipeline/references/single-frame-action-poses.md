@@ -8,9 +8,9 @@
 
 ## 动作预演：纯橙 Stick-Figure Gate
 
-当动作的冻结时刻、力线、重心、接触关系、负形或夸张程度仍有分歧时，必须先于正式 ImageGen 绘制 `1–4` 张纯橙单色火柴人缩略预演。草图使用最终方向、摄像机和大致画布占位，可以包含抽象装备轴，但不得携带犬种、服装、角色配色、装备造型、材质或技术检测框。先在 `128×128` 或真实 Game View 尺度展示，由 `cty41` 选择姿态后再建立精确 Composition。
+当动作的冻结时刻、力线、重心、接触关系、负形或夸张程度仍有分歧时，必须先于正式 ImageGen 绘制 `1–4` 张纯橙单色火柴人缩略预演。按 [`pose-proof.md`](pose-proof.md) 使用 `scripts/pose_proof.py render-options` 从轻量 Draft 确定性生成 Review 看板及 128 预览。草图使用最终方向、摄像机和大致画布占位，可以包含抽象装备轴，但不得携带犬种、服装、角色配色、装备造型、材质或技术检测框。由 `cty41` 选择姿态后运行 `select-option`，再建立精确 Composition。
 
-Idle 微调、exact-chroma 等技术清理，以及已批准姿态上的确定性 Assembly 通常跳过此门禁。未选草图和 review board 不是正式 Attempt/Series/state；Brief 或单页 action card 只记录所选姿态、主要否决理由和人工决定，避免把低成本设计探索状态化。
+Idle 微调、exact-chroma 等技术清理，以及同一目标 asset/pose/direction 已具有完整批准链的姿态复用可通过不可变 receipt 豁免；其他资产的 Approval 或裸图不能借用。确定性 Assembly 若目标尚未批准，仍需至少建立单方案 Action Card。未选草图和 review board 不是正式 Attempt/Series/state；Action Card 只记录所选姿态、主要否决理由和人工决定，完整未选几何及临时 PNG 不进入 Git。新 `action_pose` Composition schema v3 必须绑定该 Card 或有效豁免；历史 schema v2 记录不回写。
 
 ## Pose / Identity / Equipment / Geometry 四类职责
 
