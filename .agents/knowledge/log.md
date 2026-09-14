@@ -1,8 +1,10 @@
 # Tactics Knowledge Update Log
 
 ## 2026-09-14
-* **Sync**: `pure-run-artwork` 已同步到来源指纹 `sha256:59610758e6167a0aa446fe7c605f45b09f6f0d56bf7074c0308870a6a4a96ec7`。
-* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:f661f74f7f30763905541a94818a68d650176b451174b941838afd4e41cf9baf`。
+* **Sync**: `pure-run-artwork` 已同步到来源指纹 `sha256:c8a5096f187f3928b4a2f033bc7823f17ae701af39219499bad785aa40cfff89`。
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:b8024841224646c29114f2a96804e718f9107584404308800ca0b2e1e25b29f7`。
+* **Update**: 诗人动作试点沉淀纯橙火柴人 Pose Proof：先于 ImageGen 只确认时点、力线、重心、接触、负形与剪影，再分别绑定身份、装备和 Composition 几何；未选草图不进入状态机，逐图人工暂停，连续同类失败或可确定性 Assembly 时换策略。
+* **Update**: 经 cty41 明确授权，8 组历史 Poet 装备 candidate/calibrated 的低 alpha exact-chroma 残留已通过 8 份确定性 remediation receipt 清零并保留旧 SHA/像素/授权血缘；Poet approved public artwork 通过 license receipts 迁为 CC-BY-4.0，Poet public-release 错误归零，Artwork strict 恢复 363/0。
 
 ## 2026-09-13
 * **Sync**: `pure-run-artwork` 已同步到来源指纹 `sha256:ffbc1385017cd3a7e55e2d7ff4e1f341de2bc9a1130a6202e43331401ffdfa03`。

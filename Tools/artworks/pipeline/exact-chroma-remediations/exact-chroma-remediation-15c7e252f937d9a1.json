@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "exactChromaRemediationId": "exact-chroma-remediation-15c7e252f937d9a1",
+  "sourceAttemptId": "job-c91127f8d0e61731-a002",
+  "sourceAttempt": {
+    "path": "Tools/artworks/pipeline/attempts/job-c91127f8d0e61731-a002.json",
+    "sha256": "48903585a8f71a7e7d74f74d560d0485873eca135ae2bd9dca600c73c1a0617c"
+  },
+  "approval": {
+    "path": "Tools/artworks/pipeline/approvals/approval-40e551d85e6899c1.json",
+    "sha256": "366882d4b8845e9feeead8c48863def9a667d12c6c19247dfe8f542b4856f159"
+  },
+  "artifacts": [
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v01.png",
+      "beforeSha256": "704cd888947a648a9e1ee0db154804288ba230eca422fcc4c63229c145b9e82b",
+      "afterSha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1",
+      "pixels": [
+        {
+          "x": 117,
+          "y": 166,
+          "rgba": [
+            0,
+            255,
+            0,
+            3
+          ]
+        },
+        {
+          "x": 169,
+          "y": 236,
+          "rgba": [
+            0,
+            255,
+            0,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_unsheathed_v02.png",
+      "beforeSha256": "704cd888947a648a9e1ee0db154804288ba230eca422fcc4c63229c145b9e82b",
+      "afterSha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1",
+      "pixels": [
+        {
+          "x": 117,
+          "y": 166,
+          "rgba": [
+            0,
+            255,
+            0,
+            3
+          ]
+        },
+        {
+          "x": 169,
+          "y": 236,
+          "rgba": [
+            0,
+            255,
+            0,
+            2
+          ]
+        }
+      ]
+    }
+  ],
+  "operation": "deterministic-low-alpha-exact-chroma-cleanup",
+  "reviewer": "cty41",
+  "reason": "cty41 authorized deterministic removal of all low-alpha exact green/magenta residue while preserving every other RGBA pixel and historical approval record.",
+  "authorizedAt": "2026-09-14T16:25:32.3675727+08:00"
+}

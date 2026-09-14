@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "exactChromaRemediationId": "exact-chroma-remediation-27aa708894edeb3c",
+  "sourceAttemptId": "job-823050db4231b9ae-a002",
+  "sourceAttempt": {
+    "path": "Tools/artworks/pipeline/attempts/job-823050db4231b9ae-a002.json",
+    "sha256": "09dec2f3af561bacd10b7eb558338caa87c47d7ea71109f0a893945404da9de9"
+  },
+  "approval": {
+    "path": "Tools/artworks/pipeline/approvals/approval-db4f00a5333c3416.json",
+    "sha256": "3f9d10d774f52454fd3bbb4eaa698e7f1414fd07275101600b4d97395d964704"
+  },
+  "artifacts": [
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_wine_wineskin_v01.png",
+      "beforeSha256": "b677fa5977ea35454bf24238bbf8a9f10833bb37c95454abe7d0b46fac1cd926",
+      "afterSha256": "04681ba71395a779061d9f051c318fb3ac5549b3d8e2bfb818df47519b9995a9",
+      "pixels": [
+        {
+          "x": 153,
+          "y": 175,
+          "rgba": [
+            0,
+            255,
+            0,
+            1
+          ]
+        },
+        {
+          "x": 126,
+          "y": 179,
+          "rgba": [
+            0,
+            255,
+            0,
+            2
+          ]
+        },
+        {
+          "x": 153,
+          "y": 182,
+          "rgba": [
+            0,
+            255,
+            0,
+            1
+          ]
+        },
+        {
+          "x": 103,
+          "y": 226,
+          "rgba": [
+            0,
+            255,
+            0,
+            1
+          ]
+        },
+        {
+          "x": 108,
+          "y": 231,
+          "rgba": [
+            0,
+            255,
+            0,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_wine_wineskin_v02_flat.png",
+      "beforeSha256": "b677fa5977ea35454bf24238bbf8a9f10833bb37c95454abe7d0b46fac1cd926",
+      "afterSha256": "04681ba71395a779061d9f051c318fb3ac5549b3d8e2bfb818df47519b9995a9",
+      "pixels": [
+        {
+          "x": 153,
+          "y": 175,
+          "rgba": [
+            0,
+            255,
+            0,
+            1
+          ]
+        },
+        {
+          "x": 126,
+          "y": 179,
+          "rgba": [
+            0,
+            255,
+            0,
+            2
+          ]
+        },
+        {
+          "x": 153,
+          "y": 182,
+          "rgba": [
+            0,
+            255,
+            0,
+            1
+          ]
+        },
+        {
+          "x": 103,
+          "y": 226,
+          "rgba": [
+            0,
+            255,
+            0,
+            1
+          ]
+        },
+        {
+          "x": 108,
+          "y": 231,
+          "rgba": [
+            0,
+            255,
+            0,
+            2
+          ]
+        }
+      ]
+    }
+  ],
+  "operation": "deterministic-low-alpha-exact-chroma-cleanup",
+  "reviewer": "cty41",
+  "reason": "cty41 authorized deterministic removal of all low-alpha exact green/magenta residue while preserving every other RGBA pixel and historical approval record.",
+  "authorizedAt": "2026-09-14T16:25:32.3675727+08:00"
+}

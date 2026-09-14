@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-3a5764ce7ef4eedf",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_ring_pommel_tang_dao_ul_art_direction_review_v03.png",
+    "sha256": "246753ffdb932ff3a6a0d827be46cfc89d7d6dda3ad519f8fb4111826f48a897"
+  },
+  "role": "historical-review-only",
+  "note": "cty41-authorized Poet production evidence included in the CC-BY-4.0 public artwork set.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

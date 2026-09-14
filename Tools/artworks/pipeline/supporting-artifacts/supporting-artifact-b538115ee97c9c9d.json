@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-b538115ee97c9c9d",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/candidates/poet_hit_dr_hunter_recoil_v01_reviewed_clean.png",
+    "sha256": "4d8b87f7407295f9f6c166086acde62d7976393de172a7061fbff77909edb92d"
+  },
+  "role": "supporting-derived",
+  "note": "cty41-authorized Poet production evidence included in the CC-BY-4.0 public artwork set.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

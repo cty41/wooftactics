@@ -7,6 +7,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from PIL import Image, ImageDraw
 
@@ -451,10 +452,98 @@ class ArtworkPipelineTests(unittest.TestCase):
         self.assertEqual("CC-BY-4.0", updated["entries"][0]["license"])
         self.assertEqual(digest, receipt["artifacts"][0]["sha256"])
         self.assertTrue(self.store.record("license-receipts", receipt["licenseReceiptId"]).is_file())
+        issues = []
+        self.assertEqual({self.store.relative(asset)}, pipeline._validated_relicensed_paths(self.store, issues, {}))
+        self.assertEqual([], issues)
+        with self.assertRaisesRegex(pipeline.PipelineError, "not currently licensed"):
+            pipeline.relicense_public_artifacts(self.store, self.ns(
+                path=[str(asset)], from_license="project-owned", to_license="CC-BY-4.0",
+                reviewer="cty41", reason="duplicate receipt", decided_at="2026-08-21T22:01:00+08:00"))
         with self.assertRaisesRegex(pipeline.PipelineError, "reviewer cty41"):
             pipeline.relicense_public_artifacts(self.store, self.ns(
                 path=[str(asset)], from_license="project-owned", to_license="CC-BY-4.0",
                 reviewer="codex", reason="not authorized", decided_at="2026-08-21T22:00:00+08:00"))
+        receipt_path = self.store.record("license-receipts", receipt["licenseReceiptId"])
+        malformed = dict(receipt)
+        malformed["artifacts"] = ["bad"]
+        receipt_path.write_text(json.dumps(malformed), encoding="utf-8")
+        malformed_issues = []
+        pipeline._validated_relicensed_paths(self.store, malformed_issues, {})
+        self.assertEqual([f"license_receipt_invalid:{receipt_path.stem}"], malformed_issues)
+
+    def test_remediate_exact_chroma_artifacts_records_low_alpha_changes(self):
+        candidate = self.png("Tools/artworks/equipment/candidates/item.png")
+        with Image.open(candidate) as opened:
+            image = opened.convert("RGBA")
+        image.putpixel((12, 34), (0, 255, 0, 2))
+        image.putpixel((56, 78), (255, 0, 255, 4))
+        image.save(candidate)
+        master = self.root / "Tools/artworks/equipment/calibrated/item.png"
+        master.parent.mkdir(parents=True)
+        image.save(master)
+        before = pipeline.sha256_file(candidate)
+        approval = {"schemaVersion": 2, "approvalId": "approval-chroma", "decision": "approved", "reviewer": "cty41"}
+        pipeline.write_json_idempotent(self.store.record("approvals", "approval-chroma"), approval, immutable=True)
+        attempt = {
+            "schemaVersion": 2, "attemptId": "job-chroma-a001", "jobId": "job-chroma", "state": "promoted",
+            "approvalId": "approval-chroma", "artifacts": {
+                "prepared": {"path": self.store.relative(candidate), "sha256": before},
+                "promoted": {"master": {"path": self.store.relative(master), "sha256": before}},
+            },
+        }
+        pipeline.write_json_idempotent(self.store.record("attempts", "job-chroma-a001"), attempt, immutable=True)
+        manifest_path = self.root / "Tools/public-release/asset-provenance.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        for path in (candidate, master):
+            manifest["entries"].append({"path": self.store.relative(path), "sha256": before, "status": "approved",
+                "rightsHolder": "cty41", "license": "project-owned", "provenance": "test"})
+        missing_manifest = dict(manifest)
+        missing_manifest["entries"] = manifest["entries"][:-1]
+        manifest_path.write_text(json.dumps(missing_manifest), encoding="utf-8")
+        args = self.ns(attempt_id="job-chroma-a001", path=[str(candidate), str(master)], reviewer="cty41",
+                       reason="authorized exact chroma cleanup", authorized_at="2026-09-14T15:00:00+08:00")
+        with self.assertRaisesRegex(pipeline.PipelineError, "provenance entry is missing"):
+            pipeline.remediate_exact_chroma_artifacts(self.store, args)
+        self.assertEqual(before, pipeline.sha256_file(candidate))
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+        args = self.ns(attempt_id="job-chroma-a001", path=[str(candidate), str(master)], reviewer="cty41",
+                       reason="authorized exact chroma cleanup", authorized_at="2026-09-14T15:00:00+08:00")
+        real_write = pipeline.write_json_idempotent
+
+        def fail_manifest(path, value, immutable=False):
+            if path == manifest_path:
+                raise OSError("simulated manifest failure")
+            return real_write(path, value, immutable=immutable)
+
+        with mock.patch.object(pipeline, "write_json_idempotent", side_effect=fail_manifest):
+            with self.assertRaisesRegex(pipeline.PipelineError, "transaction rolled back"):
+                pipeline.remediate_exact_chroma_artifacts(self.store, args)
+        self.assertEqual(before, pipeline.sha256_file(candidate))
+        self.assertEqual(before, pipeline.sha256_file(master))
+        self.assertEqual([], list((self.store.pipeline / "exact-chroma-remediations").glob("*.json")))
+
+        receipt = pipeline.remediate_exact_chroma_artifacts(self.store, args)
+
+        self.assertEqual(2, len(receipt["artifacts"]))
+        for path in (candidate, master):
+            with Image.open(path) as cleaned:
+                self.assertEqual((0, 0, 0, 0), cleaned.getpixel((12, 34)))
+                self.assertEqual((0, 0, 0, 0), cleaned.getpixel((56, 78)))
+        updated = json.loads(manifest_path.read_text(encoding="utf-8"))
+        self.assertTrue(all(entry["sha256"] != before for entry in updated["entries"]))
+        self.assertTrue(self.store.record("exact-chroma-remediations", receipt["exactChromaRemediationId"]).is_file())
+        issues = []
+        remediations = pipeline._validated_exact_chroma_remediations(self.store, issues)
+        self.assertEqual([], issues)
+        self.assertTrue(pipeline._effective_artifact_binding_matches(
+            self.store, attempt["artifacts"]["prepared"], remediations))
+        receipt_path = self.store.record("exact-chroma-remediations", receipt["exactChromaRemediationId"])
+        malformed = dict(receipt)
+        malformed["artifacts"] = ["bad"]
+        receipt_path.write_text(json.dumps(malformed), encoding="utf-8")
+        malformed_issues = []
+        pipeline._validated_exact_chroma_remediations(self.store, malformed_issues)
+        self.assertEqual([f"exact_chroma_remediation_invalid:{receipt_path.stem}"], malformed_issues)
 
     def test_register_supporting_artifact_cannot_grant_rights_without_cty41_approval(self):
         guide = self.root / "Tools/artworks/doge/demonbound/pose-guide.svg"
@@ -741,6 +830,7 @@ class ArtworkPipelineTests(unittest.TestCase):
         self.assertGreater(rendered.getpixel((116, 233))[2], 150)
         detached = json.loads(spec_path.read_text(encoding="utf-8"))
         detached["weapon"]["hiddenGrip"] = None
+        detached["forbiddenRegions"] = [[0, 0, 10, 10]]
         spec_path.write_text(json.dumps(detached), encoding="utf-8")
         detached_composition = pipeline.create_composition(self.store, self.ns(
             asset_id="detached-weapon-action-design", spec=str(spec_path), anchor=str(anchor)))

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-50568e44e1b9650a",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_v01_size_comparison.png",
+    "sha256": "cade16762bcee2bad2058b3c33aa1c9271b328ce30f3927be1d40386cfb8cf77"
+  },
+  "role": "historical-review-only",
+  "note": "cty41-authorized Poet production evidence included in the CC-BY-4.0 public artwork set.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

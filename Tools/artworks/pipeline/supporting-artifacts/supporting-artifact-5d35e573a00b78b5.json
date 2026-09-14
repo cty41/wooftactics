@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-5d35e573a00b78b5",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_a003_a005_layer_compare_v02.png",
+    "sha256": "ba4b57d2108caa85cebef28f1407800348b0a79359877af81faf235b116bc487"
+  },
+  "role": "historical-review-only",
+  "note": "cty41-authorized Poet production evidence included in the CC-BY-4.0 public artwork set.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

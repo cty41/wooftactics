@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-d54fd6d37d03d4c1",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/candidates/poet_death_hunter_close_dao_v02_reviewed_clean_128.png",
+    "sha256": "cae1bb361b0312980e22a5601d86cc4c5f6e524b3f2283e558a4747f3faa0b5a"
+  },
+  "role": "supporting-derived",
+  "note": "cty41-authorized Poet production evidence included in the CC-BY-4.0 public artwork set.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

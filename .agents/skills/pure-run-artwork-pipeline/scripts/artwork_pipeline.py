@@ -3744,6 +3744,99 @@ def invalidate_attempt_provenance_sync(store: Store, args: argparse.Namespace) -
     return record
 
 
+def remediate_exact_chroma_artifacts(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    _iso_timestamp(args.authorized_at, "--authorized-at")
+    if args.reviewer != "cty41":
+        raise PipelineError("exact chroma remediation requires reviewer cty41")
+    attempt_path = store.record("attempts", args.attempt_id)
+    attempt = load_json(attempt_path)
+    if attempt.get("state") != "promoted" or not attempt.get("approvalId"):
+        raise PipelineError("exact chroma remediation requires a promoted approved attempt")
+    approval_path = store.record("approvals", attempt["approvalId"])
+    approval = load_json(approval_path)
+    if approval.get("decision") != "approved" or approval.get("reviewer") != "cty41":
+        raise PipelineError("exact chroma remediation requires cty41 approval lineage")
+    prepared = attempt.get("artifacts", {}).get("prepared", {})
+    promoted_master = attempt.get("artifacts", {}).get("promoted", {}).get("master", {})
+    bound = {artifact.get("path"): artifact.get("sha256") for artifact in (prepared, promoted_master) if artifact.get("path")}
+    requested = sorted({store.relative(value, must_exist=True) for value in args.path})
+    if set(requested) != set(bound):
+        raise PipelineError("exact chroma remediation paths must be the bound prepared and promoted master pair")
+    manifest_path = store.root / "Tools/public-release/asset-provenance.json"
+    manifest = load_json(manifest_path)
+    by_path = {entry["path"]: entry for entry in manifest["entries"]}
+    staged: list[tuple[Path, Path, dict[str, Any], str, bytes]] = []
+    manifest_bytes = manifest_path.read_bytes()
+    artifacts: list[dict[str, Any]] = []
+    for value in requested:
+        rel = store.relative(value, must_exist=True)
+        path = store.absolute(rel)
+        before_sha = sha256_file(path)
+        if before_sha != bound.get(rel):
+            raise PipelineError(f"exact chroma remediation source binding mismatch: {rel}")
+        with Image.open(path) as opened:
+            if opened.mode != "RGBA":
+                raise PipelineError(f"exact chroma remediation requires native RGBA: {rel}")
+            image = opened.copy()
+        pixels = []
+        for y in range(image.height):
+            for x in range(image.width):
+                rgba = image.getpixel((x, y))
+                if rgba[3] > 0 and rgba[:3] in {(0, 255, 0), (255, 0, 255)}:
+                    pixels.append({"x": x, "y": y, "rgba": list(rgba)})
+                    image.putpixel((x, y), (0, 0, 0, 0))
+        if not pixels:
+            raise PipelineError(f"exact chroma remediation source has no residue: {rel}")
+        if len(pixels) > 16 or max(pixel["rgba"][3] for pixel in pixels) > 4:
+            raise PipelineError(f"exact chroma remediation exceeds low-alpha safety bounds: {rel}")
+        temporary = path.with_name(f".{path.name}.exact-chroma.tmp")
+        image.save(temporary, format="PNG", optimize=False, compress_level=9)
+        after_sha = sha256_file(temporary)
+        entry = by_path.get(rel)
+        if entry is None:
+            temporary.unlink(missing_ok=True)
+            raise PipelineError(f"exact chroma remediation provenance entry is missing: {rel}")
+        if entry.get("sha256") != before_sha:
+            temporary.unlink(missing_ok=True)
+            raise PipelineError(f"exact chroma remediation provenance mismatch: {rel}")
+        artifact = {"path": rel, "beforeSha256": before_sha, "afterSha256": after_sha, "pixels": pixels}
+        staged.append((path, temporary, entry, after_sha, path.read_bytes()))
+        artifacts.append(artifact)
+    payload = {
+        "sourceAttemptId": args.attempt_id,
+        "sourceAttempt": {"path": store.relative(attempt_path), "sha256": sha256_file(attempt_path)},
+        "approval": {"path": store.relative(approval_path), "sha256": sha256_file(approval_path)},
+        "artifacts": artifacts,
+        "operation": "deterministic-low-alpha-exact-chroma-cleanup",
+        "reviewer": args.reviewer,
+        "reason": args.reason,
+        "authorizedAt": args.authorized_at,
+    }
+    receipt_id = stable_id("exact-chroma-remediation", payload)
+    receipt = {"schemaVersion": 1, "exactChromaRemediationId": receipt_id, **payload}
+    receipt_path = store.record("exact-chroma-remediations", receipt_id)
+    receipt_existed = receipt_path.exists()
+    write_json_idempotent(receipt_path, receipt, immutable=True)
+    try:
+        for path, temporary, entry, after_sha, _original_bytes in staged:
+            os.replace(temporary, path)
+            entry["sha256"] = after_sha
+        write_json_idempotent(manifest_path, manifest)
+    except Exception as exc:
+        for path, temporary, _entry, _after_sha, original_bytes in staged:
+            temporary.unlink(missing_ok=True)
+            rollback = path.with_name(f".{path.name}.exact-chroma.rollback")
+            rollback.write_bytes(original_bytes)
+            os.replace(rollback, path)
+        manifest_rollback = manifest_path.with_name(f".{manifest_path.name}.exact-chroma.rollback")
+        manifest_rollback.write_bytes(manifest_bytes)
+        os.replace(manifest_rollback, manifest_path)
+        if not receipt_existed:
+            receipt_path.unlink(missing_ok=True)
+        raise PipelineError(f"exact chroma remediation transaction rolled back: {exc}") from exc
+    return receipt
+
+
 def relicense_public_artifacts(store: Store, args: argparse.Namespace) -> dict[str, Any]:
     _iso_timestamp(args.decided_at, "--decided-at")
     if args.reviewer != "cty41":
@@ -3764,8 +3857,8 @@ def relicense_public_artifacts(store: Store, args: argparse.Namespace) -> dict[s
             raise PipelineError(f"provenance hash mismatch: {rel}")
         if entry.get("status") != "approved" or entry.get("rightsHolder") != "cty41":
             raise PipelineError(f"artifact is not approved project-owned work: {rel}")
-        if entry.get("license") not in {args.from_license, args.to_license}:
-            raise PipelineError(f"artifact has unexpected license: {rel}")
+        if entry.get("license") != args.from_license:
+            raise PipelineError(f"artifact is not currently licensed as {args.from_license}: {rel}")
         artifacts.append({"path": rel, "sha256": digest})
     payload = {
         "artifacts": artifacts,
@@ -3898,7 +3991,8 @@ def render_pose_guide(store: Store, args: argparse.Namespace) -> dict[str, Any]:
             draw.line([tuple(point) for point in weapon["screenAxis"]], fill=(255, 255, 255, 240), width=3)
     if spec.get("renderForbiddenRegions", True):
         for region in spec["forbiddenRegions"]:
-            draw.rectangle(tuple(region["rect"]), outline=(255, 0, 0, 220), fill=(255, 0, 0, 40), width=2)
+            rect = region["rect"] if isinstance(region, dict) else region
+            draw.rectangle(tuple(rect), outline=(255, 0, 0, 220), fill=(255, 0, 0, 40), width=2)
     output_rel = store.relative(args.output)
     output = store.absolute(output_rel)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -4375,7 +4469,8 @@ def _validated_generation_lineage(store: Store, attempt: dict[str, Any]) -> dict
     }
 
 
-def _validate_recontract_processing(store: Store, attempt: dict[str, Any], candidate: dict[str, str], processing: Any) -> None:
+def _validate_recontract_processing(store: Store, attempt: dict[str, Any], candidate: dict[str, str], processing: Any,
+                                    remediations: dict[tuple[str, str], str] | None = None) -> None:
     if isinstance(processing, dict) and processing.get("schemaVersion") == 2:
         required = {"schemaVersion", "operation", "sourceAttemptId", "sourcePreparedSha256",
                     "outputSha256", "maxAlpha", "pixels"}
@@ -4385,15 +4480,27 @@ def _validate_recontract_processing(store: Store, attempt: dict[str, Any], candi
                 or processing.get("sourceAttemptId") != attempt.get("attemptId")
                 or processing.get("sourcePreparedSha256") != source.get("sha256")
                 or processing.get("outputSha256") != candidate.get("sha256")
-                or not _artifact_binding_matches(store, source)
-                or not _artifact_binding_matches(store, candidate)):
+                or not (_effective_artifact_binding_matches(store, source, remediations or {})
+                        if remediations is not None else _artifact_binding_matches(store, source))
+                or not (_effective_artifact_binding_matches(store, candidate, remediations or {})
+                        if remediations is not None else _artifact_binding_matches(store, candidate))):
             raise PipelineError("exact chroma processing schema or source/output binding is invalid")
         max_alpha, changes = processing["maxAlpha"], processing["pixels"]
         if type(max_alpha) is not int or not 1 <= max_alpha <= 3 or not isinstance(changes, list) or len(changes) != 2:
             raise PipelineError("exact chroma processing requires two pixels and maxAlpha between 1 and 3")
-        with Image.open(store.absolute(source["path"])) as original, Image.open(store.absolute(candidate["path"])) as output:
-            if original.mode != "RGBA" or output.mode != "RGBA" or original.size != output.size:
+        with Image.open(store.absolute(source["path"])) as opened_original, Image.open(store.absolute(candidate["path"])) as output:
+            if opened_original.mode != "RGBA" or output.mode != "RGBA" or opened_original.size != output.size:
                 raise PipelineError("exact chroma processing requires equal native RGBA dimensions")
+            original = opened_original.copy()
+            if remediations is not None and sha256_file(store.absolute(source["path"])) != source.get("sha256"):
+                matching = [load_json(receipt_path) for receipt_path in (store.pipeline / "exact-chroma-remediations").glob("*.json")
+                            if any(item.get("path") == source.get("path") and item.get("beforeSha256") == source.get("sha256")
+                                   for item in load_json(receipt_path).get("artifacts", []))]
+                if len(matching) != 1:
+                    raise PipelineError("exact chroma processing cannot restore remediated source")
+                artifact = next(item for item in matching[0]["artifacts"] if item["path"] == source["path"])
+                for pixel in artifact["pixels"]:
+                    original.putpixel((pixel["x"], pixel["y"]), tuple(pixel["rgba"]))
             expected = original.copy()
             seen = set()
             for change in changes:
@@ -5247,6 +5354,114 @@ def migrate_legacy(store: Store, _args: argparse.Namespace) -> dict[str, Any]:
     return record
 
 
+def _validated_exact_chroma_remediations(store: Store, issues: list[str]) -> dict[tuple[str, str], str]:
+    remediations: dict[tuple[str, str], str] = {}
+    for path in sorted((store.pipeline / "exact-chroma-remediations").glob("*.json")):
+        try:
+            record = load_json(path)
+            payload = {key: value for key, value in record.items() if key not in {"schemaVersion", "exactChromaRemediationId"}}
+            attempt_path = store.record("attempts", record.get("sourceAttemptId", ""))
+            approval_ref = record.get("approval", {})
+            attempt_ref = record.get("sourceAttempt", {})
+            valid = (record.get("schemaVersion") == 1
+                     and record.get("exactChromaRemediationId") == path.stem == stable_id("exact-chroma-remediation", payload)
+                     and record.get("reviewer") == "cty41"
+                     and record.get("operation") == "deterministic-low-alpha-exact-chroma-cleanup"
+                     and attempt_path.is_file() and _artifact_binding_matches(store, attempt_ref)
+                     and attempt_ref.get("path") == store.relative(attempt_path)
+                     and _artifact_binding_matches(store, approval_ref))
+            attempt = load_json(attempt_path) if valid else {}
+            approval = load_json(store.absolute(approval_ref.get("path", ""))) if valid else {}
+            prepared = attempt.get("artifacts", {}).get("prepared", {})
+            promoted = attempt.get("artifacts", {}).get("promoted", {}).get("master", {})
+            bound = {artifact.get("path"): artifact.get("sha256") for artifact in (prepared, promoted) if artifact.get("path")}
+            artifacts = record.get("artifacts", [])
+            if not isinstance(artifacts, list) or not all(isinstance(item, dict) for item in artifacts):
+                raise PipelineError("invalid exact chroma remediation artifacts")
+            valid = (valid and attempt.get("state") == "promoted" and attempt.get("approvalId") == approval.get("approvalId")
+                     and approval.get("reviewer") == "cty41" and approval.get("decision") == "approved"
+                     and {item.get("path") for item in artifacts} == set(bound))
+            for artifact in artifacts:
+                pixels = artifact.get("pixels", [])
+                if not isinstance(pixels, list) or not all(isinstance(pixel, dict) for pixel in pixels):
+                    raise PipelineError("invalid exact chroma remediation pixels")
+                target = store.absolute(artifact.get("path", ""))
+                valid = (valid and artifact.get("beforeSha256") == bound.get(artifact.get("path"))
+                         and target.is_file() and sha256_file(target) == artifact.get("afterSha256")
+                         and 0 < len(pixels) <= 16
+                         and len({(pixel.get("x"), pixel.get("y")) for pixel in pixels}) == len(pixels)
+                         and all(type(pixel.get("x")) is int and type(pixel.get("y")) is int
+                                 and isinstance(pixel.get("rgba"), list) and len(pixel["rgba"]) == 4
+                                 and pixel["rgba"][:3] in ([0, 255, 0], [255, 0, 255])
+                                 and 0 < pixel["rgba"][3] <= 4 for pixel in pixels))
+                if valid:
+                    with Image.open(target) as opened:
+                        restored = opened.copy()
+                    valid = all(0 <= pixel["x"] < restored.width and 0 <= pixel["y"] < restored.height for pixel in pixels)
+                    valid = valid and all(restored.getpixel((pixel["x"], pixel["y"])) == (0, 0, 0, 0) for pixel in pixels)
+            if not valid:
+                raise PipelineError("invalid exact chroma remediation")
+            for artifact in artifacts:
+                remediations[(artifact["path"], artifact["beforeSha256"])] = artifact["afterSha256"]
+        except (PipelineError, OSError, KeyError, TypeError, AttributeError, ValueError, json.JSONDecodeError):
+            issues.append(f"exact_chroma_remediation_invalid:{path.stem}")
+    return remediations
+
+
+def _validated_relicensed_paths(store: Store, issues: list[str],
+                                remediations: dict[tuple[str, str], str]) -> set[str]:
+    relicensed: set[str] = set()
+    manifest_path = store.root / "Tools/public-release/asset-provenance.json"
+    manifest = load_json(manifest_path)
+    by_path = {entry.get("path"): entry for entry in manifest.get("entries", [])}
+    for path in sorted((store.pipeline / "license-receipts").glob("*.json")):
+        try:
+            record = load_json(path)
+            payload = {key: value for key, value in record.items() if key not in {"schemaVersion", "licenseReceiptId"}}
+            artifacts = record.get("artifacts", [])
+            if not isinstance(artifacts, list) or not artifacts or not all(isinstance(item, dict) for item in artifacts):
+                raise PipelineError("invalid public artifact license receipt artifacts")
+            valid = (record.get("schemaVersion") == 1
+                     and record.get("licenseReceiptId") == path.stem == stable_id("public-artifact-license", payload)
+                     and record.get("reviewer") == "cty41" and record.get("fromLicense") == "project-owned"
+                     and record.get("toLicense") == "CC-BY-4.0")
+            for artifact in artifacts:
+                entry = by_path.get(artifact.get("path"))
+                target = store.absolute(artifact.get("path", ""))
+                valid = (valid and _effective_artifact_binding_matches(store, artifact, remediations) and entry is not None
+                         and entry.get("sha256") == sha256_file(target) and entry.get("status") == "approved"
+                         and entry.get("rightsHolder") == "cty41" and entry.get("license") == "CC-BY-4.0")
+            if not valid:
+                raise PipelineError("invalid public artifact license receipt")
+            relicensed.update(artifact["path"] for artifact in record["artifacts"])
+        except (PipelineError, OSError, KeyError, TypeError, AttributeError, ValueError, json.JSONDecodeError):
+            issues.append(f"license_receipt_invalid:{path.stem}")
+    return relicensed
+
+
+def _effective_path_hash_matches(store: Store, target: Path, expected: str | None,
+                                 remediations: dict[tuple[str, str], str]) -> bool:
+    if not target.is_file() or not expected:
+        return False
+    actual = sha256_file(target)
+    if actual == expected:
+        return True
+    try:
+        rel = store.relative(target)
+    except PipelineError:
+        return False
+    return remediations.get((rel, expected)) == actual
+
+
+def _effective_artifact_binding_matches(store: Store, artifact: dict[str, Any],
+                                        remediations: dict[tuple[str, str], str]) -> bool:
+    try:
+        target = store.absolute(artifact.get("path", ""))
+        return _effective_path_hash_matches(store, target, artifact.get("sha256"), remediations)
+    except (PipelineError, OSError, AttributeError):
+        return False
+
+
 def _strict_art_direction_sources(store: Store, issues: list[str]) -> None:
     specs = (
         ("art-direction-manifests", "art-direction-manifest"),
@@ -5303,7 +5518,8 @@ def _strict_art_direction_sources(store: Store, issues: list[str]) -> None:
                 issues.append(f"active_art_direction_manifest_binding:{manifest_id}")
 
 
-def _strict_art_direction_evidence(store: Store, issues: list[str]) -> None:
+def _strict_art_direction_evidence(store: Store, issues: list[str],
+                                   remediations: dict[tuple[str, str], str]) -> None:
     for path in sorted((store.pipeline / "anchor-verdicts").glob("*.json")):
         record = load_json(path)
         payload = {key: record[key] for key in (
@@ -5317,7 +5533,7 @@ def _strict_art_direction_evidence(store: Store, issues: list[str]) -> None:
             issues.append(f"anchor_verdict_authority:{path.stem}")
         for artifact in (record.get("candidate", {}), record.get("review", {})):
             target = store.absolute(artifact.get("path", ""))
-            if not target.is_file() or sha256_file(target) != artifact.get("sha256"):
+            if not _effective_path_hash_matches(store, target, artifact.get("sha256"), remediations):
                 issues.append(f"anchor_verdict_hash:{path.stem}")
     for path in sorted((store.pipeline / "acceptance-case-results").glob("*.json")):
         record = load_json(path)
@@ -5344,7 +5560,7 @@ def _strict_art_direction_evidence(store: Store, issues: list[str]) -> None:
             issues.append(f"acceptance_case_authority:{path.stem}")
         for artifact in record.get("evidence", {}).values():
             target = store.absolute(artifact.get("path", ""))
-            if not target.is_file() or sha256_file(target) != artifact.get("sha256"):
+            if not _effective_path_hash_matches(store, target, artifact.get("sha256"), remediations):
                 issues.append(f"acceptance_case_evidence_hash:{path.stem}")
     for path in sorted((store.pipeline / "art-direction-reviews").glob("*.json")):
         record = load_json(path)
@@ -5366,7 +5582,7 @@ def _strict_art_direction_evidence(store: Store, issues: list[str]) -> None:
             issues.append(f"art_direction_review_backlink:{path.stem}")
         for artifact in [*record.get("sourcePanels", {}).values(), record.get("overview", {})]:
             target = store.absolute(artifact.get("path", ""))
-            if not target.is_file() or sha256_file(target) != artifact.get("sha256"):
+            if not _effective_path_hash_matches(store, target, artifact.get("sha256"), remediations):
                 issues.append(f"art_direction_review_hash:{path.stem}")
     for path in sorted((store.pipeline / "art-direction-verdicts").glob("*.json")):
         record = load_json(path)
@@ -5388,14 +5604,11 @@ def _strict_art_direction_evidence(store: Store, issues: list[str]) -> None:
                 issues.append(f"art_direction_verdict_backlink:{path.stem}")
 
 
-def _strict_reviewer_records(store: Store, issues: list[str]) -> None:
+def _strict_reviewer_records(store: Store, issues: list[str],
+                             remediations: dict[tuple[str, str], str]) -> None:
     """Verify immutable Reviewer chains only when the new policy records exist."""
     def bound(artifact: dict[str, Any]) -> bool:
-        try:
-            target = store.absolute(artifact.get("path", ""))
-            return target.is_file() and sha256_file(target) == artifact.get("sha256")
-        except (PipelineError, OSError):
-            return False
+        return _effective_artifact_binding_matches(store, artifact, remediations)
 
     for group, field, validator, prefix in (("review-rules", "rule", artwork_review.validate_review_rule, "review-rule"),
                                             ("review-cases", "case", artwork_review.validate_review_case, "review-case")):
@@ -5566,9 +5779,11 @@ def _strict_reviewer_records(store: Store, issues: list[str]) -> None:
 
 def strict_check(store: Store, strict: bool) -> dict[str, Any]:
     issues = []
+    remediations = _validated_exact_chroma_remediations(store, issues)
+    relicensed_paths = _validated_relicensed_paths(store, issues, remediations)
     _strict_art_direction_sources(store, issues)
-    _strict_reviewer_records(store, issues)
-    _strict_art_direction_evidence(store, issues)
+    _strict_reviewer_records(store, issues, remediations)
+    _strict_art_direction_evidence(store, issues, remediations)
     invalidated_syncs = set()
     for invalidation_path in (store.pipeline / "attempt-provenance-sync-invalidations").glob("*.json"):
         invalidation = load_json(invalidation_path)
@@ -5587,7 +5802,7 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
         attempt_path = store.record("attempts", sync.get("attemptId", "")); job_path = store.record("jobs", sync.get("jobId", "")); contract_path = store.record("contracts", sync.get("contractId", ""))
         valid = (sync.get("attemptProvenanceSyncId") == sync_path.stem == stable_id("attempt-provenance-sync", payload)
                  and sync.get("reviewer") == "cty41" and attempt_path.is_file() and job_path.is_file() and contract_path.is_file()
-                 and all(str(item.get("path", "")).startswith("Tools/artworks/pipeline/") and _artifact_binding_matches(store, item)
+                 and all(str(item.get("path", "")).startswith("Tools/artworks/pipeline/") and _effective_artifact_binding_matches(store, item, remediations)
                          for item in sync.get("artifacts", [])))
         if valid:
             attempt, job, contract = load_json(attempt_path), load_json(job_path), load_json(contract_path)
@@ -5599,12 +5814,18 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
                               key=lambda item: item["path"])
             manifest = load_json(store.root / "Tools/public-release/asset-provenance.json")
             manifest_by_path = {item.get("path"): item for item in manifest.get("entries", [])}
+            manifest_matches = True
+            for item in eligible:
+                rights = dict(sync["rights"])
+                if item["path"] in relicensed_paths and rights.get("license") == "project-owned":
+                    rights["license"] = "CC-BY-4.0"
+                target = store.absolute(item["path"])
+                expected_entry = {"path": item["path"], "sha256": sha256_file(target),
+                                  "status": "approved", **rights}
+                manifest_matches = manifest_matches and manifest_by_path.get(item["path"]) == expected_entry
             valid = (job.get("jobId") == sync.get("jobId") and job.get("contractId") == sync.get("contractId")
                      and contract.get("rights") == sync.get("rights") and bool(eligible)
-                     and sync.get("artifacts") == eligible
-                     and all(manifest_by_path.get(item["path"]) == {"path": item["path"], "sha256": item["sha256"],
-                                                                  "status": "approved", **sync["rights"]}
-                             for item in eligible))
+                     and sync.get("artifacts") == eligible and manifest_matches)
         if not valid:
             issues.append(f"attempt_provenance_sync_invalid:{sync_path.stem}")
     inventory_path = store.pipeline / "legacy-assets.json"
@@ -5614,7 +5835,7 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
         path = store.absolute(rel)
         if not path.exists():
             issues.append(f"inventory_missing:{rel}")
-        elif sha256_file(path) != item["sha256"]:
+        elif not _effective_path_hash_matches(store, path, item["sha256"], remediations):
             issues.append(f"inventory_hash:{rel}")
     current = {store.relative(path) for path in (store.root / "Tools/artworks").rglob("*.png") if store.pipeline not in path.parents}
     registered_paths = set()
@@ -5623,7 +5844,7 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
             record = load_json(record_path)
             artifact = record.get("artifact", {})
             artifact_exists = isinstance(artifact, dict) and artifact.get("path") and store.absolute(artifact["path"]).is_file()
-            valid = _artifact_binding_matches(store, artifact)
+            valid = _effective_artifact_binding_matches(store, artifact, remediations)
             legacy_missing = False
             if group == "supporting-artifacts":
                 payload = {key: value for key, value in record.items() if key not in {"schemaVersion", "supportingArtifactId"}}
@@ -5646,7 +5867,7 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
             if isinstance(value.get("path"), str) and value["path"].lower().endswith(".png"):
                 try:
                     target = store.absolute(value["path"])
-                    if target.is_file() and sha256_file(target) == value.get("sha256"):
+                    if _effective_path_hash_matches(store, target, value.get("sha256"), remediations):
                         registered_paths.add(value["path"])
                 except (PipelineError, OSError):
                     pass
@@ -5680,7 +5901,7 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
                 if group == "jobs":
                     valid = (record.get("jobId") == record_path.stem
                              and store.record("contracts", record.get("contractId", "")).is_file()
-                             and all(_artifact_binding_matches(store, item) for item in record.get("inputs", [])))
+                             and all(_effective_artifact_binding_matches(store, item, remediations) for item in record.get("inputs", [])))
                 elif group == "model-review-packets":
                     valid = artwork_review.validate_model_review_packet(record).get("packetId") == record_path.stem
                 else:
@@ -5693,8 +5914,8 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
                     parameters = processing.get("parameters") if isinstance(processing, dict) and processing.get("path") else processing
                     valid = (record.get("reviewer") == "cty41" and record.get("invocationStatus") == "missing-pre-v3"
                              and contract_path.is_file() and sha256_file(contract_path) == record.get("contractSha256")
-                             and all(_artifact_binding_matches(store, record.get(key)) for key in ("source", "prepared"))
-                             and (record.get("mask") is None or _artifact_binding_matches(store, record.get("mask")))
+                             and all(_effective_artifact_binding_matches(store, record.get(key), remediations) for key in ("source", "prepared"))
+                             and (record.get("mask") is None or _effective_artifact_binding_matches(store, record.get("mask"), remediations))
                              and isinstance(parameters, dict) and bool(parameters.get("operation")))
                     if valid and isinstance(processing, dict) and processing.get("path"):
                         valid = (_artifact_binding_matches(store, processing) and load_json(store.absolute(processing["path"])) == parameters
@@ -5716,11 +5937,11 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
                              and (record.get("sourceLineage") is None or record.get("sourceLineage") == lineage))
                     if record.get("processing"):
                         processing = record["processing"]
-                        valid = (valid and _artifact_binding_matches(store, processing)
+                        valid = (valid and _effective_artifact_binding_matches(store, processing, remediations)
                                  and processing.get("parameters") == load_json(store.absolute(processing["path"])))
                         if valid:
-                            _validate_recontract_processing(store, source_attempt, record["candidate"], processing["parameters"])
-                    valid = valid and _artifact_binding_matches(store, record.get("candidate"))
+                            _validate_recontract_processing(store, source_attempt, record["candidate"], processing["parameters"], remediations)
+                    valid = valid and _effective_artifact_binding_matches(store, record.get("candidate"), remediations)
                     derived_jobs = [load_json(item) for item in (store.pipeline / "jobs").glob("*.json")
                                     if load_json(item).get("reviewedRecontractId") == record.get("reviewedRecontractId")]
                     derived_attempts = [load_json(item) for item in (store.pipeline / "attempts").glob("*.json")
@@ -5757,7 +5978,7 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
             for value in values:
                 if isinstance(value, dict) and value.get("path"):
                     target = store.absolute(value["path"])
-                    if not target.exists() or sha256_file(target) != value.get("sha256"):
+                    if not _effective_path_hash_matches(store, target, value.get("sha256"), remediations):
                         issues.append(f"artifact_hash:{attempt['attemptId']}:{value.get('path')}")
                         attempt_valid_for_registration = False
         if not store.record("jobs", attempt.get("jobId", "")).is_file():
@@ -5883,7 +6104,8 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
         if job.get("jobId") not in retired_historical_jobs:
             for bound in ([job["prompt"]] if isinstance(job.get("prompt"), dict) else []) + job.get("inputs", []):
                 target = store.absolute(bound.get("path", ""))
-                if not bound_input_hash_matches(target, bound.get("sha256")):
+                if (not bound_input_hash_matches(target, bound.get("sha256"))
+                        and not _effective_path_hash_matches(store, target, bound.get("sha256"), remediations)):
                     issues.append(f"job_input_hash:{job.get('jobId')}:{bound.get('path')}")
         try:
             _validate_job_local_references(store, job)
@@ -5904,7 +6126,7 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
                 issues.append(f"contract_equipment_profile_hash:{contract.get('contractId')}")
             for anchor_ref in equipment_spec.get("anchors", []):
                 target = store.absolute(anchor_ref.get("path", ""))
-                if not target.is_file() or sha256_file(target) != anchor_ref.get("sha256"):
+                if not _effective_path_hash_matches(store, target, anchor_ref.get("sha256"), remediations):
                     issues.append(f"contract_equipment_anchor_hash:{contract.get('contractId')}")
         if contract.get("schemaVersion") == ART_DIRECTION_SCHEMA_VERSION:
             required_specs = ("artDirectionManifestSpec", "artDirectionSpec", "materialLanguageSpec",
@@ -5953,12 +6175,12 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
         anchor = contract.get("anchor")
         if anchor:
             target = store.absolute(anchor.get("path", ""))
-            if not target.is_file() or sha256_file(target) != anchor.get("sha256"):
+            if not _effective_path_hash_matches(store, target, anchor.get("sha256"), remediations):
                 issues.append(f"contract_anchor_hash:{contract.get('contractId')}")
             mask_path = anchor.get("maskPath")
             if mask_path:
                 mask = store.absolute(mask_path)
-                if not mask.is_file() or sha256_file(mask) != anchor.get("maskSha256"):
+                if not _effective_path_hash_matches(store, mask, anchor.get("maskSha256"), remediations):
                     issues.append(f"contract_anchor_mask_hash:{contract.get('contractId')}")
     for path in sorted((store.pipeline / "feedback").glob("*.json")):
         feedback = load_json(path)
@@ -6410,6 +6632,10 @@ def build_parser() -> argparse.ArgumentParser:
     invalidate_sync_p = commands.add_parser("invalidate-attempt-provenance-sync")
     invalidate_sync_p.add_argument("--attempt-provenance-sync-id", required=True); invalidate_sync_p.add_argument("--reviewer", required=True)
     invalidate_sync_p.add_argument("--reason", required=True); invalidate_sync_p.add_argument("--invalidated-at", required=True)
+    chroma_fix_p = commands.add_parser("remediate-exact-chroma")
+    chroma_fix_p.add_argument("--attempt-id", required=True); chroma_fix_p.add_argument("--path", action="append", required=True)
+    chroma_fix_p.add_argument("--reviewer", required=True); chroma_fix_p.add_argument("--reason", required=True)
+    chroma_fix_p.add_argument("--authorized-at", required=True)
     relicense_p = commands.add_parser("relicense-public-artifact")
     relicense_p.add_argument("--path", action="append", required=True)
     relicense_p.add_argument("--from-license", default="project-owned")
@@ -6508,6 +6734,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "register-runtime-copy": register_runtime_copy,
         "sync-attempt-provenance": sync_attempt_provenance,
         "invalidate-attempt-provenance-sync": invalidate_attempt_provenance_sync,
+        "remediate-exact-chroma": remediate_exact_chroma_artifacts,
         "relicense-public-artifact": relicense_public_artifacts,
         "adopt-reviewed-sprite": adopt_reviewed_sprite,
         "recontract-reviewed-attempt": recontract_reviewed_attempt,

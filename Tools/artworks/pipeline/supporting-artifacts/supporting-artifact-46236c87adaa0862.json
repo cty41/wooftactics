@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-46236c87adaa0862",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_v3_source_responsibility_review.png",
+    "sha256": "b8c2c5dc4cf399beefbb227e967968fdb76c5a645bc3ca8858b0ac4aeefe0d23"
+  },
+  "role": "historical-review-only",
+  "note": "cty41-authorized Poet production evidence included in the CC-BY-4.0 public artwork set.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

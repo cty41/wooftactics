@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "licenseReceiptId": "public-artifact-license-713f7b40f97b9a36",
+  "artifacts": [
+    {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_cast_dr_vertical_guard_grip_v01_reviewed_clean.png",
+      "sha256": "7cd072d554222d24c1cc4b357f3220260c01016c47be51d21c34e045d4139883"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_cast_dr_vertical_guard_grip_v01_reviewed_clean_128.png",
+      "sha256": "4484f6e763572acf4115adb14ce355b3c96b4eb4af2aa2c46d9775baa4769cda"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_cast_ul_vertical_guard_grip_v01_reviewed_clean.png",
+      "sha256": "b0a4abd6330b60090edd771fd5c168aaf99c5b9e5c9ecb3e4cd935c4fa4fbfce"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_cast_ul_vertical_guard_grip_v01_reviewed_clean_128.png",
+      "sha256": "7efa64d4b81d15dc5f9b90a5e1d06a9308627ac5d8b9344fd14d047802dc1e8c"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_death_hunter_close_dao_v02_reviewed_clean.png",
+      "sha256": "235922e278fd3946e74763084e7576a0b1eed8128195b03361939f13c0a8940e"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_death_hunter_close_dao_v02_reviewed_clean_128.png",
+      "sha256": "cae1bb361b0312980e22a5601d86cc4c5f6e524b3f2283e558a4747f3faa0b5a"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_hit_dr_hunter_recoil_v01_reviewed_clean.png",
+      "sha256": "4d8b87f7407295f9f6c166086acde62d7976393de172a7061fbff77909edb92d"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_hit_dr_hunter_recoil_v01_reviewed_clean_128.png",
+      "sha256": "14a038ea34dedc150a9788ac53bd7c3bbc9fe9a808ad57bad3aedf100dde4278"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_hit_ul_hunter_recoil_v01_reviewed_clean.png",
+      "sha256": "f1f9049ba256d1e649cafc742391f184d000547b47f442e557b19156adf3a9ac"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_hit_ul_hunter_recoil_v01_reviewed_clean_128.png",
+      "sha256": "2495c504bc2ab04c8a35d5842ac8657640bb80a79392b4e4958ceb0b3f4c9125"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_melee_dr_high_guard_v01_reviewed_clean.png",
+      "sha256": "22d198c91f1578e1ed19c491c2b54f1106704b6317c1a59eff49bc422a58f591"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_melee_dr_high_guard_v01_reviewed_clean_128.png",
+      "sha256": "f9bd0ec7fe3cfdad3ffacc77146892c6d24971a4b3730a9942ad99799fc83808"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_ring_pommel_tang_dao_idle_ul_v6_a010_chroma_clean.png",
+      "sha256": "58f623c413a010b66e14c2a2c3d9503a18d4d0b2326540c21969c55eed40aa36"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/components/migrated/poet_idle_ul_tang_dao_rotated_v03.png",
+      "sha256": "491e97c04472fc50d191095a3ff50c9b917d0cb7f68634722d4579ddd17ee2c7"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_ring_pommel_tang_dao_unsheathed_sources_v02.png",
+      "sha256": "469553027ea497311e07661e964d066a4ac66af58835259b3e41e3fbc2301028"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_a003_a005_layer_compare_v02.png",
+      "sha256": "ba4b57d2108caa85cebef28f1407800348b0a79359877af81faf235b116bc487"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_body_v3_direction_compare_v01.png",
+      "sha256": "15ed2cd450c30c077aa0c84fb0517e7cfd38dc80d00f785364cb0e54f1ccef2a"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_confirmed_source_generation_rounds_v01.png",
+      "sha256": "e1befae80e1673ffa9e6bd1a045d253653f06140c0c466380849712b70180064"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_v7_final_human_review_v01.png",
+      "sha256": "fe5d7f920a0e271b9b404257bb482238d9c3f4e020de7b968cf2236a2ba0101b"
+    }
+  ],
+  "fromLicense": "project-owned",
+  "toLicense": "CC-BY-4.0",
+  "reviewer": "cty41",
+  "reason": "cty41 explicitly authorized publishing these remaining Poet candidate and review artifacts under CC-BY-4.0.",
+  "decidedAt": "2026-09-14T16:39:45.1703738+08:00"
+}

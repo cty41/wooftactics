@@ -1,6 +1,6 @@
 # 五红土松诗人动作覆盖矩阵
 
-状态：Idle DR/UL 已批准并以逐字节一致副本接入 Godot；Melee DR 已进行三套受控尝试但仍无 promoted 输出，其他动作仍未批准。2026-09-12 的 v3 实验首次绑定 Release→Impact 时间合同与真正关键姿态 Guide：a001 动作张力明显改善但丢失胶囊拓扑；用户授权的 a002 恢复直立胶囊和空鞘，却退回近似 Idle 展示姿态，且唐刀仍漂成宽双刃剑。两张均 technical_failed。随后 body-first v4 只生成无装备身体：直立胶囊和无长肢方向更接近，但前爪偏大、发力仍弱，平滑渐变和额头高光仍未受控；初始 a001 technical_failed；用户随后明确接受该身体用于较宽松的近战可读性标准，技术子 Attempt a008 在保持已展示 256 图 SHA `e6feabd6…0404` 下通过。两张 review-only 唐刀合成草图继续隐藏剑鞘：v1 低劈被判定有脱手感，v2 抬高 18° 后仍因两只前爪离主体过远而不自然。随后 v6/v7 局部编辑均因握持、主体重画及唐刀漂移失败。最终回到 accepted body，以正式唐刀作确定性高举剑合成；cty41 先确认 85% 唐刀、剑尖位于头部右上方的 v5 high-guard；再对照既有地面 Melee 判定无需夸张主体前倾，最终确认总校正 10°、脚底 y=236 的 DR v11 upright review-only 构图方向可以。对应 UL 保留原生身份，将 DR 双前爪按水平对应关系投影到同一左侧握点，并按用户选择向攻击方向前倾 5°；脚底 y=236 的 UL v11 同样获判定方向可以。UL 最终选择 v15，并于 2026-09-13 通过 reviewed-import `job-7bafde3439fd4e9f-a001` 获 cty41 批准、离线晋升为 `calibrated/poet_five_red_chow_melee_ul_high_guard_v01.png`；随后 DR v11 通过 reviewed-import `job-72d7ec1c23adfbdc-a001` 晋升为 `calibrated/poet_five_red_chow_melee_dr_high_guard_v01.png`。Melee DR/UL 离线正式覆盖已闭合，尚未接入运行时。缺失动作运行时仅回退到方向 Idle，Death 暂以 Idle DR 占位；`MQA-GODOT-POET-RUNTIME` 仍为 pending。
+状态：Idle DR/UL 已批准并以逐字节一致副本接入 Godot；Melee、Cast、Hit 的 DR/UL 与一张通用 Death 已由 cty41 批准并离线晋升，但均未接入运行时。2026-09-12 的 v3 实验首次绑定 Release→Impact 时间合同与真正关键姿态 Guide：a001 动作张力明显改善但丢失胶囊拓扑；用户授权的 a002 恢复直立胶囊和空鞘，却退回近似 Idle 展示姿态，且唐刀仍漂成宽双刃剑。两张均 technical_failed。随后 body-first v4 只生成无装备身体：直立胶囊和无长肢方向更接近，但前爪偏大、发力仍弱，平滑渐变和额头高光仍未受控；初始 a001 technical_failed；用户随后明确接受该身体用于较宽松的近战可读性标准，技术子 Attempt a008 在保持已展示 256 图 SHA `e6feabd6…0404` 下通过。两张 review-only 唐刀合成草图继续隐藏剑鞘：v1 低劈被判定有脱手感，v2 抬高 18° 后仍因两只前爪离主体过远而不自然。随后 v6/v7 局部编辑均因握持、主体重画及唐刀漂移失败。最终回到 accepted body，以正式唐刀作确定性高举剑合成；cty41 先确认 85% 唐刀、剑尖位于头部右上方的 v5 high-guard；再对照既有地面 Melee 判定无需夸张主体前倾，最终确认总校正 10°、脚底 y=236 的 DR v11 upright review-only 构图方向可以。对应 UL 保留原生身份，将 DR 双前爪按水平对应关系投影到同一左侧握点，并按用户选择向攻击方向前倾 5°；脚底 y=236 的 UL v11 同样获判定方向可以。UL 最终选择 v15，并于 2026-09-13 通过 reviewed-import `job-7bafde3439fd4e9f-a001` 获 cty41 批准、离线晋升为 `calibrated/poet_five_red_chow_melee_ul_high_guard_v01.png`；随后 DR v11 通过 reviewed-import `job-72d7ec1c23adfbdc-a001` 晋升为 `calibrated/poet_five_red_chow_melee_dr_high_guard_v01.png`。Melee DR/UL 离线正式覆盖已闭合，尚未接入运行时。缺失动作运行时仅回退到方向 Idle，Death 暂以 Idle DR 占位；`MQA-GODOT-POET-RUNTIME` 仍为 pending。
 
 ## 范围与盘点
 
@@ -19,9 +19,9 @@
 - 正式离线装备：[出鞘唐刀母版](equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v01.png) 与 [128 预览](equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v01_128.png)。正式文件沿用原合同 `_v01` 输出名，内容是已接受的候选 v02；母版 SHA-256 `704cd888947a648a9e1ee0db154804288ba230eca422fcc4c63229c145b9e82b`，与候选逐字节一致。
 - 实际 v02 使用既有两张 approved 来源：入鞘 DR v02 负责环/柄/护手/画风，旧唐剑 v01 仅负责金属配色和细节密度。`feedback-addendum-6589876558d05ba6` 澄清旧 feedback 中 one input / <=220 words / new contract 属于生成前已取消的主代理准备要求；旧记录和 v01 prompt 改写说明均保留。
 - 附加逐像素 QA 发现母版保留两个极低 alpha 的精确绿像素（alpha 3/2），128 预览没有；状态机 strict 与既有装备 report 未检出。`feedback-addendum-6086f09a42ad87ca` 如实记录此技术门禁缺口；候选及晋升字节不改，不声称所有 QA 全绿。
-- Melee DR/UL 已于 2026-09-13 经 reviewed-import 正式离线晋升；Hit、Cast、Death 尚无正式候选。技能合同与表现映射复核确认诗人没有 `Ranged` execution kind，因此 Thrown/Ranged 不是诗人必做动作。动作晋升不等于运行时接入授权；当前诗人动作字段仍为空并安全回退到方向 Idle，Death 单独以 Idle DR 占位。
+- Melee DR/UL 已于 2026-09-13 经 reviewed-import 正式离线晋升；Cast DR/UL、Hit DR/UL 与通用 Death 随后于 2026-09-14 经 cty41 明确选择并离线晋升。技能合同与表现映射复核确认诗人没有 `Ranged` execution kind，因此 Thrown/Ranged 不是诗人必做动作。动作晋升不等于运行时接入授权；当前诗人动作字段仍为空并安全回退到方向 Idle，Death 单独以 Idle DR 占位。
 
-按 pipeline promoted Attempt 盘点：装备版完整角色已有 Idle DR v03、Idle UL v07、Melee DR high-guard v01 与 Melee UL high-guard v01。Idle 两图已分别登记为 `godot/assets/units/doge_poet.png` 与 `doge_poet_ul.png` 的逐字节一致运行时副本；Melee 两图仅离线晋升，尚未接入。另有无装备身份底稿 Idle DR v03（`job-43b34a4685f71ca2-a010` / `approval-1acd77a15a84f096`），它不是新的动作覆盖，也不应取代更直接的装备版来源。独立装备、组件、研究图与历史候选不计入动作覆盖。
+按 pipeline promoted Attempt 盘点：装备版完整角色已有 Idle DR v03、Idle UL v07，以及 Melee high-guard、Cast vertical-guard 与 Hit hunter-recoil 的 DR/UL，另有通用 Death v02。Idle 两图已分别登记为 `godot/assets/units/doge_poet.png` 与 `doge_poet_ul.png` 的逐字节一致运行时副本；Melee、Cast、Hit 与 Death 均仅离线晋升，尚未接入。另有无装备身份底稿 Idle DR v03（`job-43b34a4685f71ca2-a010` / `approval-1acd77a15a84f096`），它不是新的动作覆盖，也不应取代更直接的装备版来源。独立装备、组件、研究图与历史候选不计入动作覆盖。
 
 覆盖状态含义：**已批准**=有 promoted Attempt 与 cty41 Approval；**尝试失败**=存在可追溯候选但没有 promoted 输出；**待制作**=建议补齐但尚未生成正式候选；**待确认**=需求/表现/变体尚未批准；**历史模板**=不得直接用于新生成。
 
@@ -33,7 +33,7 @@
 | --- | --- | --- | --- | --- |
 | S-DR 装备版 Idle DR | `Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png` | `job-34f6747e5a1f30d0-a001` / `approval-3affe3151e3652b6`；v3 AnchorVerdict `anchor-verdict-0baad2ab67c2076a` | 五红身份、DR 解剖、唯一核心体量基准、配色、四爪、卷尾与空鞘关系；不提供攻击姿态或出鞘刀状态 | v3 Image 1，已输入 a001 |
 | S-UL 装备版 Idle UL | `Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_ul_v07.png` | `job-4affd0d3e702d0d0-a001` / `approval-a71f2eecb8e0ec5e` | 原生 UL 身份/后脑/耳型/方向；体量仍向 S-DR 校验；Idle 遮挡不自动延伸为动作合同 | UL 动作候选输入，待来源确认；本轮不输入 |
-| A-DR 对应已批准 DR 动作 | 尚未制作，无路径、SHA 或 Approval | 不存在 | 将来只提供同一动作峰值、装备状态和动作轴，不向 UL 迁移正脸 | 前置 DR 人工通过后才可选择 |
+| A-DR 对应已批准 DR 动作 | Melee、Cast、Hit DR 均已有 promoted Attempt；详见下方矩阵对应行 | 按动作分别绑定 | 仅向相应 UL 提供同一动作峰值、装备状态和动作轴，不迁移正脸或 DR 遮挡 | 相应 UL 已使用窄职责合同并离线晋升 |
 | W-DAO 正式出鞘唐刀 | `Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v02.png` | `job-a254d0afc9b7b286-a001` / `approval-8dbcb2755d3c06b2`；v3 AnchorVerdict `anchor-verdict-7d63dc0c53bc6c4a` | 仅负责环首、柄、护手、直身单刃刀身、比例、刀尖、颜色和细节预算 | v3 Image 2，已输入 a001 |
 | G-V3 确定性 Release→Impact Guide | `Tools/artworks/poet_five_red_chow/guides/poet_melee_dr_release_impact_pose_guide_v3.png` | `pose-guide-e156d4cb46ff0e9c` | 仅负责力线、重心、支撑/驱动脚、压缩、反向平衡、握点和刀端；不能成为 Sprite | v3 Image 3，已输入 a001 |
 | X-ACTION 跨角色动作参考 | Demonbound 明确排除 | 用户确认不使用 | 只作为旧策略的负面历史，不提供任何正向身份/动作/装备信号 | v3 不输入 |
@@ -80,6 +80,13 @@ P1/P2/P3 是建议制作先后，不是缺陷严重度或已经批准的生产�
 - 直接双参考任务 `job-a6df55a1b4f8ac96` 的三轮视觉生成被 Feedback 判为未满足无臂四爪拓扑、唐刀形制或下劈动作张力；最后生成轮对应 a006 的 `pipeline-agent` Feedback disposition 为 `exhausted`。但 v1/v2 Melee Brief、Prompt 与 Feedback 中“帽、衣、葫芦必须保留”的要求和正式诗人身份/装备版 Idle 明确冲突，只能作为历史合同漂移，不再视为候选缺陷或未来 retry 输入；Agent disposition 也不是人类策略终止 receipt。
 - 引入魔剑士 Melee 姿势职责后的三参考任务 `job-50532e1e9fe7c307` 只有 a001；它没有 Feedback，Report 只因 `annotations_missing`、`core_row_disconnected` 为 `technical_failed`。该次 Attempt 已终止，但现有证据不足以判定三参考视觉策略 exhausted。
 - 2026-09-12 v3 单图实验完成前述恢复条件：`poet_melee_dr_release_impact_visual_moment_v3.md` 定义 Release→Impact 时间合同；`composition-632266b9dd38fea2` / `pose-guide-e156d4cb46ff0e9c` 首次表达力线、重心、支撑/驱动脚、压缩和反向平衡；`contract-5277695f41ebb229` / `job-0a6c57acd0d21d59` 只绑定正式诗人 Idle、正式出鞘唐刀和 Guide。a001 确实改善动作张力并避免帽衣葫芦污染，但因横向四足躯干、宽双刃剑、刀尖边界和空鞘歧义而 `technical_failed`。该候选不得晋升、接入或成为正向来源；是否 retry 必须等待 cty41 对本次单图的人工结论。
+
+## 诗人试点可复用教训
+
+- 同一次 ImageGen 同时要求重新设计动作、严格恢复身份、精确复现装备和满足几何窗口时，候选会在“动作更强但身份/拓扑漂移”与“身份恢复但退回 Idle”之间振荡。
+- 当动作时点或剪影尚未确认，先展示 `1–4` 张纯橙单色火柴人缩略草图；草图只决定冻结时刻、力线、重心、接触和负形，不混入犬种、配色、装备造型或技术检测框。
+- 纯橙姿态经人工选择后，再由身份母图、装备母图和 Composition/Pose Guide 分别承担身份、形制与可测几何。已有可用身体和正式装备时，优先采用确定性 Assembly，不再让 ImageGen 重画冻结区域。
+- 低成本姿态草图与未选方案不创建 Attempt/Series；正式状态机从真实生成调用或需要追责的确定性处理开始。每生成一张即停止，连续两轮重复同一语义能力失败时返回姿态/来源层，不用 prompt 堆叠继续碰运气。
 
 ## 历史入口与依据
 
