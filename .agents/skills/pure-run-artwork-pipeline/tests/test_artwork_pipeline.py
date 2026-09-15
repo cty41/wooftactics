@@ -889,6 +889,24 @@ class ArtworkPipelineTests(unittest.TestCase):
         with self.assertRaisesRegex(pipeline.PipelineError, "asset"):
             pipeline.create_composition(self.store, self.ns(asset_id="other-asset", spec=decision["source"]["path"],
                                                             anchor=str(self.store.absolute(decision["anchor"]["path"]))))
+        example = Path(pipeline.pose_proof.__file__).resolve().parents[1] / "examples" / "pose-proof-cast-dr-v1.json"
+        draft = json.loads(example.read_text(encoding="utf-8")); draft.pop("historicalEvidence", None)
+        draft["assetId"] = decision["assetId"]
+        unauthorized = pipeline.pose_proof._core.select_option(
+            draft, "B", "agent", "selected", {"A": "no", "C": "no"}, "2026-09-15T10:00:00+08:00")
+        unauthorized_path = self.root / "Tools/artworks/hero/pose-proofs/cast-unauthorized.json"
+        unauthorized_path.write_text(json.dumps(unauthorized), encoding="utf-8")
+        unauthorized_spec = json.loads(json.dumps(decision_spec))
+        unauthorized_spec["poseProofDecision"] = {
+            "path": self.store.relative(unauthorized_path), "sha256": pipeline.sha256_file(unauthorized_path),
+            "poseProofId": unauthorized["poseProofId"],
+        }
+        unauthorized_spec_path = self.root / "Tools/artworks/specs/v3-unauthorized-reviewer.json"
+        unauthorized_spec_path.write_text(json.dumps(unauthorized_spec), encoding="utf-8")
+        with self.assertRaisesRegex(pipeline.PipelineError, "reviewer cty41"):
+            pipeline.create_composition(self.store, self.ns(
+                asset_id=decision["assetId"], spec=str(unauthorized_spec_path),
+                anchor=str(self.store.absolute(decision["anchor"]["path"]))))
         bare_exemption = json.loads(self.store.absolute(decision["source"]["path"]).read_text(encoding="utf-8"))
         bare_exemption.pop("poseProofDecision")
         bare_exemption["poseProofExemption"] = {"category": "existing-approved-pose", "reviewer": "cty41",

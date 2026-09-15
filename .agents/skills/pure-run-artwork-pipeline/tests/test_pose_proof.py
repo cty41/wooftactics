@@ -5,12 +5,14 @@ import hashlib
 from concurrent.futures import ThreadPoolExecutor
 import importlib.util
 import json
+import os
 import sys
 import tempfile
 import unittest
 from pathlib import Path
 
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "pose_proof.py"
+sys.path.insert(0, str(SCRIPT.parent))
 SPEC = importlib.util.spec_from_file_location("pose_proof", SCRIPT)
 pose_proof = importlib.util.module_from_spec(SPEC)
 assert SPEC.loader
@@ -65,6 +67,20 @@ class PoseProofTests(unittest.TestCase):
         with self.assertRaisesRegex(pose_proof.PoseProofError, "unknown"):
             pose_proof.validate_draft(unknown)
 
+    def test_project_adapter_rejects_generic_canvas_preview_and_reviewer(self):
+        other_canvas = copy.deepcopy(self.draft)
+        other_canvas["canvas"] = [512, 256]
+        with self.assertRaisesRegex(pose_proof.PoseProofError, "canvas must be"):
+            pose_proof.validate_draft(other_canvas)
+        with self.assertRaisesRegex(pose_proof.PoseProofError, "preview requires"):
+            pose_proof.render_preview(self.draft["options"][0], [256, 256], [180, 90])
+        generic_card = pose_proof._core.select_option(
+            self.draft, "B", "agent", "selected", {"A": "no", "C": "no"},
+            "2026-09-15T10:00:00+08:00",
+        )
+        with self.assertRaisesRegex(pose_proof.PoseProofError, "reviewer cty41"):
+            pose_proof.validate_card(generic_card)
+
     def test_selection_keeps_only_selected_geometry_and_rejection_summaries(self):
         card = pose_proof.select_option(
             self.draft, "B", "cty41", "best compact cast silhouette",
@@ -95,9 +111,24 @@ class PoseProofTests(unittest.TestCase):
             path = Path(directory) / "card.json"
             pose_proof.write_card(card, path)
             pose_proof.write_card(card, path)
+            self.assertEqual((json.dumps(card, ensure_ascii=False, indent=2) + "\n").encode("utf-8"), path.read_bytes())
             altered = dict(card); altered["direction"] = "up-left"
             with self.assertRaisesRegex(pose_proof.PoseProofError, "selection is invalid|identity is invalid|collision"):
                 pose_proof.write_card(altered, path)
+
+    def test_write_card_rejects_existing_hardlink_alias(self):
+        card = pose_proof.select_option(self.draft, "B", "cty41", "selected", {"A": "no", "C": "no"},
+                                        "2026-09-15T10:00:00+08:00")
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "card.json"
+            alias = Path(directory) / "alias.json"
+            pose_proof.write_card(card, path)
+            try:
+                os.link(path, alias)
+            except OSError as exc:
+                self.skipTest(f"hard links unavailable: {exc}")
+            with self.assertRaisesRegex(pose_proof.PoseProofError, "collision"):
+                pose_proof.write_card(card, path)
 
     def test_concurrent_different_cards_never_overwrite_the_winner(self):
         first = pose_proof.select_option(self.draft, "B", "cty41", "selected B", {"A": "no", "C": "no"},

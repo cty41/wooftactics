@@ -29,9 +29,43 @@ $trackedStatus = @(git -C $source status --porcelain=v1 --untracked-files=no)
 if ($LASTEXITCODE -ne 0 -or $trackedStatus.Count -ne 0) {
     throw "RC source must have no tracked modifications: $($trackedStatus -join ', ')"
 }
-$trackedFiles = @(git -C $source ls-files)
-if ($LASTEXITCODE -ne 0 -or $trackedFiles.Count -eq 0) {
+$trackedEntries = @(git -C $source ls-files --stage)
+if ($LASTEXITCODE -ne 0 -or $trackedEntries.Count -eq 0) {
     throw 'Unable to enumerate tracked source files.'
+}
+$trackedFiles = [Collections.Generic.List[string]]::new()
+$gitlinks = [Collections.Generic.List[object]]::new()
+foreach ($entry in $trackedEntries) {
+    if ($entry -notmatch '^(?<mode>\d{6})\s+(?<object>[0-9a-f]+)\s+\d+\t(?<path>.+)$') {
+        throw "Unable to parse tracked source entry: $entry"
+    }
+    if ($Matches.mode -eq '160000') {
+        $gitlinks.Add([ordered]@{ path = $Matches.path; commit = $Matches.object })
+    } else {
+        $trackedFiles.Add($Matches.path)
+    }
+}
+foreach ($gitlink in $gitlinks) {
+    $gitlinkPath = [string]$gitlink.path
+    $submoduleRoot = Join-Path $source $gitlinkPath
+    if (-not (Test-Path -LiteralPath $submoduleRoot -PathType Container)) {
+        throw "Tracked submodule is not materialized: $gitlinkPath"
+    }
+    $submoduleCommit = (git -C $submoduleRoot rev-parse HEAD).Trim()
+    if ($LASTEXITCODE -ne 0 -or $submoduleCommit -ne [string]$gitlink.commit) {
+        throw "Tracked submodule is not at its pinned commit: $gitlinkPath"
+    }
+    $submoduleStatus = @(git -C $submoduleRoot status --porcelain=v1 --untracked-files=no)
+    if ($LASTEXITCODE -ne 0 -or $submoduleStatus.Count -ne 0) {
+        throw "Tracked submodule has modified files: $gitlinkPath"
+    }
+    $submoduleFiles = @(git -C $submoduleRoot ls-files)
+    if ($LASTEXITCODE -ne 0 -or $submoduleFiles.Count -eq 0) {
+        throw "Unable to enumerate tracked submodule files: $gitlinkPath"
+    }
+    foreach ($submoduleFile in $submoduleFiles) {
+        $trackedFiles.Add("$gitlinkPath/$submoduleFile")
+    }
 }
 python (Join-Path $source 'Tools/public-release/validate_public_candidate.py') --root $source --candidate
 if ($LASTEXITCODE -ne 0) {

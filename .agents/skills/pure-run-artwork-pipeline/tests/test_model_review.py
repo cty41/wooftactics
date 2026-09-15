@@ -8,6 +8,7 @@ from copy import deepcopy
 from pathlib import Path
 
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "artwork_review.py"
+sys.path.insert(0, str(SCRIPT.parent))
 SPEC = importlib.util.spec_from_file_location("artwork_review", SCRIPT)
 review = importlib.util.module_from_spec(SPEC)
 assert SPEC.loader
@@ -171,9 +172,19 @@ class ModelReviewCoreTests(unittest.TestCase):
             review.build_model_review_packet(attempt={"attemptId": "job-a001"}, contract={"contractId": "c", "sha256": SHA}, brief={"briefId": "b", "sha256": SHA}, compiled_policy=self.policy(), artifacts={"raw": {"path": "x.png", "sha256": SHA}}, evidence=[{"role": "NEGATIVE_REVIEW_ONLY", "path": "bad.png", "sha256": SHA, "generationInput": True}], acceptance_cases=[], feedback=[], frozen_invariants=[], required_model="m")
 
     def test_packet_rejects_absolute_escaping_and_retired_paths(self):
-        for path in ("C:/secret.png", "../secret.png", "Tools/artworks/amazon/old.png"):
+        for path in ("C:/secret.png", "../secret.png", "Tools/artworks/amazon/old.png",
+                     "tools/ARTWORKS/Amazon/old.png"):
             with self.assertRaises(review.ReviewValidationError):
                 review.build_model_review_packet(attempt={"attemptId": "job-a001"}, contract={"contractId": "c", "sha256": SHA}, brief={"briefId": "b", "sha256": SHA}, compiled_policy=self.policy(), artifacts={"raw": {"path": path, "sha256": SHA}}, evidence=[], acceptance_cases=[], feedback=[], frozen_invariants=[], required_model="m")
+
+    def test_policy_compilation_rejects_retired_case_artifacts(self):
+        retired = self.case(artifact={"path": "Tools/artworks/amazon/retired.png", "sha256": SHA})
+        for compiler in (review.compile_review_policy, review.compile_policy):
+            with self.assertRaisesRegex(review.ReviewValidationError, "retired"):
+                compiler(
+                    {"policyId": "pure-run-policy", "version": 1}, [self.rule()], [retired],
+                    {"project": "pure-run", "family": "poet", "topology": "capsule"},
+                )
 
     def test_strict_result_happy_path_and_canonical_result_id(self):
         packet = self.packet(); result = review.validate_model_review_result(self.result(packet), packet, self.policy())

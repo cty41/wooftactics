@@ -98,6 +98,56 @@ class WindowsRcPipelineTests(unittest.TestCase):
             ).stdout
             self.assertEqual("", status)
 
+    def test_rc_source_materializes_only_the_pinned_clean_submodule(self):
+        workflow = (REPO / ".github" / "workflows" / "godot-windows-build.yml").read_text(encoding="utf-8")
+        self.assertIn("submodules: recursive", workflow)
+        with tempfile.TemporaryDirectory() as temp:
+            root = pathlib.Path(temp)
+            submodule = root / "maliang"
+            source = root / "source"
+            destination = root / "stage"
+            bad_destination = root / "bad-stage"
+            for repository in (submodule, source):
+                repository.mkdir()
+                subprocess.run(["git", "init", "-q"], cwd=repository, check=True)
+                subprocess.run(["git", "config", "user.name", "test"], cwd=repository, check=True)
+                subprocess.run(["git", "config", "user.email", "test@invalid"], cwd=repository, check=True)
+            (submodule / "payload.txt").write_text("pinned payload", encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=submodule, check=True)
+            subprocess.run(["git", "commit", "-qm", "pinned"], cwd=submodule, check=True)
+            (source / "godot").mkdir()
+            (source / "Tools" / "public-release").mkdir(parents=True)
+            (source / "godot" / "project.godot").write_text("[application]\n", encoding="utf-8")
+            (source / "Tactics.Godot.slnx").write_text("<Solution />\n", encoding="utf-8")
+            (source / "Tools" / "public-release" / "validate_public_candidate.py").write_text(
+                "raise SystemExit(0)\n", encoding="utf-8"
+            )
+            subprocess.run(
+                ["git", "-c", "protocol.file.allow=always", "submodule", "add", "-q", str(submodule),
+                 "Tools/vendor/maliang"], cwd=source, check=True
+            )
+            subprocess.run(["git", "add", "."], cwd=source, check=True)
+            subprocess.run(["git", "commit", "-qm", "fixture"], cwd=source, check=True)
+            result = run_pwsh(
+                TOOLS / "New-GodotOwnedRcSource.ps1", "-SourceRoot", str(source),
+                "-DestinationRoot", str(destination),
+            )
+            self.assertEqual(0, result.returncode, result.stdout)
+            self.assertEqual("pinned payload", (destination / "Tools/vendor/maliang/payload.txt").read_text(encoding="utf-8"))
+
+            (submodule / "payload.txt").write_text("unpinned payload", encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=submodule, check=True)
+            subprocess.run(["git", "commit", "-qm", "unpinned"], cwd=submodule, check=True)
+            subprocess.run(["git", "fetch", "-q", str(submodule), "HEAD"], cwd=source / "Tools/vendor/maliang", check=True)
+            subprocess.run(["git", "checkout", "-q", "FETCH_HEAD"], cwd=source / "Tools/vendor/maliang", check=True)
+            subprocess.run(["git", "config", "submodule.Tools/vendor/maliang.ignore", "all"], cwd=source, check=True)
+            result = run_pwsh(
+                TOOLS / "New-GodotOwnedRcSource.ps1", "-SourceRoot", str(source),
+                "-DestinationRoot", str(bad_destination),
+            )
+            self.assertNotEqual(0, result.returncode)
+            self.assertIn("not at its pinned commit", result.stdout)
+
     def test_public_root_reconstruction_preserves_ignored_tracked_files(self):
         with tempfile.TemporaryDirectory() as temp:
             root = pathlib.Path(temp)
@@ -310,7 +360,7 @@ class WindowsRcPipelineTests(unittest.TestCase):
         self.assertIn("GodotSharpEditor/4\\.7\\.1", verifier)
         self.assertIn("GodotRuntimeTestRunner ends with exit code", verifier)
         self.assertIn("$reportedAssertionFailure", verifier)
-        self.assertIn("<TestSessionTimeout>120000</TestSessionTimeout>", runsettings)
+        self.assertIn("<TestSessionTimeout>600000</TestSessionTimeout>", runsettings)
 
 
 if __name__ == "__main__":
