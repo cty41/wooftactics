@@ -10,7 +10,8 @@
   },
   "poseProof": {
     "canvas": [256, 256],
-    "preview": [128, 128]
+    "preview": [128, 128],
+    "baselineY": 236
   },
   "runtimeReview": {
     "tilePanel": [64, 32],
