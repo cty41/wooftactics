@@ -1,6 +1,9 @@
 # Tactics Knowledge Update Log
 
 ## 2026-09-15
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:e75ee46624a9ecc1f03d6139a0f083a640227e42b6d5d844e2b2791ac198ceaf`。
+* **Sync**: `pure-run-artwork` 已同步到来源指纹 `sha256:1bd206b38d5096f69f9c090e35a6ee635ab0b5160b54497b5577862a60c2a850`。
+* **Update**: 现有通用 Pose Proof、Reviewer 与 record/workflow v0.1 核心已抽取到公开 MaLiang；Tactics 以 pinned submodule 和薄兼容层继续注入 cty41、256/128、64×32 与 Godot runtime context，历史资产和完整门禁留在项目。Poet Cast 仅作为独立署名的 CC BY 4.0 教程，不成为通用默认值；这次抽取不批准完整 vNext 状态机。
 * **Update**: 纯橙火柴人 Pose Proof 已从诗人 Cast 一次性做法升格为正式前置流程：新增安全确定性 Draft/看板/128 预览与 cty41 Action Card 工具，新 action_pose Composition schema v3 强绑定 asset/pose/direction/Visual Moment；跳过草图只能用引用有效 cty41 Approval 的不可变豁免 receipt，历史 v2 兼容范围由 cutoff revision 与 40 份 Composition SHA 冻结。Cast B 已回填案例且不改写旧生成血缘。
 
 ## 2026-09-14

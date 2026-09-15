@@ -219,4 +219,4 @@ AI 不应决定游戏需要什么动作、玩家必须读出什么、哪个风�
 9. 策略可证伪，但 AI/Agent 无人工投资终止权；
 10. 当前不选择具体生产路线或 vNext schema。
 
-独立仓只应拥有通用协议、引擎与合成测试；Pure Run 的视觉规则、资产、历史数据和上述尺度适配留在项目及其薄适配层。
+通用协议、引擎、schema 与合成测试已抽取到公开仓 [MaLiang](https://github.com/cty41/maliang)，本仓通过 `Tools/vendor/maliang` 固定版本；Pure Run 的视觉规则、资产、历史数据、cty41 权威与上述尺度适配继续留在 `Tools/artworks/maliang.adapter.json` 及薄兼容层。MaLiang 中少量 Poet Cast 文件仅作为独立署名的 CC BY 4.0 教程，不成为通用默认值或运行时资产权威。

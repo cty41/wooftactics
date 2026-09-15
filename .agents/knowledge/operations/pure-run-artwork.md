@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics/tree/main/Tools/artworks
 title: Pure Run Artwork Pipeline
 description: Pure Run 角色美术的生成、去幕、尺寸校准、Review 与提交入口。
 tags: [operations, pure-run, artwork, sprite, godot]
-timestamp: "2026-09-14T19:43:33+08:00"
+timestamp: "2026-09-15T10:46:01+08:00"
 status: active
 catalog_scope: pure-run-artwork
 repo_paths:
@@ -28,7 +28,7 @@ repo_paths:
   - src/Tactics.Application/Presentation/BattlePresentationFrame.cs
   - Tools/public-release/asset-provenance.json
 verified_revision: c9ff3a710fd9
-source_fingerprint: sha256:36cf40c3f60e869a5bf0c545da85584082c9046a7105089c9143b75e04692778
+source_fingerprint: sha256:1bd206b38d5096f69f9c090e35a6ee635ab0b5160b54497b5577862a60c2a850
 ---
 
 # Pure Run 角色美术流水线
@@ -37,7 +37,7 @@ source_fingerprint: sha256:36cf40c3f60e869a5bf0c545da85584082c9046a7105089c9143b
 
 ## Current State
 
-- 下一代生图系统当前停在已确认第一性原则与事实审计阶段，不进入 schema 或代码实现：`.agents/docs/game-art-production-first-principles.md` 以 Visual Moment、角色视觉状态集、时间合同、Runtime Context 和分层验收为中心；`.agents/docs/generative-art-current-strategy-map.md` 盘点当前 Manifest/Profile、Contract/Job/Attempt、Review、发布与 Godot 链；`.agents/docs/generative-art-state-machine-complexity-audit.md` 区分本质、Pure Run、偶然和历史兼容复杂度。已确认未来采用独立 GitHub 仓作为通用实现权威，Pure Run 规则/资产/历史与 `256/128/y236/64×32` 适配留在项目，Alfred 只发现/路由；其中 `64×32` 仍由当前管线执行，但相对 Godot `96×48`、Actor `.34` 的有效性待重验。三份文档仍为 draft；通用领域 schema 与新仓仍未选择。随后用户只授权一个项目级验证实验，不代表 vNext 设计获批。
+- 完整下一代生图状态机仍停在第一性原则与事实审计阶段，不进入 vNext schema 或状态枚举实现：`.agents/docs/game-art-production-first-principles.md` 以 Visual Moment、角色视觉状态集、时间合同、Runtime Context 和分层验收为中心；`.agents/docs/generative-art-current-strategy-map.md` 盘点当前 Manifest/Profile、Contract/Job/Attempt、Review、发布与 Godot 链；`.agents/docs/generative-art-state-machine-complexity-audit.md` 区分本质、Pure Run、偶然和历史兼容复杂度。已按单独批准建立公开 [MaLiang](https://github.com/cty41/maliang)，抽取现有通用 Pose Proof、Reviewer、record/workflow v0.1 核心与合成测试，并以 CC BY 4.0 Poet Cast 教程演示职责和来源边界；本仓通过 `Tools/vendor/maliang` 固定版本，薄兼容脚本与 `Tools/artworks/maliang.adapter.json` 保留 cty41、资产历史和 `256/128/y236/64×32` 项目规则，Alfred 只读发现/路由。其中 `64×32` 仍由当前管线执行，但相对 Godot `96×48`、Actor `.34` 的有效性待重验；三份分析文档仍为 draft，MaLiang v0.1 不代表完整 vNext 路线获批。
 - 诗人动作试点已闭合 Melee/Cast/Hit 的 DR/UL 与通用 Death 离线晋升，并将“Visual Moment → 纯橙火柴人 Pose Proof → 来源职责 → 单张候选 → 完整上下文 → promotion/runtime 分离批准”从方法论升格为生产门禁。`scripts/pose_proof.py` 用轻量 Draft 确定性渲染 1–4 方案及 128 预览；cty41 选择后只保存稳定 Action Card，未选完整几何与临时 PNG 不进入 Attempt/Series/provenance/Git。新 action_pose Composition schema v3 必须绑定 Card 或 `create-pose-proof-exemption` 生成的 cty41 不可变豁免；豁免精确绑定 asset/pose/direction/Visual Moment，并要求同一目标的有效 cty41 Approval→Attempt→Job→Contract 完整链，裸图或其他资产 Approval 不能绕过。历史 v2 兼容集合由 cutoff revision 与 40 份 Composition SHA 的 `pose-proof-grandfathers.json` 冻结，清单外 v2 不能创建动作合同。Cast DR 方案 B 已回填 `pose-proofs/poet_cast_dr_sheathed_focus_v1.json`，旧 Composition/Contract/Attempt 未改写。Pose Proof 只决定时点、力线、重心、接触、负形与剪影；身份、装备和可测几何仍由正式锚点与 Composition/Pose Guide 承担，Action Card 不直接进入 ImageGen。
 - 经 cty41 明确授权，8 组历史 Poet 装备 candidate/calibrated 的 1–11 个、alpha 1–4 exact green/magenta 像素已由 `remediate-exact-chroma` 逐组确定性清零；8 份不可变 receipt 保留旧 SHA、像素坐标、新 SHA、原 Attempt/Approval 与授权。strict checker 通过 receipt 将旧血缘哈希安全解析到新字节，当前 `check --strict` 为 363 inventory、0 issues。Poet 公开树中 146 个已批准正式/支持/运行时副本资产已依 cty41 决定通过 license receipt 改为 CC-BY-4.0；Poet public-release 错误归零，其他 Pure Run 历史许可/缺失文件仍不在本任务范围。
 - 出鞘唐刀两像素技术收尾已完成：`reviewed-recontract-e6a91dc49320f564` / `contract-a6b9130f239467e7` / Attempt `job-a254d0afc9b7b286-a001` 已 promoted；Approval `approval-8dbcb2755d3c06b2`、style verdict `equipment-style-verdict-c6f6105d9c6260b2`、AD verdict `art-direction-verdict-debb48d7057ac13e` 与三项新 Acceptance Case 均绑定新 SHA。当前独立 calibrated `poet_ring_pommel_tang_dao_unsheathed_v02.png` SHA `375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1`，128 SHA `d1db586755bb515036ef7626f315dab88aea775ff651668afa5af64cda3e1f49`。逐像素实测只清零 `(117,166)` `[0,255,0,3]` 与 `(169,236)` `[0,255,0,2]`，母版无 resize，256×256、visible 90×96、baseline236、report passed。批准来自用户对两点清理及检测后自动机械收尾的明确授权，不声称新视觉会话；原 Invocation/Delivery、旧 v01 和下述历史保留，未生成图片/修改运行时。4 张 processing QA 当时按逐文件授权登记为 supporting-derived；其后已由本轮 cty41 许可决定纳入 CC-BY-4.0，并由通用 exact-chroma remediation receipts 关闭历史污染门禁。详见 [动作覆盖矩阵](https://github.com/cty41/tactics/blob/main/Tools/artworks/poet_five_red_chow/action_coverage_matrix.md)。

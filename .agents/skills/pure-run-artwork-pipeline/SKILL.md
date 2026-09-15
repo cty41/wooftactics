@@ -13,6 +13,7 @@ description: "Use when generating, editing, chroma-keying, calibrating, reviewin
 | 规划 ImageGen 单图迭代 | `references/imagegen-iteration.md` |
 | 生产 Melee / Thrown / Cast / Hit 单帧动作 | `references/single-frame-action-poses.md` |
 | 正式生成前用火柴人选择姿态 | `references/pose-proof.md`；`python scripts/pose_proof.py render-options|select-option ...`；豁免走 `create-pose-proof-exemption` |
+| 通用引擎与项目适配 | `Tools/vendor/maliang` 固定 MaLiang；`Tools/artworks/maliang.adapter.json` 固定 cty41、256/128、64×32 与 Godot runtime context；本地脚本只保留兼容入口 |
 | 规划四方向静态图 | `references/imagegen-iteration.md` 的“方向变体 / 双原生视图” |
 | 核对运行时四向映射 | `references/imagegen-iteration.md` 的“运行时双原生图接入” |
 | 查看正反案例与正式母图 | `references/review-casebook.md` 与 `examples/cases.json` |

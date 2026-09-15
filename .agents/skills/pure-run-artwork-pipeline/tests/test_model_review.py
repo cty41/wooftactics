@@ -80,11 +80,13 @@ class ModelReviewCoreTests(unittest.TestCase):
 
     def qualification(self, packet=None, policy=None):
         packet = packet or self.packet(); policy = policy or self.policy()
-        return {"state": "auto-retry-qualified", "reviewer": "cty41", "ruleId": "CAPSULE-NO-LIMBS", "ruleVersion": 1,
-                "model": "gpt-5.6-sol", "effort": packet["reasoningEffort"], "reviewerPromptId": "reviewer-v1",
-                "reviewerPromptSha256": SHA, "compiledPolicyId": policy["compiledPolicyId"],
-                "compiledPolicySha256": policy["sha256"], "caseSetVersion": "cases-v1",
-                "promptOnlyComparison": {"promptComparisonId": "comparison-1", "path": "comparison.json", "sha256": SHA}}
+        value = {"state": "auto-retry-qualified", "reviewer": "cty41", "ruleId": "CAPSULE-NO-LIMBS", "ruleVersion": 1,
+                 "model": "gpt-5.6-sol", "effort": packet["reasoningEffort"], "reviewerPromptId": "reviewer-v1",
+                 "reviewerPromptSha256": SHA, "compiledPolicyId": policy["compiledPolicyId"],
+                 "compiledPolicySha256": policy["sha256"], "caseSetVersion": "cases-v1",
+                 "promptOnlyComparison": {"promptComparisonId": "comparison-1", "path": "comparison.json", "sha256": SHA}}
+        value["reviewerQualificationId"] = review.stable_id("reviewer-qualification", value)
+        return value
 
     def test_stable_id_and_history_derivation_are_deterministic_json(self):
         feedback = {"feedbackId": "feedback-1", "attemptId": "job-a001", "categories": ["topology"], "authorType": "human"}
@@ -276,14 +278,13 @@ class ModelReviewCoreTests(unittest.TestCase):
         for effort in ("medium", "high", "xhigh"):
             effort_packet = {**packet, "reasoningEffort": effort}
             qualification = self.qualification(effort_packet, policy)
-            qualification["reviewerQualificationId"] = f"qualification-{effort}"
             qualifications.append(qualification)
         decision = review.evaluate_automatic_decision(
             self.result(packet), packet=packet, compiled_policy=policy, qualifications=qualifications,
             model="gpt-5.6-sol", reviewer_prompt_id="reviewer-v1", reviewer_prompt_sha256=SHA,
             case_set_version="cases-v1")
         self.assertEqual("automatic_retry", decision["action"])
-        self.assertEqual(["qualification-medium"], decision["qualificationIds"])
+        self.assertEqual([qualifications[0]["reviewerQualificationId"]], decision["qualificationIds"])
 
     def test_prompt_only_comparison_rejects_scores_and_mismatched_arms(self):
         arm = {"arm": "prompt-only", "contract": {"contractId": "contract-1", "sha256": SHA},
