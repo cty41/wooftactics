@@ -556,6 +556,14 @@ class ArtworkPipelineTests(unittest.TestCase):
                 reviewer="agent", rights_approval_id="missing"))
         manifest = json.loads((self.root / "Tools/public-release/asset-provenance.json").read_text(encoding="utf-8"))
         self.assertEqual([], manifest["entries"])
+        tutorial = self.root / "Tools/artworks/doge/demonbound/tutorial-card.json"
+        tutorial.write_text('{"schemaVersion":1}\n', encoding="utf-8")
+        pipeline.register_supporting_artifact(self.store, self.ns(
+            path=str(tutorial), role="supporting-derived", note="public tutorial data",
+            reviewer="cty41", rights_approval_id=None))
+        manifest = json.loads((self.root / "Tools/public-release/asset-provenance.json").read_text(encoding="utf-8"))
+        self.assertEqual("project-owned", manifest["entries"][0]["license"])
+        self.assertEqual("Tools/artworks/doge/demonbound/tutorial-card.json", manifest["entries"][0]["path"])
 
     def png(self, rel: str, pear: bool = False, variant: int = 0) -> Path:
         path = self.root / rel

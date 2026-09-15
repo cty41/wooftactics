@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-ff1d30e8bc34ed85",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/pose-proofs/poet_cast_dr_sheathed_focus_draft_v1.json",
+    "sha256": "a0961abfb09fe6feedbaaa7ca2790a8d91b6bdf4151bc648faaa4f7372fe3f3d"
+  },
+  "role": "supporting-derived",
+  "note": "cty41 authorizes this exact Pose Draft as public MaLiang tutorial data",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

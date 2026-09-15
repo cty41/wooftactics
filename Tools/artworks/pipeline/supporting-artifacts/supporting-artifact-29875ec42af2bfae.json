@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-29875ec42af2bfae",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/pose-proofs/poet_cast_dr_sheathed_focus_v1.json",
+    "sha256": "51865e9d7f171fa781ff64a34f7f7cdd31a42479a9b1864ce62dda5fa446dadd"
+  },
+  "role": "supporting-derived",
+  "note": "cty41 authorizes this exact selected Action Card as public MaLiang tutorial data",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

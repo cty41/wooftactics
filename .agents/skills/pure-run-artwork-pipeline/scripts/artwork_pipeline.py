@@ -4455,7 +4455,7 @@ def register_supporting_artifact(store: Store, args: argparse.Namespace) -> dict
     record_id = stable_id("supporting-artifact", payload)
     record = {"schemaVersion": 3, "supportingArtifactId": record_id, **payload}
     write_json_idempotent(store.record("supporting-artifacts", record_id), record, immutable=True)
-    if Path(rel).suffix.lower() in {".png", ".svg"}:
+    if Path(rel).suffix.lower() in {".png", ".svg", ".json"}:
         update_provenance(store, [artifact], {"rights": rights})
     return record
 
@@ -6347,7 +6347,9 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
             issues.append(f"pose_proof_exemption_invalid:{path.stem}")
     for path in sorted((store.root / "Tools/artworks").rglob("pose-proofs/*.json")):
         try:
-            card = pose_proof.validate_card(load_json(path))
+            record = load_json(path)
+            card = (pose_proof.validate_draft(record) if isinstance(record, dict) and "options" in record
+                    else pose_proof.validate_card(record))
             historical = card.get("historicalEvidence")
             if historical and not _artifact_binding_matches(store, historical):
                 raise PipelineError("pose proof historical evidence hash is invalid")
