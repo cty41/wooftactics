@@ -29,6 +29,9 @@ def activate() -> dict[str, Any]:
     if source_text not in sys.path:
         sys.path.insert(0, source_text)
     import maliang_art
+    imported = Path(maliang_art.__file__).resolve()
+    if not imported.is_relative_to(source.resolve()):
+        raise RuntimeError(f"MaLiang resolved outside the pinned submodule: {imported}")
     if maliang_art.__version__ != config["engine"]["version"]:
         raise RuntimeError(
             f"MaLiang adapter requires {config['engine']['version']}, found {maliang_art.__version__}"
