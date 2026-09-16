@@ -57,7 +57,8 @@ public sealed record PureRunMapNodeSnapshot(
     ContentId? ContentId,
     float Lane,
     PureRunMapNodeState State,
-    string? UnavailableReason = null);
+    string? UnavailableReason = null,
+    PureRunNodeIntelState IntelState = PureRunNodeIntelState.Planning);
 
 public sealed record PureRunMapConnectionSnapshot(
     string FromNodeId,
@@ -121,7 +122,8 @@ public sealed class PureRunFlowProjector
         PureRunMapNodeSnapshot[] nodes = definitions.Select(value => value with
         {
             State = State(run, value.NodeId),
-            UnavailableReason = UnavailableReason(run, value.NodeId)
+            UnavailableReason = UnavailableReason(run, value.NodeId),
+            IntelState = IntelState(run, value.NodeId)
         }).ToArray();
         var states = nodes.ToDictionary(value => value.NodeId, value => value.State, StringComparer.Ordinal);
         PureRunMapConnectionSnapshot[] connections = branchMap.Connections.Select(edge =>
@@ -219,6 +221,23 @@ public sealed class PureRunFlowProjector
         if ((nodeId.StartsWith("layer_04_", StringComparison.Ordinal) || nodeId.StartsWith("layer_06_", StringComparison.Ordinal)) &&
             run.MapState?.SelectedNodeId is not null) return "map.route_locked";
         return "map.node_locked";
+    }
+
+    private static PureRunNodeIntelState IntelState(PureRunState run, string nodeId)
+    {
+        if (run.MapState?.NodeIntelStates?.TryGetValue(nodeId, out PureRunNodeIntelState persisted) == true)
+            return persisted;
+        PureRunMapNodeState state = State(run, nodeId);
+        if (state == PureRunMapNodeState.Completed) return PureRunNodeIntelState.Completed;
+        if (state is PureRunMapNodeState.Current or PureRunMapNodeState.Selected or PureRunMapNodeState.Pending)
+            return PureRunNodeIntelState.Current;
+        if (state == PureRunMapNodeState.Available ||
+            run.MapState?.ReachableNodeIds.Contains(nodeId, StringComparer.Ordinal) == true)
+            return PureRunNodeIntelState.TacticalPreview;
+        return state switch
+        {
+            _ => PureRunNodeIntelState.Planning
+        };
     }
 
     private static IReadOnlyList<PureRunMapNodeSnapshot> StaticNodes(PureRunDefinition definition,

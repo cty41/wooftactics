@@ -303,14 +303,50 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 ### MQA-GODOT-TILE-START-CAMP — Start Camp presentation and setup flow
 
 - Status: `pending`
-- Source: Gameplay-Test-Driven Tile Adventure Goal
-- Action: Start a new Run, choose the party by clicking characters in order, choose each starting skill, and enter the adventure board.
-- Expected: Selection order is readable and reversible before confirmation; each character receives exactly one visible starting skill choice; confirmation enters the camp/board without duplicate actors or stale prompts.
-- Observe: Camp composition, order indicators, skill cards, confirmation state, initial board, and Godot Output.
-- Preserve on failure: Screenshots of every setup page, selected order and skills, initial actor cells, save/backup copy, and Output.
-- Save boundary: Draft selections remain transient until final confirmation; confirmation creates or replaces the active Run checkpoint.
-- Automated evidence: Formal click-order setup, starting-skill selection, Board Ready, actor coordinates, and fixed-seed setup assertions pass.
+- Source: Restored Start Camp TileMap flow (`c08499c3`, `c1207f0a`)
+- Action: Start with an isolated empty save, click three candidates in order, test a repeated selection and a fourth candidate after the party is full, move the first selected leader, restart, then continue through starting-skill selection into the first node.
+- Expected: The UI clearly shows the three-member requirement, order, slots, leader, and exit lock reason; selection is incremental and cannot overflow; only the first selected leader moves; restart preserves selection but resets template cells; the exit unlocks at 3/3 and commits once.
+- Observe: StartCampView, actor Body/Shadow, campfire and exit, Party status, skill cards, first node, and Godot Output.
+- Preserve on failure: Screenshots of each setup page, click positions, selected order and skills, actor cells, save/backup copy, and the first Output error.
+- Save boundary: Each selection mutates PendingRunSetup; use an isolated save and preserve save/backup before continuing after a failure.
+- Automated evidence: Application covers incremental order, duplicate/full rejection, setup persistence and V11 round-trip; Godot tests cover the real actors, 10×10 TileMap, body/overlap hit targets, and exit structure. Readability, misclick risk, and movement feel remain manual.
 - User verdict: None; pending human acceptance.
+
+### MQA-GODOT-START-FLOW — Automatic startup and recovery
+
+- Status: `pending`
+- Source: Restored Start-first flow (`c08499c3`)
+- Action: Start the application with an empty save, a partial PendingRunSetup, a normal-node save, a PendingBattle save, and a disposable corrupt copy.
+- Expected: There is no legacy Home page; empty or unrecoverable state enters a new camp, recoverable state resumes the appropriate page, PendingBattle preserves Encounter/Seed and restarts from its entry checkpoint, and corrupt evidence is quarantined.
+- Observe: First interactive page, Run seed/revision, battle entry, `user://pure-run` files, and Godot Output.
+- Preserve on failure: Save/backup/corrupt files, first-screen screenshot, seed/revision, page title, and the first Output error.
+- Save boundary: Use isolated copies; never run corruption checks against the only production save.
+- Automated evidence: V11 serialization/hash, normalization, session resume, and fixed-seed behavior pass pure .NET tests. The real first frame and process restart remain manual.
+- User verdict: none.
+
+### MQA-GODOT-MAP-CAMERA — Start atlas preview and camera controls
+
+- Status: `pending`
+- Source: Restored atlas stabilization (`c1207f0a`)
+- Action: In Current mode click candidate bodies and move the leader; press `M` for Overview, browse with right-drag and WASD/arrow keys, click a Preview, use the wheel, then return with `M` and focus with `F/Home`.
+- Expected: Current reliably selects actors and shows the complete Start board; Overview remains readable, permits only browsing/Preview, and reaches the farthest node. The wheel has no effect; `M` switches modes regardless of focus; titles stay centered above their own TileMaps; mode-specific hints do not overlap.
+- Observe: StartCampView, 10×10 bounds, Start→N1 endpoint, route direction, node scale/titles, Party Setup, hints, Esc overlay, and Godot Output.
+- Preserve on failure: Short video, window size, input sequence, click position, node ID, camera state, and the first Output error.
+- Save boundary: Camera and Preview are read-only; do not advance through an exit while preserving a failure.
+- Automated evidence: Godot tests cover body/overlap targeting, Overview selection restrictions, wheel invariance, `M`/`F` state changes, layout scale, and title hierarchy, but could not run in this checkout because the pinned Godot 4.7.1 Mono console binary is missing. Build and pure .NET tests pass; visual readability and input feel remain manual and blocked until the engine gate can run.
+- User verdict: none after restoration.
+
+### MQA-GODOT-START-ESC — Start exit, skill setup and Esc run controls
+
+- Status: `pending`
+- Source: Restored Start-first flow (`c08499c3`)
+- Action: Test the exit at 0/3 through 3/3, complete starting skills, inspect Esc, then separately exercise setup Abandon Run and PendingBattle Save and Quit with isolated saves.
+- Expected: The exit cannot advance before 3/3 and commits once afterward; the menu exposes the documented Run controls; Abandon creates an Abandoned summary and a new camp; Save and Quit resumes the same Encounter/Seed entry checkpoint.
+- Observe: Start exit, skill page, Esc overlay, Terminal Summary, resumed battle entry, and Godot Output.
+- Preserve on failure: Menu/summary screenshots, complete input sequence, Run seed/revision, checkpoint save/backup, and Output.
+- Save boundary: Abandon, skill selection, and quit mutate the isolated Run; preserve a copy first.
+- Automated evidence: Setup transitions, persistence, PendingBattle checkpoint, and quit behavior have pure .NET coverage; menu readability and real restart remain manual.
+- User verdict: none.
 
 ### MQA-GODOT-TILE-ESCORT-DIFFICULTY — Lost villager escort readability and difficulty
 

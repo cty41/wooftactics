@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="GodotResourceCatalog" format=3 uid="uid://d0pd8f783qad2"]
+
+[ext_resource type="Script" path="res://src/Tactics.Godot.Adapter/Runtime/GodotResourceEntry.cs" id="1_5t7oo"]
+[ext_resource type="Script" path="res://src/Tactics.Godot.Adapter/Runtime/GodotResourceCatalog.cs" id="2_e7vru"]
+
+[sub_resource type="Resource" id="Resource_o4sjk"]
+script = ExtResource("1_5t7oo")
+ContentIdValue = "adventure-map-template.pure-run.basic-battle-v1"
+ResourceTypeIdValue = "adventure-map-template"
+ResourceUidValue = "uid://cmy865eeymqss"
+DiagnosticPathValue = "res://content/adventure_maps/BasicBattleTemplateV1.tres"
+SchemaVersion = 1
+
+[sub_resource type="Resource" id="Resource_scnc2"]
+script = ExtResource("1_5t7oo")
+ContentIdValue = "adventure-map-template.pure-run.start-camp-v1"
+ResourceTypeIdValue = "adventure-map-template"
+ResourceUidValue = "uid://b3m7aevx135rv"
+DiagnosticPathValue = "res://content/adventure_maps/StartCampTemplateV1.tres"
+SchemaVersion = 1
+
+[resource]
+script = ExtResource("2_e7vru")
+Entries = [SubResource("Resource_o4sjk"), SubResource("Resource_scnc2")]

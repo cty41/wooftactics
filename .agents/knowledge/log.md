@@ -70,6 +70,8 @@
 * **Sync**: `godot-migration` 已同步到来源指纹 `sha256:e3954d61394cb680d5d59b9b520da5d8d16b29c0a563dbb6d744ee0c991e119b`。
 * **Sync**: `gameplay-test-framework` 已同步到来源指纹 `sha256:718bbb7740bb514482f834fcc906dea03032a16b1d8e4e5ca10b12ed3b734742`。
 * **Sync**: `battle-system` 已同步到来源指纹 `sha256:32dbcf4b412181f460da00120bb90ff9f67b96fbb72fea5ea6fb9c94ff17b820`。
+## 2026-08-27
+* **Sync**: `roguelike-run` 已同步到来源指纹 `sha256:57b0cc3c4eb38270d7488ac9d21350981e8a6606cb55ecbb39d31f97848fb027`。
 
 ## 2026-08-25
 * **Sync**: `project-documentation` 已同步到来源指纹 `sha256:6516f4a16f545f918f84fd1dac00677e96100d0b89428058ca9097f1a94f9e50`。

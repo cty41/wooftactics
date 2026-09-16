@@ -44,6 +44,7 @@ public partial class GodotUnitActor : Node2D
         _definition?.BodyTintModeValue == UnitBodyTintModes.GoatBodyMaskV1;
     internal Sprite2D? HoverOutline => _hoverOutline;
     public bool IsAirborne => _definition?.MovementKindValue == "air" && !IsShowingDeath;
+    public string DefinitionId => _definition?.ContentIdValue ?? string.Empty;
 
     /// <summary>
     /// Applies presentation data from a generated definition without touching Core state.
