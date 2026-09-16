@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-b3a3478b5b3a11b2",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v5_upright_calibrated_128.png",
+    "sha256": "34e5dcfbc8b01154eef850d48bc5bfe62068f191bad863beeff428a1b0b85ab6"
+  },
+  "role": "supporting-derived",
+  "note": "128 derivative of upright Melee UL high-guard review; no approval, promotion or runtime binding.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

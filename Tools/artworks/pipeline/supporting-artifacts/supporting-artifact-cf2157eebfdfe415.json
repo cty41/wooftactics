@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-cf2157eebfdfe415",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_equipped_idle_dr_spatial_mockup_v01.png",
+    "sha256": "8edf05e3b253ebf63b33e6cba25908a3b779b804aaf8d55f346171da21180d34"
+  },
+  "role": "review-derived",
+  "note": "使用背负/腰挂专用三维朝向组件制作的完整Idle DR空间关系审核图，不是可晋升Sprite"
+}

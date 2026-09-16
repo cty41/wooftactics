@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 2,
+  "contractId": "contract-0f025021aa4b2995",
+  "assetId": "poet-five-red-chow-death-hunter-close-dao-reviewed-v2",
+  "approvedAssetId": "poet-five-red-chow-death-hunter-close-dao-reviewed-v2",
+  "kind": "death_pose",
+  "direction": "down-right",
+  "pose": "death",
+  "anchor": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+    "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+  },
+  "maskRequired": false,
+  "noArms": true,
+  "handSides": {
+    "near_hand": "left",
+    "far_hand": "right"
+  },
+  "occlusion": null,
+  "compositionSpec": {
+    "compositionId": "composition-5f0134d95300e0e2",
+    "sha256": "b62ca0503ef84c749340e2b236e50e85da81c776b3d6df7f3a8a04088af24f7e"
+  },
+  "identitySpec": null,
+  "requiresInvocation": false,
+  "canvasSpec": {
+    "masterSize": [
+      256,
+      256
+    ]
+  },
+  "tilePlacementSpec": null,
+  "styleSpec": null,
+  "equipmentProductionSpec": null,
+  "tolerances": {
+    "sizePx": 8,
+    "centerPx": 8
+  },
+  "outputs": {
+    "master": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_death_hunter_close_dao_v02.png",
+    "preview": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_death_hunter_close_dao_v02_128.png"
+  },
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-reviewed-generated-poet-death-v2-import-with-known-deviations"
+  }
+}

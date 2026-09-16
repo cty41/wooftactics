@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "reviewOnly": true,
+  "assetId": "poet-melee-ul-high-guard-mockup-v8-visible-two-paw-grip",
+  "parentMockup": "poet-melee-ul-high-guard-mockup-v7-two-paw-patch",
+  "humanFeedback": "UL must match the accepted DR's similar upright lean and clearly corresponding two-hand placement.",
+  "sourcePatchSpec": "Tools/artworks/poet_five_red_chow/compositions/poet_melee_ul_high_guard_mockup_v7_two_paw_patch.json",
+  "farHandAdjustment": {"sourceMaskColor": [0,200,0,255], "translationFromFormalUl": [-70,20], "layer": "above cleaned body, overlapping its left edge below the retained near hand", "purpose": "make the second approved paw visibly participate in the same high-guard grip rather than disappearing behind the core"},
+  "retained": ["formal native UL identity", "upright body corresponding to accepted DR v11", "approved sword high-left", "retained near hand", "no scabbard", "baseline y=236"],
+  "expectedAlphaBbox": [27,93,189,236],
+  "equipmentState": {"blade": "visible", "scabbard": "absent", "staticEffects": "absent"},
+  "notes": "Deterministic review-only v8. Rebuild the v7 clean formal UL and sword layers, but place the exact approved far-hand pixels as a visible second paw below and partly overlapping the retained near hand."
+}

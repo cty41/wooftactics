@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "feedbackAddendumId": "feedback-addendum-6589876558d05ba6",
+  "attemptId": "job-c91127f8d0e61731-a001",
+  "parentFeedbackId": "feedback-cc23aea80edaec4b",
+  "reviewer": "agent",
+  "defects": [
+    "Record attribution clarification, not a new visual defect: only one input / <=220 words / new contract in the parent nextPromptDelta were internal lead-agent preparation requirements, NOT cty41 visual requirements, and were cancelled before v02 generation. The actual v02 compiled prompt and invocation retained contract-bfb85273c3228d32 and both approved sources: sheathed_dr_v02 for ring/grip/guard/style, poet_tang_sword_v01 for metal colors/detail only. The human v01 blade-length correction remains valid. Preserve the immutable parent feedback and v01 actual-prompt rewrite disclosure; this addendum does not rewrite history or approve future images."
+  ],
+  "recordedAt": "2026-09-10T11:09:23.0195988+08:00",
+  "authorType": "agent",
+  "disposition": null
+}

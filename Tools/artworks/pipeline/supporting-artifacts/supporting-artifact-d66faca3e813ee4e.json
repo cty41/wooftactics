@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-d66faca3e813ee4e",
+  "artifact": {
+    "path": "Tools/artworks/pure_run/art_direction/reviews/actor_anchor_candidate_board_v1.png",
+    "sha256": "2afd9e5a520692d46101f1bd710af12eb9bee190a84516453339c1acbad74bb3"
+  },
+  "role": "review-derived",
+  "note": "项目级Art Direction首批Actor职责锚点候选板，仅供cty41人工选择，不自动授予anchor资格"
+}

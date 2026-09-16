@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 3,
+  "componentMigrationId": "component-migration-0f98513b3667a90c",
+  "contractId": "contract-c2ae22f5925e471f",
+  "contractSha256": "d2e8495443da54a550951834b27955a26a4e4c056bd089f7d898d918de6f7a58",
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_ring_pommel_tang_dao_sheathed_dr_raw_v01.png",
+    "sha256": "bb7abf6120ec3a9afb17bac565f7fc247f464e06bf128d9e821c93f66dcf1f8f"
+  },
+  "prepared": {
+    "path": "Tools/artworks/poet_five_red_chow/components/poet_ring_pommel_tang_dao_sheathed_component_clean_v01.png",
+    "sha256": "80b331c8d06c0f6894b277db0db3be015905f7f70fe17cd122cdeab5d8d6ba2e"
+  },
+  "processing": {
+    "operation": "approved-v2-equipment-copy-and-chroma-normalization",
+    "sourceAttemptId": "job-ffb58eed1dd89ce2-a001",
+    "sourceApprovalId": "approval-510e68d0cbf259ac",
+    "pixelTransform": "clean_resampled_chroma(#00ff00,tolerance=12)",
+    "geometryTransform": "none",
+    "semanticLabel": "equipment",
+    "note": "仅清除用户已批准入鞘环首刀组件边缘的色幕残留，不改变环首、直鞘、装具、比例或轴线。"
+  },
+  "reviewer": "cty41",
+  "reason": "迁入用户明确批准的完全入鞘环首刀，仅做确定性色幕边缘规范化，供诗人Idle DR Assembly",
+  "acceptedAt": "2026-09-03T00:56:48.1688825+08:00",
+  "invocationStatus": "missing-pre-v3"
+}

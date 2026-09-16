@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 4,
+  "anchorVerdictId": "anchor-verdict-574dae257d673327",
+  "candidate": {
+    "path": "Tools/artworks/doge/calibrated/doge_capsule_hunter_death_color_v04.png",
+    "sha256": "f5997651edd71cc78b926d5824ef4ac178f28604f5d7c9846f5a81ee0a2b3d19"
+  },
+  "family": "actor",
+  "responsibilities": [
+    "Sole grounded capsule Death body-pose authority for Poet: straight short-thick supine core, head upper-right, X-eye language and four attached paw splay."
+  ],
+  "excludedUses": [
+    "No Hunter/Shiba identity, palette, white markings or shield. Poet Idle DR remains sole identity and volume authority."
+  ],
+  "review": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_death_cross_class_pose_review_v01.png",
+    "sha256": "18497dcf3ba714abde47ab68781350f7c5d30974e070b55cdd1df15a7c3ba2e2"
+  },
+  "decision": "approved-anchor",
+  "reviewer": "cty41",
+  "reason": "cty41 confirmed Hunter-style horizontal Death for Poet.",
+  "decidedAt": "2026-09-14T14:16:08.0228463+08:00"
+}

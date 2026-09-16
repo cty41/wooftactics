@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "briefKind": "asset",
+  "briefId": "poet-idle-ul-tang-dao-rotated-component-v2",
+  "assetId": "poet-five-red-chow-idle-ul-tang-dao-rotated-component-v2",
+  "family": "equipment",
+  "purpose": "Reuse the exact approved Tang dao design and apply only the human-authorized offline rigid rotation needed by the final UL assembly.",
+  "firstRead": ["approved old Tang dao pixels", "screen-upper-left sheath tip", "screen-lower-right ring", "no regenerated ornament"],
+  "targetContexts": ["offline component assembly"],
+  "identityInvariants": ["approved old ring-pommel Tang dao design", "fully sheathed", "single connected weapon", "original grip pattern"],
+  "shapeStrategy": "Chroma-clean the approved source, rigidly rotate the whole connected component clockwise 112 degrees, and center it without repainting.",
+  "colorStrategy": "No color adjustment.",
+  "materialStrategy": "Preserve approved pixels subject only to bicubic rigid rotation.",
+  "attentionRole": "supporting",
+  "allowedVariation": ["authorized rigid rotation and transparent-canvas placement"],
+  "forbidden": ["ImageGen redraw", "new spiral grip", "manual repaint", "exposed blade", "second weapon", "disconnected fragment"],
+  "referenceResponsibilities": [{"role": "approved-equipment-source", "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_ul_v01.png", "sha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4", "responsibility": "Exact old approved design before authorized rigid rotation."}],
+  "requiredReviewPanels": ["candidate-master"],
+  "acceptanceCases": [{"caseId": "POET-UL-DAO-ROTATED-COMPONENT-001", "evidence": ["candidate-master"], "automatedFacts": ["source approval, source hash, processing parameters and rotated output hash are bound"], "humanChecks": ["old Tang dao design preserved", "ring lower-right and sheath upper-left"], "passCriteria": "Controlled rotated component is assembly-ready."}]
+}

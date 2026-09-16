@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 4,
+  "acceptanceCaseResultId": "acceptance-case-result-cf99d362549da879",
+  "attemptId": "job-34f6747e5a1f30d0-a001",
+  "caseId": "POET-EQUIPMENT-001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-34f6747e5a1f30d0/job-34f6747e5a1f30d0-a001/prepared.png",
+    "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+  },
+  "contractId": "contract-57bf5c0526078c9d",
+  "contractSha256": "0af903e867b06faffc66bfa9456a31396051bc3ce1746f17d2fd2227d4593df1",
+  "evidence": {
+    "equipment-inspection": {
+      "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v09/equipment-inspection.png",
+      "sha256": "1872dbe79f8bc77ded60b47ea9f4f11d0164e1b86f7ad6c1f5aa174bce290a1c"
+    },
+    "candidate-master": {
+      "path": "Tools/artworks/pipeline/artifacts/job-34f6747e5a1f30d0/job-34f6747e5a1f30d0-a001/prepared.png",
+      "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+    }
+  },
+  "automatedFacts": [
+    "assembly binds approved v2 component at integer 75 percent scale"
+  ],
+  "automatedResult": "passed",
+  "humanChecks": [
+    "cty41 must confirm fully sheathed straight ring-pommel Tang dao"
+  ],
+  "humanDecision": "pending",
+  "reviewer": "agent",
+  "reason": "Equipment binding passed; visual decision pending",
+  "decidedAt": "2026-09-03T16:00:00+08:00"
+}

@@ -30,6 +30,7 @@ public partial class GodotUnitActor : Node2D
     private UnitDefinitionResource? _definition;
     private GodotUnitActionPose? _actionPose;
     private Node2D? _flightLayer;
+    private Sprite2D? _hoverOutline;
     private double _flightTime;
     private double _flightPhase;
     private double _deathDescent;
@@ -41,6 +42,7 @@ public partial class GodotUnitActor : Node2D
     public bool IsSpearHeld { get; private set; } = true;
     public bool UsesGoatBodyMaskTint =>
         _definition?.BodyTintModeValue == UnitBodyTintModes.GoatBodyMaskV1;
+    internal Sprite2D? HoverOutline => _hoverOutline;
     public bool IsAirborne => _definition?.MovementKindValue == "air" && !IsShowingDeath;
     public string DefinitionId => _definition?.ContentIdValue ?? string.Empty;
 
@@ -150,6 +152,21 @@ public partial class GodotUnitActor : Node2D
         ApplyTint();
     }
 
+    public void SetHoverOutline(Color? color)
+    {
+        EnsureNodes();
+        if (color is null)
+        {
+            if (_hoverOutline is not null) _hoverOutline.Visible = false;
+            return;
+        }
+        _hoverOutline ??= CreateHoverOutline();
+        _hoverOutline.Visible = true;
+        if (_hoverOutline.Material is ShaderMaterial material)
+            material.SetShaderParameter("outline_color", color.Value);
+        SyncHoverOutline();
+    }
+
     public void SetStatuses(IReadOnlyList<BattleUiStatusSnapshot>? statuses,int maximumVisible=4,float pulseDuration=.22f)
     {
         if(StatusOverlay is null){StatusOverlay=new GodotUnitStatusOverlay{ZIndex=50};AddChild(StatusOverlay);}
@@ -217,6 +234,7 @@ public partial class GodotUnitActor : Node2D
                 : _definition.DownRightBodyOffset;
         Body.Offset = Body.FlipH ? new Vector2(-offset.X, offset.Y) : offset;
         Shadow!.FlipH = false;
+        SyncHoverOutline();
     }
 
     private Texture2D? ResolveActionTexture(bool usesUpLeft) => _actionPose switch
@@ -227,6 +245,32 @@ public partial class GodotUnitActor : Node2D
         GodotUnitActionPose.Hit => usesUpLeft ? _definition?.HitUpLeftTexture : _definition?.HitDownRightTexture,
         _ => null
     };
+
+    private Sprite2D CreateHoverOutline()
+    {
+        var shader = new Shader
+        {
+            Code = "shader_type canvas_item; uniform vec4 outline_color : source_color = vec4(0.2,1.0,0.3,1.0); void fragment(){ float a = texture(TEXTURE, UV).a; COLOR = vec4(outline_color.rgb, a * outline_color.a); }"
+        };
+        var outline = new Sprite2D
+        {
+            Name = "InitiativeHoverOutline",
+            ZIndex = -1,
+            Scale = new Vector2(1.08f, 1.08f),
+            Material = new ShaderMaterial { Shader = shader }
+        };
+        Body!.AddChild(outline);
+        return outline;
+    }
+
+    private void SyncHoverOutline()
+    {
+        if (_hoverOutline is null || Body is null) return;
+        _hoverOutline.Texture = Body.Texture;
+        _hoverOutline.FlipH = Body.FlipH;
+        _hoverOutline.FlipV = Body.FlipV;
+        _hoverOutline.Offset = Body.Offset;
+    }
 
     private void ApplyTint()
     {

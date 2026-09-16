@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 4,
+  "reviewRuleRecordId": "review-rule-605b2ca5679a5fb1",
+  "rule": {
+    "schemaVersion": 1,
+    "ruleId": "CAPSULE-NO-LIMBS-v1",
+    "version": 1,
+    "scope": {
+      "project": [
+        "pure-run"
+      ],
+      "family": [
+        "actor"
+      ],
+      "topology": [
+        "capsule"
+      ]
+    },
+    "authority": "hard",
+    "autoRetryEligible": true,
+    "requiredEvidenceRoles": [
+      "PREPARED_CANDIDATE",
+      "SEMANTIC_MASK_OVERLAY"
+    ],
+    "sources": [
+      {
+        "type": "guideline",
+        "id": "pure-run-artwork-guidelines:no-arms"
+      },
+      {
+        "type": "feedback",
+        "id": "feedback-2ce2bbdf35d14dcc"
+      }
+    ],
+    "positiveCaseIds": [],
+    "negativeCaseIds": [],
+    "lifecycle": "active",
+    "statement": "Visible character topology contains only paws directly attached to the capsule core; any arm, forearm, leg, lower leg, or thin connecting limb is a hard violation even if the semantic mask labels it hand or core."
+  },
+  "source": {
+    "path": "Tools/artworks/pure_run/art_direction/review/review_rule_capsule_no_limbs_v1.json",
+    "sha256": "9ae5d0684e1f97898c9cb34a1a33d0a20b97fd310c8d64ac1e4207fd2fc1e30f"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 4,
+  "jobId": "job-c91127f8d0e61731",
+  "state": "ready",
+  "contractId": "contract-bfb85273c3228d32",
+  "contractSha256": "6cdedfe10171380db631b0dd71b2f3592b0c325a5624d44be7a1fa2f5df70307",
+  "prompt": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/prompts/poet_ring_pommel_tang_dao_unsheathed_prompt_v01.md",
+    "sha256": "d6d48524f612b6945fc6ecc7e4ce76288b35a3f5ac1f8f029e4cd3e0b982c646"
+  },
+  "inputs": [
+    {
+      "role": "image-1-equipment-identity-style",
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_dr_v02.png",
+      "sha256": "eb4acedf50fe56d2c216e932a7364686de603a4df40c9bc5f1fe10c22ab55999"
+    },
+    {
+      "role": "image-2-metal-color-detail-only",
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_tang_sword_v01.png",
+      "sha256": "d4a4198fb47a3d84a0c5f6656d1cef0e66af369c3f85a0ae6692d5ae299164bd"
+    }
+  ],
+  "target": {
+    "direction": "non_directional",
+    "pose": "inventory"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": true,
+  "poseGuide": null,
+  "localReferences": []
+}

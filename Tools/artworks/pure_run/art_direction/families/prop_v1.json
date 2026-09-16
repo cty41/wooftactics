@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "profileKind": "family",
+  "profileId": "pure-run-prop-family-v1",
+  "family": "prop",
+  "rules": [
+    "Ordinary props serve scale, narrative, and composition rhythm with low default contrast, saturation, and motion.",
+    "Cluster detail instead of distributing it evenly across every tile.",
+    "A hero prop receives focal weight only when a Scene Brief assigns it primary or secondary focus.",
+    "Leave intentional quiet areas and use restrained variation among repeated props."
+  ],
+  "requiredReviewPanels": ["isolated", "ordinary-context", "complete-composition"],
+  "advisories": ["prop-interactable-salience-order", "detail-distribution-risk"]
+}

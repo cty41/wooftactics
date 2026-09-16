@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-6b8bda148b07a870",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_vertical_source_responsibility_review_v02.png",
+    "sha256": "0c0bd575de23797df85250e2c92f3af2f591fca3982081a4c0d543da1e303149"
+  },
+  "role": "supporting-derived",
+  "note": "Vertical Cast v2 source responsibility board: approved Poet identity, approved sheathed-dao form, user-accepted v07 guard-throat grip and deterministic geometry guide.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

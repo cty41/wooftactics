@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "profileKind": "family",
+  "profileId": "pure-run-interactable-family-v1",
+  "family": "interactable",
+  "rules": [
+    "Communicate use through affordance: lid, handle, opening, surface, symbol, orientation, or movement direction.",
+    "At rest use only one salience tier above ordinary props.",
+    "Allow controlled outline, brief motion, and UI only on proximity, hover, focus, or actionable state.",
+    "Do not use permanent glow or one universal saturated interactable color."
+  ],
+  "requiredReviewPanels": ["ordinary-prop-context", "default-state", "near-state", "hover-focus-state"],
+  "advisories": ["interactable-prop-salience-order", "persistent-emphasis-risk"]
+}

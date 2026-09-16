@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 2,
+  "annotationId": "annotations-9533242fb06c9a70",
+  "attemptId": "job-52353908c08e6df6-a002",
+  "candidateSha256": "3a45d4c937a6b7368b5e0f2db30218cea10b25a6860cde63286ca4033b4a1a7b",
+  "maskSha256": "5245805d14f86e51feb658d1d112d89bee2b989f63005e7e4862211df2e85ff7",
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/idle_dr_raw_v01_annotations.json",
+    "sha256": "77ed46082edd6ffb6b3549575eb46f48fafcf99be3859dfc026e71a025c82a04"
+  },
+  "regions": {
+    "eyeRegion": [
+      652,
+      438,
+      870,
+      530
+    ],
+    "weaponExit": [
+      620,
+      900,
+      630,
+      910
+    ],
+    "weaponTip": [
+      620,
+      900,
+      630,
+      910
+    ],
+    "gemRegion": [
+      620,
+      900,
+      630,
+      910
+    ]
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-50532e1e9fe7c307-a001",
+  "jobId": "job-50532e1e9fe7c307",
+  "ordinal": 1,
+  "generationRound": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "technical_failed",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/pipeline/artifacts/job-50532e1e9fe7c307/job-50532e1e9fe7c307-a001/raw.png",
+      "sha256": "1fa642c7daeced9f2463fcdd2c998769322dc7ba3744ebc0f3efdf5098220d2f"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-50532e1e9fe7c307/job-50532e1e9fe7c307-a001/raw.png",
+      "sha256": "1fa642c7daeced9f2463fcdd2c998769322dc7ba3744ebc0f3efdf5098220d2f"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-50532e1e9fe7c307/job-50532e1e9fe7c307-a001/prepared.png",
+      "sha256": "cc583db2a6bc5b8de950781006dce207c389ebe50095a9121109499b439df39f"
+    },
+    "maskSource": {
+      "path": "Tools/artworks/pipeline/artifacts/job-50532e1e9fe7c307/job-50532e1e9fe7c307-a001/semantic-mask.png",
+      "sha256": "6d067212143d7db43763cbcd449a018ea4673106b235430b3cff336445aa4180"
+    },
+    "mask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-50532e1e9fe7c307/job-50532e1e9fe7c307-a001/mask.png",
+      "sha256": "6d067212143d7db43763cbcd449a018ea4673106b235430b3cff336445aa4180"
+    },
+    "calibrated": {
+      "path": "Tools/artworks/pipeline/artifacts/job-50532e1e9fe7c307/job-50532e1e9fe7c307-a001/calibrated.png",
+      "sha256": "69b22d7bea3c1c41df7a715ad65ec109224060c95fd068e9bd5ff1cad2016425"
+    },
+    "calibratedMask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-50532e1e9fe7c307/job-50532e1e9fe7c307-a001/calibrated-mask.png",
+      "sha256": "ec0602fb6eec58cb90bc76fb3e882f0d8661a99c210b62160703162350ec7923"
+    },
+    "review": {
+      "overlay": {
+        "path": "Tools/artworks/pipeline/reviews/job-50532e1e9fe7c307-a001/overlay.png",
+        "sha256": "c8b16c47f3eb3c450744bbdec596c01fbd8c4495ffd9e06697452f578969a8d0"
+      },
+      "preview128": {
+        "path": "Tools/artworks/pipeline/reviews/job-50532e1e9fe7c307-a001/preview128.png",
+        "sha256": "336eb9e69f4ede873e3cd5c7e17fe5e64c142c1b7557dea3dddc02230cf4a8d4"
+      },
+      "tile64x32": {
+        "path": "Tools/artworks/pipeline/reviews/job-50532e1e9fe7c307-a001/tile64x32.png",
+        "sha256": "aea4601b8af17228212ec8676f08c6d149d6cc4a8ea1169c6f0d74b5bf9748ea"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-a3137ec0355eb67a.json",
+    "sha256": "d9791165c96824cfef46e1c32c6e4a6a9148d989bb41e11c814e2a82e5b15e4d"
+  },
+  "approvalId": null,
+  "feedbackId": null,
+  "generationInvocationId": "generation-invocation-80b67aa5dee15fc0",
+  "generationDeliveryId": "generation-delivery-bba12c741ad3aee8",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 48
+  },
+  "calibration": {
+    "method": "uniform-core-height",
+    "scale": 0.1992818671454219,
+    "offset": [
+      2,
+      15
+    ],
+    "sourceCoreBbox": [
+      450,
+      544,
+      800,
+      1100
+    ],
+    "anchorCoreBbox": [
+      94,
+      121,
+      160,
+      231
+    ],
+    "anchorMask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-34f6747e5a1f30d0/job-34f6747e5a1f30d0-a001/mask.png",
+      "sha256": "30350db22426bd078b09d9095ad797d69eceb3ccd7c83f8f4bb960193e440fa0"
+    }
+  }
+}

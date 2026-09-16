@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-ac30c71b29aea4de",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v7_two_paw_patch_128.png",
+    "sha256": "197710c71eb1a88490bdc262344ed79ca5d381abc16135d070a41779b2493a1e"
+  },
+  "role": "supporting-derived",
+  "note": "128 derivative of superseded occluded-far-hand UL patch.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

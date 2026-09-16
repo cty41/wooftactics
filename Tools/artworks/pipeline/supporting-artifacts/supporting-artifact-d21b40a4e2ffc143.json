@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-d21b40a4e2ffc143",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/idle_dr_multi_character_calibrated_compare_v02.png",
+    "sha256": "87b858a88c904bc47a6e66ec3588d6df608d421cb3c06fddda6d3d16685e3b09"
+  },
+  "role": "review-derived",
+  "note": "诗人美术人工审核辅助对比图，不是运行时Sprite"
+}

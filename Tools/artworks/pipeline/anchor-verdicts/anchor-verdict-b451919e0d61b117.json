@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 4,
+  "anchorVerdictId": "anchor-verdict-b451919e0d61b117",
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+    "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753"
+  },
+  "family": "actor",
+  "responsibilities": [
+    "five-red-poet-identity",
+    "poet-core-volume-and-baseline"
+  ],
+  "excludedUses": [
+    "mounted-equipment-style",
+    "grip-pose"
+  ],
+  "review": {
+    "path": "Tools/artworks/pure_run/art_direction/reviews/actor_anchor_candidate_board_v1.png",
+    "sha256": "2afd9e5a520692d46101f1bd710af12eb9bee190a84516453339c1acbad74bb3"
+  },
+  "decision": "approved-anchor",
+  "reviewer": "cty41",
+  "reason": "用户明确批准本次诗人试点最小职责：只指导诗人脸、耳、五红、主体体量和脚底，不指导持刀姿势",
+  "decidedAt": "2026-09-03T14:00:00+08:00"
+}

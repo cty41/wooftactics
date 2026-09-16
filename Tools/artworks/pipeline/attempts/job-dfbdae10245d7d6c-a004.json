@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-dfbdae10245d7d6c-a004",
+  "jobId": "job-dfbdae10245d7d6c",
+  "ordinal": 4,
+  "generationRound": 3,
+  "parentAttemptId": "job-dfbdae10245d7d6c-a003",
+  "retryFeedbackId": "feedback-1f47ea9ad398036c",
+  "promptDelta": "Keep everything else exact; widen only the smooth central capsule about 15 percent from 57 to 66 pixels after calibration.",
+  "technicalRemediation": false,
+  "state": "technical_failed",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/components/concepts/poet_idle_ul_body_raw_v03.png",
+      "sha256": "d703518328d08fa4e58abb53964605a6876cd1130942f75171483140d961dfe7"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-dfbdae10245d7d6c/job-dfbdae10245d7d6c-a004/raw.png",
+      "sha256": "d703518328d08fa4e58abb53964605a6876cd1130942f75171483140d961dfe7"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-dfbdae10245d7d6c/job-dfbdae10245d7d6c-a004/prepared.png",
+      "sha256": "5428b7530543302155592745b2a7f1a432967b3c53f2b2704239a3d76264ce2e"
+    },
+    "maskSource": {
+      "path": "Tools/artworks/poet_five_red_chow/components/masks/poet_idle_ul_body_raw_v03_mask.png",
+      "sha256": "0e7c6b6dc6b9d35d200e8d9b41e768fa4ca983425dbb38568669c35d79ed14ed"
+    },
+    "mask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-dfbdae10245d7d6c/job-dfbdae10245d7d6c-a004/mask.png",
+      "sha256": "0e7c6b6dc6b9d35d200e8d9b41e768fa4ca983425dbb38568669c35d79ed14ed"
+    },
+    "calibrated": {
+      "path": "Tools/artworks/pipeline/artifacts/job-dfbdae10245d7d6c/job-dfbdae10245d7d6c-a004/calibrated.png",
+      "sha256": "8c1a3cca7f6658e0bb1acc738b5cea44a97aca63accdcf8aa3af5f6b490a8b09"
+    },
+    "calibratedMask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-dfbdae10245d7d6c/job-dfbdae10245d7d6c-a004/calibrated-mask.png",
+      "sha256": "d04891b0c848617753bac5e75a3cd71ad9f0262b3f3aa8cbd709845179280a4a"
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-f634028542317999.json",
+    "sha256": "47883a9669d58429928882f5f5f1d53c6a4b6d3fa54e4809abfbb5934d15272c"
+  },
+  "approvalId": null,
+  "feedbackId": null,
+  "generationInvocationId": "generation-invocation-66d0d9f1bcd13cea",
+  "generationDeliveryId": "generation-delivery-39dc493a6d1426d1",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 120
+  },
+  "calibration": {
+    "method": "uniform-core-height",
+    "scale": 0.24666666666666667,
+    "offset": [
+      -27,
+      5
+    ],
+    "sourceCoreBbox": [
+      462,
+      470,
+      787,
+      919
+    ],
+    "anchorCoreBbox": [
+      94,
+      121,
+      160,
+      231
+    ],
+    "anchorMask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a010/calibrated-mask.png",
+      "sha256": "3e0db7ae51d77d8578a926e1f2db6224124381f15a16a4c215ea872ddbdd50fa"
+    }
+  }
+}

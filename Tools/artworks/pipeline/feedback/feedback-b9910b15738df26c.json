@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-b9910b15738df26c",
+  "attemptId": "job-0a890f2b18e97967-a008",
+  "candidateSha256": "e6feabd6ca60bf75701528c30056103e7781cb6fe5234de353c14caf41ef0404",
+  "reviewer": "cty41",
+  "verdict": "selected",
+  "strengths": [
+    "cty41 accepts this body for the project's relaxed melee requirement and explicitly requests adding the approved sword while hiding the scabbard."
+  ],
+  "defects": [],
+  "nextPromptDelta": "No generation; deterministic assembly only.",
+  "recordedAt": "2026-09-12T17:16:37+08:00",
+  "authorType": "human",
+  "categories": [],
+  "disposition": "selected",
+  "frozenInvariants": [
+    "Preserve this exact calibrated body image and framing; perform no ImageGen and no visual body edits."
+  ],
+  "pendingFixes": [
+    "Add the approved unsheathed Tang dao through deterministic assembly, with both front paws layered over the grip and no scabbard."
+  ]
+}

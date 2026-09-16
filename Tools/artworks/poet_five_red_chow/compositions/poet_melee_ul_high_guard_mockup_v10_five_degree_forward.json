@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "reviewOnly": true,
+  "assetId": "poet-melee-ul-high-guard-mockup-v10-five-degree-forward",
+  "parentReviewedMockup": "poet-melee-ul-high-guard-mockup-v9-dr-corresponding-hands",
+  "humanFeedback": "Keep the corrected two-hand placement and sword, but tilt the UL body toward its attack direction by about 5 degrees.",
+  "source": {"path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v9_dr_corresponding_hands.png", "sha256": "5f5e67c5d1e9648f6cc34f833a50a060b909726541b0bf1848c7b853bd3d565d"},
+  "transform": {"wholeCompositeRotationDegreesCounterClockwise": 5, "rotationCenterFootAnchor": [128,236]},
+  "retained": ["native UL identity", "DR-corresponding two-hand size and placement", "approved high-left Tang dao", "no scabbard"],
+  "equipmentState": {"blade": "visible", "scabbard": "absent", "staticEffects": "absent"},
+  "notes": "Deterministic review-only transform. Rotate the complete corrected UL composite 5 degrees toward screen-left around its foot anchor so body, hands and sword preserve one coherent pose."
+}

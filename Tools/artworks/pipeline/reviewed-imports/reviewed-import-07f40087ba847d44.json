@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 2,
+  "reviewedImportId": "reviewed-import-07f40087ba847d44",
+  "contractId": "contract-b953032f22f1f627",
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_vertical_guard_grip_v2_a001_quick_scale_review.png",
+    "sha256": "205fb41759f8c5ac05ea0c0987dd601b1ffd3904a7a15458851a34ff08752d8e"
+  },
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/candidates/poet_cast_dr_vertical_guard_grip_v01_reviewed_clean.png",
+    "sha256": "7cd072d554222d24c1cc4b357f3220260c01016c47be51d21c34e045d4139883"
+  },
+  "preview": {
+    "path": "Tools/artworks/poet_five_red_chow/candidates/poet_cast_dr_vertical_guard_grip_v01_reviewed_clean_128.png",
+    "sha256": "4484f6e763572acf4115adb14ce355b3c96b4eb4af2aa2c46d9775baa4769cda"
+  },
+  "sizeComparison": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_vertical_guard_grip_v01_size_comparison.png",
+    "sha256": "f9405a29a6547e0dd1c6ba839b6caa0015fdd3532807d37777a5283b3f6346fe"
+  },
+  "reviewer": "cty41",
+  "reason": "cty41 explicitly authorized promotion of the displayed vertical Cast DR v2 a001 and requested the next image. Acceptance consciously includes the already recorded long forearm, staff-like grounded weapon, grip deviation and identity drift. Deterministic processing only cleared exact-green low-alpha residue and aligned the 128 preview to the y118 baseline; visible master pose and bbox remain.",
+  "acceptedAt": "2026-09-13T21:57:35.7280535+08:00",
+  "sourceMode": "reviewed_import"
+}

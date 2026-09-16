@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 4,
+  "artDirectionVerdictId": "art-direction-verdict-67590b39415c014d",
+  "attemptId": "job-c91127f8d0e61731-a002",
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_unsheathed_v02.png",
+    "sha256": "704cd888947a648a9e1ee0db154804288ba230eca422fcc4c63229c145b9e82b"
+  },
+  "artDirectionReviewId": "art-direction-review-931680098bf82ddf",
+  "reviewSha256": "d59720307fcc34615f991ea1b035a62db60640ce4c63a80c8a523b665a66ed8a",
+  "decision": "approved",
+  "acceptedWarnings": [
+    "POET-DRAWN-DAO-STYLE-001"
+  ],
+  "reviewer": "cty41",
+  "reason": "cty41 accepted v02 proportions, then explicitly accepted displayed raw_v02 and 128 preview overall appearance and art style; current user authorized mechanical closeout of this exact SHA only. Fixed QA panels archive existing evidence, not a new human viewing session. Retain palette-complexity advisory as accepted by that explicit overall-style verdict; no future images or character actions approved.",
+  "decidedAt": "2026-09-10T11:10:48.6179963+08:00"
+}

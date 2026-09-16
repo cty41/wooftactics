@@ -23,7 +23,7 @@ public class AiEncounterBatchGodotTests
     [RequireGodotRuntime]
     public void GeneratedBatchBuildsCanonical73Catalog()
     {
-        var batch=ResourceLoader.Load<GodotResourceCatalog>("res://content/ai_encounters/ContentCatalog.tres");var global=ResourceLoader.Load<GodotResourceCatalog>("res://content/ContentCatalog.tres");AssertThat(batch).IsNotNull();AssertThat(global).IsNotNull();if(batch is null||global is null)return;AiEncounterBatchValidation result=AiEncounterBatchValidator.Validate(batch,global);AssertThat(result.BatchCount).IsEqual(18);AssertThat(result.GlobalCount is 74 or 101 or 108 or 114 or 115 or 116 or 119 or 123 or 124 or 125 or 131 or 132 or 141 or 142 or 143 or 160 or 161 or 162 or 166).IsTrue();AssertThat(result.Skills).IsEqual(5);AssertThat(result.Ai).IsEqual(7);AssertThat(result.Layouts).IsEqual(3);AssertThat(result.Encounters).IsEqual(3);
+        var batch=ResourceLoader.Load<GodotResourceCatalog>("res://content/ai_encounters/ContentCatalog.tres");var global=ResourceLoader.Load<GodotResourceCatalog>("res://content/ContentCatalog.tres");AssertThat(batch).IsNotNull();AssertThat(global).IsNotNull();if(batch is null||global is null)return;AiEncounterBatchValidation result=AiEncounterBatchValidator.Validate(batch,global);AssertThat(result.BatchCount).IsEqual(18);AssertThat(result.GlobalCount is 74 or 101 or 108 or 114 or 115 or 116 or 119 or 123 or 124 or 125 or 131 or 132 or 141 or 142 or 143 or 160 or 161 or 162 or 166 or 185).IsTrue();AssertThat(result.Skills).IsEqual(5);AssertThat(result.Ai).IsEqual(7);AssertThat(result.Layouts).IsEqual(3);AssertThat(result.Encounters).IsEqual(3);
     }
 
     [TestCase]

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-b9a2cb25cfd7e42c",
+  "attemptId": "job-16985014758beabb-a008",
+  "candidateSha256": "c660238e29b16fbf1ea925f733d76cd416594d5e8055c592ec9d21c9dc235d2b",
+  "reviewer": "cty41",
+  "verdict": "retry",
+  "strengths": [
+    "a008 remains the frozen full-sprite source and its right paw is correctly behind the body."
+  ],
+  "defects": [
+    "Tail foreground relation remains unresolved. cty41 explicitly selected the approved UL body component tail-root overlap as the positive visual source."
+  ],
+  "nextPromptDelta": "Use a008 as frozen main image and approved UL body only as tail-root occlusion authority. Copy the positive relationship: tail root covers the body edge, with no body contour visible over the overlap.",
+  "recordedAt": "2026-09-08T11:25:48+08:00",
+  "authorType": "human",
+  "categories": [
+    "occlusion"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "a008 outside tail-root overlap; right paw behind body"
+  ],
+  "pendingFixes": [
+    "match approved UL body tail-root foreground relationship"
+  ]
+}

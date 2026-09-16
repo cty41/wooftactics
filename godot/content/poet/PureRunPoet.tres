@@ -1,0 +1,45 @@
+[gd_resource type="Resource" script_class="UnitDefinitionResource" format=3 uid="uid://dbv0dgwq2srp8"]
+
+[ext_resource type="PackedScene" path="res://content/units/UnitActor.tscn" id="1_0n16u"]
+[ext_resource type="Texture2D" path="res://assets/units/doge_poet.png" id="2_l4gbr"]
+[ext_resource type="Texture2D" path="res://assets/units/pure_run_unit_shadow_1x1_v01.png" id="3_bny8l"]
+[ext_resource type="Texture2D" path="res://assets/units/doge_poet_ul.png" id="4_ajdjy"]
+[ext_resource type="Script" path="res://src/Tactics.Godot.Adapter/Runtime/UnitDefinitionResource.cs" id="5_avj5x"]
+
+[resource]
+script = ExtResource("5_avj5x")
+ContentIdValue = "unit.pure-run.poet"
+SourceId = "godot.poet"
+DisplayName = "诗人"
+Category = "player"
+FamilyId = "player"
+RoleId = "poet"
+Strength = 6
+Agility = 5
+Constitution = 5
+Intelligence = 4
+Charisma = 6
+Luck = 4
+Speed = 5.0
+MaxHealth = 20
+MaxMana = 18
+StartingMana = 6
+MoveRange = 4
+Initiative = 10.0
+AttackRange = 1
+AttackFactor = 1.0
+DefenceFactor = 1.0
+CanProduceCorpse = true
+ActorContentIdValue = "packed-scene.unit-actor"
+ActorScene = ExtResource("1_0n16u")
+DownRightTexture = ExtResource("2_l4gbr")
+UpLeftTexture = ExtResource("4_ajdjy")
+DeathTexture = ExtResource("2_l4gbr")
+ShadowTexture = ExtResource("3_bny8l")
+DownRightBodyOffset = Vector2(0, -108)
+UpLeftBodyOffset = Vector2(0, -108)
+DeathBodyOffset = Vector2(0, -108)
+ShadowOffset = Vector2(0, 3.84)
+ShadowScale = Vector2(1.6, 1.6)
+ShadowOpacity = 0.9
+DeferredDependencies = PackedStringArray("starting-branch-skill")

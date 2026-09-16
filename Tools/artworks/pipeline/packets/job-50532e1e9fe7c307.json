@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 4,
+  "jobId": "job-50532e1e9fe7c307",
+  "state": "ready",
+  "contractId": "contract-f97d21f61012cbbe",
+  "contractSha256": "bfb435bfdf2efc0722950c92de099a3b76ab2d0d7bec5e5363ebcee644ad0687",
+  "prompt": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/poet_melee_dr_downslash_v2.txt",
+    "sha256": "d80899f2883ee69bb4e72051a799952b72002bfb7c724add084fa876ab3ba9b7"
+  },
+  "inputs": [
+    {
+      "role": "image-1-approved-equipped-idle-dr-v03",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+      "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+    },
+    {
+      "role": "image-2-approved-demonbound-melee-dr-topology",
+      "path": "Tools/artworks/doge/calibrated/doge_capsule_demonbound_melee_dr_v01.png",
+      "sha256": "a0fee8512cf8578f57b8b3d3c5e2b74a1f68ac3afdcbefd15a87c82f5a85eaf5"
+    },
+    {
+      "role": "image-3-approved-unsheathed-dao-v02",
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v02.png",
+      "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1"
+    }
+  ],
+  "target": {
+    "direction": "down-right",
+    "pose": "melee"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": true,
+  "poseGuide": {
+    "poseGuideId": "pose-guide-f8400732da15d147",
+    "sha256": "f847294a9adcbdf87e371684b6cff79b94c71324f3daecd9ba9176823d7a468e"
+  },
+  "localReferences": []
+}

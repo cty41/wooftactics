@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 2,
+  "annotationId": "annotations-a2b1173e65198f1d",
+  "attemptId": "job-6a95f820a37e8586-a001",
+  "candidateSha256": "03f988b362b2061c444b1b4778dd84c6764f2413d034581ab29c3ed7f358e6b9",
+  "maskSha256": "278d556d11649d867d9b2dc19af74cd8a7e3e3747fb77e4213d1cb9aab9bd3ad",
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/annotations/poet_melee_dr_close_grip_v6_a001.json",
+    "sha256": "bdbddef3ab3d6f4265257f3a39afca5488cda8e44fc833ef7e335c4da554d950"
+  },
+  "regions": {
+    "eyeRegion": [
+      136,
+      141,
+      166,
+      164
+    ],
+    "weaponExit": [
+      150,
+      189,
+      166,
+      207
+    ],
+    "weaponTip": [
+      208,
+      228,
+      225,
+      243
+    ],
+    "gemRegion": null,
+    "weaponBlade": [
+      158,
+      195,
+      225,
+      243
+    ],
+    "guardRegion": [
+      150,
+      188,
+      166,
+      207
+    ],
+    "scabbard": null,
+    "staticEffect": null
+  }
+}

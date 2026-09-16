@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 4,
+  "reviewCaseRecordId": "review-case-f6b742c0c814d397",
+  "case": {
+    "schemaVersion": 1,
+    "caseId": "CASE-DEMONBOUND-MELEE-UL-OCCLUDED-PAWS-BOUNDARY-v1",
+    "version": 1,
+    "ruleIds": [
+      "CAPSULE-NO-LIMBS-v1"
+    ],
+    "polarity": "boundary",
+    "status": "shadow-only",
+    "scope": {
+      "project": [
+        "pure-run"
+      ],
+      "family": [
+        "actor"
+      ],
+      "topology": [
+        "capsule"
+      ],
+      "direction": [
+        "up-left"
+      ]
+    },
+    "artifact": {
+      "path": "Tools/artworks/pipeline/artifacts/job-38caaa8120d4a303/job-38caaa8120d4a303-a006/calibrated.png",
+      "sha256": "4519d643cecce40130d92f00e4bbef9c3cd628f6b34953763a7cbbdda4d0e82b"
+    },
+    "source": {
+      "attemptId": "job-38caaa8120d4a303-a006",
+      "approvalId": "approval-b416727c3f90417d",
+      "humanDecision": "approved",
+      "reviewer": "cty41"
+    },
+    "reviewOnly": true,
+    "generationInputAllowed": false,
+    "comparable": true,
+    "observableAtReviewSize": true,
+    "artifactExists": true,
+    "hashVerified": true,
+    "defectIds": [],
+    "crossAsset": true,
+    "referenceResponsibility": "BOUNDARY_TOPOLOGY_REVIEW_ONLY: side paws are heavily occluded by the core and equipment; Reviewer must not invent a hidden arm or claim certainty unsupported by visible pixels.",
+    "evidenceRegion": {
+      "x": 0.18,
+      "y": 0.4,
+      "width": 0.64,
+      "height": 0.4
+    }
+  },
+  "source": {
+    "path": "Tools/artworks/pure_run/art_direction/review/case_demonbound_melee_ul_occluded_paws_boundary_v1.json",
+    "sha256": "767d9c9c2c054fa3033b7c03cd9d7f83bcbe1baa2a2a25d66533916883a985ed"
+  },
+  "fitness": {
+    "status": "shadow-only",
+    "eligibleForActivePolicy": false,
+    "reasons": []
+  }
+}

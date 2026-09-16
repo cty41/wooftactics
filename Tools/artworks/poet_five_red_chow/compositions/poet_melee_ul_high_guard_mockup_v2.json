@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "reviewOnly": true,
+  "assetId": "poet-melee-ul-high-guard-mockup-v2",
+  "supersedes": "poet-melee-ul-high-guard-component-mockup-v1",
+  "visualMoment": "native up-left high guard immediately before a downward cut; sword tip near its highest point",
+  "identity": {
+    "assetId": "poet-five-red-chow-ring-pommel-dao-idle-ul-v07",
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_ul_v07.png",
+    "sha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512",
+    "deterministicScabbardRingRemovalRect": [166, 127, 183, 146]
+  },
+  "equipment": {
+    "assetId": "poet-ring-pommel-tang-dao-unsheathed-v02",
+    "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v02.png",
+    "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1",
+    "sourceBbox": [83, 141, 173, 237],
+    "scalePercent": 85,
+    "rotateCropDegrees": 180,
+    "transformedRingAnchor": [69, 74],
+    "destinationRingAnchor": [96, 193],
+    "destinationTopLeft": [27, 119]
+  },
+  "layerOrder": ["approved-unsheathed-tang-dao-rear", "approved-idle-ul-with-scabbard-ring-removed"],
+  "equipmentState": {"blade": "visible", "scabbard": "absent", "staticEffects": "absent"},
+  "notes": "Deterministic review-only v2. Preserve the complete approved Idle UL identity including face, tail and four-paw topology. Clear only the isolated visible scabbard-ring pixels in a bound transparent-side rectangle, then composite the approved unsheathed Tang dao behind the complete UL sprite so the body and left paw occlude its grip."
+}

@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-c91127f8d0e61731-a001",
+  "jobId": "job-c91127f8d0e61731",
+  "ordinal": 1,
+  "generationRound": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "review_pending",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_ring_pommel_tang_dao_unsheathed_raw_v01.png",
+      "sha256": "7e613042da9b5d810a34cf9267f22b085905c2d39c76c3d7486dc8566c798067"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-c91127f8d0e61731/job-c91127f8d0e61731-a001/raw.png",
+      "sha256": "7e613042da9b5d810a34cf9267f22b085905c2d39c76c3d7486dc8566c798067"
+    },
+    "prepared": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_unsheathed_v01.png",
+      "sha256": "f8aa3b0152f832c1f336b9eda8e1fa19718082f46eadbe040af376c393ba5c6c"
+    },
+    "equipmentPreview": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_unsheathed_v01_128.png",
+      "sha256": "4b0dfaf7095cde88fcbac0bf1c9a6a4a38246d19461d57efd01b53de6c779e96"
+    },
+    "review": {
+      "equipmentPanel": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_ring_pommel_tang_dao_unsheathed_review_v01.png",
+        "sha256": "d65943d3ae2cf533731c2ba1195a815279cc3b92dd0be8f275eb4fe1f0acd52c"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/style-reports/equipment-style-report-e19db4b69a3c5cd6.json",
+    "sha256": "f94bf078d6a93092daef72ca352fa71b5eb22d1e61231334e1737c9a79d3c14b"
+  },
+  "approvalId": null,
+  "feedbackId": "feedback-cc23aea80edaec4b",
+  "generationInvocationId": "generation-invocation-5c78ee8151e39d2d",
+  "generationDeliveryId": "generation-delivery-5a8183e57c3848a8",
+  "equipmentStyleReportId": "equipment-style-report-e19db4b69a3c5cd6",
+  "feedbackAddendumIds": [
+    "feedback-addendum-6589876558d05ba6"
+  ]
+}

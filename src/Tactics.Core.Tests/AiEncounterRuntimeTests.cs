@@ -203,14 +203,14 @@ public sealed class AiEncounterRuntimeTests
             new GridPoint(4, 1), 1, 2, 1, 2), 20, 20);
         BattleState state = new(new BoardSnapshot(cells), [demonbound, ally, enemy],
             [demonboundId, allyId, enemyId]);
-        SkillDefinition bane = new(new ContentId("skill.demonbound.bane.lv1"), "bane",
-            SkillRole.Demonbound, SkillKind.Active, 1, 3, 1, 1, SkillExecutionKind.Bane, 5,
-            SkillDamageKind.Magical, executionProfile: new SkillExecutionProfile(CorruptionCost: 3));
+        SkillDefinition attack = new(new ContentId("skill.test.direct"), "direct",
+            SkillRole.Any, SkillKind.Active, 1, 0, 1, 5, SkillExecutionKind.DirectAttack, 5,
+            SkillDamageKind.Magical, canCrit: false);
         AiDefinition definition = new(new ContentId("ai.demonbound"), AiArchetype.Charger,
-            new AiProfileDefinition(1, 1, 1, 1), [bane.ContentId], Array.Empty<ContentId>());
+            new AiProfileDefinition(1, 1, 1, 1), [attack.ContentId], Array.Empty<ContentId>());
 
         AiTurnPlan plan = new AiDecisionService().Decide(state, definition,
-            new Dictionary<ContentId, SkillDefinition> { [bane.ContentId] = bane },
+            new Dictionary<ContentId, SkillDefinition> { [attack.ContentId] = attack },
             strategy: TargetRelationshipStrategy.UnifiedAll);
 
         Assert.Multiple(() =>
@@ -244,6 +244,37 @@ public sealed class AiEncounterRuntimeTests
             strategy: TargetRelationshipStrategy.UnifiedAll);
 
         Assert.That(plan.Candidates.Any(candidate => candidate.TargetId == decoyId), Is.False);
+    }
+
+    [Test]
+    public void PoetChargeCandidate_DoesNotClaimARequestedTargetBehindTheFirstEnemy()
+    {
+        var cells = Enumerable.Range(0, 4).ToDictionary(x => new GridPoint(x, 0), _ => new CellState());
+        UnitInstanceId actorId = new("enemy.poet"), frontId = new("party.front"), decoyId = new("party.decoy");
+        BattleUnitState actor = new(new UnitState(actorId, new ContentId("unit.enemy.poet"),
+            new GridPoint(0, 0), 0, 5, 1, 0), 20, 20, maxMana: 10, currentMana: 10);
+        BattleUnitState front = new(new UnitState(frontId, new ContentId("unit.party.front"),
+            new GridPoint(1, 0), 0, 4, 0, 1), 20, 20);
+        BattleUnitState decoy = new(new UnitState(decoyId, new ContentId("unit.pure-run.poet-decoy"),
+            new GridPoint(2, 0), 0, 3, 0, 2), 10, 10,
+            summonOwnerId: frontId, canProduceCorpse: false, summonCategory: "Decoy");
+        BattleState state = new(new BoardSnapshot(cells), [actor, front, decoy], [actorId, frontId, decoyId]);
+        SkillDefinition charge = new(new ContentId("skill.enemy.poet-charge"), "charge", SkillRole.Poet,
+            SkillKind.Active, 1, 0, 1, 4, SkillExecutionKind.PoetCharge, 2, SkillDamageKind.Physical,
+            canCrit: false);
+        AiDefinition definition = new(new ContentId("ai.enemy.poet"), AiArchetype.Charger,
+            new AiProfileDefinition(1, 1, 0, 0), [charge.ContentId], []);
+
+        AiTurnPlan plan = new AiDecisionService().Decide(state, definition,
+            new Dictionary<ContentId, SkillDefinition> { [charge.ContentId] = charge },
+            priorityTargetId: decoyId, requirePriorityTarget: true);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(plan.Candidates.Any(candidate => candidate.SkillId == charge.ContentId &&
+                candidate.TargetId == decoyId), Is.False);
+            Assert.That(plan.Selected.TargetId, Is.EqualTo(frontId));
+        });
     }
 
     [Test]

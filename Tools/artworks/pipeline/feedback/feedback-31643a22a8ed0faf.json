@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-31643a22a8ed0faf",
+  "attemptId": "job-ab10eb2d176f2495-a001",
+  "candidateSha256": "62ad2974c80457b5ece44ad155422ab4cc7ab894f5f9095f916393781c8b9bf6",
+  "reviewer": "cty41",
+  "verdict": "retry",
+  "strengths": [
+    "琴背贴身方向、左肩露出位置、角色体量与Tile落点正确"
+  ],
+  "defects": [
+    "古琴顶部高出角色头顶约9px，用户要求再短一些并尝试与角色头顶齐平"
+  ],
+  "nextPromptDelta": "Deterministic assembly only: scale the guqin component to about 88 percent and translate it so its top aligns with the character head at y=115. Do not alter the body.",
+  "recordedAt": "2026-08-31T15:07:48.5964530+08:00",
+  "authorType": "human",
+  "categories": [
+    "equipment_scale"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "仅缩短古琴组件并调整平移，使古琴最高点约等于角色头顶y=115；角色和其他图层完全不变"
+  ]
+}

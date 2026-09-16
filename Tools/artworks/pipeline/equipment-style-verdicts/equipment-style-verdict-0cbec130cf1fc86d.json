@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "equipmentStyleVerdictId": "equipment-style-verdict-0cbec130cf1fc86d",
+  "attemptId": "job-06be9bd09be64664-a001",
+  "candidateSha256": "063de26db67cbf4f11118b115462d8406f3fb689ef1b372ef40603b4224fe37c",
+  "reviewSha256": {
+    "equipmentPanel": "591f1caf73967b9c69ebbcefb9a6161f86a8ec71d9d4c3cdf43dff642ed2c49a"
+  },
+  "reviewer": "cty41",
+  "decision": "retry",
+  "reason": "用户认为AI味重、光影过强，要求参考既有武器道具的平涂设计",
+  "decidedAt": "2026-08-30T09:51:20.7399545+08:00"
+}

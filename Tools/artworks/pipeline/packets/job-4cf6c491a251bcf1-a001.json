@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "attemptId": "job-4cf6c491a251bcf1-a001",
+  "jobId": "job-4cf6c491a251bcf1",
+  "promptDelta": null,
+  "inputs": [
+    {
+      "role": "core_anchor",
+      "path": "Tools/artworks/doge/calibrated/doge_capsule_demonbound_idle_dr_v01.png",
+      "sha256": "21559ca7aedd3e146feb2b93c5a6633affc6ce544122628c960972a982b0b5e7"
+    },
+    {
+      "role": "identity_reference",
+      "path": "Tools/artworks/poet_five_red_chow/concepts/poet_five_red_chow_idle_dr_raw_v05_capsule.png",
+      "sha256": "7dc3b5cd7affedd40e6c29c4b4ecf72e81c83f334c4a71156e94d21609459fca"
+    }
+  ],
+  "target": {
+    "direction": "down-right",
+    "pose": "idle"
+  },
+  "conceptOnly": false,
+  "contractRequirements": null
+}

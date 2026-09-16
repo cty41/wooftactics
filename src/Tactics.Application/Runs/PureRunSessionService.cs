@@ -1,3 +1,4 @@
+using Tactics.Core.Board;
 using Tactics.Core.Content;
 using Tactics.Core.Runs;
 using Tactics.Core.Units;
@@ -43,6 +44,8 @@ public sealed class PureRunSessionService
     private readonly PureRunSettlementService _settlement;
     private readonly IReadOnlyList<ContentId> _dropPool;
     private readonly PureRunMapDefinition? _mapDefinition;
+    private ContentId? _sessionAdventureBoardId;
+    private IReadOnlyList<RunAdventureActorCell>? _sessionAdventureActorCells;
 
     public PureRunSessionService(
         PureRunDefinition definition,
@@ -327,10 +330,13 @@ public sealed class PureRunSessionService
 
     private RunSessionResult Save(PureRunSaveSnapshot snapshot, long expectedRevision)
     {
+        RememberAdventureActors(snapshot.ActiveRun);
         RunStoreResult stored = _store.Save(snapshot, expectedRevision);
-        return stored.Succeeded
-            ? new RunSessionResult(true, null, stored.Snapshot, null)
-            : Fail(stored.ErrorCode, stored.Snapshot);
+        if (!stored.Succeeded || stored.Snapshot is null) return Fail(stored.ErrorCode, stored.Snapshot);
+        PureRunSaveSnapshot visible = stored.Snapshot.ActiveRun is PureRunState run
+            ? stored.Snapshot with { ActiveRun = MaterializeAdventureActors(run) }
+            : stored.Snapshot;
+        return new RunSessionResult(true, null, visible, null);
     }
 
     private static EncounterRequest CreateRequest(PureRunState run) => new(
@@ -425,7 +431,11 @@ public sealed class PureRunSessionService
     {
         diagnostics = Array.Empty<string>();
         RunStoreResult loaded = _store.Load();
-        if (!loaded.Succeeded || loaded.Snapshot?.ActiveRun is not PureRunState run) return loaded;
+        if (!loaded.Succeeded || loaded.Snapshot?.ActiveRun is not PureRunState persistedRun) return loaded;
+        PureRunState run = MaterializeAdventureActors(persistedRun);
+        bool adventureMaterialized = !ReferenceEquals(run, persistedRun);
+        if (adventureMaterialized)
+            loaded = loaded with { Snapshot = loaded.Snapshot with { ActiveRun = run } };
         try
         {
             bool repaired = false;
@@ -479,6 +489,50 @@ public sealed class PureRunSessionService
         {
             return new RunStoreResult(false, error.Message, loaded.Snapshot);
         }
+    }
+
+    private PureRunState MaterializeAdventureActors(PureRunState run)
+    {
+        RunAdventureState? adventure = run.AdventureState;
+        if (adventure is null) return run;
+        if (adventure.ActorCells.Count != 0)
+        {
+            RememberAdventureActors(run);
+            return run;
+        }
+        if (run.Party.Count != 3) throw new InvalidDataException("save.adventure_party_invalid");
+        IReadOnlyList<RunAdventureActorCell> actorCells =
+            _sessionAdventureBoardId == adventure.BoardContentId &&
+            _sessionAdventureActorCells is { Count: 3 } cached &&
+            cached.Select(value => value.ActorId).OrderBy(value => value, StringComparer.Ordinal)
+                .SequenceEqual(run.Party.Select(value => value.CharacterId).OrderBy(value => value, StringComparer.Ordinal), StringComparer.Ordinal)
+                ? cached
+                : run.Party.Select((member, index) => new RunAdventureActorCell(member.CharacterId,
+                    new[] { new GridPoint(2, 5), new GridPoint(1, 4), new GridPoint(1, 6) }[index])).ToArray();
+        string leader = run.Party.Any(value => !value.IsDead && value.CharacterId == adventure.LeaderId)
+            ? adventure.LeaderId
+            : run.Party.First(value => !value.IsDead).CharacterId;
+        RunAdventureState materialized = adventure with { LeaderId = leader, ActorCells = actorCells.ToArray() };
+        RememberAdventureActors(run, materialized);
+        return new PureRunState(run.RunId, run.Seed, run.Revision, run.Phase, run.EncounterIndex,
+            run.EncounterContentId, run.Party, run.BackpackConsumables, run.BackpackEquipment,
+            run.PendingProgression, run.AppliedTransactionKeys, run.Gold, run.BattlesCompleted,
+            run.EnemiesDefeated, run.AcquiredItems, run.Checkpoint, run.MapState, run.NodeTransaction,
+            run.EscortState, materialized);
+    }
+
+    private void RememberAdventureActors(PureRunState? run, RunAdventureState? overrideAdventure = null)
+    {
+        RunAdventureState? adventure = overrideAdventure ?? run?.AdventureState;
+        if (adventure is null)
+        {
+            _sessionAdventureBoardId = null;
+            _sessionAdventureActorCells = null;
+            return;
+        }
+        if (adventure.ActorCells.Count == 0) return;
+        _sessionAdventureBoardId = adventure.BoardContentId;
+        _sessionAdventureActorCells = adventure.ActorCells.ToArray();
     }
 
     private RunCharacterState RepairCharacter(RunCharacterState character, ref bool repaired)

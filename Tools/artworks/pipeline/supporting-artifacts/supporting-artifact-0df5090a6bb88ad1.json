@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-0df5090a6bb88ad1",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v4_forward_lean_calibrated.png",
+    "sha256": "acea6146e00a20e70864ce68b4c907c8f4096ce5af10ff421dcb1f2e0997485e"
+  },
+  "role": "supporting-derived",
+  "note": "cty41-authorized deterministic Melee UL high-guard review with 7-degree native forward lean corresponding to accepted DR, baseline y=236, safe sword margin and no scabbard; no ImageGen or runtime binding.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

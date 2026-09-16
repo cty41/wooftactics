@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 2,
+  "attemptId": "job-612e5cad5e501d50-a001",
+  "jobId": "job-612e5cad5e501d50",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "review_pending",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_wine_flask_tang_raw_v01.png",
+      "sha256": "bb73fd39156076aa7cf1902c700fd4db4c32b0057783e7047c737864657b7fce"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-612e5cad5e501d50/job-612e5cad5e501d50-a001/raw.png",
+      "sha256": "bb73fd39156076aa7cf1902c700fd4db4c32b0057783e7047c737864657b7fce"
+    },
+    "prepared": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_wine_flask_tang_v01.png",
+      "sha256": "f0f74ca1545a4bdb14b8d36ef60463931da97d03c83f9ceb9f31dc3cb7a7e397"
+    },
+    "equipmentPreview": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_wine_flask_tang_v01_128.png",
+      "sha256": "b6fd67076dc14e10f6b1a27d39918061bff68d0e848a58290ab5b4e70d55ee42"
+    },
+    "review": {
+      "equipmentPanel": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_wine_flask_tang_review_v01.png",
+        "sha256": "f8821f066ec0b1672b709ce717415bb61fe29bb16327cac678fe19ebf743cf37"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/style-reports/equipment-style-report-a3ec7c547252b735.json",
+    "sha256": "fa56fc7813cbc9ad689cee6525f3f12707ac1e238f8863fa15523c70c65200a9"
+  },
+  "approvalId": null,
+  "feedbackId": "feedback-4280a58992f3e29c",
+  "generationInvocationId": "generation-invocation-d0aad319acace7f0",
+  "generationDeliveryId": "generation-delivery-0758a21ed40bb7a6",
+  "equipmentStyleReportId": "equipment-style-report-a3ec7c547252b735",
+  "equipmentStyleVerdictId": "equipment-style-verdict-91868649bf9592ac",
+  "equipmentStyleVerdictIds": [
+    "equipment-style-verdict-91868649bf9592ac"
+  ]
+}

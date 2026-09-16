@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-3a5a2d042bb1e806",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_selected_body_sword_mockup_v4_high_guard_128.png",
+    "sha256": "cb494c38926a45c2bf7232a4235d5ecd288b9b0cc436a34104da913418ec014d"
+  },
+  "role": "supporting-derived",
+  "note": "128 derivative of the superseded v4 high-guard transform draft; review-only and never approved.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

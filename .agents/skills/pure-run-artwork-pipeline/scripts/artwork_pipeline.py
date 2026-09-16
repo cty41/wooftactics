@@ -9,11 +9,14 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
 import math
 import os
 import shutil
 import sys
+import tempfile
+import time
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -21,13 +24,24 @@ from typing import Any, Iterable
 
 from PIL import Image, ImageDraw
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+import artwork_review
+import pose_proof
+
 
 SCHEMA_VERSION = 3
-SUPPORTED_SCHEMA_VERSIONS = {1, 2, 3}
+ART_DIRECTION_SCHEMA_VERSION = 4
+SUPPORTED_SCHEMA_VERSIONS = {1, 2, 3, 4}
 PIPELINE_REL = Path("Tools/artworks/pipeline")
+RETIRED_ASSET_PREFIXES = {
+    "Tools/artworks/amazon/": "retirement-human-pixel-amazon-20260903",
+}
 KINDS = {"ground_character", "flying_character", "action_pose", "death_pose", "projectile", "tile"}
 STATES = {
     "ready", "ingested", "prepared", "annotated", "calibrated", "review_pending",
+    "model_review_pending", "model_reviewed", "human_review_required",
     "approved", "rejected", "promoted", "technical_failed",
 }
 SERIES_STATES = {"pending", "active", "review_pending", "approved", "promoted", "exhausted", "provisional"}
@@ -97,6 +111,20 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def bound_input_hash_matches(path: Path, expected: str | None) -> bool:
+    """Keep binary inputs byte-exact while accepting text-only LF/CRLF checkout normalization."""
+    if not expected or not path.is_file():
+        return False
+    raw = path.read_bytes()
+    if hashlib.sha256(raw).hexdigest() == expected:
+        return True
+    if path.suffix.lower() not in {".md", ".txt", ".json", ".yaml", ".yml"}:
+        return False
+    lf = raw.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    crlf = lf.replace(b"\n", b"\r\n")
+    return expected in {hashlib.sha256(lf).hexdigest(), hashlib.sha256(crlf).hexdigest()}
+
+
 def pixel_data(image: Image.Image) -> list[tuple[int, int, int, int]]:
     getter = getattr(image, "get_flattened_data", image.getdata)
     return list(getter())
@@ -104,6 +132,17 @@ def pixel_data(image: Image.Image) -> list[tuple[int, int, int, int]]:
 
 def stable_id(prefix: str, payload: Any, length: int = 16) -> str:
     return f"{prefix}-{hashlib.sha256(canonical_bytes(payload)).hexdigest()[:length]}"
+
+
+def _replace_with_retry(source: Path, destination: Path) -> None:
+    for attempt in range(6):
+        try:
+            os.replace(source, destination)
+            return
+        except PermissionError:
+            if attempt == 5:
+                raise
+            time.sleep(0.025 * (attempt + 1))
 
 
 def write_json_idempotent(path: Path, value: Any, immutable: bool = False) -> bool:
@@ -114,10 +153,23 @@ def write_json_idempotent(path: Path, value: Any, immutable: bool = False) -> bo
         if immutable:
             raise PipelineError(f"immutable record differs: {path}")
     path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_name(f".{path.name}.tmp")
-    temporary.write_bytes(data)
-    os.replace(temporary, path)
-    return True
+    handle, temporary_name = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".tmp", dir=path.parent)
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(handle, "wb") as stream:
+            stream.write(data); stream.flush(); os.fsync(stream.fileno())
+        if immutable:
+            try:
+                os.link(temporary, path)
+                return True
+            except FileExistsError:
+                if path.read_bytes() == data:
+                    return False
+                raise PipelineError(f"immutable record differs: {path}")
+        os.replace(temporary, path)
+        return True
+    finally:
+        temporary.unlink(missing_ok=True)
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -147,9 +199,14 @@ class Store:
             rel = candidate.relative_to(self.root.resolve())
         except ValueError as exc:
             raise PipelineError(f"path escapes repository root: {path}") from exc
+        relative_path = rel.as_posix()
+        retired = next((receipt for prefix, receipt in RETIRED_ASSET_PREFIXES.items()
+                        if relative_path.startswith(prefix)), None)
+        if retired:
+            raise PipelineError(f"retired asset family is forbidden ({retired}): {relative_path}")
         if must_exist and not candidate.is_file():
-            raise PipelineError(f"file does not exist: {rel.as_posix()}")
-        return rel.as_posix()
+            raise PipelineError(f"file does not exist: {relative_path}")
+        return relative_path
 
     def absolute(self, rel: str, *, must_exist: bool = False) -> Path:
         self.relative(rel, must_exist=must_exist)
@@ -157,6 +214,364 @@ class Store:
 
     def record(self, group: str, record_id: str) -> Path:
         return self.pipeline / group / f"{record_id}.json"
+
+
+def _source_json_artifact(store: Store, source: str) -> tuple[dict[str, Any], dict[str, str]]:
+    rel = store.relative(source, must_exist=True)
+    path = store.absolute(rel, must_exist=True)
+    record = load_json(path)
+    return record, {"path": rel, "sha256": sha256_file(path)}
+
+
+def _register_art_direction_source(
+        store: Store, args: argparse.Namespace, *, group: str, id_field: str,
+        expected_field: str, expected_value: str, prefix: str) -> dict[str, Any]:
+    source, artifact = _source_json_artifact(store, args.source)
+    source_id = source.get(id_field)
+    if not isinstance(source_id, str) or not source_id:
+        raise PipelineError(f"art direction source must declare {id_field}")
+    if source.get(expected_field) != expected_value:
+        raise PipelineError(f"art direction source must declare {expected_field}={expected_value}")
+    payload = {"sourceId": source_id, "sourceType": expected_value, "artifact": artifact}
+    registry_id = stable_id(prefix, payload)
+    record = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "registryId": registry_id, **payload}
+    write_json_idempotent(store.record(group, source_id), record, immutable=True)
+    return record
+
+
+def register_art_direction_profile(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    return _register_art_direction_source(
+        store, args, group="art-direction-profiles", id_field="profileId",
+        expected_field="profileKind", expected_value="project-art-direction",
+        prefix="art-direction-profile")
+
+
+def register_family_profile(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    return _register_art_direction_source(
+        store, args, group="family-profiles", id_field="profileId",
+        expected_field="profileKind", expected_value="family", prefix="family-profile")
+
+
+def register_material_language(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    return _register_art_direction_source(
+        store, args, group="material-languages", id_field="profileId",
+        expected_field="profileKind", expected_value="material-language",
+        prefix="material-language")
+
+
+def create_art_direction_brief(
+        store: Store, args: argparse.Namespace, brief_kind: str) -> dict[str, Any]:
+    return _register_art_direction_source(
+        store, args, group="art-direction-briefs", id_field="briefId",
+        expected_field="briefKind", expected_value=brief_kind,
+        prefix=f"{brief_kind}-brief")
+
+
+def create_asset_brief(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    return create_art_direction_brief(store, args, "asset")
+
+
+def create_scene_brief(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    return create_art_direction_brief(store, args, "scene")
+
+
+def _validate_art_direction_manifest_source(store: Store, manifest: dict[str, Any]) -> None:
+    refs = [manifest.get("projectProfile"), manifest.get("materialLanguage")]
+    refs.extend(manifest.get("familyProfiles", []))
+    refs.extend(manifest.get("briefTemplates", []))
+    for ref in refs:
+        if not isinstance(ref, dict) or not ref.get("path") or not ref.get("sha256"):
+            raise PipelineError("art direction manifest contains an invalid source reference")
+        target = store.absolute(ref["path"], must_exist=True)
+        if not bound_input_hash_matches(target, ref["sha256"]):
+            raise PipelineError(f"art direction manifest source hash mismatch: {ref['path']}")
+
+
+def register_art_direction_manifest(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    source, artifact = _source_json_artifact(store, args.source)
+    if source.get("manifestKind") != "art-direction-manifest" or not source.get("manifestId"):
+        raise PipelineError("art direction manifest source is invalid")
+    _validate_art_direction_manifest_source(store, source)
+    payload = {"sourceId": source["manifestId"], "sourceType": "art-direction-manifest", "artifact": artifact}
+    registry_id = stable_id("art-direction-manifest", payload)
+    record = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "registryId": registry_id, **payload}
+    write_json_idempotent(store.record("art-direction-manifests", source["manifestId"]), record, immutable=True)
+    pointer = {
+        "schemaVersion": ART_DIRECTION_SCHEMA_VERSION,
+        "activeArtDirectionManifestId": source["manifestId"],
+        "registryId": registry_id,
+        "artifact": artifact,
+    }
+    write_json_idempotent(store.pipeline / "active-art-direction-manifest.json", pointer)
+    return record
+
+
+def _load_registry_source(store: Store, group: str, source_id: str) -> tuple[dict[str, Any], dict[str, Any]]:
+    registry_path = store.record(group, source_id)
+    registry = load_json(registry_path)
+    artifact = registry.get("artifact", {})
+    target = store.absolute(artifact.get("path", ""), must_exist=True)
+    if not bound_input_hash_matches(target, artifact.get("sha256")):
+        raise PipelineError(f"registered art direction source hash mismatch: {source_id}")
+    return registry, load_json(target)
+
+
+def _resolve_art_direction_contract_specs(
+        store: Store, args: argparse.Namespace) -> dict[str, Any] | None:
+    family_profile_id = getattr(args, "family_profile_id", None)
+    brief_id = getattr(args, "brief_id", None)
+    if not family_profile_id and not brief_id:
+        return None
+    if not family_profile_id or not brief_id:
+        raise PipelineError("art direction contracts require both --family-profile-id and --brief-id")
+    active_path = store.pipeline / "active-art-direction-manifest.json"
+    if not active_path.is_file():
+        raise PipelineError("art direction contracts require an active registered manifest")
+    active = load_json(active_path)
+    manifest_id = active.get("activeArtDirectionManifestId")
+    manifest_registry, manifest = _load_registry_source(store, "art-direction-manifests", manifest_id)
+    if active.get("registryId") != manifest_registry.get("registryId"):
+        raise PipelineError("active art direction manifest registry mismatch")
+    project_id = manifest.get("projectProfile", {}).get("profileId")
+    material_id = manifest.get("materialLanguage", {}).get("profileId")
+    project_registry, project = _load_registry_source(store, "art-direction-profiles", project_id)
+    material_registry, material = _load_registry_source(store, "material-languages", material_id)
+    family_registry, family = _load_registry_source(store, "family-profiles", family_profile_id)
+    brief_registry, brief = _load_registry_source(store, "art-direction-briefs", brief_id)
+    family_refs = {item.get("profileId"): item for item in manifest.get("familyProfiles", [])}
+    family_ref = family_refs.get(family_profile_id)
+    if not family_ref or family_ref.get("sha256") != family_registry["artifact"]["sha256"]:
+        raise PipelineError("family profile is not active in the current art direction manifest")
+    if project.get("profileId") != project_id or material.get("profileId") != material_id:
+        raise PipelineError("art direction registry source id mismatch")
+    if brief.get("family") != family.get("family"):
+        raise PipelineError("art direction brief family does not match family profile")
+    anchor_verdict_ids = list(getattr(args, "anchor_verdict_id", []) or [])
+    brief_reference_pairs = {
+        (item.get("path"), item.get("sha256")) for item in brief.get("referenceResponsibilities", [])
+        if isinstance(item, dict)
+    }
+    for verdict_id in anchor_verdict_ids:
+        verdict = load_json(store.record("anchor-verdicts", verdict_id))
+        if verdict.get("decision") != "approved-anchor":
+            raise PipelineError("only approved-anchor verdicts may bind an art direction contract")
+        candidate = verdict.get("candidate", {})
+        if (verdict.get("family") != family.get("family")
+                and (candidate.get("path"), candidate.get("sha256")) not in brief_reference_pairs):
+            raise PipelineError("cross-family anchor must be an explicit hash-bound brief reference")
+    return {
+        "artDirectionSpec": {"profileId": project_id, **project_registry["artifact"]},
+        "materialLanguageSpec": {"profileId": material_id, **material_registry["artifact"]},
+        "familyProfileSpec": {"profileId": family_profile_id, "family": family["family"], **family_registry["artifact"]},
+        "briefSpec": {"briefId": brief_id, "kind": brief["briefKind"], **brief_registry["artifact"]},
+        "themeProfileSpec": None,
+        "artDirectionManifestSpec": {"manifestId": manifest_id, **manifest_registry["artifact"]},
+        "anchorVerdictIds": anchor_verdict_ids,
+        "requiredReviewPanels": brief.get("requiredReviewPanels", []),
+        "acceptanceCaseIds": [item if isinstance(item, str) else item.get("caseId") for item in brief.get("acceptanceCases", [])],
+    }
+
+
+def record_anchor_verdict(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    if args.reviewer != "cty41":
+        raise PipelineError("anchor verdict requires reviewer cty41")
+    _iso_timestamp(args.decided_at, "--decided-at")
+    candidate_rel = store.relative(args.candidate, must_exist=True)
+    review_rel = store.relative(args.review, must_exist=True)
+    payload = {
+        "candidate": {"path": candidate_rel, "sha256": sha256_file(store.absolute(candidate_rel))},
+        "family": args.family,
+        "responsibilities": list(args.responsibility),
+        "excludedUses": list(args.excluded_use),
+        "review": {"path": review_rel, "sha256": sha256_file(store.absolute(review_rel))},
+        "decision": args.decision,
+        "reviewer": args.reviewer,
+        "reason": args.reason,
+        "decidedAt": args.decided_at,
+    }
+    verdict_id = stable_id("anchor-verdict", payload)
+    record = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "anchorVerdictId": verdict_id, **payload}
+    write_json_idempotent(store.record("anchor-verdicts", verdict_id), record, immutable=True)
+    return record
+
+
+def _attempt_contract(store: Store, attempt: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
+    job = load_json(store.record("jobs", attempt["jobId"]))
+    return job, load_json(store.record("contracts", job["contractId"]))
+
+
+def _parse_role_paths(store: Store, values: list[str], option: str) -> dict[str, dict[str, str]]:
+    result: dict[str, dict[str, str]] = {}
+    for value in values:
+        try:
+            role, raw_path = value.split("=", 1)
+        except ValueError as exc:
+            raise PipelineError(f"{option} must use ROLE=PATH") from exc
+        if not role or role in result:
+            raise PipelineError(f"{option} contains an empty or duplicate role: {role}")
+        rel = store.relative(raw_path, must_exist=True)
+        result[role] = {"path": rel, "sha256": sha256_file(store.absolute(rel))}
+    return result
+
+
+def record_acceptance_case_result(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    attempt = load_json(store.record("attempts", args.attempt_id))
+    _job, contract = _attempt_contract(store, attempt)
+    if contract.get("schemaVersion") != ART_DIRECTION_SCHEMA_VERSION:
+        raise PipelineError("acceptance cases require an art direction contract")
+    if args.case_id not in contract.get("acceptanceCaseIds", []):
+        raise PipelineError("acceptance case is not required by the contract")
+    if args.human_decision == "pending":
+        if args.reviewer != "agent":
+            raise PipelineError("pending acceptance case evidence must use reviewer agent")
+    elif args.reviewer != "cty41":
+        raise PipelineError("acceptance case human result requires reviewer cty41")
+    _iso_timestamp(args.decided_at, "--decided-at")
+    evidence = _parse_role_paths(store, list(args.evidence), "--evidence")
+    candidate = candidate_artifact(attempt)
+    payload = {
+        "attemptId": attempt["attemptId"], "caseId": args.case_id,
+        "candidate": candidate, "contractId": contract["contractId"],
+        "contractSha256": sha256_file(store.record("contracts", contract["contractId"])),
+        "evidence": evidence, "automatedFacts": list(args.automated_fact),
+        "automatedResult": args.automated_result, "humanChecks": list(args.human_check),
+        "humanDecision": args.human_decision, "reviewer": args.reviewer,
+        "reason": args.reason, "decidedAt": args.decided_at,
+    }
+    result_id = stable_id("acceptance-case-result", payload)
+    record = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "acceptanceCaseResultId": result_id, **payload}
+    write_json_idempotent(store.record("acceptance-case-results", result_id), record, immutable=True)
+    attempt.setdefault("acceptanceCaseResultIds", [])
+    if result_id not in attempt["acceptanceCaseResultIds"]:
+        attempt["acceptanceCaseResultIds"].append(result_id)
+        save_attempt(store, attempt)
+    return record
+
+
+def _latest_acceptance_results(store: Store, attempt: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    results: dict[str, dict[str, Any]] = {}
+    for result_id in attempt.get("acceptanceCaseResultIds", []):
+        result = load_json(store.record("acceptance-case-results", result_id))
+        results[result["caseId"]] = result
+    return results
+
+
+def render_art_direction_review(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    attempt = load_json(store.record("attempts", args.attempt_id))
+    _job, contract = _attempt_contract(store, attempt)
+    if contract.get("schemaVersion") != ART_DIRECTION_SCHEMA_VERSION:
+        raise PipelineError("art direction review requires a schema v4 contract")
+    panels = _parse_role_paths(store, list(args.panel), "--panel")
+    required = set(contract.get("requiredReviewPanels", []))
+    if set(panels) != required:
+        raise PipelineError(f"art direction review panels must exactly match: {sorted(required)}")
+    results = _latest_acceptance_results(store, attempt)
+    required_cases = set(contract.get("acceptanceCaseIds", []))
+    if set(results) != required_cases:
+        raise PipelineError(f"art direction review requires acceptance cases: {sorted(required_cases)}")
+    columns = 4
+    cell_width, cell_height = 300, 310
+    rows = max(1, math.ceil(len(panels) / columns))
+    overview = Image.new("RGBA", (columns * cell_width, rows * cell_height), (31, 33, 38, 255))
+    draw = ImageDraw.Draw(overview)
+    for index, (role, artifact) in enumerate(sorted(panels.items())):
+        image = Image.open(store.absolute(artifact["path"], must_exist=True)).convert("RGBA")
+        image.thumbnail((280, 260), Image.Resampling.NEAREST)
+        x = (index % columns) * cell_width + (cell_width - image.width) // 2
+        y = (index // columns) * cell_height + 28
+        overview.alpha_composite(image, (x, y))
+        draw.text(((index % columns) * cell_width + 12, (index // columns) * cell_height + 8), role, fill=(230, 190, 90, 255))
+    output_rel = store.relative(args.output)
+    output = store.absolute(output_rel)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    overview.save(output)
+    candidate = candidate_artifact(attempt)
+    payload = {
+        "attemptId": attempt["attemptId"], "candidate": candidate,
+        "contractId": contract["contractId"],
+        "contractSha256": sha256_file(store.record("contracts", contract["contractId"])),
+        "sourcePanels": panels,
+        "acceptanceCaseResultIds": [results[case_id]["acceptanceCaseResultId"] for case_id in sorted(results)],
+        "overview": {"path": output_rel, "sha256": sha256_file(output)},
+    }
+    review_id = stable_id("art-direction-review", payload)
+    record = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "artDirectionReviewId": review_id, **payload}
+    write_json_idempotent(store.record("art-direction-reviews", review_id), record, immutable=True)
+    previous_review_id = attempt.get("artDirectionReviewId")
+    attempt.setdefault("artDirectionReviewIds", [])
+    historical_ids = [
+        item.get("artDirectionReviewId")
+        for item in (load_json(path) for path in (store.pipeline / "art-direction-reviews").glob("*.json"))
+        if item.get("attemptId") == attempt["attemptId"]
+    ]
+    for bound_review_id in [*historical_ids, previous_review_id, review_id]:
+        if bound_review_id and bound_review_id not in attempt["artDirectionReviewIds"]:
+            attempt["artDirectionReviewIds"].append(bound_review_id)
+    attempt["artDirectionReviewId"] = review_id
+    save_attempt(store, attempt)
+    register_public_artifacts(store, [record["overview"]], provenance="review-derived")
+    return record
+
+
+def _validate_art_direction_approval(store: Store, attempt: dict[str, Any], contract: dict[str, Any]) -> dict[str, Any]:
+    if contract.get("schemaVersion") != ART_DIRECTION_SCHEMA_VERSION:
+        raise PipelineError("art direction approval validator requires schema v4")
+    review_id = attempt.get("artDirectionReviewId")
+    if not review_id:
+        raise PipelineError("art direction review is required")
+    review = load_json(store.record("art-direction-reviews", review_id))
+    candidate = candidate_artifact(attempt)
+    if review.get("candidate") != candidate or review.get("contractSha256") != sha256_file(store.record("contracts", contract["contractId"])):
+        raise PipelineError("art direction review binding mismatch")
+    for artifact in [*review.get("sourcePanels", {}).values(), review.get("overview", {})]:
+        target = store.absolute(artifact.get("path", ""), must_exist=True)
+        if sha256_file(target) != artifact.get("sha256"):
+            raise PipelineError("art direction review artifact hash mismatch")
+    results = _latest_acceptance_results(store, attempt)
+    required_cases = set(contract.get("acceptanceCaseIds", []))
+    if set(results) != required_cases or any(
+            result.get("humanDecision") != "passed" or result.get("reviewer") != "cty41"
+            or result.get("automatedResult") == "failed" for result in results.values()):
+        raise PipelineError("all required acceptance cases must pass")
+    verdict_id = attempt.get("artDirectionVerdictId")
+    if not verdict_id:
+        raise PipelineError("approved art direction verdict is required")
+    verdict = load_json(store.record("art-direction-verdicts", verdict_id))
+    if (verdict.get("decision") != "approved" or verdict.get("reviewer") != "cty41"
+            or verdict.get("artDirectionReviewId") != review_id
+            or verdict.get("candidate") != candidate):
+        raise PipelineError("art direction verdict binding mismatch")
+    return verdict
+
+
+def record_art_direction_verdict(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    if args.reviewer != "cty41":
+        raise PipelineError("art direction verdict requires reviewer cty41")
+    _iso_timestamp(args.decided_at, "--decided-at")
+    attempt = load_json(store.record("attempts", args.attempt_id))
+    review_id = attempt.get("artDirectionReviewId")
+    if not review_id or review_id != args.review_id:
+        raise PipelineError("art direction verdict requires the current bound review")
+    review = load_json(store.record("art-direction-reviews", review_id))
+    candidate = candidate_artifact(attempt)
+    if review.get("candidate") != candidate:
+        raise PipelineError("art direction review candidate mismatch")
+    payload = {
+        "attemptId": attempt["attemptId"], "candidate": candidate,
+        "artDirectionReviewId": review_id,
+        "reviewSha256": sha256_file(store.record("art-direction-reviews", review_id)),
+        "decision": args.decision, "acceptedWarnings": list(args.accept_warning),
+        "reviewer": args.reviewer, "reason": args.reason, "decidedAt": args.decided_at,
+    }
+    verdict_id = stable_id("art-direction-verdict", payload)
+    record = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "artDirectionVerdictId": verdict_id, **payload}
+    write_json_idempotent(store.record("art-direction-verdicts", verdict_id), record, immutable=True)
+    attempt.setdefault("artDirectionVerdictIds", [])
+    if verdict_id not in attempt["artDirectionVerdictIds"]:
+        attempt["artDirectionVerdictIds"].append(verdict_id)
+    attempt["artDirectionVerdictId"] = verdict_id
+    save_attempt(store, attempt)
+    return record
 
 
 def contract_id(payload: dict[str, Any]) -> str:
@@ -520,10 +935,20 @@ def create_contract(store: Store, args: argparse.Namespace) -> dict[str, Any]:
     composition_id = getattr(args, "composition_id", None)
     if composition_id:
         composition_record = load_json(store.record("compositions", composition_id))
+        if args.kind == "action_pose":
+            if composition_record.get("schemaVersion") == 3:
+                if composition_record.get("assetId") != args.asset_id:
+                    raise PipelineError("action composition assetId does not match the contract")
+                _validate_pose_proof_gate(store, composition_record.get("spec"), expected_asset_id=args.asset_id,
+                                          expected_pose=args.pose, expected_direction=args.direction)
+            elif not _composition_is_grandfathered(store, composition_id):
+                raise PipelineError("new action_pose contracts require a schema v3 Pose Proof composition")
         composition = {
             "compositionId": composition_id,
             "sha256": sha256_file(store.record("compositions", composition_id)),
         }
+    elif args.kind == "action_pose":
+        raise PipelineError("new action_pose contracts require a Pose Proof composition")
     asset_role = getattr(args, "asset_role", None)
     component_kind = getattr(args, "component_kind", None)
     source_mode = getattr(args, "source_mode", None)
@@ -693,8 +1118,11 @@ def create_contract(store: Store, args: argparse.Namespace) -> dict[str, Any]:
             "sourceMode": source_mode,
             "runtimeEligible": asset_role == "assembled_sprite",
         })
+    art_direction_specs = _resolve_art_direction_contract_specs(store, args)
+    if art_direction_specs:
+        payload.update(art_direction_specs)
     cid = contract_id(payload)
-    version = 3 if asset_role else (2 if writes_v2 else 1)
+    version = ART_DIRECTION_SCHEMA_VERSION if art_direction_specs else (3 if asset_role else (2 if writes_v2 else 1))
     record = {"schemaVersion": version, "contractId": cid, **payload}
     write_json_idempotent(store.record("contracts", cid), record, immutable=True)
     return record
@@ -834,7 +1262,8 @@ def prepare_equipment_candidate(store: Store, args: argparse.Namespace) -> dict[
     y = baseline - target_height + 1
     would_clip = x < 0 or y < 0 or x + target_width > master_size[0] or baseline >= master_size[1]
     canvas.alpha_composite(resized, (x, y))
-    canvas = normalize_transparent_rgb(canvas)
+    canvas = clean_exact_chroma(canvas)
+    preview_image = clean_exact_chroma(make_preview(canvas))
     output_rel = store.relative(args.output)
     preview_rel = store.relative(args.preview)
     output_path = store.absolute(output_rel)
@@ -842,9 +1271,19 @@ def prepare_equipment_candidate(store: Store, args: argparse.Namespace) -> dict[
     output_path.parent.mkdir(parents=True, exist_ok=True)
     preview_path.parent.mkdir(parents=True, exist_ok=True)
     canvas.save(output_path, format="PNG", optimize=False, compress_level=9)
-    make_preview(canvas).save(preview_path, format="PNG", optimize=False, compress_level=9)
+    preview_image.save(preview_path, format="PNG", optimize=False, compress_level=9)
     candidate = _bound_artifact(store, output_rel)
     preview = _bound_artifact(store, preview_rel)
+    return _equipment_candidate_report(store, contract, source, candidate, preview, canvas, would_clip, attempt)
+
+
+def _equipment_candidate_report(store: Store, contract: dict[str, Any], source: dict[str, str],
+                                candidate: dict[str, str], preview: dict[str, str], canvas: Image.Image,
+                                would_clip: bool = False, attempt: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Measure an existing master without resizing or rewriting its pixels."""
+    profile = _equipment_style_profile(store, contract)
+    spec = contract.get("equipmentProductionSpec") or contract["styleSpec"]
+    baseline = int(profile.get("baseline", 236))
     visible = canvas.getchannel("A").getbbox()
     metrics = _interior_style_metrics(canvas)
     metrics.update({"visibleBbox": list(visible) if visible else None,
@@ -864,8 +1303,8 @@ def prepare_equipment_candidate(store: Store, args: argparse.Namespace) -> dict[
         advisories.append("equipment_palette_complexity_review")
     if metrics["smoothGradientRatio"] > float(limits.get("maxSmoothGradientRatio", 0.12)):
         advisories.append("equipment_smooth_gradient_review")
-    payload = {"contractId": args.contract_id,
-               "contractSha256": sha256_file(store.record("contracts", args.contract_id)),
+    payload = {"contractId": contract["contractId"],
+               "contractSha256": sha256_file(store.record("contracts", contract["contractId"])),
                "profile": {"path": spec["profilePath"], "sha256": spec["profileSha256"]},
                "source": source, "candidate": candidate, "preview": preview, "metrics": metrics,
                "processingMode": "preserve-fidelity", "quantized": False,
@@ -913,6 +1352,27 @@ def remediate_equipment_candidate(store: Store, args: argparse.Namespace) -> dic
         colors = int(profile.get("remediation", {}).get("paletteColors", 24))
         source = source.quantize(colors=colors, method=Image.Quantize.FASTOCTREE).convert("RGBA")
         source.putalpha(alpha)
+    elif args.mode == "alpha-islands":
+        width, height = source.size
+        opaque = {index for index, pixel in enumerate(pixel_data(source)) if pixel[3]}
+        components: list[set[int]] = []
+        while opaque:
+            seed = opaque.pop()
+            component = {seed}
+            frontier = [seed]
+            while frontier:
+                index = frontier.pop()
+                x, y = index % width, index // width
+                for nx, ny in ((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)):
+                    neighbor = ny * width + nx
+                    if 0 <= nx < width and 0 <= ny < height and neighbor in opaque:
+                        opaque.remove(neighbor)
+                        component.add(neighbor)
+                        frontier.append(neighbor)
+            components.append(component)
+        keep = max(components, key=len) if components else set()
+        source.putdata([pixel if index in keep else (0, 0, 0, 0)
+                        for index, pixel in enumerate(pixel_data(source))])
     source = normalize_transparent_rgb(source)
     derived = store.pipeline / "artifacts" / job["jobId"] / child["attemptId"] / f"remediated-{args.mode}.png"
     derived.parent.mkdir(parents=True, exist_ok=True)
@@ -1015,6 +1475,56 @@ def create_job(store: Store, args: argparse.Namespace) -> dict[str, Any]:
     return record
 
 
+def migrate_ready_job_bindings(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    """Supersede an unused ready job after its bound authoring inputs changed."""
+    old_path = store.record("jobs", args.job_id)
+    old = load_json(old_path)
+    attempts = list_attempts(store, args.job_id)
+    if old.get("state") != "ready":
+        raise PipelineError("only a ready job can migrate input bindings")
+    if not args.reason.strip() or not args.authorized_by.strip():
+        raise PipelineError("migration reason and authorizer cannot be empty")
+
+    replacement = {key: value for key, value in old.items() if key not in {"schemaVersion", "jobId", "state"}}
+    changes = []
+    bindings = [replacement["prompt"], *replacement.get("inputs", [])]
+    for bound in bindings:
+        target = store.absolute(bound["path"])
+        if not target.is_file():
+            raise PipelineError(f"bound input is missing: {bound['path']}")
+        current = sha256_file(target)
+        if current != bound.get("sha256"):
+            changes.append({"path": bound["path"], "previousSha256": bound.get("sha256"), "currentSha256": current})
+            bound["sha256"] = current
+    if not changes:
+        raise PipelineError("job bindings are already current")
+
+    new_job_id = stable_id("job", replacement)
+    new_job = {"schemaVersion": old["schemaVersion"], "jobId": new_job_id, "state": "ready", **replacement}
+    new_path = store.record("jobs", new_job_id)
+    write_json_idempotent(new_path, new_job, immutable=True)
+    write_json_idempotent(store.pipeline / "packets" / f"{new_job_id}.json", new_job, immutable=True)
+
+    receipt_payload = {
+        "oldJobId": old["jobId"],
+        "oldJobSha256": sha256_file(old_path),
+        "newJobId": new_job_id,
+        "newJobSha256": sha256_file(new_path),
+        "changes": changes,
+        "historicalAttempts": [{
+            "attemptId": attempt["attemptId"],
+            "state": attempt["state"],
+            "sha256": sha256_file(store.record("attempts", attempt["attemptId"])),
+        } for attempt in attempts],
+        "reason": args.reason.strip(),
+        "authorizedBy": args.authorized_by.strip(),
+    }
+    migration_id = stable_id("job-migration", receipt_payload)
+    receipt = {"schemaVersion": 2, "migrationId": migration_id, **receipt_payload}
+    write_json_idempotent(store.record("job-migrations", migration_id), receipt, immutable=True)
+    return receipt
+
+
 def list_attempts(store: Store, job_id: str) -> list[dict[str, Any]]:
     result = []
     for path in sorted((store.pipeline / "attempts").glob(f"{job_id}-*.json")):
@@ -1027,6 +1537,13 @@ def retry(store: Store, args: argparse.Namespace) -> dict[str, Any]:
     attempts = list_attempts(store, args.job_id)
     feedback = None
     contract = load_json(store.record("contracts", job["contractId"]))
+    supplied_feedback_id = getattr(args, "feedback_id", None)
+    supplied_parent_id = getattr(args, "parent_attempt", None)
+    if supplied_feedback_id:
+        feedback = load_json(store.record("feedback", supplied_feedback_id))
+        if supplied_parent_id and (feedback.get("attemptId") != supplied_parent_id
+                                  or load_json(store.record("attempts", supplied_parent_id)).get("feedbackId") != supplied_feedback_id):
+            raise PipelineError("retry feedback must belong to the parent attempt")
     if attempts and (job.get("series") or contract.get("equipmentProductionSpec")):
         latest = attempts[-1]
         feedback_id = getattr(args, "feedback_id", None)
@@ -1048,16 +1565,40 @@ def retry(store: Store, args: argparse.Namespace) -> dict[str, Any]:
                 allowed_verdicts.add("exhausted")
         if feedback.get("verdict") not in allowed_verdicts:
             raise PipelineError("selected feedback requires --technical-remediation on a technical failure")
+    prompt_delta = feedback.get("nextPromptDelta") if feedback else None
+    if feedback:
+        addenda = []
+        addenda_dir = store.pipeline / "feedback-addenda"
+        if addenda_dir.is_dir():
+            for addendum_path in addenda_dir.glob("*.json"):
+                addendum = load_json(addendum_path)
+                if addendum.get("parentFeedbackId") == feedback.get("feedbackId"):
+                    addenda.append(addendum)
+        if addenda:
+            latest_addendum = max(addenda, key=lambda item: (item.get("recordedAt", ""), item.get("feedbackAddendumId", "")))
+            if latest_addendum.get("disposition") == "retry" and latest_addendum.get("defects"):
+                prompt_delta = "Human-directed retry: " + " ".join(latest_addendum["defects"])
     ordinal = len(attempts) + 1
     parent = args.parent_attempt
+    parent_record = None
     if parent:
         parent_record = load_json(store.record("attempts", parent))
         if parent_record["jobId"] != args.job_id:
             raise PipelineError("parent attempt belongs to another job")
+    technical_remediation = bool(getattr(args, "technical_remediation", False))
+    if technical_remediation and parent_record is None:
+        raise PipelineError("technical remediation requires a parent attempt")
+    parent_round = parent_record.get("generationRound", parent_record.get("ordinal")) if parent_record else 0
+    if parent_record is not None and parent_round is None:
+        try:
+            parent_round = int(parent_record["attemptId"].rsplit("-a", 1)[1])
+        except (KeyError, ValueError, IndexError) as exc:
+            raise PipelineError("cannot derive generation round from parent attempt") from exc
+    generation_round = parent_round if technical_remediation and parent_record else parent_round + 1
     aid = f"{args.job_id}-a{ordinal:03d}"
     record = {"schemaVersion": job.get("schemaVersion", 1), "attemptId": aid, "jobId": args.job_id, "ordinal": ordinal,
-              "parentAttemptId": parent, "retryFeedbackId": getattr(args, "feedback_id", None), "promptDelta": feedback.get("nextPromptDelta") if feedback else None,
-              "technicalRemediation": bool(getattr(args, "technical_remediation", False)),
+              "generationRound": generation_round, "parentAttemptId": parent, "retryFeedbackId": getattr(args, "feedback_id", None), "promptDelta": prompt_delta,
+              "technicalRemediation": technical_remediation,
               "state": "ready", "artifacts": {}, "report": None, "approvalId": None, "feedbackId": None}
     write_json_idempotent(store.record("attempts", aid), record, immutable=True)
     binding = job.get("series")
@@ -1074,6 +1615,729 @@ def retry(store: Store, args: argparse.Namespace) -> dict[str, Any]:
                   "conceptOnly": bool(job.get("conceptOnly")),
                   "contractRequirements": job.get("contractRequirements")}
         write_json_idempotent(store.pipeline / "packets" / f"{aid}.json", packet, immutable=True)
+    return record
+
+
+def index_review_history(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    """Create an immutable, read-only index over historical human feedback."""
+    entries: list[dict[str, Any]] = []
+    feedback_dir = store.pipeline / "feedback"
+    for feedback_path in sorted(feedback_dir.glob("*.json")):
+        feedback = load_json(feedback_path)
+        attempt = None
+        attempt_id = feedback.get("attemptId")
+        if isinstance(attempt_id, str):
+            candidate = store.record("attempts", attempt_id)
+            if candidate.is_file():
+                attempt = load_json(candidate)
+        entry = artwork_review.derive_review_history_index_entry(feedback, attempt=attempt)
+        entry["feedback"] = {"path": store.relative(feedback_path), "sha256": sha256_file(feedback_path)}
+        entry["attemptRecord"] = ({"path": store.relative(store.record("attempts", attempt["attemptId"])),
+                                   "sha256": sha256_file(store.record("attempts", attempt["attemptId"]))}
+                                  if attempt else None)
+        entries.append(entry)
+    payload = {"entries": entries, "sourceCount": len(entries)}
+    index_id = stable_id("review-history-index", payload)
+    record = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "reviewHistoryIndexId": index_id, **payload}
+    write_json_idempotent(store.record("review-history-indexes", index_id), record, immutable=True)
+    return record
+
+
+def audit_review_case(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    """Audit a prospective case source without mutating historical pipeline records."""
+    source, artifact = _source_json_artifact(store, args.source)
+    audit = artwork_review.audit_case_fitness(source)
+    payload = {"source": artifact, "caseId": source.get("caseId"), "audit": audit}
+    audit_id = stable_id("case-fitness-audit", payload)
+    record = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "caseFitnessAuditId": audit_id, **payload}
+    write_json_idempotent(store.record("case-fitness-audits", audit_id), record, immutable=True)
+    return record
+
+
+def register_project_review_policy(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    source, artifact = _source_json_artifact(store, args.source)
+    policy_id, version = source.get("policyId"), source.get("version")
+    if not isinstance(policy_id, str) or not policy_id or not isinstance(version, int) or isinstance(version, bool) or version < 1:
+        raise PipelineError("project review policy source requires policyId and positive integer version")
+    payload = {"policyId": policy_id, "version": version, "source": artifact}
+    record_id = stable_id("project-review-policy", payload)
+    record = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "projectReviewPolicyId": record_id, **payload}
+    write_json_idempotent(store.record("project-review-policies", record_id), record, immutable=True)
+    return record
+
+
+def create_review_rule(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    source, artifact = _source_json_artifact(store, args.source)
+    try:
+        rule = artwork_review.validate_review_rule(source)
+    except artwork_review.ReviewValidationError as exc:
+        raise PipelineError(f"invalid review rule source: {exc}") from exc
+    payload = {"rule": rule, "source": artifact}
+    record_id = stable_id("review-rule", payload)
+    record = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "reviewRuleRecordId": record_id, **payload}
+    write_json_idempotent(store.record("review-rules", record_id), record, immutable=True)
+    return record
+
+
+def create_review_case(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    source, artifact = _source_json_artifact(store, args.source)
+    try:
+        case = artwork_review.validate_review_case(source)
+    except artwork_review.ReviewValidationError as exc:
+        raise PipelineError(f"invalid review case source: {exc}") from exc
+    audit = artwork_review.audit_case_fitness(source)
+    if audit["status"] not in {"active", "shadow-only"}:
+        raise PipelineError(f"review case fitness is {audit['status']}, not registrable")
+    payload = {"case": case, "source": artifact, "fitness": audit}
+    record_id = stable_id("review-case", payload)
+    record = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "reviewCaseRecordId": record_id, **payload}
+    write_json_idempotent(store.record("review-cases", record_id), record, immutable=True)
+    return record
+
+
+def compile_review_policy_record(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    policy_path = store.record("project-review-policies", args.project_review_policy_id)
+    policy = load_json(policy_path)
+    context, context_artifact = _source_json_artifact(store, args.context)
+    rules = [load_json(path)["rule"] for path in sorted((store.pipeline / "review-rules").glob("*.json"))]
+    cases = [load_json(path)["case"] for path in sorted((store.pipeline / "review-cases").glob("*.json"))]
+    try:
+        compiled = artwork_review.compile_review_policy(
+            {"policyId": policy["policyId"], "version": policy["version"]}, rules, cases, context,
+            acceptance_case_ids=list(args.acceptance_case_id), feedback_rule_ids=list(args.feedback_rule_id))
+    except artwork_review.ReviewValidationError as exc:
+        raise PipelineError(f"cannot compile review policy: {exc}") from exc
+    payload = {"compiled": compiled,
+               "projectReviewPolicy": {"path": store.relative(policy_path), "sha256": sha256_file(policy_path)},
+               "context": context_artifact}
+    record_id = stable_id("compiled-review-policy-record", payload)
+    record = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "compiledReviewPolicyRecordId": record_id, **payload}
+    write_json_idempotent(store.record("compiled-review-policies", record_id), record, immutable=True)
+    return record
+
+
+def _model_review_packet_artifacts(attempt: dict[str, Any], caller_artifacts: dict[str, dict[str, str]]) -> dict[str, dict[str, str]]:
+    """Bind every currently available candidate artifact under stable packet roles."""
+    artifacts = {f"CANDIDATE_{role.upper()}": artifact
+                 for role, artifact in sorted(attempt.get("artifacts", {}).items())
+                 if isinstance(artifact, dict) and {"path", "sha256"} <= set(artifact)}
+    candidate = candidate_artifact(attempt)
+    if not candidate:
+        raise PipelineError("model review requires a current candidate artifact")
+    artifacts["CURRENT_CANDIDATE"] = candidate
+    for role, artifact in caller_artifacts.items():
+        if role in artifacts:
+            raise PipelineError(f"model review artifact role conflicts with candidate binding: {role}")
+        artifacts[role] = artifact
+    return artifacts
+
+
+def create_model_review_packet(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    """Freeze a passing candidate, compiled policy, and review evidence for one model call."""
+    attempt = load_json(store.record("attempts", args.attempt_id))
+    if attempt.get("state") != "review_pending":
+        raise PipelineError("model review packet requires a review_pending attempt")
+    report_ref = attempt.get("report") or {}
+    if not report_ref:
+        raise PipelineError("model review packet requires a deterministic validation report")
+    report_path = store.absolute(report_ref.get("path", ""), must_exist=True)
+    if sha256_file(report_path) != report_ref.get("sha256"):
+        raise PipelineError("deterministic validation report hash mismatch")
+    report = load_json(report_path)
+    candidate = candidate_artifact(attempt)
+    if not report.get("passed") or report.get("inputSha256") != candidate.get("sha256"):
+        raise PipelineError("model review packet requires a passing report for the current candidate")
+    job, contract = _attempt_contract(store, attempt)
+    brief_ref = contract.get("briefSpec")
+    if not brief_ref or not contract.get("artDirectionSpec"):
+        raise PipelineError("model review is enabled only for art direction contracts")
+    brief_path = store.absolute(brief_ref.get("path", ""), must_exist=True)
+    if not bound_input_hash_matches(brief_path, brief_ref.get("sha256")):
+        raise PipelineError("contract brief hash mismatch")
+    brief = load_json(brief_path)
+    compiled_record = load_json(store.record("compiled-review-policies", args.compiled_review_policy_id))
+    compiled = compiled_record.get("compiled")
+    if not isinstance(compiled, dict):
+        raise PipelineError("compiled review policy record is invalid")
+    caller_artifacts = _parse_role_paths(store, list(args.artifact), "--artifact")
+    evidence = []
+    for role, artifact in _parse_role_paths(store, list(args.evidence), "--evidence").items():
+        evidence.append({"role": role, **artifact})
+    try:
+        packet = artwork_review.build_model_review_packet(
+            attempt=attempt,
+            contract={"contractId": contract["contractId"], "sha256": sha256_file(store.record("contracts", contract["contractId"]))},
+            brief={"briefId": brief["briefId"], "sha256": sha256_file(brief_path)},
+            compiled_policy=compiled,
+            artifacts=_model_review_packet_artifacts(attempt, caller_artifacts), evidence=evidence,
+            acceptance_cases=[{"caseId": case_id} for case_id in contract.get("acceptanceCaseIds", [])],
+            feedback=[], frozen_invariants=list(args.frozen_invariant), required_model=args.required_model,
+        )
+    except (KeyError, artwork_review.ReviewValidationError) as exc:
+        raise PipelineError(f"cannot create model review packet: {exc}") from exc
+    write_json_idempotent(store.record("model-review-packets", packet["packetId"]), packet, immutable=True)
+    attempt["modelReviewPacketId"] = packet["packetId"]
+    attempt["modelReviewPacketSha256"] = sha256_file(store.record("model-review-packets", packet["packetId"]))
+    transition(attempt, {"review_pending"}, "model_review_pending")
+    save_attempt(store, attempt)
+    return packet
+
+
+def create_shadow_model_review_packet(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    """Freeze one registered historical human case for non-authoritative Shadow review."""
+    case_record_path = store.record("review-cases", args.review_case_record_id)
+    case_record = load_json(case_record_path)
+    case = case_record.get("case")
+    if not isinstance(case, dict):
+        raise PipelineError("review case record is invalid")
+    try:
+        case = artwork_review.validate_review_case(case)
+    except artwork_review.ReviewValidationError as exc:
+        raise PipelineError(f"invalid review case: {exc}") from exc
+    if case.get("generationInputAllowed"):
+        raise PipelineError("shadow review case cannot allow generation input")
+    if case.get("containsRetiredAsset") or case["artifact"]["path"].startswith("Tools/artworks/amazon/"):
+        raise PipelineError("shadow review case references a retired artifact")
+    if not case.get("evidenceRegion"):
+        raise PipelineError("shadow review case requires an evidence region")
+    attempt = load_json(store.record("attempts", case["source"]["attemptId"]))
+    job, source_contract = _attempt_contract(store, attempt)
+    context_contract_id = getattr(args, "review_context_contract_id", None)
+    context_brief_source = getattr(args, "review_context_brief_source", None)
+    if source_contract.get("schemaVersion") in {1, 2, 3} and not context_contract_id:
+        raise PipelineError("legacy shadow cases require an explicit --review-context-contract-id override")
+    if context_brief_source and not context_contract_id:
+        raise PipelineError("--review-context-brief-source requires --review-context-contract-id")
+    contract = source_contract if not context_contract_id else load_json(store.record("contracts", context_contract_id))
+    if contract.get("schemaVersion") != ART_DIRECTION_SCHEMA_VERSION:
+        raise PipelineError("shadow review context contract must use schema v4")
+    brief_ref = contract.get("briefSpec")
+    if not brief_ref or not contract.get("artDirectionSpec"):
+        raise PipelineError("shadow model review is enabled only for art direction contracts")
+    brief_path = store.absolute(context_brief_source or brief_ref.get("path", ""), must_exist=True)
+    if not bound_input_hash_matches(brief_path, brief_ref.get("sha256")):
+        raise PipelineError("review context brief hash mismatch")
+    brief = load_json(brief_path)
+    if brief.get("briefId") != brief_ref.get("briefId"):
+        raise PipelineError("review context brief id does not match contract binding")
+    feedback_path = store.record("feedback", args.human_feedback_id)
+    feedback = load_json(feedback_path)
+    if feedback.get("attemptId") != attempt.get("attemptId") or feedback.get("reviewer") != "cty41":
+        raise PipelineError("shadow human feedback must bind the case historical cty41 attempt")
+    compiled_record_path = store.record("compiled-review-policies", args.compiled_review_policy_id)
+    compiled_record = load_json(compiled_record_path)
+    compiled = compiled_record.get("compiled")
+    if not isinstance(compiled, dict) or case["caseId"] not in {item.get("caseId") for item in compiled.get("cases", [])}:
+        raise PipelineError("compiled review policy does not bind the shadow review case")
+    artifact_path = store.absolute(case["artifact"]["path"], must_exist=True)
+    if sha256_file(artifact_path) != case["artifact"]["sha256"]:
+        raise PipelineError("shadow review case artifact hash mismatch")
+    evidence = [{"role": role, **artifact} for role, artifact in _parse_role_paths(store, list(args.evidence), "--evidence").items()]
+    if not evidence:
+        raise PipelineError("shadow model review requires bound reviewer evidence")
+    try:
+        packet = artwork_review.build_shadow_model_review_packet(
+            attempt=attempt, contract={"contractId": contract["contractId"], "sha256": sha256_file(store.record("contracts", contract["contractId"]))},
+            brief={"briefId": brief_ref["briefId"], "sha256": sha256_file(brief_path)}, compiled_policy=compiled,
+            historical_contract={"contractId": source_contract["contractId"], "sha256": sha256_file(store.record("contracts", source_contract["contractId"]))},
+            compiled_policy_record={"compiledPolicyId": args.compiled_review_policy_id, "sha256": sha256_file(compiled_record_path)},
+            case_binding={"reviewCaseRecord": {"reviewCaseRecordId": case_record["reviewCaseRecordId"], "sha256": sha256_file(case_record_path)},
+                          "caseId": case["caseId"], "artifact": case["artifact"], "humanDecision": case["source"]["humanDecision"],
+                          "humanFeedback": {"feedbackId": feedback["feedbackId"], "sha256": sha256_file(feedback_path)}, "evidenceRegion": case["evidenceRegion"]},
+            evidence=evidence, frozen_invariants=list(args.frozen_invariant), required_model=args.required_model,
+            requested_effort=args.requested_effort)
+    except (KeyError, artwork_review.ReviewValidationError) as exc:
+        raise PipelineError(f"cannot create shadow model review packet: {exc}") from exc
+    write_json_idempotent(store.record("model-review-packets", packet["packetId"]), packet, immutable=True)
+    return packet
+
+
+def begin_model_review(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    """Record an external model-review invocation without making any model call."""
+    attempt = load_json(store.record("attempts", args.attempt_id))
+    packet = load_json(store.record("model-review-packets", args.packet_id))
+    try:
+        packet = artwork_review.validate_model_review_packet(packet)
+    except artwork_review.ReviewValidationError as exc:
+        raise PipelineError(f"invalid model review packet: {exc}") from exc
+    shadow = packet.get("qualificationMode") is True
+    if packet["attemptId"] != attempt["attemptId"] or (not shadow and attempt.get("modelReviewPacketId") != packet["packetId"]):
+        raise PipelineError("model review packet does not match the current attempt")
+    if not shadow and attempt.get("state") != "model_review_pending":
+        raise PipelineError("model review can only begin for a model_review_pending attempt")
+    if args.model != packet["requiredModel"] or args.effort != packet["reasoningEffort"]:
+        raise PipelineError("actual model and effort must match the packet requirement")
+    _iso_timestamp(args.started_at, "--started-at")
+    prompt_source = _bound_artifact(store, args.prompt_source)
+    if not args.provider.strip() or not args.fresh_session_id.strip():
+        raise PipelineError("provider and fresh session id are required")
+    payload = {"attemptId": attempt["attemptId"], "packetId": packet["packetId"], "packetSha256": packet["sha256"],
+               "qualificationMode": shadow, "provider": args.provider, "model": args.model, "effort": args.effort,
+               "freshSession": True, "freshSessionId": args.fresh_session_id,
+               "promptSource": prompt_source, "startedAt": args.started_at}
+    invocation_id = stable_id("model-review-invocation", payload)
+    record = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "modelReviewInvocationId": invocation_id, "state": "started", **payload}
+    write_json_idempotent(store.record("model-review-invocations", invocation_id), record, immutable=True)
+    if not shadow:
+        attempt["modelReviewInvocationId"] = invocation_id
+        save_attempt(store, attempt)
+    return record
+
+
+def record_model_review(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    """Bind raw external output and validate it, or preserve an unavailable review for a human."""
+    invocation = load_json(store.record("model-review-invocations", args.invocation_id))
+    attempt = load_json(store.record("attempts", invocation["attemptId"]))
+    packet = load_json(store.record("model-review-packets", invocation["packetId"]))
+    shadow = invocation.get("qualificationMode") is True
+    if shadow != (packet.get("qualificationMode") is True):
+        raise PipelineError("model review invocation qualification mode does not match packet")
+    if not shadow and (attempt.get("state") != "model_review_pending" or attempt.get("modelReviewInvocationId") != invocation["modelReviewInvocationId"]):
+        raise PipelineError("model review invocation is not current for a pending attempt")
+    compiled_record = load_json(store.record("compiled-review-policies", args.compiled_review_policy_id))
+    compiled = compiled_record.get("compiled")
+    if not isinstance(compiled, dict):
+        raise PipelineError("compiled review policy record is invalid")
+    raw_result = _bound_artifact(store, args.raw_result) if args.raw_result else None
+    validation_error = None
+    validated_result = None
+    if raw_result:
+        try:
+            raw_payload = json.loads(store.absolute(raw_result["path"], must_exist=True).read_text(encoding="utf-8"))
+            validated_result = artwork_review.validate_model_review_result(raw_payload, packet, compiled)
+        except (OSError, json.JSONDecodeError, artwork_review.ReviewValidationError) as exc:
+            validation_error = str(exc)
+    else:
+        validation_error = args.unavailable_reason
+    if not raw_result and not validation_error:
+        raise PipelineError("record model review requires --raw-result or --unavailable-reason")
+    payload = {"invocationId": invocation["modelReviewInvocationId"], "attemptId": attempt["attemptId"],
+               "packetId": packet.get("packetId"), "packetSha256": packet.get("sha256"), "qualificationMode": shadow,
+               "provider": invocation["provider"], "model": invocation["model"], "effort": invocation["effort"],
+               "freshSession": invocation["freshSession"], "freshSessionId": invocation["freshSessionId"],
+               "promptSource": invocation["promptSource"],
+               "rawResult": raw_result, "result": validated_result,
+               "outcome": "model_reviewed" if validated_result else "human_review_required",
+               "validationError": validation_error}
+    result_id = stable_id("model-review-result-record", payload)
+    record = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "modelReviewResultRecordId": result_id, **payload}
+    write_json_idempotent(store.record("model-review-results", result_id), record, immutable=True)
+    if not shadow:
+        attempt["modelReviewResultRecordId"] = result_id
+        attempt["state"] = "model_reviewed" if validated_result else "human_review_required"
+        save_attempt(store, attempt)
+    return record
+
+
+def _artifact_binding_matches(store: Store, artifact: Any) -> bool:
+    if not isinstance(artifact, dict) or not artifact.get("path") or not artifact.get("sha256"):
+        return False
+    try:
+        target = store.absolute(artifact["path"])
+        return target.is_file() and sha256_file(target) == artifact["sha256"]
+    except (PipelineError, OSError, TypeError, ValueError):
+        return False
+
+
+def _reviewer_qualification_payload(record: dict[str, Any]) -> dict[str, Any]:
+    fields = ["state", "reviewer", "ruleId", "ruleVersion", "model", "effort", "reviewerPromptId",
+              "reviewerPromptSha256", "compiledPolicyId", "compiledPolicySha256", "caseSetVersion",
+              "reviewRule", "compiledPolicy", "reviewerPrompt"]
+    fields.extend(key for key in ("promptOnlyComparison", "qualificationAudits") if key in record)
+    fields.append("qualifiedAt")
+    return {key: record.get(key) for key in fields}
+
+
+def _audit_is_confirmed(audit: dict[str, Any]) -> bool:
+    if audit.get("verdict") is not None:
+        return audit.get("verdict") == "confirmed"
+    return audit.get("finding") in {
+        "matches-human-negative-retry", "matches-approved-positive-no-false-retry",
+        "correctly-escalates-occluded-boundary",
+    }
+
+
+def _reviewer_qualification_is_valid(store: Store, record: dict[str, Any], *, allow_legacy: bool = False) -> bool:
+    qualification_id = record.get("reviewerQualificationId")
+    if not qualification_id or stable_id("reviewer-qualification", _reviewer_qualification_payload(record)) != qualification_id:
+        return False
+    if record.get("reviewer") != "cty41" or not all(_artifact_binding_matches(store, record.get(key))
+                                                       for key in ("reviewRule", "compiledPolicy", "reviewerPrompt")):
+        return False
+    comparison = record.get("promptOnlyComparison")
+    audits = record.get("qualificationAudits", [])
+    if not comparison or not audits:
+        return allow_legacy
+    if not _artifact_binding_matches(store, comparison) or len(audits) < 3 or len({item.get("modelReviewAuditId") for item in audits}) != len(audits):
+        return False
+    try:
+        rule_record = load_json(store.absolute(record["reviewRule"]["path"])); rule = artwork_review.validate_review_rule(rule_record.get("rule", {}))
+        compiled_record = load_json(store.absolute(record["compiledPolicy"]["path"])); compiled = compiled_record.get("compiled", {})
+        comparison_record = load_json(store.absolute(comparison["path"]))
+        validated_comparison = artwork_review.validate_prompt_only_comparison(
+            comparison_record.get("promptOnly", {}), comparison_record.get("reviewerClosedLoop", {}))
+        context = validated_comparison["promptOnly"].get("context", {})
+        if (record.get("ruleId") != rule.get("ruleId") or record.get("ruleVersion") != rule.get("version")
+                or record.get("reviewerPromptSha256") != record["reviewerPrompt"].get("sha256")
+                or record.get("compiledPolicyId") != compiled.get("compiledPolicyId")
+                or record.get("compiledPolicySha256") != compiled.get("sha256")
+                or not (comparison.get("promptComparisonId") == comparison_record.get("promptComparisonId") == validated_comparison.get("promptComparisonId"))
+                or context.get("compiledPolicyId") != record.get("compiledPolicyId")
+                or context.get("caseSetVersion") != record.get("caseSetVersion")
+                or validated_comparison["reviewerClosedLoop"].get("context") != context
+                or not any(row.get("ruleId") == rule.get("ruleId") for row in validated_comparison["reviewerClosedLoop"].get("rawCounts", []))
+                or not any(item.get("ruleId") == rule.get("ruleId") and item.get("version") == rule.get("version") for item in compiled.get("rules", []))):
+            return False
+        cases_by_id = {case.get("caseId"): case for case in compiled.get("cases", [])}
+        expected_decision = {"negative": "retry", "positive": "pass_to_human", "boundary": "escalate_to_human"}
+        seen_polarities = set()
+        for binding in audits:
+            if not _artifact_binding_matches(store, binding):
+                return False
+            audit = load_json(store.absolute(binding["path"]))
+            result_path = store.record("model-review-results", audit.get("modelReviewResultRecordId", "")); result_record = load_json(result_path)
+            packet_path = store.record("model-review-packets", result_record.get("packetId", "")); packet = load_json(packet_path)
+            invocation_path = store.record("model-review-invocations", result_record.get("invocationId", "")); invocation = load_json(invocation_path)
+            case = cases_by_id.get(packet.get("caseBinding", {}).get("caseId")); polarity = case.get("polarity") if case else None
+            invocation_payload = {key: invocation.get(key) for key in ("attemptId", "packetId", "packetSha256", "qualificationMode",
+                                                                         "provider", "model", "effort", "freshSession",
+                                                                         "freshSessionId", "promptSource", "startedAt")}
+            result_payload = {key: result_record.get(key) for key in ("invocationId", "attemptId", "packetId", "packetSha256",
+                                                                       "provider", "model", "effort", "freshSession", "freshSessionId",
+                                                                       "promptSource", "rawResult", "result", "outcome", "validationError")}
+            if "qualificationMode" in result_record:
+                result_payload["qualificationMode"] = result_record["qualificationMode"]
+            nested_result_valid = artwork_review.validate_model_review_result(result_record.get("result", {}), packet, compiled)
+            if (audit.get("modelReviewAuditId") != binding.get("modelReviewAuditId") or audit.get("reviewer") != "cty41"
+                    or not _audit_is_confirmed(audit) or not _artifact_binding_matches(store, audit.get("modelReviewResult"))
+                    or audit["modelReviewResult"].get("path") != store.relative(result_path)
+                    or not result_record.get("qualificationMode") or not packet.get("qualificationMode")
+                    or artwork_review.validate_model_review_packet(packet).get("packetId") != packet.get("packetId")
+                    or stable_id("model-review-invocation", invocation_payload) != invocation.get("modelReviewInvocationId")
+                    or stable_id("model-review-result-record", result_payload) != result_record.get("modelReviewResultRecordId")
+                    or not _artifact_binding_matches(store, invocation.get("promptSource"))
+                    or invocation.get("packetId") != packet.get("packetId") or invocation.get("packetSha256") != packet.get("sha256")
+                    or invocation.get("model") != record.get("model") or invocation.get("effort") != record.get("effort")
+                    or invocation.get("promptSource") != result_record.get("promptSource")
+                    or packet.get("requiredModel") != record.get("model") or packet.get("reasoningEffort") != record.get("effort")
+                    or result_record.get("packetSha256") != packet.get("sha256") or nested_result_valid != result_record.get("result")
+                    or result_record.get("model") != record.get("model") or result_record.get("effort") != record.get("effort")
+                    or result_record.get("outcome") != "model_reviewed" or result_record.get("validationError") is not None
+                    or result_record.get("promptSource", {}).get("sha256") != record.get("reviewerPromptSha256")
+                    or packet.get("compiledPolicy", {}).get("compiledPolicyId") != record.get("compiledPolicyId")
+                    or not case or rule.get("ruleId") not in case.get("ruleIds", [])
+                    or polarity not in expected_decision
+                    or result_record.get("result", {}).get("decision") != expected_decision[polarity]):
+                return False
+            seen_polarities.add(polarity)
+        return seen_polarities == set(expected_decision)
+    except (PipelineError, artwork_review.ReviewValidationError, OSError, KeyError, TypeError, json.JSONDecodeError):
+        return False
+
+
+def record_reviewer_qualification(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    """Let cty41 immutably qualify one exact rule/invocation configuration."""
+    if args.reviewer != "cty41":
+        raise PipelineError("reviewer qualification requires reviewer cty41")
+    rule_record = load_json(store.record("review-rules", args.review_rule_record_id))
+    rule = rule_record.get("rule")
+    if not isinstance(rule, dict):
+        raise PipelineError("review rule record is invalid")
+    compiled_record = load_json(store.record("compiled-review-policies", args.compiled_review_policy_id))
+    compiled = compiled_record.get("compiled")
+    if not isinstance(compiled, dict):
+        raise PipelineError("compiled review policy record is invalid")
+    if not any(item.get("ruleId") == rule.get("ruleId") and item.get("version") == rule.get("version") for item in compiled.get("rules", [])):
+        raise PipelineError("qualification rule is not bound by compiled policy")
+    prompt_source = _bound_artifact(store, args.reviewer_prompt_source)
+    comparison_id = getattr(args, "prompt_only_comparison_id", None)
+    if not comparison_id:
+        raise PipelineError("qualification requires a prompt-only comparison")
+    comparison_path = store.record("prompt-only-comparisons", comparison_id)
+    comparison = load_json(comparison_path)
+    comparison_context = comparison.get("promptOnly", {}).get("context", {})
+    if (comparison_context.get("compiledPolicyId") != compiled.get("compiledPolicyId")
+            or comparison_context.get("caseSetVersion") != args.case_set_version
+            or comparison.get("reviewerClosedLoop", {}).get("context") != comparison_context):
+        raise PipelineError("qualification prompt-only comparison does not match policy and case set")
+    comparison_rows = comparison.get("reviewerClosedLoop", {}).get("rawCounts", [])
+    if not any(row.get("ruleId") == rule.get("ruleId") for row in comparison_rows):
+        raise PipelineError("qualification prompt-only comparison does not cover rule")
+    expected_decision = {"negative": "retry", "positive": "pass_to_human", "boundary": "escalate_to_human"}
+    cases_by_id = {case["caseId"]: case for case in compiled.get("cases", [])}
+    audit_bindings = []
+    seen_polarities = set()
+    audit_ids = getattr(args, "model_review_audit_id", None)
+    if not audit_ids:
+        raise PipelineError("qualification requires audited negative, positive, and boundary cases")
+    for audit_id in audit_ids:
+        audit_path = store.record("model-review-audits", audit_id)
+        audit = load_json(audit_path)
+        result_path = store.record("model-review-results", audit["modelReviewResultRecordId"])
+        result_record = load_json(result_path)
+        packet = load_json(store.record("model-review-packets", result_record["packetId"]))
+        case_id = packet.get("caseBinding", {}).get("caseId")
+        case = cases_by_id.get(case_id)
+        polarity = case.get("polarity") if case else None
+        if (audit.get("reviewer") != "cty41" or not _audit_is_confirmed(audit) or not result_record.get("qualificationMode")
+                or result_record.get("model") != args.model or result_record.get("effort") != args.effort
+                or result_record.get("promptSource", {}).get("sha256") != prompt_source["sha256"]
+                or packet.get("compiledPolicy", {}).get("compiledPolicyId") != compiled.get("compiledPolicyId")
+                or not case or rule.get("ruleId") not in case.get("ruleIds", [])
+                or polarity not in expected_decision
+                or result_record.get("result", {}).get("decision") != expected_decision[polarity]):
+            raise PipelineError("qualification audit does not prove the required model/effort/policy case decision")
+        seen_polarities.add(polarity)
+        audit_bindings.append({"modelReviewAuditId": audit_id, "path": store.relative(audit_path), "sha256": sha256_file(audit_path)})
+    if seen_polarities != set(expected_decision):
+        raise PipelineError("qualification requires audited negative, positive, and boundary cases")
+    _iso_timestamp(args.qualified_at, "--qualified-at")
+    payload = {
+        "state": "auto-retry-qualified", "reviewer": "cty41", "ruleId": rule["ruleId"], "ruleVersion": rule["version"],
+        "model": args.model, "effort": args.effort, "reviewerPromptId": args.reviewer_prompt_id,
+        "reviewerPromptSha256": prompt_source["sha256"], "compiledPolicyId": compiled["compiledPolicyId"],
+        "compiledPolicySha256": compiled["sha256"], "caseSetVersion": args.case_set_version,
+        "reviewRule": {"path": store.relative(store.record("review-rules", args.review_rule_record_id)), "sha256": sha256_file(store.record("review-rules", args.review_rule_record_id))},
+        "compiledPolicy": {"path": store.relative(store.record("compiled-review-policies", args.compiled_review_policy_id)), "sha256": sha256_file(store.record("compiled-review-policies", args.compiled_review_policy_id))},
+        "reviewerPrompt": prompt_source,
+        "promptOnlyComparison": {"promptComparisonId": comparison["promptComparisonId"], "path": store.relative(comparison_path), "sha256": sha256_file(comparison_path)},
+        "qualificationAudits": sorted(audit_bindings, key=lambda item: item["modelReviewAuditId"]), "qualifiedAt": args.qualified_at,
+    }
+    qualification_id = stable_id("reviewer-qualification", payload)
+    record = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "reviewerQualificationId": qualification_id, **payload}
+    write_json_idempotent(store.record("reviewer-qualifications", qualification_id), record, immutable=True)
+    return record
+
+
+def supersede_reviewer_qualification(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    """Supersede one immutable qualification with a stronger compatible qualification."""
+    if args.reviewer != "cty41":
+        raise PipelineError("reviewer qualification supersession requires reviewer cty41")
+    old_path = store.record("reviewer-qualifications", args.old_qualification_id)
+    new_path = store.record("reviewer-qualifications", args.new_qualification_id)
+    old, new = load_json(old_path), load_json(new_path)
+    if old["reviewerQualificationId"] == new["reviewerQualificationId"]:
+        raise PipelineError("qualification cannot supersede itself")
+    identity = ("ruleId", "ruleVersion", "model", "effort", "reviewerPromptId", "reviewerPromptSha256",
+                "compiledPolicyId", "compiledPolicySha256", "caseSetVersion")
+    if any(old.get(field) != new.get(field) for field in identity):
+        raise PipelineError("qualification supersession requires the same rule, model, effort, prompt, policy, and case set")
+    if not _reviewer_qualification_is_valid(store, old, allow_legacy=True):
+        raise PipelineError("old qualification identity or bindings are invalid")
+    if not _reviewer_qualification_is_valid(store, new):
+        raise PipelineError("replacement qualification must contain valid prompt-only comparison and confirmed audited cases")
+    if datetime.fromisoformat(new["qualifiedAt"]) <= datetime.fromisoformat(old["qualifiedAt"]):
+        raise PipelineError("replacement qualification must be newer than the old qualification")
+    for existing_path in (store.pipeline / "reviewer-qualification-supersessions").glob("*.json"):
+        existing = load_json(existing_path)
+        if existing.get("oldQualificationId") == old["reviewerQualificationId"]:
+            if existing.get("newQualificationId") == new["reviewerQualificationId"]:
+                return existing
+            raise PipelineError("old qualification already has a different successor")
+        if existing.get("oldQualificationId") == new["reviewerQualificationId"] and existing.get("newQualificationId") == old["reviewerQualificationId"]:
+            raise PipelineError("qualification supersession cycle is forbidden")
+    _iso_timestamp(args.superseded_at, "--superseded-at")
+    payload = {
+        "oldQualificationId": old["reviewerQualificationId"],
+        "oldQualification": {"path": store.relative(old_path), "sha256": sha256_file(old_path)},
+        "newQualificationId": new["reviewerQualificationId"],
+        "newQualification": {"path": store.relative(new_path), "sha256": sha256_file(new_path)},
+        "reviewer": "cty41", "reason": args.reason, "supersededAt": args.superseded_at,
+    }
+    supersession_id = stable_id("reviewer-qualification-supersession", payload)
+    record = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION,
+              "reviewerQualificationSupersessionId": supersession_id, **payload}
+    write_json_idempotent(store.record("reviewer-qualification-supersessions", supersession_id), record, immutable=True)
+    return record
+
+
+def suspend_reviewer_rule(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    """Append a cty41 suspension; qualifications themselves remain immutable."""
+    if args.reviewer != "cty41":
+        raise PipelineError("reviewer rule suspension requires reviewer cty41")
+    qualification = load_json(store.record("reviewer-qualifications", args.reviewer_qualification_id))
+    _iso_timestamp(args.suspended_at, "--suspended-at")
+    payload = {"reviewerQualificationId": qualification["reviewerQualificationId"], "ruleId": qualification["ruleId"],
+               "ruleVersion": qualification["ruleVersion"], "reviewer": "cty41", "reason": args.reason,
+               "suspendedAt": args.suspended_at}
+    suspension_id = stable_id("reviewer-rule-suspension", payload)
+    record = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "reviewerRuleSuspensionId": suspension_id, **payload}
+    write_json_idempotent(store.record("reviewer-rule-suspensions", suspension_id), record, immutable=True)
+    return record
+
+
+def record_model_review_audit(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    """Preserve a human audit of a model result without changing its outcome."""
+    if args.reviewer != "cty41":
+        raise PipelineError("model review audit requires reviewer cty41")
+    result_path = store.record("model-review-results", args.model_review_result_record_id)
+    result = load_json(result_path)
+    _iso_timestamp(args.audited_at, "--audited-at")
+    verdict = getattr(args, "verdict", None)
+    if verdict not in {"confirmed", "rejected"}:
+        raise PipelineError("model review audit requires verdict confirmed or rejected")
+    payload = {"modelReviewResultRecordId": result["modelReviewResultRecordId"],
+               "modelReviewResult": {"path": store.relative(result_path), "sha256": sha256_file(result_path)},
+               "reviewer": "cty41", "verdict": verdict, "finding": args.finding, "auditedAt": args.audited_at}
+    audit_id = stable_id("model-review-audit", payload)
+    record = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "modelReviewAuditId": audit_id, **payload}
+    write_json_idempotent(store.record("model-review-audits", audit_id), record, immutable=True)
+    return record
+
+
+def _effective_qualifications(store: Store) -> list[dict[str, Any]]:
+    suspended = {load_json(path).get("reviewerQualificationId") for path in (store.pipeline / "reviewer-rule-suspensions").glob("*.json")}
+    qualification_records = {record.get("reviewerQualificationId"): record for record in
+                             (load_json(path) for path in sorted((store.pipeline / "reviewer-qualifications").glob("*.json")))}
+    superseded: dict[str, str] = {}
+    for path in sorted((store.pipeline / "reviewer-qualification-supersessions").glob("*.json")):
+        record = load_json(path)
+        old_id, new_id = record.get("oldQualificationId"), record.get("newQualificationId")
+        payload = {key: record.get(key) for key in ("oldQualificationId", "oldQualification", "newQualificationId",
+                                                    "newQualification", "reviewer", "reason", "supersededAt")}
+        old, new = qualification_records.get(old_id), qualification_records.get(new_id)
+        identity = ("ruleId", "ruleVersion", "model", "effort", "reviewerPromptId", "reviewerPromptSha256",
+                    "compiledPolicyId", "compiledPolicySha256", "caseSetVersion")
+        if (not old or not new or old_id in superseded or record.get("reviewer") != "cty41"
+                or stable_id("reviewer-qualification-supersession", payload) != record.get("reviewerQualificationSupersessionId")
+                or any(old.get(field) != new.get(field) for field in identity)
+                or not _reviewer_qualification_is_valid(store, new)):
+            continue
+        cursor = new_id
+        cyclic = False
+        while cursor in superseded:
+            cursor = superseded[cursor]
+            if cursor == old_id:
+                cyclic = True
+                break
+        if not cyclic:
+            superseded[old_id] = new_id
+    result = []
+    for qualification_id, qualification in qualification_records.items():
+        if not _reviewer_qualification_is_valid(store, qualification, allow_legacy=qualification_id in superseded):
+            continue
+        if qualification_id in suspended:
+            qualification = {**qualification, "suspendedAt": "recorded-by-suspension"}
+        if qualification_id in superseded:
+            qualification = {**qualification, "supersededBy": superseded[qualification_id]}
+        result.append(qualification)
+    return result
+
+
+def _create_model_retry_attempt(store: Store, attempt: dict[str, Any], prompt_delta: dict[str, Any]) -> dict[str, Any]:
+    """Create the only automatic nontechnical child; never rewrites its parent."""
+    generation_round = attempt.get("generationRound", attempt.get("ordinal"))
+    if generation_round is None:
+        try:
+            generation_round = int(attempt["attemptId"].rsplit("-a", 1)[1])
+        except (KeyError, ValueError, IndexError) as exc:
+            raise PipelineError("cannot derive generation round from attempt") from exc
+    if isinstance(generation_round, bool) or not isinstance(generation_round, int) or generation_round >= 3:
+        raise PipelineError("automatic generation budget exhausted; cannot create a004")
+    ordinal = generation_round + 1
+    if ordinal > 3:
+        raise PipelineError("automatic retry cannot create attempt a004 or later; escalate to human review")
+    child = {"schemaVersion": attempt.get("schemaVersion", ART_DIRECTION_SCHEMA_VERSION),
+             "attemptId": f"{attempt['jobId']}-a{ordinal:03d}", "jobId": attempt["jobId"], "ordinal": ordinal,
+             "generationRound": generation_round + 1, "parentAttemptId": attempt["attemptId"],
+             "retryFeedbackId": None, "promptDelta": prompt_delta, "technicalRemediation": False,
+             "state": "ready", "artifacts": {}, "report": None, "approvalId": None, "feedbackId": None,
+             "modelReviewParentResultRecordId": attempt.get("modelReviewResultRecordId")}
+    write_json_idempotent(store.record("attempts", child["attemptId"]), child, immutable=True)
+    return child
+
+
+def apply_model_review(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    """Apply a validated review exactly once using bound invocation metadata."""
+    result_record = load_json(store.record("model-review-results", args.model_review_result_record_id))
+    if result_record.get("qualificationMode") is True:
+        raise PipelineError("shadow model review results cannot be applied to attempt state or retries")
+    result = result_record.get("result")
+    if not isinstance(result, dict):
+        raise PipelineError("model review result is not validated")
+    invocation = load_json(store.record("model-review-invocations", result_record["invocationId"]))
+    attempt = load_json(store.record("attempts", result_record["attemptId"]))
+    if attempt.get("state") != "model_reviewed" or attempt.get("modelReviewResultRecordId") != result_record["modelReviewResultRecordId"]:
+        raise PipelineError("model review result is not current for a reviewed attempt")
+    packet = load_json(store.record("model-review-packets", result_record["packetId"]))
+    compiled_record = load_json(store.record("compiled-review-policies", args.compiled_review_policy_id))
+    compiled = compiled_record.get("compiled")
+    if not isinstance(compiled, dict):
+        raise PipelineError("compiled review policy record is invalid")
+    if result_record.get("packetSha256") != packet.get("sha256") or invocation.get("packetSha256") != packet.get("sha256"):
+        raise PipelineError("result or invocation packet binding mismatch")
+    if invocation.get("model") != packet.get("requiredModel") or invocation.get("effort") != packet.get("reasoningEffort"):
+        raise PipelineError("invocation metadata does not exactly match packet")
+    for application_path in (store.pipeline / "model-review-applications").glob("*.json"):
+        existing = load_json(application_path)
+        if existing.get("modelReviewResultRecordId") == result_record["modelReviewResultRecordId"]:
+            return existing
+    decision = artwork_review.evaluate_automatic_decision(
+        result, packet=packet, compiled_policy=compiled, qualifications=_effective_qualifications(store),
+        model=invocation["model"], reviewer_prompt_id=args.reviewer_prompt_id,
+        reviewer_prompt_sha256=invocation["promptSource"]["sha256"], case_set_version=args.case_set_version)
+    if decision["action"] == "automatic_retry" and len(list_attempts(store, attempt["jobId"])) >= 3:
+        decision = {"action": "human_review_required", "automaticRetry": False,
+                    "reason": "automatic_retry_would_create_a004"}
+    payload = {"modelReviewResultRecordId": result_record["modelReviewResultRecordId"], "attemptId": attempt["attemptId"],
+               "decision": decision, "invocation": {"modelReviewInvocationId": invocation["modelReviewInvocationId"],
+               "packetId": invocation["packetId"], "packetSha256": invocation["packetSha256"], "model": invocation["model"], "effort": invocation["effort"], "promptSource": invocation["promptSource"]}}
+    if decision["action"] == "automatic_retry":
+        child = _create_model_retry_attempt(store, attempt, decision["promptDelta"])
+        payload["childAttemptId"] = child["attemptId"]
+    apply_id = stable_id("model-review-application", payload)
+    record = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "modelReviewApplicationId": apply_id, **payload}
+    write_json_idempotent(store.record("model-review-applications", apply_id), record, immutable=True)
+    if decision["action"] != "automatic_retry":
+        attempt["state"] = decision["action"]
+        save_attempt(store, attempt)
+    return record
+
+
+def create_review_experience_candidate(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    source, artifact = _source_json_artifact(store, args.source)
+    try:
+        candidate = artwork_review.validate_experience_candidate(source)
+    except artwork_review.ReviewValidationError as exc:
+        raise PipelineError(f"invalid review experience candidate: {exc}") from exc
+    payload = {"candidate": candidate, "source": artifact}
+    record_id = stable_id("review-experience-candidate", payload)
+    record = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "reviewExperienceCandidateRecordId": record_id, **payload}
+    write_json_idempotent(store.record("review-experience-candidates", record_id), record, immutable=True)
+    return record
+
+
+def promote_review_experience(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    if args.reviewer != "cty41":
+        raise PipelineError("review experience promotion requires reviewer cty41")
+    candidate_path = store.record("review-experience-candidates", args.review_experience_candidate_record_id)
+    candidate_record = load_json(candidate_path)
+    candidate = candidate_record.get("candidate")
+    if not isinstance(candidate, dict) or candidate.get("status") != "proposed":
+        raise PipelineError("only proposed review experience candidates can be promoted")
+    _iso_timestamp(args.promoted_at, "--promoted-at")
+    payload = {"reviewExperienceCandidateRecordId": candidate_record["reviewExperienceCandidateRecordId"],
+               "candidate": {"path": store.relative(candidate_path), "sha256": sha256_file(candidate_path)},
+               "reviewer": "cty41", "reason": args.reason, "promotedAt": args.promoted_at,
+               "activeRulesModified": False}
+    promotion_id = stable_id("review-experience-promotion", payload)
+    record = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "reviewExperiencePromotionId": promotion_id, **payload}
+    write_json_idempotent(store.record("review-experience-promotions", promotion_id), record, immutable=True)
+    return record
+
+
+def record_prompt_only_comparison(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    """Freeze a like-for-like prompt-only baseline and Reviewer-loop raw-count comparison."""
+    prompt_only, prompt_only_source = _source_json_artifact(store, args.prompt_only_arm_source)
+    reviewer, reviewer_source = _source_json_artifact(store, args.reviewer_closed_loop_arm_source)
+    try:
+        comparison = artwork_review.validate_prompt_only_comparison(prompt_only, reviewer)
+    except artwork_review.ReviewValidationError as exc:
+        raise PipelineError(f"invalid prompt-only comparison: {exc}") from exc
+    payload = {"promptOnly": comparison["promptOnly"], "reviewerClosedLoop": comparison["reviewerClosedLoop"],
+               "sources": {"promptOnly": prompt_only_source, "reviewerClosedLoop": reviewer_source}}
+    record = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "promptComparisonId": comparison["promptComparisonId"], **payload}
+    write_json_idempotent(store.record("prompt-only-comparisons", comparison["promptComparisonId"]), record, immutable=True)
     return record
 
 
@@ -1119,6 +2383,62 @@ def transaction_record(store: Store, operation: str, payload: dict[str, Any], st
     record["state"] = state
     write_json_idempotent(path, record)
     return transaction_id, record
+
+
+def resolve_transaction(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    """Resolve a stranded transaction from hash-bound operation evidence."""
+    if args.reviewer != "cty41":
+        raise PipelineError("transaction resolution requires reviewer cty41")
+    _iso_timestamp(args.decided_at, "--decided-at")
+    path = store.record("transactions", args.transaction_id)
+    record = load_json(path)
+    if record.get("state") != "started":
+        raise PipelineError("only a started transaction can receive an immutable resolution")
+    for existing_path in (store.pipeline / "transaction-resolutions").glob("*.json"):
+        existing = load_json(existing_path)
+        if existing.get("transactionId") == record.get("transactionId"):
+            return {**record, "state": existing["outcome"], "resolution": existing}
+    operation, payload = record.get("operation"), record.get("payload", {})
+    if operation != "prepare":
+        raise PipelineError("automatic transaction resolution currently supports prepare only")
+    attempt_path = store.record("attempts", payload.get("attemptId", ""))
+    if not attempt_path.is_file():
+        raise PipelineError("transaction attempt does not exist")
+    attempt = load_json(attempt_path)
+    prepared = attempt.get("artifacts", {}).get("prepared")
+    preparation = attempt.get("preparation", {})
+    def canonical_chroma(value: Any) -> str:
+        text = str(value).strip().lower().replace("#", "")
+        if "," in text:
+            try:
+                channels = [int(part.strip()) for part in text.split(",")]
+            except ValueError as exc:
+                raise PipelineError("transaction chroma metadata is invalid") from exc
+            if len(channels) != 3 or any(channel < 0 or channel > 255 for channel in channels):
+                raise PipelineError("transaction chroma metadata is invalid")
+            return "".join(f"{channel:02x}" for channel in channels)
+        return text
+    expected_chroma = canonical_chroma(payload.get("chroma", ""))
+    actual_chroma = canonical_chroma(preparation.get("chroma", ""))
+    prepared_path = store.absolute(prepared.get("path", "")) if prepared else None
+    artifact_present = bool(prepared or preparation)
+    committed = bool(prepared and prepared_path and prepared_path.is_file()
+                     and sha256_file(prepared_path) == prepared.get("sha256")
+                     and expected_chroma == actual_chroma
+                     and payload.get("chromaTolerance") == preparation.get("chromaTolerance"))
+    if artifact_present and not committed:
+        raise PipelineError("transaction has partial or conflicting preparation evidence; human investigation required")
+    outcome = "committed" if committed else "aborted"
+    resolution_payload = {"transactionId": record["transactionId"],
+                          "transaction": {"path": store.relative(path), "sha256": sha256_file(path)},
+                          "operation": operation, "payload": payload, "outcome": outcome,
+                          "reviewer": "cty41", "reason": args.reason, "decidedAt": args.decided_at,
+                          "evidence": prepared if committed else None}
+    resolution_id = stable_id("transaction-resolution", resolution_payload)
+    resolution = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION,
+                  "transactionResolutionId": resolution_id, **resolution_payload}
+    write_json_idempotent(store.record("transaction-resolutions", resolution_id), resolution, immutable=True)
+    return {**record, "state": outcome, "resolution": resolution}
 
 
 def ingest(store: Store, args: argparse.Namespace) -> dict[str, Any]:
@@ -1217,6 +2537,15 @@ def prepare_image(source: Path, destination: Path, chroma: str | None, chroma_to
     image.putdata(cleaned)
     destination.parent.mkdir(parents=True, exist_ok=True)
     image.save(destination, format="PNG", optimize=False, compress_level=9)
+
+
+def clean_exact_chroma(image: Image.Image) -> Image.Image:
+    """Remove reserved exact keys after resampling, without widening color tolerance."""
+    result = image.convert("RGBA")
+    result.putdata([(0, 0, 0, 0) if not alpha or (red, green, blue) in {(0, 255, 0), (255, 0, 255)}
+                    else (red, green, blue, alpha)
+                    for red, green, blue, alpha in pixel_data(result)])
+    return result
 
 
 def clean_resampled_chroma(image: Image.Image, chroma: str | None, tolerance: int) -> Image.Image:
@@ -1608,12 +2937,20 @@ def geometry_checks(store: Store, contract: dict[str, Any], attempt: dict[str, A
         if core:
             width = mask.width
             core_points = {i for i, value in enumerate(pixels) if value == MASK_COLORS["core"]}
+            equipment_points = {i for i, value in enumerate(pixels) if value == MASK_COLORS["equipment"]}
             for label in ("near_hand", "far_hand", "near_foot", "far_foot"):
                 part_points = {i for i, value in enumerate(pixels) if value == MASK_COLORS[label]}
+                # A hand in a component assembly may be physically separated from
+                # the visible core by the held equipment drawn between them.  The
+                # equipment is then the stable contact surface; feet must still
+                # contact the core directly.
+                contact_points = core_points
+                if contract.get("assetRole") == "assembled_sprite" and label in {"near_hand", "far_hand"}:
+                    contact_points = core_points | equipment_points
                 contacts = 0
                 for index in part_points:
                     x, y = index % width, index // width
-                    if any((ny * width + nx) in core_points for nx, ny in ((x-1,y),(x+1,y),(x,y-1),(x,y+1)) if 0 <= nx < width and 0 <= ny < mask.height):
+                    if any((ny * width + nx) in contact_points for nx, ny in ((x-1,y),(x+1,y),(x,y-1),(x,y+1)) if 0 <= nx < width and 0 <= ny < mask.height):
                         contacts += 1
                 if part_points and contacts < 3:
                     issues.append(f"{label}_contact_lt_3")
@@ -1643,8 +2980,26 @@ def geometry_checks(store: Store, contract: dict[str, Any], attempt: dict[str, A
             occluded_row = any(boxes[label] and boxes[label][1] <= y <= boxes[label][3] for label in allowed_occluders)
             if y <= uninterrupted_bottom and xs and len(xs) != max(xs) - min(xs) + 1 and not occluded_row:
                 issues.append("core_row_disconnected")
-        height = len(row_widths)
-        bands = [row_widths[:max(1, height // 3)], row_widths[height // 3:max(height // 3 + 1, 2 * height // 3)], row_widths[2 * height // 3:]]
+        shape_row_widths = row_widths
+        # Front-layer equipment legitimately replaces visible core labels in an
+        # assembled mask.  The bound approved anchor remains the authoritative
+        # immutable body shape for the three-band capsule check.
+        if contract.get("assetRole") == "assembled_sprite" and anchor_mask_artifact:
+            with Image.open(store.absolute(anchor_mask_artifact["path"], must_exist=True)) as anchor_source:
+                anchor_shape_mask = anchor_source.convert("RGBA")
+            anchor_shape_pixels = pixel_data(anchor_shape_mask)
+            anchor_shape_box = anchor_core_bbox(anchor_shape_mask)
+            if anchor_shape_box:
+                _anchor_left, anchor_top, _anchor_right, anchor_bottom = anchor_shape_box
+                shape_row_widths = []
+                for y in range(anchor_top, anchor_bottom + 1):
+                    xs = [x for x in range(anchor_shape_mask.width)
+                          if anchor_shape_pixels[y * anchor_shape_mask.width + x] == MASK_COLORS["core"]]
+                    shape_row_widths.append(max(xs) - min(xs) + 1 if xs else 0)
+        height = len(shape_row_widths)
+        bands = [shape_row_widths[:max(1, height // 3)],
+                 shape_row_widths[height // 3:max(height // 3 + 1, 2 * height // 3)],
+                 shape_row_widths[2 * height // 3:]]
         widths = [max(band or [0]) for band in bands]
         metrics["core"] = {"bbox": [left, top, right, bottom], "center": [(left + right) / 2, (top + bottom) / 2], "bandMaxWidths": widths}
         if widths[2] > widths[1]:
@@ -1724,7 +3079,11 @@ def geometry_checks(store: Store, contract: dict[str, Any], attempt: dict[str, A
                     exit_box = regions["weaponExit"]
                     if not overlap(exit_box, spec["weapon"]["exitWindow"]):
                         issues.append("weapon_exit_outside_window")
-                    if not overlap(regions["weaponTip"], spec["weapon"]["tipRegion"]):
+                    weapon_tip = regions["weaponTip"]
+                    if weapon_tip is None:
+                        if not spec["weapon"].get("tipMayBeOccluded"):
+                            issues.append("weapon_tip_annotation_missing")
+                    elif not overlap(weapon_tip, spec["weapon"]["tipRegion"]):
                         issues.append("weapon_tip_outside_region")
                 blade_corridor = spec["weapon"].get("bladeCenterline")
                 if blade_corridor and not spec.get("bodyLayer"):
@@ -1749,9 +3108,11 @@ def geometry_checks(store: Store, contract: dict[str, Any], attempt: dict[str, A
                         issues.append("guard_outside_window")
                 equipment_box = boxes.get("equipment")
                 if equipment_box:
-                    for forbidden in spec["forbiddenRegions"]:
-                        if overlap(list(equipment_box), forbidden["rect"]):
-                            issues.append(f"equipment_enters_forbidden_{forbidden['name']}")
+                    for index, forbidden in enumerate(spec["forbiddenRegions"]):
+                        rect = forbidden["rect"] if isinstance(forbidden, dict) else forbidden
+                        name = forbidden.get("name", f"region-{index + 1}") if isinstance(forbidden, dict) else f"region-{index + 1}"
+                        if overlap(list(equipment_box), rect):
+                            issues.append(f"equipment_enters_forbidden_{name}")
                 if not spec.get("bodyLayer"):
                     issues.extend(composition_gem_issues(spec["weapon"], regions))
                     if spec["equipmentState"].get("scabbard") == "absent" and regions.get("scabbard"):
@@ -2032,9 +3393,12 @@ def decide(store: Store, args: argparse.Namespace, decision: str) -> dict[str, A
         return existing
     if attempt["state"] != "review_pending":
         raise PipelineError("approval decision requires review_pending attempt")
-    if contract.get("schemaVersion") in {2, 3} and args.reviewer != "cty41":
-        raise PipelineError("schema v2/v3 formal approval must be issued by cty41")
-    if decision == "approved" and contract.get("equipmentProductionSpec"):
+    if contract.get("schemaVersion") in {2, 3, ART_DIRECTION_SCHEMA_VERSION} and args.reviewer != "cty41":
+        raise PipelineError("schema v2/v3/v4 formal approval must be issued by cty41")
+    art_direction_verdict = None
+    if decision == "approved" and contract.get("schemaVersion") == ART_DIRECTION_SCHEMA_VERSION:
+        art_direction_verdict = _validate_art_direction_approval(store, attempt, contract)
+    elif decision == "approved" and contract.get("equipmentProductionSpec"):
         verdict_id = attempt.get("equipmentStyleVerdictId")
         if not verdict_id:
             raise PipelineError("equipment approval requires a cty41 style verdict")
@@ -2045,7 +3409,11 @@ def decide(store: Store, args: argparse.Namespace, decision: str) -> dict[str, A
                 or verdict.get("reviewSha256") != current_reviews):
             raise PipelineError("equipment style verdict does not match candidate and review")
     annotation = None
-    if contract.get("compositionSpec") and attempt.get("sourceMode") != "reviewed_import":
+    composition_requires_annotations = False
+    if contract.get("compositionSpec"):
+        composition = load_json(store.record("compositions", contract["compositionSpec"]["compositionId"]))
+        composition_requires_annotations = not composition.get("spec", {}).get("bodyLayer", False)
+    if composition_requires_annotations and attempt.get("sourceMode") != "reviewed_import":
         annotation_id = attempt.get("annotationId")
         if not annotation_id:
             raise PipelineError("high-risk schema v2 approval requires annotations")
@@ -2068,6 +3436,11 @@ def decide(store: Store, args: argparse.Namespace, decision: str) -> dict[str, A
         "decision": decision, "reason": args.reason, "decidedAt": args.decided_at,
         "annotation": annotation, "reportSha256": attempt["report"]["sha256"],
     }
+    if art_direction_verdict:
+        receipt_payload["artDirectionVerdict"] = {
+            "artDirectionVerdictId": art_direction_verdict["artDirectionVerdictId"],
+            "sha256": sha256_file(store.record("art-direction-verdicts", art_direction_verdict["artDirectionVerdictId"])),
+        }
     approval_id = stable_id("approval", receipt_payload)
     receipt = {"schemaVersion": contract.get("schemaVersion", 1), "approvalId": approval_id, **receipt_payload}
     write_json_idempotent(store.record("approvals", approval_id), receipt, immutable=True)
@@ -2357,6 +3730,156 @@ def register_public_artifacts(store: Store, paths: list[dict[str, str]], provena
     write_json_idempotent(manifest_path, manifest)
 
 
+def sync_attempt_provenance(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    """Synchronize hash-bound attempt PNGs using the attempt contract's existing rights."""
+    if args.reviewer != "cty41":
+        raise PipelineError("attempt provenance synchronization requires reviewer cty41")
+    _iso_timestamp(args.synced_at, "--synced-at")
+    attempt = load_json(store.record("attempts", args.attempt_id))
+    job = load_json(store.record("jobs", attempt["jobId"]))
+    contract = load_json(store.record("contracts", job["contractId"]))
+    if not contract.get("rights"):
+        raise PipelineError("attempt contract has no rights binding")
+    artifacts = []
+    for artifact in attempt.get("artifacts", {}).values():
+        values = artifact.values() if isinstance(artifact, dict) and "path" not in artifact else [artifact]
+        for value in values:
+            if (isinstance(value, dict) and str(value.get("path", "")).lower().endswith(".png")
+                    and str(value.get("path", "")).startswith("Tools/artworks/pipeline/")):
+                target = store.absolute(value["path"])
+                if not target.is_file() or sha256_file(target) != value.get("sha256"):
+                    raise PipelineError("attempt provenance artifact hash mismatch")
+                artifacts.append({"path": value["path"], "sha256": value["sha256"]})
+    artifacts = sorted({item["path"]: item for item in artifacts}.values(), key=lambda item: item["path"])
+    if not artifacts:
+        raise PipelineError("attempt has no PNG artifacts to synchronize")
+    payload = {"attemptId": attempt["attemptId"], "jobId": job["jobId"], "contractId": contract["contractId"],
+               "artifacts": artifacts, "rights": contract["rights"], "reviewer": "cty41",
+               "reason": args.reason, "syncedAt": args.synced_at}
+    sync_id = stable_id("attempt-provenance-sync", payload)
+    record = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "attemptProvenanceSyncId": sync_id, **payload}
+    update_provenance(store, artifacts, contract)
+    write_json_idempotent(store.record("attempt-provenance-syncs", sync_id), record, immutable=True)
+    return record
+
+
+def invalidate_attempt_provenance_sync(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    if args.reviewer != "cty41":
+        raise PipelineError("attempt provenance sync invalidation requires reviewer cty41")
+    _iso_timestamp(args.invalidated_at, "--invalidated-at")
+    sync_path = store.record("attempt-provenance-syncs", args.attempt_provenance_sync_id)
+    sync = load_json(sync_path)
+    invalid = any(not str(item.get("path", "")).startswith("Tools/artworks/pipeline/")
+                  for item in sync.get("artifacts", []))
+    if not invalid:
+        raise PipelineError("only a structurally invalid historical provenance sync may be invalidated")
+    payload = {"attemptProvenanceSyncId": sync["attemptProvenanceSyncId"],
+               "attemptProvenanceSync": {"path": store.relative(sync_path), "sha256": sha256_file(sync_path)},
+               "reviewer": "cty41", "reason": args.reason, "invalidatedAt": args.invalidated_at}
+    invalidation_id = stable_id("attempt-provenance-sync-invalidation", payload)
+    record = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION,
+              "attemptProvenanceSyncInvalidationId": invalidation_id, **payload}
+    write_json_idempotent(store.record("attempt-provenance-sync-invalidations", invalidation_id), record, immutable=True)
+    return record
+
+
+def remediate_exact_chroma_artifacts(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    _iso_timestamp(args.authorized_at, "--authorized-at")
+    if args.reviewer != "cty41":
+        raise PipelineError("exact chroma remediation requires reviewer cty41")
+    attempt_path = store.record("attempts", args.attempt_id)
+    attempt = load_json(attempt_path)
+    if attempt.get("state") != "promoted" or not attempt.get("approvalId"):
+        raise PipelineError("exact chroma remediation requires a promoted approved attempt")
+    approval_path = store.record("approvals", attempt["approvalId"])
+    approval = load_json(approval_path)
+    if approval.get("decision") != "approved" or approval.get("reviewer") != "cty41":
+        raise PipelineError("exact chroma remediation requires cty41 approval lineage")
+    prepared = attempt.get("artifacts", {}).get("prepared", {})
+    promoted_master = attempt.get("artifacts", {}).get("promoted", {}).get("master", {})
+    bound = {artifact.get("path"): artifact.get("sha256") for artifact in (prepared, promoted_master) if artifact.get("path")}
+    requested = sorted({store.relative(value, must_exist=True) for value in args.path})
+    if set(requested) != set(bound):
+        raise PipelineError("exact chroma remediation paths must be the bound prepared and promoted master pair")
+    manifest_path = store.root / "Tools/public-release/asset-provenance.json"
+    manifest = load_json(manifest_path)
+    by_path = {entry["path"]: entry for entry in manifest["entries"]}
+    staged: list[tuple[Path, Path, dict[str, Any], str, bytes]] = []
+    manifest_bytes = manifest_path.read_bytes()
+    artifacts: list[dict[str, Any]] = []
+    for value in requested:
+        rel = store.relative(value, must_exist=True)
+        path = store.absolute(rel)
+        before_sha = sha256_file(path)
+        if before_sha != bound.get(rel):
+            raise PipelineError(f"exact chroma remediation source binding mismatch: {rel}")
+        with Image.open(path) as opened:
+            if opened.mode != "RGBA":
+                raise PipelineError(f"exact chroma remediation requires native RGBA: {rel}")
+            image = opened.copy()
+        canonical_before = io.BytesIO()
+        image.save(canonical_before, format="PNG", optimize=False, compress_level=9)
+        if hashlib.sha256(canonical_before.getvalue()).hexdigest() != before_sha:
+            raise PipelineError(f"exact chroma remediation requires canonical PNG encoding: {rel}")
+        pixels = []
+        for y in range(image.height):
+            for x in range(image.width):
+                rgba = image.getpixel((x, y))
+                if rgba[3] > 0 and rgba[:3] in {(0, 255, 0), (255, 0, 255)}:
+                    pixels.append({"x": x, "y": y, "rgba": list(rgba)})
+                    image.putpixel((x, y), (0, 0, 0, 0))
+        if not pixels:
+            raise PipelineError(f"exact chroma remediation source has no residue: {rel}")
+        if len(pixels) > 16 or max(pixel["rgba"][3] for pixel in pixels) > 4:
+            raise PipelineError(f"exact chroma remediation exceeds low-alpha safety bounds: {rel}")
+        temporary = path.with_name(f".{path.name}.exact-chroma.tmp")
+        image.save(temporary, format="PNG", optimize=False, compress_level=9)
+        after_sha = sha256_file(temporary)
+        entry = by_path.get(rel)
+        if entry is None:
+            temporary.unlink(missing_ok=True)
+            raise PipelineError(f"exact chroma remediation provenance entry is missing: {rel}")
+        if entry.get("sha256") != before_sha:
+            temporary.unlink(missing_ok=True)
+            raise PipelineError(f"exact chroma remediation provenance mismatch: {rel}")
+        artifact = {"path": rel, "beforeSha256": before_sha, "afterSha256": after_sha, "pixels": pixels}
+        staged.append((path, temporary, entry, after_sha, path.read_bytes()))
+        artifacts.append(artifact)
+    payload = {
+        "sourceAttemptId": args.attempt_id,
+        "sourceAttempt": {"path": store.relative(attempt_path), "sha256": sha256_file(attempt_path)},
+        "approval": {"path": store.relative(approval_path), "sha256": sha256_file(approval_path)},
+        "artifacts": artifacts,
+        "operation": "deterministic-low-alpha-exact-chroma-cleanup",
+        "reviewer": args.reviewer,
+        "reason": args.reason,
+        "authorizedAt": args.authorized_at,
+    }
+    receipt_id = stable_id("exact-chroma-remediation", payload)
+    receipt = {"schemaVersion": 1, "exactChromaRemediationId": receipt_id, **payload}
+    receipt_path = store.record("exact-chroma-remediations", receipt_id)
+    receipt_existed = receipt_path.exists()
+    write_json_idempotent(receipt_path, receipt, immutable=True)
+    try:
+        for path, temporary, entry, after_sha, _original_bytes in staged:
+            _replace_with_retry(temporary, path)
+            entry["sha256"] = after_sha
+        write_json_idempotent(manifest_path, manifest)
+    except Exception as exc:
+        for path, temporary, _entry, _after_sha, original_bytes in staged:
+            temporary.unlink(missing_ok=True)
+            rollback = path.with_name(f".{path.name}.exact-chroma.rollback")
+            rollback.write_bytes(original_bytes)
+            _replace_with_retry(rollback, path)
+        manifest_rollback = manifest_path.with_name(f".{manifest_path.name}.exact-chroma.rollback")
+        manifest_rollback.write_bytes(manifest_bytes)
+        _replace_with_retry(manifest_rollback, manifest_path)
+        if not receipt_existed:
+            receipt_path.unlink(missing_ok=True)
+        raise PipelineError(f"exact chroma remediation transaction rolled back: {exc}") from exc
+    return receipt
+
+
 def relicense_public_artifacts(store: Store, args: argparse.Namespace) -> dict[str, Any]:
     _iso_timestamp(args.decided_at, "--decided-at")
     if args.reviewer != "cty41":
@@ -2366,6 +3889,16 @@ def relicense_public_artifacts(store: Store, args: argparse.Namespace) -> dict[s
     manifest_path = store.root / "Tools/public-release/asset-provenance.json"
     manifest = load_json(manifest_path)
     by_path = {entry["path"]: entry for entry in manifest["entries"]}
+    reconcile = bool(getattr(args, "reconcile_existing_projection", False))
+    supporting_declarations: set[tuple[str, str]] = set()
+    if reconcile:
+        for declaration_path in sorted((store.pipeline / "supporting-artifacts").glob("*.json")):
+            declaration = load_json(declaration_path)
+            artifact = declaration.get("artifact", {})
+            rights = declaration.get("rights", {})
+            if (declaration.get("reviewer") == "cty41" and rights.get("rightsHolder") == "cty41"
+                    and rights.get("license") == "project-owned"):
+                supporting_declarations.add((artifact.get("path"), artifact.get("sha256")))
     artifacts: list[dict[str, str]] = []
     for value in sorted(set(args.path)):
         rel = store.relative(value, must_exist=True)
@@ -2377,8 +3910,16 @@ def relicense_public_artifacts(store: Store, args: argparse.Namespace) -> dict[s
             raise PipelineError(f"provenance hash mismatch: {rel}")
         if entry.get("status") != "approved" or entry.get("rightsHolder") != "cty41":
             raise PipelineError(f"artifact is not approved project-owned work: {rel}")
-        if entry.get("license") not in {args.from_license, args.to_license}:
-            raise PipelineError(f"artifact has unexpected license: {rel}")
+        if entry.get("license") != args.from_license:
+            if not reconcile or entry.get("license") != args.to_license:
+                raise PipelineError(f"artifact is not currently licensed as {args.from_license}: {rel}")
+            if (rel, digest) not in supporting_declarations:
+                raise PipelineError(f"existing public projection lacks a project-owned supporting declaration: {rel}")
+            for receipt_path in sorted((store.pipeline / "license-receipts").glob("*.json")):
+                existing = load_json(receipt_path)
+                if any(item.get("path") == rel and item.get("sha256") == digest
+                       for item in existing.get("artifacts", []) if isinstance(item, dict)):
+                    raise PipelineError(f"existing public projection is already covered by a license receipt: {rel}")
         artifacts.append({"path": rel, "sha256": digest})
     payload = {
         "artifacts": artifacts,
@@ -2388,6 +3929,8 @@ def relicense_public_artifacts(store: Store, args: argparse.Namespace) -> dict[s
         "reason": args.reason,
         "decidedAt": args.decided_at,
     }
+    if reconcile:
+        payload["reconcilesExistingProjection"] = True
     receipt_id = stable_id("public-artifact-license", payload)
     receipt = {"schemaVersion": 1, "licenseReceiptId": receipt_id, **payload}
     write_json_idempotent(store.record("license-receipts", receipt_id), receipt, immutable=True)
@@ -2397,13 +3940,229 @@ def relicense_public_artifacts(store: Store, args: argparse.Namespace) -> dict[s
     return receipt
 
 
+def prune_missing_public_provenance(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    _iso_timestamp(args.decided_at, "--decided-at")
+    if args.reviewer != "cty41":
+        raise PipelineError("public provenance pruning requires reviewer cty41")
+    manifest_path = store.root / "Tools/public-release/asset-provenance.json"
+    manifest = load_json(manifest_path)
+    by_path = {entry["path"]: entry for entry in manifest["entries"]}
+    removed: list[dict[str, Any]] = []
+    for value in sorted(set(args.path)):
+        rel = store.relative(value)
+        if not rel.startswith("Tools/artworks/"):
+            raise PipelineError(f"only Tools/artworks provenance may be pruned: {rel}")
+        if store.absolute(rel).exists():
+            raise PipelineError(f"cannot prune provenance for an existing artifact: {rel}")
+        entry = by_path.get(rel)
+        if entry is None:
+            raise PipelineError(f"provenance entry is missing: {rel}")
+        removed.append(dict(entry))
+    payload = {
+        "removedEntries": removed,
+        "reviewer": args.reviewer,
+        "reason": args.reason,
+        "decidedAt": args.decided_at,
+    }
+    receipt_id = stable_id("public-provenance-prune", payload)
+    receipt = {"schemaVersion": 1, "provenancePruneId": receipt_id, **payload}
+    write_json_idempotent(store.record("provenance-prunes", receipt_id), receipt, immutable=True)
+    removed_paths = {entry["path"] for entry in removed}
+    manifest["entries"] = [entry for entry in manifest["entries"] if entry["path"] not in removed_paths]
+    write_json_idempotent(manifest_path, manifest)
+    return receipt
+
+
 def _iso_timestamp(value: str, option: str) -> None:
+    if not isinstance(value, str):
+        raise PipelineError(f"{option} must be an ISO-8601 timestamp")
     try:
         parsed = datetime.fromisoformat(value)
     except ValueError as exc:
         raise PipelineError(f"{option} must be an ISO-8601 timestamp") from exc
     if parsed.tzinfo is None:
         raise PipelineError(f"{option} must include a timezone offset")
+
+
+POSE_PROOF_EXEMPTIONS = {"existing-approved-pose", "technical-remediation", "idle-adjustment"}
+POSE_PROOF_GRANDFATHER_CUTOFF = "d48b70ba969386620c0671f5c8ff19ab59d2ab79"
+POSE_PROOF_GRANDFATHER_ENTRIES_ID = "pose-proof-grandfathers-30cb7536777fa90e"
+
+
+def _pose_context_matches(context: Any, visual_moment: Any) -> bool:
+    return (isinstance(context, dict) and set(context) == {"consumer", "phase", "spriteRole"}
+            and all(isinstance(value, str) and value.strip() for value in context.values())
+            and context == visual_moment)
+
+
+def _approved_pose_evidence_matches(store: Store, evidence: list[Any], *, asset_id: str, pose: str,
+                                    direction: str) -> bool:
+    found_approval = False
+    for item in evidence:
+        if not isinstance(item, dict) or set(item) != {"path", "sha256"} or not _artifact_binding_matches(store, item):
+            return False
+        path = Path(item["path"])
+        if path.parent.as_posix() == "Tools/artworks/pipeline/approvals":
+            approval = load_json(store.absolute(item["path"]))
+            if not isinstance(approval, dict):
+                return False
+            approval_payload = {key: value for key, value in approval.items() if key not in {"schemaVersion", "approvalId"}}
+            if (approval.get("approvalId") != path.stem
+                    or approval.get("approvalId") != stable_id("approval", approval_payload)
+                    or approval.get("decision") != "approved" or approval.get("reviewer") != "cty41"):
+                return False
+            attempt_path = store.record("attempts", approval.get("attemptId", ""))
+            if not attempt_path.is_file():
+                return False
+            attempt = load_json(attempt_path)
+            candidate = candidate_artifact(attempt)
+            job_path = store.record("jobs", attempt.get("jobId", ""))
+            if (attempt.get("attemptId") != attempt_path.stem or approval.get("attemptId") != attempt.get("attemptId")
+                    or attempt.get("approvalId") != approval["approvalId"] or attempt.get("state") not in {"approved", "promoted"}
+                    or candidate.get("sha256") != approval.get("candidateSha256") or not _artifact_binding_matches(store, candidate)
+                    or not job_path.is_file()):
+                return False
+            job = load_json(job_path)
+            job_identity_fields = ("contractId", "contractSha256", "prompt", "inputs", "target", "series", "conceptOnly",
+                                   "contractRequirements", "requiresInvocation", "poseGuide", "localReferences")
+            job_payload = {key: job.get(key) for key in job_identity_fields}
+            contract_path = store.record("contracts", job.get("contractId", ""))
+            if (job.get("jobId") != job_path.stem or job.get("jobId") != stable_id("job", job_payload)
+                    or job.get("target") != {"direction": direction, "pose": pose}
+                    or not contract_path.is_file() or job.get("contractSha256") != sha256_file(contract_path)):
+                return False
+            contract = load_json(contract_path)
+            contract_payload = {key: value for key, value in contract.items() if key not in {"schemaVersion", "contractId"}}
+            if (contract.get("contractId") != contract_path.stem
+                    or contract.get("contractId") != stable_id("contract", contract_payload)
+                    or contract.get("assetId") != asset_id or contract.get("pose") != pose
+                    or contract.get("direction") != direction):
+                return False
+            found_approval = True
+    return found_approval
+
+
+def create_pose_proof_exemption(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    if args.reviewer != "cty41" or args.category not in POSE_PROOF_EXEMPTIONS:
+        raise PipelineError("pose proof exemption requires cty41 and a supported category")
+    _iso_timestamp(args.decided_at, "--decided-at")
+    if not all(isinstance(value, str) and value.strip() for value in
+               (args.asset_id, args.pose, args.direction, args.consumer, args.phase, args.sprite_role, args.reason)):
+        raise PipelineError("pose proof exemption fields must be non-empty strings")
+    evidence = []
+    for approval_id in args.approval_id:
+        path = store.record("approvals", approval_id)
+        if not path.is_file():
+            raise PipelineError(f"pose proof exemption approval missing: {approval_id}")
+        evidence.append({"path": store.relative(path), "sha256": sha256_file(path)})
+    if not _approved_pose_evidence_matches(store, evidence, asset_id=args.asset_id, pose=args.pose, direction=args.direction):
+        raise PipelineError("pose proof exemption requires valid cty41 approved evidence")
+    payload = {"assetId": args.asset_id, "pose": args.pose, "direction": args.direction,
+               "visualMoment": {"consumer": args.consumer, "phase": args.phase, "spriteRole": args.sprite_role},
+               "category": args.category, "reviewer": args.reviewer, "reason": args.reason,
+               "decidedAt": args.decided_at, "evidence": evidence}
+    exemption_id = stable_id("pose-proof-exemption", payload)
+    record = {"schemaVersion": 1, "exemptionId": exemption_id, **payload}
+    write_json_idempotent(store.record("pose-proof-exemptions", exemption_id), record, immutable=True)
+    return record
+
+
+def _validate_pose_proof_gate(store: Store, spec: Any, *, expected_asset_id: str | None = None,
+                              expected_pose: str | None = None, expected_direction: str | None = None) -> None:
+    if not isinstance(spec, dict) or spec.get("schemaVersion") != 3:
+        raise PipelineError("new action composition must use schemaVersion 3")
+    context = spec.get("poseProofContext")
+    if not isinstance(context, dict) or set(context) != {"consumer", "phase", "spriteRole"}:
+        raise PipelineError("composition poseProofContext is invalid")
+    decision, exemption = spec.get("poseProofDecision"), spec.get("poseProofExemption")
+    if (decision is None) == (exemption is None):
+        raise PipelineError("composition requires exactly one poseProofDecision or poseProofExemption")
+    if decision is not None:
+        if not isinstance(decision, dict) or set(decision) != {"path", "sha256", "poseProofId"}:
+            raise PipelineError("poseProofDecision binding is invalid")
+        if not _artifact_binding_matches(store, decision):
+            raise PipelineError("poseProofDecision hash binding is invalid")
+        try:
+            card = pose_proof.validate_card(load_json(store.absolute(decision["path"])))
+        except (PipelineError, pose_proof.PoseProofError, OSError, TypeError, ValueError, json.JSONDecodeError) as exc:
+            raise PipelineError(f"poseProofDecision card is invalid: {exc}") from exc
+        if card["poseProofId"] != decision["poseProofId"] or not _pose_context_matches(context, card["visualMoment"]):
+            raise PipelineError("poseProofDecision identity or Visual Moment does not match the composition")
+        if expected_asset_id is not None and card["assetId"] != expected_asset_id:
+            raise PipelineError("poseProofDecision asset does not match the composition or contract")
+        if expected_pose is not None and card["poseId"] != expected_pose:
+            raise PipelineError("poseProofDecision pose does not match the contract")
+        if expected_direction is not None and card["direction"] != expected_direction:
+            raise PipelineError("poseProofDecision direction does not match the contract")
+        historical = card.get("historicalEvidence")
+        if historical and not _artifact_binding_matches(store, historical):
+            raise PipelineError("poseProofDecision historical evidence hash is invalid")
+        return
+    if not isinstance(exemption, dict) or set(exemption) != {"path", "sha256", "exemptionId"} or not _artifact_binding_matches(store, exemption):
+        raise PipelineError("poseProofExemption binding is invalid")
+    receipt = load_json(store.absolute(exemption["path"]))
+    required = {"schemaVersion", "exemptionId", "assetId", "pose", "direction", "visualMoment", "category",
+                "reviewer", "reason", "decidedAt", "evidence"}
+    if (not isinstance(receipt, dict) or set(receipt) != required or receipt.get("schemaVersion") != 1
+            or receipt.get("exemptionId") != exemption.get("exemptionId")
+            or any(not isinstance(receipt.get(key), str) or not receipt[key].strip()
+                   for key in ("assetId", "pose", "direction"))
+            or receipt.get("category") not in POSE_PROOF_EXEMPTIONS or receipt.get("reviewer") != "cty41"
+            or not isinstance(receipt.get("reason"), str) or not receipt["reason"].strip()
+            or not isinstance(receipt.get("evidence"), list) or not receipt["evidence"]
+            or not _pose_context_matches(context, receipt.get("visualMoment"))
+            or stable_id("pose-proof-exemption", {key: value for key, value in receipt.items()
+                                                    if key not in {"schemaVersion", "exemptionId"}}) != receipt.get("exemptionId")
+            or not _approved_pose_evidence_matches(store, receipt["evidence"], asset_id=receipt.get("assetId"),
+                                                    pose=receipt.get("pose"), direction=receipt.get("direction"))):
+        raise PipelineError("poseProofExemption receipt is invalid")
+    _iso_timestamp(receipt.get("decidedAt"), "poseProofExemption.decidedAt")
+    if expected_asset_id is not None and receipt["assetId"] != expected_asset_id:
+        raise PipelineError("poseProofExemption asset does not match the composition or contract")
+    if expected_pose is not None and receipt["pose"] != expected_pose:
+        raise PipelineError("poseProofExemption pose does not match the contract")
+    if expected_direction is not None and receipt["direction"] != expected_direction:
+        raise PipelineError("poseProofExemption direction does not match the contract")
+
+
+def _validated_pose_proof_grandfathers(store: Store) -> dict[str, str]:
+    path = store.pipeline / "pose-proof-grandfathers.json"
+    record = load_json(path)
+    if (not isinstance(record, dict)
+            or set(record) != {"schemaVersion", "cutoffRevision", "authorizedBy", "decidedAt", "reason", "entries"}
+            or record.get("schemaVersion") != 1 or record.get("authorizedBy") != "cty41"
+            or record.get("cutoffRevision") != POSE_PROOF_GRANDFATHER_CUTOFF
+            or not isinstance(record.get("reason"), str) or not record["reason"].strip()
+            or not isinstance(record.get("entries"), list)
+            or stable_id("pose-proof-grandfathers", record.get("entries")) != POSE_PROOF_GRANDFATHER_ENTRIES_ID):
+        raise PipelineError("pose proof grandfather registry is invalid")
+    _iso_timestamp(record.get("decidedAt"), "pose proof grandfather decidedAt")
+    result: dict[str, str] = {}
+    for entry in record["entries"]:
+        if (not isinstance(entry, dict) or set(entry) != {"compositionId", "sha256"}
+                or not isinstance(entry.get("compositionId"), str) or not isinstance(entry.get("sha256"), str)
+                or entry["compositionId"] in result):
+            raise PipelineError("pose proof grandfather registry entry is invalid")
+        target = store.record("compositions", entry["compositionId"])
+        if not target.is_file() or sha256_file(target) != entry["sha256"] or load_json(target).get("schemaVersion") != 2:
+            raise PipelineError("pose proof grandfather registry binding is invalid")
+        result[entry["compositionId"]] = entry["sha256"]
+    referenced = set()
+    for contract_path in (store.pipeline / "contracts").glob("*.json"):
+        contract = load_json(contract_path)
+        ref = contract.get("compositionSpec") or {}
+        if contract.get("kind") == "action_pose" and isinstance(ref.get("compositionId"), str):
+            referenced.add(ref["compositionId"])
+    if set(result) - referenced:
+        raise PipelineError("pose proof grandfather registry contains an unreferenced composition")
+    return result
+
+
+def _composition_is_grandfathered(store: Store, composition_id: str) -> bool:
+    try:
+        return composition_id in _validated_pose_proof_grandfathers(store)
+    except (PipelineError, OSError, TypeError, ValueError, KeyError, AttributeError, json.JSONDecodeError):
+        return False
 
 
 def create_composition(store: Store, args: argparse.Namespace) -> dict[str, Any]:
@@ -2414,9 +4173,47 @@ def create_composition(store: Store, args: argparse.Namespace) -> dict[str, Any]
         raise PipelineError(f"cannot read composition spec: {exc}") from exc
     required = {"canvas", "coreAxis", "footCenter", "weapon", "forbiddenRegions", "equipmentState"}
     if not isinstance(spec, dict) or required - set(spec):
-        raise PipelineError("composition spec is missing required v2 fields")
+        raise PipelineError("composition spec is missing required fields")
+    spec_version = spec.get("schemaVersion", 2)
+    if spec_version not in {2, 3}:
+        raise PipelineError("composition spec schemaVersion must be 2 or 3")
+    if spec_version == 3:
+        _validate_pose_proof_gate(store, spec, expected_asset_id=args.asset_id)
     if spec["equipmentState"].get("scabbard") not in {"present", "absent", "optional"}:
         raise PipelineError("composition equipmentState.scabbard is invalid")
+    if "tipMayBeOccluded" in spec["weapon"] and not isinstance(spec["weapon"]["tipMayBeOccluded"], bool):
+        raise PipelineError("composition weapon.tipMayBeOccluded must be boolean")
+    action_design = spec.get("actionDesign")
+    if action_design is not None:
+        required_action = {"silhouette", "lineOfAction", "centerOfMass", "compressionLine", "counterbalanceLine"}
+        if not isinstance(action_design, dict) or required_action - set(action_design):
+            raise PipelineError("composition actionDesign is missing required fields")
+        width, height = spec["canvas"]
+        def validate_points(name: str, points: Any, minimum: int) -> None:
+            if not isinstance(points, list) or len(points) < minimum:
+                raise PipelineError(f"composition actionDesign.{name} is invalid")
+            for point in points:
+                if (not isinstance(point, list) or len(point) != 2
+                        or not all(isinstance(value, (int, float)) for value in point)
+                        or not (0 <= point[0] < width and 0 <= point[1] < height)):
+                    raise PipelineError(f"composition actionDesign.{name} contains an invalid point")
+        validate_points("silhouette", action_design["silhouette"], 3)
+        validate_points("lineOfAction", action_design["lineOfAction"], 2)
+        validate_points("compressionLine", action_design["compressionLine"], 2)
+        validate_points("counterbalanceLine", action_design["counterbalanceLine"], 2)
+        validate_points("centerOfMass", [action_design["centerOfMass"]], 1)
+        paw_zones = action_design.get("pawContactZones")
+        if paw_zones is not None:
+            required_paws = {"nearHand", "farHand", "nearFoot", "farFoot"}
+            if not isinstance(paw_zones, dict) or set(paw_zones) != required_paws:
+                raise PipelineError("composition actionDesign.pawContactZones must define exactly four paws")
+            for name, points in paw_zones.items():
+                validate_points(f"pawContactZones.{name}", points, 3)
+        elif "supportFoot" in action_design and "driveFoot" in action_design:
+            validate_points("supportFoot", [action_design["supportFoot"]], 1)
+            validate_points("driveFoot", [action_design["driveFoot"]], 1)
+        else:
+            raise PipelineError("composition actionDesign requires pawContactZones or supportFoot/driveFoot")
     anchor_rel = store.relative(args.anchor, must_exist=True)
     payload = {
         "assetId": args.asset_id,
@@ -2425,7 +4222,7 @@ def create_composition(store: Store, args: argparse.Namespace) -> dict[str, Any]
         "anchor": {"path": anchor_rel, "sha256": sha256_file(store.absolute(anchor_rel))},
     }
     composition_id = stable_id("composition", payload)
-    record = {"schemaVersion": 2, "compositionId": composition_id, **payload}
+    record = {"schemaVersion": spec_version, "compositionId": composition_id, **payload}
     write_json_idempotent(store.record("compositions", composition_id), record, immutable=True)
     return record
 
@@ -2437,21 +4234,49 @@ def render_pose_guide(store: Store, args: argparse.Namespace) -> dict[str, Any]:
     width, height = spec.get("canvas", [256, 256])
     image = Image.new("RGBA", (width, height), (0, 0, 0, 0))
     draw = ImageDraw.Draw(image, "RGBA")
+    action_design = spec.get("actionDesign")
+    if action_design:
+        draw.polygon([tuple(point) for point in action_design["silhouette"]], fill=(0, 145, 220, 55), outline=(0, 190, 255, 235))
+        draw.line([tuple(point) for point in action_design["lineOfAction"]], fill=(255, 70, 70, 255), width=5)
+        draw.line([tuple(point) for point in action_design["compressionLine"]], fill=(225, 80, 255, 245), width=3)
+        draw.line([tuple(point) for point in action_design["counterbalanceLine"]], fill=(255, 210, 0, 245), width=3)
+        center = action_design["centerOfMass"]
+        draw.ellipse((center[0] - 6, center[1] - 6, center[0] + 6, center[1] + 6), fill=(255, 70, 70, 180), outline=(255, 255, 255, 255), width=2)
+        paw_zones = action_design.get("pawContactZones")
+        if paw_zones:
+            colors = {
+                "nearHand": (0, 255, 0, 180), "farHand": (0, 200, 0, 180),
+                "nearFoot": (0, 128, 255, 180), "farFoot": (0, 0, 255, 180),
+            }
+            for key, points in paw_zones.items():
+                draw.polygon([tuple(point) for point in points], fill=colors[key], outline=(255, 255, 255, 255))
+        else:
+            for key, color in (("supportFoot", (0, 255, 100, 255)), ("driveFoot", (255, 150, 0, 255))):
+                foot_point = action_design[key]
+                draw.ellipse((foot_point[0] - 5, foot_point[1] - 3, foot_point[0] + 5, foot_point[1] + 3), fill=color, outline=(255, 255, 255, 255), width=1)
     axis = spec["coreAxis"]
     draw.line([tuple(axis["bottom"]), tuple(axis["top"])], fill=(0, 220, 255, 255), width=3)
+    if spec.get("coreBbox"):
+        draw.rounded_rectangle(tuple(spec["coreBbox"]), radius=18, outline=(0, 220, 255, 220), width=3)
     foot = spec["footCenter"]
     draw.ellipse((foot[0] - 3, foot[1] - 3, foot[0] + 3, foot[1] + 3), fill=(255, 220, 0, 255))
     weapon = spec["weapon"]
-    grip = weapon["hiddenGrip"]
-    draw.ellipse((grip[0] - 3, grip[1] - 3, grip[0] + 3, grip[1] + 3), fill=(255, 0, 255, 255))
-    for key, color in (("exitWindow", (0, 255, 0, 150)), ("tipRegion", (255, 128, 0, 150))):
-        draw.rectangle(tuple(weapon[key]), outline=color, width=2)
-    if weapon.get("guardWindow"):
-        draw.rectangle(tuple(weapon["guardWindow"]), outline=(255, 255, 0, 180), width=2)
-    if weapon.get("bladeCenterline"):
-        draw.rectangle(tuple(weapon["bladeCenterline"]), outline=(120, 140, 255, 180), width=1)
-    for region in spec["forbiddenRegions"]:
-        draw.rectangle(tuple(region["rect"]), outline=(255, 0, 0, 220), fill=(255, 0, 0, 40), width=2)
+    if not spec.get("bodyLayer"):
+        grip = weapon.get("hiddenGrip")
+        if grip is not None:
+            draw.ellipse((grip[0] - 3, grip[1] - 3, grip[0] + 3, grip[1] + 3), fill=(255, 0, 255, 255))
+        for key, color in (("exitWindow", (0, 255, 0, 150)), ("tipRegion", (255, 128, 0, 150))):
+            draw.rectangle(tuple(weapon[key]), outline=color, width=2)
+        if weapon.get("guardWindow"):
+            draw.rectangle(tuple(weapon["guardWindow"]), outline=(255, 255, 0, 180), width=2)
+        if weapon.get("bladeCenterline"):
+            draw.rectangle(tuple(weapon["bladeCenterline"]), outline=(120, 140, 255, 180), width=1)
+        if weapon.get("screenAxis"):
+            draw.line([tuple(point) for point in weapon["screenAxis"]], fill=(255, 255, 255, 240), width=3)
+    if spec.get("renderForbiddenRegions", True):
+        for region in spec["forbiddenRegions"]:
+            rect = region["rect"] if isinstance(region, dict) else region
+            draw.rectangle(tuple(rect), outline=(255, 0, 0, 220), fill=(255, 0, 0, 40), width=2)
     output_rel = store.relative(args.output)
     output = store.absolute(output_rel)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -2476,8 +4301,8 @@ def render_pose_guide(store: Store, args: argparse.Namespace) -> dict[str, Any]:
 def compile_prompt(store: Store, args: argparse.Namespace) -> dict[str, Any]:
     job = load_json(store.record("jobs", args.job_id))
     contract = load_json(store.record("contracts", job["contractId"]))
-    if contract.get("schemaVersion") not in {2, 3}:
-        raise PipelineError("compile-prompt requires schema v2 or v3 contract")
+    if contract.get("schemaVersion") not in {2, 3, 4}:
+        raise PipelineError("compile-prompt requires schema v2, v3, or v4 contract")
     composition_ref = contract.get("compositionSpec")
     if not composition_ref:
         raise PipelineError("schema v2 high-risk prompt requires composition spec")
@@ -2491,34 +4316,62 @@ def compile_prompt(store: Store, args: argparse.Namespace) -> dict[str, Any]:
         if feedback_id:
             feedback = load_json(store.record("feedback", feedback_id))
             unresolved.extend(feedback.get("pendingFixes", feedback.get("defects", [])))
-    approved_asset_id = contract.get("approvedAssetId")
-    anchor_path = (contract.get("anchor") or {}).get("path", "")
-    is_tomb_maw_bat = approved_asset_id == "tomb-maw-bat" or "tomb_maw_bat" in anchor_path
-    if contract.get("componentKind") == "death_expression_overlay":
-        invariants = [
-            "transparent expression overlay only", "exactly two compact crossed-eye marks",
-            "no face, coat, ears, mouth, collar, paws, equipment, effects, text, or watermark",
-        ]
-    elif is_tomb_maw_bat:
-        invariants = [
-            "near-round spherical flying core locked to the approved bat anchor",
-            "exactly two pointed ears and exactly two membrane wings attached to the core",
-            "no paws, arms, legs, humanoid torso, or tail",
-            "dark plum body, red wing membranes, yellow eyes, and ivory fangs",
-            "preserve the approved hover height and virtual tile landing axis",
-        ]
+    brief_context = []
+    forbidden = []
+    if contract.get("schemaVersion") == 4:
+        brief_ref = contract.get("briefSpec") or {}
+        brief_path = store.absolute(brief_ref.get("path", ""), must_exist=True)
+        if not bound_input_hash_matches(brief_path, brief_ref.get("sha256")):
+            raise PipelineError("v4 brief hash mismatch during prompt compilation")
+        brief = load_json(brief_path)
+        invariants = brief.get("identityInvariants")
+        if not isinstance(invariants, list) or not invariants or not all(isinstance(item, str) for item in invariants):
+            raise PipelineError("v4 prompt requires non-empty brief identityInvariants")
+        forbidden = brief.get("forbidden", [])
+        if not isinstance(forbidden, list) or not all(isinstance(item, str) for item in forbidden):
+            raise PipelineError("v4 brief forbidden list is invalid")
+        responsibilities = {item.get("role"): item for item in brief.get("referenceResponsibilities", []) if isinstance(item, dict)}
+        reference_lines = []
+        for item in job["inputs"]:
+            responsibility = responsibilities.get(item["role"])
+            if not responsibility:
+                raise PipelineError(f"v4 brief is missing responsibility for job input role: {item['role']}")
+            if responsibility.get("path") != item["path"] or responsibility.get("sha256") != item["sha256"]:
+                raise PipelineError(f"v4 brief responsibility binding mismatch: {item['role']}")
+            reference_lines.append(f"- {item['role']}: {responsibility.get('responsibility', '').strip()} [{item['path']} @ {item['sha256']}]")
+        brief_context = [f"Purpose: {brief.get('purpose', '')}", "First read: " + ", ".join(brief.get("firstRead", []))]
     else:
-        invariants = [
-            "equal-width rigid capsule body", "exactly four paws directly attached to the body",
-            "no arms and no legs between paws and body",
-            "gray-white forehead blaze and heterochromic ear", "half-body alternate coat color",
-        ]
+        approved_asset_id = contract.get("approvedAssetId")
+        anchor_path = (contract.get("anchor") or {}).get("path", "")
+        is_tomb_maw_bat = approved_asset_id == "tomb-maw-bat" or "tomb_maw_bat" in anchor_path
+        if contract.get("componentKind") == "death_expression_overlay":
+            invariants = [
+                "transparent expression overlay only", "exactly two compact crossed-eye marks",
+                "no face, coat, ears, mouth, collar, paws, equipment, effects, text, or watermark",
+            ]
+        elif is_tomb_maw_bat:
+            invariants = [
+                "near-round spherical flying core locked to the approved bat anchor",
+                "exactly two pointed ears and exactly two membrane wings attached to the core",
+                "no paws, arms, legs, humanoid torso, or tail",
+                "dark plum body, red wing membranes, yellow eyes, and ivory fangs",
+                "preserve the approved hover height and virtual tile landing axis",
+            ]
+        else:
+            invariants = [
+                "equal-width rigid capsule body", "exactly four paws directly attached to the body",
+                "no arms and no legs between paws and body",
+                "gray-white forehead blaze and heterochromic ear", "half-body alternate coat color",
+            ]
+        reference_lines = [f"- {item['role']}: {item['path']} @ {item['sha256']}" for item in job["inputs"]]
     if composition["spec"]["equipmentState"].get("scabbard") == "absent":
         invariants.append("no scabbard anywhere")
     sections = [
         "# Deterministic ImageGen Task Packet",
+        "## Brief intent\n" + ("\n".join(brief_context) or "legacy contract"),
         "## Frozen invariants\n" + "\n".join(f"- {item}" for item in invariants),
-        "## Reference responsibilities\n" + "\n".join(f"- {item['role']}: {item['path']} @ {item['sha256']}" for item in job["inputs"]),
+        "## Forbidden\n" + ("\n".join(f"- {item}" for item in forbidden) or "- none beyond the frozen contract"),
+        "## Reference responsibilities\n" + "\n".join(reference_lines),
         "## Composition\n```json\n" + json.dumps(composition["spec"], ensure_ascii=False, sort_keys=True, indent=2) + "\n```",
         "## Unresolved fixes\n" + ("\n".join(f"- {item}" for item in unresolved) or "- none"),
         "## Base prompt\n" + store.absolute(job["prompt"]["path"]).read_text(encoding="utf-8"),
@@ -2658,14 +4511,23 @@ def record_advisory_review(store: Store, args: argparse.Namespace) -> dict[str, 
 
 
 def register_supporting_artifact(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    if getattr(args, "reviewer", None) != "cty41":
+        raise PipelineError("supporting artifact registration requires reviewer cty41")
+    if args.role not in {"review-derived", "historical-review-only", "pose-guide", "semantic-mask", "supporting-derived"}:
+        raise PipelineError("unsupported supporting artifact role")
+    rights = {"rightsHolder": "cty41", "license": "project-owned",
+              "provenance": "cty41-direct-supporting-artifact-declaration"}
     rel = store.relative(args.path, must_exist=True)
+    if not rel.startswith("Tools/artworks/") or rel.startswith("Tools/artworks/pipeline/"):
+        raise PipelineError("supporting artifact must be a non-pipeline Tools/artworks file")
     artifact = {"path": rel, "sha256": sha256_file(store.absolute(rel))}
-    payload = {"artifact": artifact, "role": args.role, "note": args.note}
+    payload = {"artifact": artifact, "role": args.role, "note": args.note, "reviewer": "cty41",
+               "rights": rights}
     record_id = stable_id("supporting-artifact", payload)
-    record = {"schemaVersion": 2, "supportingArtifactId": record_id, **payload}
+    record = {"schemaVersion": 3, "supportingArtifactId": record_id, **payload}
     write_json_idempotent(store.record("supporting-artifacts", record_id), record, immutable=True)
-    if Path(rel).suffix.lower() in {".png", ".svg"}:
-        register_public_artifacts(store, [artifact], "project-owned-supporting-derived")
+    if Path(rel).suffix.lower() in {".png", ".svg", ".json"}:
+        update_provenance(store, [artifact], {"rights": rights})
     return record
 
 
@@ -2725,7 +4587,27 @@ def register_runtime_copy(store: Store, args: argparse.Namespace) -> dict[str, A
     source_entry = next((entry for entry in manifest["entries"] if entry.get("path") == source["path"]), None)
     if not source_entry or source_entry.get("status") != "approved":
         raise PipelineError("runtime copy source must have approved public provenance")
-    register_public_artifacts(store, [target], "project-owned-migrated-runtime-art")
+    if not source_entry.get("rightsHolder") or not source_entry.get("license"):
+        raise PipelineError("runtime copy source provenance must bind rights holder and license")
+    target_entry = {
+        "path": target["path"], "sha256": target["sha256"], "status": "approved",
+        "rightsHolder": source_entry["rightsHolder"], "license": source_entry["license"],
+        "provenance": "project-owned-migrated-runtime-art",
+    }
+    existing = next((entry for entry in manifest["entries"] if entry.get("path") == target["path"]), None)
+    if existing and existing != target_entry:
+        normalizable_runtime_copy = (
+            existing.get("sha256") == target["sha256"]
+            and existing.get("status") == "approved"
+            and existing.get("provenance") == "project-owned-migrated-runtime-art"
+        )
+        if not normalizable_runtime_copy:
+            raise PipelineError(f"conflicting provenance entry: {target['path']}")
+        existing.clear()
+        existing.update(target_entry)
+    elif not existing:
+        manifest["entries"].append(target_entry)
+    write_json_idempotent(store.root / "Tools/public-release/asset-provenance.json", manifest)
     return {"schemaVersion": 1, "source": source, "target": target}
 
 
@@ -2843,64 +4725,260 @@ def adopt_reviewed_sprite(store: Store, args: argparse.Namespace) -> dict[str, A
     return {"schemaVersion": 2, "adoption": adoption, "job": job, "attempt": attempt}
 
 
+def _validated_generation_lineage(store: Store, attempt: dict[str, Any]) -> dict[str, dict[str, str]]:
+    invocation_id, delivery_id = attempt.get("generationInvocationId"), attempt.get("generationDeliveryId")
+    if not invocation_id or not delivery_id:
+        raise PipelineError("source attempt requires its original generation invocation and delivery")
+    invocation_path = store.record("generation-invocations", invocation_id)
+    delivery_path = store.record("generation-deliveries", delivery_id)
+    if not invocation_path.is_file() or not delivery_path.is_file():
+        raise PipelineError("source generation invocation or delivery is missing")
+    invocation, delivery = load_json(invocation_path), load_json(delivery_path)
+    invocation_payload = {key: invocation.get(key) for key in ("attemptId", "compiledPromptId", "compiledPromptSha256", "provider", "startedAt")}
+    delivery_payload = {key: delivery.get(key) for key in ("invocationId", "attemptId", "rawSha256")}
+    raw = attempt.get("artifacts", {}).get("raw")
+    if (stable_id("generation-invocation", invocation_payload) != invocation_id
+            or stable_id("generation-delivery", delivery_payload) != delivery_id
+            or invocation.get("attemptId") != attempt.get("attemptId")
+            or delivery.get("invocationId") != invocation_id or delivery.get("attemptId") != attempt.get("attemptId")
+            or not _artifact_binding_matches(store, raw) or delivery.get("rawSha256") != raw.get("sha256")):
+        raise PipelineError("source generation invocation/delivery lineage is invalid")
+    return {
+        "sourceAttempt": {"path": store.relative(store.record("attempts", attempt["attemptId"])),
+                          "sha256": sha256_file(store.record("attempts", attempt["attemptId"]))},
+        "sourceJob": {"path": store.relative(store.record("jobs", attempt["jobId"])),
+                      "sha256": sha256_file(store.record("jobs", attempt["jobId"]))},
+        "generationInvocation": {"path": store.relative(invocation_path), "sha256": sha256_file(invocation_path)},
+        "generationDelivery": {"path": store.relative(delivery_path), "sha256": sha256_file(delivery_path)},
+    }
+
+
+def _validate_recontract_processing(store: Store, attempt: dict[str, Any], candidate: dict[str, str], processing: Any,
+                                    remediations: dict[tuple[str, str], str] | None = None) -> None:
+    if isinstance(processing, dict) and processing.get("schemaVersion") == 2:
+        required = {"schemaVersion", "operation", "sourceAttemptId", "sourcePreparedSha256",
+                    "outputSha256", "maxAlpha", "pixels"}
+        source = attempt.get("artifacts", {}).get("prepared", {})
+        if (set(processing) != required
+                or processing.get("operation") != "deterministic-exact-chroma-pixel-cleanup"
+                or processing.get("sourceAttemptId") != attempt.get("attemptId")
+                or processing.get("sourcePreparedSha256") != source.get("sha256")
+                or processing.get("outputSha256") != candidate.get("sha256")
+                or not (_effective_artifact_binding_matches(store, source, remediations or {})
+                        if remediations is not None else _artifact_binding_matches(store, source))
+                or not (_effective_artifact_binding_matches(store, candidate, remediations or {})
+                        if remediations is not None else _artifact_binding_matches(store, candidate))):
+            raise PipelineError("exact chroma processing schema or source/output binding is invalid")
+        max_alpha, changes = processing["maxAlpha"], processing["pixels"]
+        if type(max_alpha) is not int or not 1 <= max_alpha <= 3 or not isinstance(changes, list) or len(changes) != 2:
+            raise PipelineError("exact chroma processing requires two pixels and maxAlpha between 1 and 3")
+        with Image.open(store.absolute(source["path"])) as opened_original, Image.open(store.absolute(candidate["path"])) as output:
+            if opened_original.mode != "RGBA" or output.mode != "RGBA" or opened_original.size != output.size:
+                raise PipelineError("exact chroma processing requires equal native RGBA dimensions")
+            original = opened_original.copy()
+            if remediations is not None and sha256_file(store.absolute(source["path"])) != source.get("sha256"):
+                matching = [load_json(receipt_path) for receipt_path in (store.pipeline / "exact-chroma-remediations").glob("*.json")
+                            if any(item.get("path") == source.get("path") and item.get("beforeSha256") == source.get("sha256")
+                                   for item in load_json(receipt_path).get("artifacts", []))]
+                if len(matching) != 1:
+                    raise PipelineError("exact chroma processing cannot restore remediated source")
+                artifact = next(item for item in matching[0]["artifacts"] if item["path"] == source["path"])
+                for pixel in artifact["pixels"]:
+                    original.putpixel((pixel["x"], pixel["y"]), tuple(pixel["rgba"]))
+            expected = original.copy()
+            seen = set()
+            for change in changes:
+                if not isinstance(change, dict) or set(change) != {"x", "y", "rgba"}:
+                    raise PipelineError("exact chroma processing pixel declaration is invalid")
+                x, y, rgba = change["x"], change["y"], change["rgba"]
+                if (type(x) is not int or type(y) is not int
+                        or not 0 <= x < original.width or not 0 <= y < original.height
+                        or (x, y) in seen or not isinstance(rgba, list) or len(rgba) != 4
+                        or any(type(channel) is not int for channel in rgba)
+                        or tuple(rgba[:3]) not in {(0, 255, 0), (255, 0, 255)}
+                        or not 0 < rgba[3] <= max_alpha
+                        or original.getpixel((x, y)) != tuple(rgba)):
+                    raise PipelineError("exact chroma processing may only clear distinct bound low-alpha exact key pixels")
+                seen.add((x, y))
+                expected.putpixel((x, y), (0, 0, 0, 0))
+            if pixel_data(expected) != pixel_data(output):
+                raise PipelineError("exact chroma candidate is not the declared two-pixel replay output")
+        return
+    if not isinstance(processing, dict) or processing.get("schemaVersion") != 1:
+        raise PipelineError("reviewed recontract processing must use supported schemaVersion 1 or 2")
+    if (processing.get("operation") != "deterministic-green-fringe-cleanup"
+            or processing.get("sourceAttemptId") != attempt.get("attemptId")
+            or processing.get("sourcePreparedSha256") != attempt.get("artifacts", {}).get("prepared", {}).get("sha256")
+            or processing.get("transparentRule") != "alpha=0 becomes transparent black; otherwise green>=64 and green>red+15 and green>blue+15 becomes transparent black"
+            or processing.get("decontaminationRule") != "remaining green channel is capped at max(red,blue)+4"
+            or processing.get("geometryChange") != "none other than removal of chroma/fringe pixels"):
+        raise PipelineError("reviewed recontract processing schema or source binding is invalid")
+    source_path = store.absolute(attempt["artifacts"]["prepared"]["path"])
+    candidate_path = store.absolute(candidate["path"])
+    with Image.open(source_path) as source_opened, Image.open(candidate_path) as candidate_opened:
+        source_image, candidate_image = source_opened.convert("RGBA"), candidate_opened.convert("RGBA")
+        if source_image.size != candidate_image.size:
+            raise PipelineError("reviewed recontract processing changed image dimensions")
+        expected = []
+        for red, green, blue, alpha in pixel_data(source_image):
+            if alpha == 0 or (green >= 64 and green > red + 15 and green > blue + 15):
+                expected.append((0, 0, 0, 0))
+            else:
+                expected.append((red, min(green, max(red, blue) + 4), blue, alpha))
+        if expected != pixel_data(candidate_image):
+            raise PipelineError("reviewed recontract candidate is not the declared deterministic processing output")
+
+
+def _bind_recontract_equipment_report(store: Store, attempt: dict[str, Any], contract: dict[str, Any]) -> None:
+    """Measure an exact processed master without resizing or rewriting its pixels."""
+    spec = contract["equipmentProductionSpec"]
+    profile = _equipment_style_profile(store, contract)
+    candidate = attempt["artifacts"]["prepared"]
+    candidate_path = store.absolute(candidate["path"], must_exist=True)
+    technical, hard_issues = inspect_technical(candidate_path, contract["kind"],
+        expected_master_size=tuple(contract.get("canvasSpec", {}).get("masterSize", [256, 256])))
+    with Image.open(candidate_path) as opened:
+        image = opened.convert("RGBA")
+    bbox = image.getchannel("A").getbbox()
+    metrics = _interior_style_metrics(image)
+    metrics.update({"visibleBbox": list(bbox) if bbox else None,
+                    "visibleSize": [bbox[2] - bbox[0], bbox[3] - bbox[1]] if bbox else None,
+                    "baseline": bbox[3] - 1 if bbox else None})
+    minimum, maximum = spec["visibleHeightRange"]
+    if not bbox or not minimum <= bbox[3] - bbox[1] <= maximum:
+        hard_issues.append("equipment_visible_height_out_of_range")
+    if not bbox or bbox[3] - 1 != int(profile.get("baseline", 236)):
+        hard_issues.append("equipment_baseline_mismatch")
+    if hard_issues:
+        raise PipelineError("recontract equipment technical gate failed: " + ", ".join(sorted(set(hard_issues))))
+    preview_image = clean_exact_chroma(make_preview(image))
+    preview_path = store.pipeline / "artifacts" / attempt["jobId"] / attempt["attemptId"] / "equipment-preview.png"
+    preview_path.parent.mkdir(parents=True, exist_ok=True)
+    if preview_path.exists():
+        with Image.open(preview_path) as existing:
+            if existing.mode != "RGBA" or existing.size != preview_image.size or existing.tobytes() != preview_image.tobytes():
+                raise PipelineError("recontract equipment preview collision")
+    else:
+        preview_image.save(preview_path, format="PNG", optimize=False, compress_level=9)
+    preview = _bound_artifact(store, str(preview_path))
+    _, preview_issues = inspect_technical(preview_path, contract["kind"], require_master_canvas=False)
+    if preview_issues:
+        raise PipelineError("recontract equipment preview technical gate failed: " + ", ".join(preview_issues))
+    limits = profile.get("hardGates", {})
+    advisories = []
+    if metrics["interiorColorBins"] > int(limits.get("maxInteriorColorBins", 40)):
+        advisories.append("equipment_palette_complexity_review")
+    if metrics["smoothGradientRatio"] > float(limits.get("maxSmoothGradientRatio", 0.12)):
+        advisories.append("equipment_smooth_gradient_review")
+    payload = {"contractId": contract["contractId"],
+               "contractSha256": sha256_file(store.record("contracts", contract["contractId"])),
+               "profile": {"path": spec["profilePath"], "sha256": spec["profileSha256"]},
+               "source": candidate, "candidate": candidate, "preview": preview, "metrics": metrics,
+               "processingMode": "exact-reviewed-recontract-no-resize", "quantized": False,
+               "reviewedRecontractId": attempt["reviewedRecontractId"], "technical": technical,
+               "hardIssues": [], "advisories": advisories, "issues": [], "passed": True}
+    report_id = stable_id("equipment-style-report", payload)
+    report_path = store.record("style-reports", report_id)
+    write_json_idempotent(report_path, {"schemaVersion": 1, "styleReportId": report_id, **payload}, immutable=True)
+    update_provenance(store, [candidate, preview], contract)
+    attempt["artifacts"]["equipmentPreview"] = preview
+    attempt["equipmentStyleReportId"] = report_id
+    attempt["report"] = {"path": store.relative(report_path), "sha256": sha256_file(report_path)}
+
+
+def recontract_reviewed_attempt(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    source_attempt = load_json(store.record("attempts", args.source_attempt_id))
+    source_job = load_json(store.record("jobs", source_attempt["jobId"]))
+    target_contract_path = store.record("contracts", args.contract_id)
+    target_contract = load_json(target_contract_path)
+    if args.reviewer != "cty41":
+        raise PipelineError("reviewed recontract reviewer must be cty41")
+    _iso_timestamp(args.accepted_at, "--accepted-at")
+    feedback_id = source_attempt.get("feedbackId")
+    if not feedback_id:
+        raise PipelineError("reviewed recontract requires human-selected source feedback")
+    feedback = load_json(store.record("feedback", feedback_id))
+    if feedback.get("authorType") != "human" or feedback.get("verdict") != "selected" or feedback.get("reviewer") != "cty41":
+        raise PipelineError("reviewed recontract source must be explicitly selected by cty41")
+    source_lineage = _validated_generation_lineage(store, source_attempt)
+    candidate_override = getattr(args, "candidate", None)
+    candidate = (_bound_artifact(store, candidate_override) if candidate_override
+                 else source_attempt.get("artifacts", {}).get("prepared"))
+    if not candidate or not _artifact_binding_matches(store, candidate):
+        raise PipelineError("reviewed recontract requires a hash-bound prepared source candidate")
+    processing = None
+    if candidate_override:
+        processing_path = getattr(args, "processing", None)
+        if not processing_path:
+            raise PipelineError("reviewed recontract candidate override requires --processing")
+        processing_rel = store.relative(processing_path, must_exist=True)
+        parameters = load_json(store.absolute(processing_rel))
+        _validate_recontract_processing(store, source_attempt, candidate, parameters)
+        processing = {"path": processing_rel, "sha256": sha256_file(store.absolute(processing_rel)),
+                      "parameters": parameters}
+    payload = {
+        "sourceAttemptId": source_attempt["attemptId"],
+        "sourceJobId": source_job["jobId"],
+        "sourceContractId": source_job["contractId"],
+        "generationInvocationId": source_attempt.get("generationInvocationId"),
+        "generationDeliveryId": source_attempt.get("generationDeliveryId"),
+        "sourceLineage": source_lineage,
+        "candidate": candidate,
+        "processing": processing,
+        "targetContractId": args.contract_id,
+        "targetContractSha256": sha256_file(target_contract_path),
+        "reviewer": args.reviewer,
+        "reason": args.reason,
+        "acceptedAt": args.accepted_at,
+    }
+    receipt_id = stable_id("reviewed-recontract", payload)
+    receipt = {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "reviewedRecontractId": receipt_id, **payload}
+    job_payload = {"contractId": args.contract_id, "reviewedRecontractId": receipt_id, "sourceMode": "reviewed_recontract"}
+    job_id = stable_id("job", job_payload)
+    job = {
+        "schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "jobId": job_id, "state": "ready",
+        "contractId": args.contract_id, "contractSha256": sha256_file(target_contract_path),
+        "prompt": None, "inputs": [candidate],
+        "target": {"direction": target_contract["direction"], "pose": target_contract["pose"]},
+        "series": None, "conceptOnly": False, "contractRequirements": None,
+        "requiresInvocation": False, "sourceMode": "reviewed_recontract", "reviewedRecontractId": receipt_id,
+    }
+    attempt_id = f"{job_id}-a001"
+    artifacts = {key: value for key, value in source_attempt.get("artifacts", {}).items()
+                 if key in {"source", "raw"}}
+    artifacts["prepared"] = candidate
+    attempt = {
+        "schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "attemptId": attempt_id, "jobId": job_id,
+        "ordinal": 1, "generationRound": source_attempt.get("generationRound"),
+        "parentAttemptId": None, "retryFeedbackId": None, "promptDelta": None,
+        "technicalRemediation": False, "state": "prepared", "sourceMode": "reviewed_recontract",
+        "reviewedRecontractId": receipt_id, "sourceAttemptId": source_attempt["attemptId"],
+        "generationInvocationId": source_attempt.get("generationInvocationId"),
+        "generationDeliveryId": source_attempt.get("generationDeliveryId"),
+        "artifacts": artifacts, "calibration": None,
+        "report": None, "approvalId": None, "feedbackId": None,
+    }
+    if target_contract.get("equipmentProductionSpec"):
+        _bind_recontract_equipment_report(store, attempt, target_contract)
+    write_json_idempotent(store.record("reviewed-recontracts", receipt_id), receipt, immutable=True)
+    write_json_idempotent(store.record("jobs", job_id), job, immutable=True)
+    write_json_idempotent(store.record("attempts", attempt_id), attempt, immutable=True)
+    return {"schemaVersion": ART_DIRECTION_SCHEMA_VERSION, "receipt": receipt, "job": job, "attempt": attempt}
+
+
 def _component_contract(store: Store, contract_id_value: str, kind: str | None = None) -> dict[str, Any]:
     contract = load_json(store.record("contracts", contract_id_value))
-    if contract.get("schemaVersion") != 3 or contract.get("assetRole") != "component":
-        raise PipelineError("operation requires a schema v3 component contract")
+    if contract.get("schemaVersion") not in {3, ART_DIRECTION_SCHEMA_VERSION} or contract.get("assetRole") != "component":
+        raise PipelineError("operation requires a schema v3/v4 component contract")
     if kind and contract.get("componentKind") != kind:
         raise PipelineError(f"component contract must have kind {kind}")
     return contract
 
 
 def migrate_component(store: Store, args: argparse.Namespace) -> dict[str, Any]:
-    contract = _component_contract(store, args.contract_id)
-    if contract.get("sourceMode") != "pre_v3_import":
-        raise PipelineError("migrate-component requires sourceMode pre_v3_import")
-    _iso_timestamp(args.accepted_at, "--accepted-at")
-    source_rel = store.relative(args.source, must_exist=True)
-    prepared_rel = store.relative(args.prepared, must_exist=True)
-    payload = {
-        "contractId": args.contract_id,
-        "contractSha256": sha256_file(store.record("contracts", args.contract_id)),
-        "source": {"path": source_rel, "sha256": sha256_file(store.absolute(source_rel))},
-        "prepared": {"path": prepared_rel, "sha256": sha256_file(store.absolute(prepared_rel))},
-        "processing": json.loads(store.absolute(store.relative(args.processing, must_exist=True)).read_text(encoding="utf-8")),
-        "reviewer": args.reviewer,
-        "reason": args.reason,
-        "acceptedAt": args.accepted_at,
-        "invocationStatus": "missing-pre-v3",
-    }
-    migration_id = stable_id("component-migration", payload)
-    receipt = {"schemaVersion": 3, "componentMigrationId": migration_id, **payload}
-    write_json_idempotent(store.record("component-migrations", migration_id), receipt, immutable=True)
-    job_payload = {"contractId": args.contract_id, "migrationId": migration_id}
-    job_id = stable_id("job", job_payload)
-    job = {
-        "schemaVersion": 3, "jobId": job_id, "state": "ready",
-        "contractId": args.contract_id, "contractSha256": payload["contractSha256"],
-        "prompt": None, "inputs": [], "target": {"direction": contract["direction"], "pose": contract["pose"]},
-        "series": None, "conceptOnly": False, "contractRequirements": None,
-        "requiresInvocation": False, "sourceMode": "pre_v3_import",
-    }
-    write_json_idempotent(store.record("jobs", job_id), job, immutable=True)
-    attempt_id = f"{job_id}-a001"
-    raw_dst = store.pipeline / "artifacts" / job_id / attempt_id / "raw.png"
-    prepared_dst = store.pipeline / "artifacts" / job_id / attempt_id / "prepared.png"
-    attempt = {
-        "schemaVersion": 3, "attemptId": attempt_id, "jobId": job_id, "ordinal": 1,
-        "parentAttemptId": None, "retryFeedbackId": None, "promptDelta": None,
-        "technicalRemediation": False, "state": "prepared",
-        "artifacts": {
-            "source": payload["source"],
-            "raw": copy_bound(store, source_rel, store.relative(raw_dst)),
-            "prepared": copy_bound(store, prepared_rel, store.relative(prepared_dst)),
-        },
-        "report": None, "approvalId": None, "feedbackId": None,
-        "componentMigrationId": migration_id, "sourceMode": "pre_v3_import",
-    }
-    write_json_idempotent(store.record("attempts", attempt_id), attempt)
-    register_public_artifacts(store, list(attempt["artifacts"].values()), "project-owned-gpt-generated-or-derived")
-    return {"schemaVersion": 3, "migration": receipt, "job": job, "attempt": attempt}
+    if args.reviewer != "cty41":
+        raise PipelineError("pre-v3 component migration requires reviewer cty41")
+    raise PipelineError("migrate-component is retired after the audited pre-v3 migration closeout; use generated or derived components")
 
 
 def derive_component(store: Store, args: argparse.Namespace) -> dict[str, Any]:
@@ -3200,8 +5278,8 @@ def _validated_assembly_spec(store: Store, spec_path: str) -> tuple[dict[str, An
     if not isinstance(raw, dict) or set(raw) != {"assetId", "contractId", "canvas", "layers"}:
         raise PipelineError("assembly spec requires exactly assetId, contractId, canvas, and layers")
     contract = load_json(store.record("contracts", raw["contractId"]))
-    if contract.get("schemaVersion") != 3 or contract.get("assetRole") != "assembled_sprite":
-        raise PipelineError("assembly requires a schema v3 assembled_sprite contract")
+    if contract.get("schemaVersion") not in {3, ART_DIRECTION_SCHEMA_VERSION} or contract.get("assetRole") != "assembled_sprite":
+        raise PipelineError("assembly requires a schema v3/v4 assembled_sprite contract")
     if raw["assetId"] != contract["assetId"]:
         raise PipelineError("assembly assetId must match contract")
     if raw["canvas"] != [256, 256]:
@@ -3436,7 +5514,9 @@ def promote(store: Store, args: argparse.Namespace) -> dict[str, Any]:
         if job.get("conceptOnly") or bound_pose["state"] == "provisional" or bound_series.get("provisionalAnchorAttemptId") == attempt["attemptId"]:
             raise PipelineError("provisional series artwork cannot be promoted")
     contract = load_json(store.record("contracts", job["contractId"]))
-    if contract.get("equipmentProductionSpec"):
+    if contract.get("schemaVersion") == ART_DIRECTION_SCHEMA_VERSION:
+        _validate_art_direction_approval(store, attempt, contract)
+    elif contract.get("equipmentProductionSpec"):
         verdict_id = attempt.get("equipmentStyleVerdictId")
         verdict = load_json(store.record("equipment-style-verdicts", verdict_id or "")) if verdict_id else None
         if not verdict or verdict.get("decision") != "approved" or verdict.get("candidateSha256") != candidate["sha256"]:
@@ -3558,8 +5638,492 @@ def migrate_legacy(store: Store, _args: argparse.Namespace) -> dict[str, Any]:
     return record
 
 
+def _validated_exact_chroma_remediations(store: Store, issues: list[str]) -> dict[tuple[str, str], str]:
+    remediations: dict[tuple[str, str], str] = {}
+    for path in sorted((store.pipeline / "exact-chroma-remediations").glob("*.json")):
+        try:
+            record = load_json(path)
+            payload = {key: value for key, value in record.items() if key not in {"schemaVersion", "exactChromaRemediationId"}}
+            attempt_path = store.record("attempts", record.get("sourceAttemptId", ""))
+            approval_ref = record.get("approval", {})
+            attempt_ref = record.get("sourceAttempt", {})
+            valid = (record.get("schemaVersion") == 1
+                     and record.get("exactChromaRemediationId") == path.stem == stable_id("exact-chroma-remediation", payload)
+                     and record.get("reviewer") == "cty41"
+                     and record.get("operation") == "deterministic-low-alpha-exact-chroma-cleanup"
+                     and attempt_path.is_file() and _artifact_binding_matches(store, attempt_ref)
+                     and attempt_ref.get("path") == store.relative(attempt_path)
+                     and _artifact_binding_matches(store, approval_ref))
+            attempt = load_json(attempt_path) if valid else {}
+            approval = load_json(store.absolute(approval_ref.get("path", ""))) if valid else {}
+            prepared = attempt.get("artifacts", {}).get("prepared", {})
+            promoted = attempt.get("artifacts", {}).get("promoted", {}).get("master", {})
+            bound = {artifact.get("path"): artifact.get("sha256") for artifact in (prepared, promoted) if artifact.get("path")}
+            artifacts = record.get("artifacts", [])
+            if not isinstance(artifacts, list) or not all(isinstance(item, dict) for item in artifacts):
+                raise PipelineError("invalid exact chroma remediation artifacts")
+            valid = (valid and attempt.get("state") == "promoted" and attempt.get("approvalId") == approval.get("approvalId")
+                     and approval.get("reviewer") == "cty41" and approval.get("decision") == "approved"
+                     and {item.get("path") for item in artifacts} == set(bound))
+            for artifact in artifacts:
+                pixels = artifact.get("pixels", [])
+                if not isinstance(pixels, list) or not all(isinstance(pixel, dict) for pixel in pixels):
+                    raise PipelineError("invalid exact chroma remediation pixels")
+                target = store.absolute(artifact.get("path", ""))
+                valid = (valid and artifact.get("beforeSha256") == bound.get(artifact.get("path"))
+                         and target.is_file() and sha256_file(target) == artifact.get("afterSha256")
+                         and 0 < len(pixels) <= 16
+                         and len({(pixel.get("x"), pixel.get("y")) for pixel in pixels}) == len(pixels)
+                         and all(type(pixel.get("x")) is int and type(pixel.get("y")) is int
+                                 and isinstance(pixel.get("rgba"), list) and len(pixel["rgba"]) == 4
+                                 and pixel["rgba"][:3] in ([0, 255, 0], [255, 0, 255])
+                                 and 0 < pixel["rgba"][3] <= 4 for pixel in pixels))
+                if valid:
+                    with Image.open(target) as opened:
+                        restored = opened.copy()
+                    valid = all(0 <= pixel["x"] < restored.width and 0 <= pixel["y"] < restored.height for pixel in pixels)
+                    valid = valid and all(restored.getpixel((pixel["x"], pixel["y"])) == (0, 0, 0, 0) for pixel in pixels)
+                    if valid:
+                        for pixel in pixels:
+                            restored.putpixel((pixel["x"], pixel["y"]), tuple(pixel["rgba"]))
+                        reconstructed = io.BytesIO()
+                        restored.save(reconstructed, format="PNG", optimize=False, compress_level=9)
+                        valid = hashlib.sha256(reconstructed.getvalue()).hexdigest() == artifact.get("beforeSha256")
+            if not valid:
+                raise PipelineError("invalid exact chroma remediation")
+            for artifact in artifacts:
+                remediations[(artifact["path"], artifact["beforeSha256"])] = artifact["afterSha256"]
+        except (PipelineError, OSError, KeyError, TypeError, AttributeError, ValueError, json.JSONDecodeError):
+            issues.append(f"exact_chroma_remediation_invalid:{path.stem}")
+    return remediations
+
+
+def _validated_relicensed_paths(store: Store, issues: list[str],
+                                remediations: dict[tuple[str, str], str]) -> set[str]:
+    relicensed: set[str] = set()
+    manifest_path = store.root / "Tools/public-release/asset-provenance.json"
+    manifest = load_json(manifest_path)
+    by_path = {entry.get("path"): entry for entry in manifest.get("entries", [])}
+    for path in sorted((store.pipeline / "license-receipts").glob("*.json")):
+        try:
+            record = load_json(path)
+            payload = {key: value for key, value in record.items() if key not in {"schemaVersion", "licenseReceiptId"}}
+            artifacts = record.get("artifacts", [])
+            if not isinstance(artifacts, list) or not artifacts or not all(isinstance(item, dict) for item in artifacts):
+                raise PipelineError("invalid public artifact license receipt artifacts")
+            valid = (record.get("schemaVersion") == 1
+                     and record.get("licenseReceiptId") == path.stem == stable_id("public-artifact-license", payload)
+                     and record.get("reviewer") == "cty41" and record.get("fromLicense") == "project-owned"
+                     and record.get("toLicense") == "CC-BY-4.0")
+            for artifact in artifacts:
+                entry = by_path.get(artifact.get("path"))
+                target = store.absolute(artifact.get("path", ""))
+                valid = (valid and _effective_artifact_binding_matches(store, artifact, remediations) and entry is not None
+                         and entry.get("sha256") == sha256_file(target) and entry.get("status") == "approved"
+                         and entry.get("rightsHolder") == "cty41" and entry.get("license") == "CC-BY-4.0")
+            if not valid:
+                raise PipelineError("invalid public artifact license receipt")
+            relicensed.update(artifact["path"] for artifact in record["artifacts"])
+        except (PipelineError, OSError, KeyError, TypeError, AttributeError, ValueError, json.JSONDecodeError):
+            issues.append(f"license_receipt_invalid:{path.stem}")
+    return relicensed
+
+
+def _effective_path_hash_matches(store: Store, target: Path, expected: str | None,
+                                 remediations: dict[tuple[str, str], str]) -> bool:
+    if not target.is_file() or not expected:
+        return False
+    actual = sha256_file(target)
+    if actual == expected:
+        return True
+    try:
+        rel = store.relative(target)
+    except PipelineError:
+        return False
+    return remediations.get((rel, expected)) == actual
+
+
+def _effective_artifact_binding_matches(store: Store, artifact: dict[str, Any],
+                                        remediations: dict[tuple[str, str], str]) -> bool:
+    try:
+        target = store.absolute(artifact.get("path", ""))
+        return _effective_path_hash_matches(store, target, artifact.get("sha256"), remediations)
+    except (PipelineError, OSError, AttributeError):
+        return False
+
+
+def _strict_art_direction_sources(store: Store, issues: list[str]) -> None:
+    specs = (
+        ("art-direction-manifests", "art-direction-manifest"),
+        ("art-direction-profiles", "project-art-direction"),
+        ("family-profiles", "family"),
+        ("material-languages", "material-language"),
+        ("art-direction-briefs", None),
+    )
+    for group, expected_type in specs:
+        for path in sorted((store.pipeline / group).glob("*.json")):
+            record = load_json(path)
+            source_id = record.get("sourceId")
+            artifact = record.get("artifact", {})
+            if path.stem != source_id or record.get("schemaVersion") != ART_DIRECTION_SCHEMA_VERSION:
+                issues.append(f"art_direction_registry_shape:{group}:{path.stem}")
+                continue
+            target = store.absolute(artifact.get("path", ""))
+            if not target.is_file() or not bound_input_hash_matches(target, artifact.get("sha256")):
+                issues.append(f"art_direction_registry_hash:{group}:{source_id}")
+                continue
+            source = load_json(target)
+            source_type = record.get("sourceType")
+            if expected_type is not None and source_type != expected_type:
+                issues.append(f"art_direction_registry_type:{group}:{source_id}")
+            if group == "art-direction-profiles" and source.get("profileId") != source_id:
+                issues.append(f"art_direction_registry_source_id:{group}:{source_id}")
+            elif group in {"family-profiles", "material-languages"} and source.get("profileId") != source_id:
+                issues.append(f"art_direction_registry_source_id:{group}:{source_id}")
+            elif group == "art-direction-manifests" and source.get("manifestId") != source_id:
+                issues.append(f"art_direction_registry_source_id:{group}:{source_id}")
+            elif group == "art-direction-briefs" and source.get("briefId") != source_id:
+                issues.append(f"art_direction_registry_source_id:{group}:{source_id}")
+            payload = {"sourceId": source_id, "sourceType": source_type, "artifact": artifact}
+            prefix = {
+                "art-direction-manifest": "art-direction-manifest",
+                "project-art-direction": "art-direction-profile",
+                "family": "family-profile",
+                "material-language": "material-language",
+                "asset": "asset-brief",
+                "scene": "scene-brief",
+            }.get(source_type)
+            if not prefix or stable_id(prefix, payload) != record.get("registryId"):
+                issues.append(f"art_direction_registry_identity:{group}:{source_id}")
+    active_path = store.pipeline / "active-art-direction-manifest.json"
+    if active_path.is_file():
+        active = load_json(active_path)
+        manifest_id = active.get("activeArtDirectionManifestId")
+        manifest_path = store.record("art-direction-manifests", manifest_id or "")
+        if not manifest_path.is_file():
+            issues.append(f"active_art_direction_manifest_missing:{manifest_id}")
+        else:
+            manifest = load_json(manifest_path)
+            if manifest.get("registryId") != active.get("registryId") or manifest.get("artifact") != active.get("artifact"):
+                issues.append(f"active_art_direction_manifest_binding:{manifest_id}")
+
+
+def _strict_art_direction_evidence(store: Store, issues: list[str],
+                                   remediations: dict[tuple[str, str], str]) -> None:
+    for path in sorted((store.pipeline / "anchor-verdicts").glob("*.json")):
+        record = load_json(path)
+        payload = {key: record[key] for key in (
+            "candidate", "family", "responsibilities", "excludedUses", "review",
+            "decision", "reviewer", "reason", "decidedAt")}
+        expected = stable_id("anchor-verdict", payload)
+        if path.stem != record.get("anchorVerdictId") or expected != record.get("anchorVerdictId"):
+            issues.append(f"anchor_verdict_identity:{path.stem}")
+        if record.get("reviewer") != "cty41" or record.get("decision") not in {
+                "approved-anchor", "rejected-as-anchor", "pending-more-evidence"}:
+            issues.append(f"anchor_verdict_authority:{path.stem}")
+        for artifact in (record.get("candidate", {}), record.get("review", {})):
+            target = store.absolute(artifact.get("path", ""))
+            if not _effective_path_hash_matches(store, target, artifact.get("sha256"), remediations):
+                issues.append(f"anchor_verdict_hash:{path.stem}")
+    for path in sorted((store.pipeline / "acceptance-case-results").glob("*.json")):
+        record = load_json(path)
+        payload = {key: record[key] for key in (
+            "attemptId", "caseId", "candidate", "contractId", "contractSha256", "evidence",
+            "automatedFacts", "automatedResult", "humanChecks", "humanDecision", "reviewer",
+            "reason", "decidedAt")}
+        expected = stable_id("acceptance-case-result", payload)
+        if path.stem != record.get("acceptanceCaseResultId") or expected != record.get("acceptanceCaseResultId"):
+            issues.append(f"acceptance_case_identity:{path.stem}")
+        attempt_path = store.record("attempts", record.get("attemptId", ""))
+        if not attempt_path.is_file():
+            issues.append(f"acceptance_case_attempt:{path.stem}")
+            continue
+        attempt = load_json(attempt_path)
+        if record.get("acceptanceCaseResultId") not in attempt.get("acceptanceCaseResultIds", []):
+            issues.append(f"acceptance_case_backlink:{path.stem}")
+        if record.get("candidate") != candidate_artifact(attempt):
+            issues.append(f"acceptance_case_candidate:{path.stem}")
+        decision = record.get("humanDecision")
+        if (decision == "pending" and record.get("reviewer") != "agent") or (
+                decision in {"passed", "failed"} and record.get("reviewer") != "cty41") or decision not in {
+                "pending", "passed", "failed"}:
+            issues.append(f"acceptance_case_authority:{path.stem}")
+        for artifact in record.get("evidence", {}).values():
+            target = store.absolute(artifact.get("path", ""))
+            if not _effective_path_hash_matches(store, target, artifact.get("sha256"), remediations):
+                issues.append(f"acceptance_case_evidence_hash:{path.stem}")
+    for path in sorted((store.pipeline / "art-direction-reviews").glob("*.json")):
+        record = load_json(path)
+        payload = {key: record[key] for key in (
+            "attemptId", "candidate", "contractId", "contractSha256", "sourcePanels",
+            "acceptanceCaseResultIds", "overview")}
+        expected = stable_id("art-direction-review", payload)
+        if path.stem != record.get("artDirectionReviewId") or expected != record.get("artDirectionReviewId"):
+            issues.append(f"art_direction_review_identity:{path.stem}")
+        attempt_path = store.record("attempts", record.get("attemptId", ""))
+        if not attempt_path.is_file():
+            issues.append(f"art_direction_review_attempt:{path.stem}")
+            continue
+        attempt = load_json(attempt_path)
+        current_review_id = attempt.get("artDirectionReviewId")
+        historical_review_ids = attempt.get("artDirectionReviewIds", [])
+        if (historical_review_ids and current_review_id != record.get("artDirectionReviewId")
+                and record.get("artDirectionReviewId") not in historical_review_ids):
+            issues.append(f"art_direction_review_backlink:{path.stem}")
+        for artifact in [*record.get("sourcePanels", {}).values(), record.get("overview", {})]:
+            target = store.absolute(artifact.get("path", ""))
+            if not _effective_path_hash_matches(store, target, artifact.get("sha256"), remediations):
+                issues.append(f"art_direction_review_hash:{path.stem}")
+    for path in sorted((store.pipeline / "art-direction-verdicts").glob("*.json")):
+        record = load_json(path)
+        payload = {key: record[key] for key in (
+            "attemptId", "candidate", "artDirectionReviewId", "reviewSha256", "decision",
+            "acceptedWarnings", "reviewer", "reason", "decidedAt")}
+        expected = stable_id("art-direction-verdict", payload)
+        if path.stem != record.get("artDirectionVerdictId") or expected != record.get("artDirectionVerdictId"):
+            issues.append(f"art_direction_verdict_identity:{path.stem}")
+        if record.get("reviewer") != "cty41" or record.get("decision") not in {"approved", "retry"}:
+            issues.append(f"art_direction_verdict_authority:{path.stem}")
+        review_path = store.record("art-direction-reviews", record.get("artDirectionReviewId", ""))
+        if not review_path.is_file() or sha256_file(review_path) != record.get("reviewSha256"):
+            issues.append(f"art_direction_verdict_review:{path.stem}")
+        attempt_path = store.record("attempts", record.get("attemptId", ""))
+        if attempt_path.is_file():
+            attempt = load_json(attempt_path)
+            if record.get("artDirectionVerdictId") not in attempt.get("artDirectionVerdictIds", []):
+                issues.append(f"art_direction_verdict_backlink:{path.stem}")
+
+
+def _strict_reviewer_records(store: Store, issues: list[str],
+                             remediations: dict[tuple[str, str], str]) -> None:
+    """Verify immutable Reviewer chains only when the new policy records exist."""
+    def bound(artifact: dict[str, Any]) -> bool:
+        return _effective_artifact_binding_matches(store, artifact, remediations)
+
+    for group, field, validator, prefix in (("review-rules", "rule", artwork_review.validate_review_rule, "review-rule"),
+                                            ("review-cases", "case", artwork_review.validate_review_case, "review-case")):
+        for path in sorted((store.pipeline / group).glob("*.json")):
+            record = load_json(path)
+            try:
+                value = validator(record.get(field, {}))
+                payload = {field: value, "source": record.get("source")}
+                if group == "review-cases":
+                    payload["fitness"] = record.get("fitness")
+                if not bound(record.get("source", {})) or stable_id(prefix, payload) != path.stem:
+                    raise artwork_review.ReviewValidationError("binding")
+            except artwork_review.ReviewValidationError:
+                issue = "review_case_negative_role" if group == "review-cases" else "review_rule_invalid"
+                issues.append(f"{issue}:{path.stem}")
+    superseded_qualifications = {}
+    for path in sorted((store.pipeline / "reviewer-qualification-supersessions").glob("*.json")):
+        record = load_json(path)
+        payload = {key: record.get(key) for key in ("oldQualificationId", "oldQualification", "newQualificationId", "newQualification", "reviewer", "reason", "supersededAt")}
+        old_id, new_id = record.get("oldQualificationId"), record.get("newQualificationId")
+        old_path = store.record("reviewer-qualifications", old_id or ""); new_path = store.record("reviewer-qualifications", new_id or "")
+        identity = ("ruleId", "ruleVersion", "model", "effort", "reviewerPromptId", "reviewerPromptSha256",
+                    "compiledPolicyId", "compiledPolicySha256", "caseSetVersion")
+        old = load_json(old_path) if old_path.is_file() else {}; new = load_json(new_path) if new_path.is_file() else {}
+        if (record.get("reviewerQualificationSupersessionId") != path.stem
+                or stable_id("reviewer-qualification-supersession", payload) != path.stem
+                or record.get("reviewer") != "cty41" or not bound(record.get("oldQualification", {}))
+                or not bound(record.get("newQualification", {})) or old_id in superseded_qualifications
+                or any(old.get(field) != new.get(field) for field in identity)
+                or not _reviewer_qualification_is_valid(store, old, allow_legacy=True)
+                or not _reviewer_qualification_is_valid(store, new)
+                or datetime.fromisoformat(new.get("qualifiedAt")) <= datetime.fromisoformat(old.get("qualifiedAt"))):
+            issues.append(f"reviewer_qualification_supersession_invalid:{path.stem}")
+        else:
+            superseded_qualifications[old_id] = new_id
+    for path in sorted((store.pipeline / "reviewer-qualifications").glob("*.json")):
+        record = load_json(path)
+        fields = ["state", "reviewer", "ruleId", "ruleVersion", "model", "effort", "reviewerPromptId", "reviewerPromptSha256", "compiledPolicyId", "compiledPolicySha256", "caseSetVersion", "reviewRule", "compiledPolicy", "reviewerPrompt"]
+        fields.extend(key for key in ("promptOnlyComparison", "qualificationAudits") if key in record)
+        fields.append("qualifiedAt")
+        payload = {key: record.get(key) for key in fields}
+        rule_path = store.absolute(record.get("reviewRule", {}).get("path", "")); policy_path = store.absolute(record.get("compiledPolicy", {}).get("path", ""))
+        modern_proof = bool(record.get("promptOnlyComparison")) and bool(record.get("qualificationAudits"))
+        proof_bound = (not modern_proof and path.stem in superseded_qualifications) or (
+            modern_proof and bound(record["promptOnlyComparison"])
+            and all(bound(item) for item in record.get("qualificationAudits", [])))
+        if (record.get("reviewerQualificationId") != path.stem or stable_id("reviewer-qualification", payload) != path.stem
+                or record.get("reviewer") != "cty41" or not bound(record.get("reviewRule", {})) or not bound(record.get("compiledPolicy", {}))
+                or not bound(record.get("reviewerPrompt", {})) or not proof_bound
+                or not rule_path.is_file() or not policy_path.is_file()):
+            issues.append(f"reviewer_qualification_invalid:{path.stem}")
+    for path in sorted((store.pipeline / "reviewer-rule-suspensions").glob("*.json")):
+        record = load_json(path); payload = {key: record.get(key) for key in ("reviewerQualificationId", "ruleId", "ruleVersion", "reviewer", "reason", "suspendedAt")}
+        if (record.get("reviewerRuleSuspensionId") != path.stem or stable_id("reviewer-rule-suspension", payload) != path.stem
+                or record.get("reviewer") != "cty41" or not store.record("reviewer-qualifications", record.get("reviewerQualificationId", "")).is_file()):
+            issues.append(f"reviewer_rule_suspension_invalid:{path.stem}")
+    packets: dict[str, dict[str, Any]] = {}
+    for path in sorted((store.pipeline / "model-review-packets").glob("*.json")):
+        packet = load_json(path); packets[path.stem] = packet
+        try:
+            artwork_review.validate_model_review_packet(packet)
+        except artwork_review.ReviewValidationError:
+            issues.append(f"model_review_packet_invalid:{path.stem}")
+            continue
+        attempt_path = store.record("attempts", packet.get("attemptId", ""))
+        if not attempt_path.is_file():
+            issues.append(f"model_review_packet_backlink:{path.stem}")
+        elif not packet.get("qualificationMode") and load_json(attempt_path).get("modelReviewPacketId") != packet.get("packetId"):
+            issues.append(f"model_review_packet_backlink:{path.stem}")
+        for artifact in [*packet.get("artifacts", []), *packet.get("evidence", [])]:
+            if not bound(artifact):
+                issues.append(f"model_review_packet_hash:{path.stem}")
+                break
+    invocations: dict[str, dict[str, Any]] = {}
+    for path in sorted((store.pipeline / "model-review-invocations").glob("*.json")):
+        record = load_json(path); invocations[path.stem] = record
+        payload = {key: record.get(key) for key in ("attemptId", "packetId", "packetSha256", "provider", "model", "effort", "freshSession", "freshSessionId", "promptSource", "startedAt")}
+        if "qualificationMode" in record: payload["qualificationMode"] = record["qualificationMode"]
+        if record.get("state") != "started" or record.get("modelReviewInvocationId") != path.stem or stable_id("model-review-invocation", payload) != path.stem:
+            issues.append(f"model_review_invocation_identity:{path.stem}")
+        packet = packets.get(record.get("packetId"))
+        attempt_path = store.record("attempts", record.get("attemptId", ""))
+        if (not packet or packet.get("sha256") != record.get("packetSha256") or packet.get("attemptId") != record.get("attemptId")
+                or bool(record.get("qualificationMode")) != bool(packet.get("qualificationMode"))
+                or not attempt_path.is_file() or (not record.get("qualificationMode") and load_json(attempt_path).get("modelReviewInvocationId") != path.stem)):
+            issues.append(f"model_review_invocation_backlink:{path.stem}")
+        if not bound(record.get("promptSource", {})):
+            issues.append(f"model_review_invocation_prompt_hash:{path.stem}")
+    results: dict[str, dict[str, Any]] = {}
+    for path in sorted((store.pipeline / "model-review-results").glob("*.json")):
+        record = load_json(path); results[path.stem] = record
+        payload = {key: record.get(key) for key in ("invocationId", "attemptId", "packetId", "packetSha256", "provider", "model", "effort", "freshSession", "freshSessionId", "promptSource", "rawResult", "result", "outcome", "validationError")}
+        if "qualificationMode" in record: payload["qualificationMode"] = record["qualificationMode"]
+        if record.get("modelReviewResultRecordId") != path.stem or stable_id("model-review-result-record", payload) != path.stem:
+            issues.append(f"model_review_result_identity:{path.stem}")
+        invocation = invocations.get(record.get("invocationId")); packet = packets.get(record.get("packetId"))
+        attempt_path = store.record("attempts", record.get("attemptId", ""))
+        if (not invocation or not packet or invocation.get("packetId") != record.get("packetId")
+                or invocation.get("packetSha256") != record.get("packetSha256")
+                or bool(record.get("qualificationMode")) != bool(invocation.get("qualificationMode"))
+                or not attempt_path.is_file() or (not record.get("qualificationMode") and load_json(attempt_path).get("modelReviewResultRecordId") != path.stem)):
+            issues.append(f"model_review_result_backlink:{path.stem}")
+        if record.get("rawResult") and not bound(record["rawResult"]):
+            issues.append(f"model_review_result_raw_hash:{path.stem}")
+        if record.get("result"):
+            try:
+                policy_id = packet.get("compiledPolicy", {}).get("compiledPolicyId") if packet else None
+                matching = [load_json(candidate).get("compiled") for candidate in (store.pipeline / "compiled-review-policies").glob("*.json")]
+                policy = next((item for item in matching if isinstance(item, dict) and item.get("compiledPolicyId") == policy_id), None)
+                artwork_review.validate_model_review_result(record["result"], packet, policy or {})
+            except (artwork_review.ReviewValidationError, TypeError):
+                issues.append(f"model_review_result_authority:{path.stem}")
+    for path in sorted((store.pipeline / "model-review-applications").glob("*.json")):
+        record = load_json(path); result = results.get(record.get("modelReviewResultRecordId"))
+        payload = {key: record.get(key) for key in ("modelReviewResultRecordId", "attemptId", "decision", "invocation")}
+        if "childAttemptId" in record:
+            payload["childAttemptId"] = record["childAttemptId"]
+        if record.get("modelReviewApplicationId") != path.stem or stable_id("model-review-application", payload) != path.stem:
+            issues.append(f"model_review_application_identity:{path.stem}")
+        if not result or result.get("attemptId") != record.get("attemptId"):
+            issues.append(f"model_review_application_backlink:{path.stem}")
+        if record.get("decision", {}).get("action") == "automatic_retry":
+            child_path = store.record("attempts", record.get("childAttemptId", ""))
+            parent_path = store.record("attempts", record.get("attemptId", ""))
+            if not child_path.is_file() or not parent_path.is_file():
+                issues.append(f"model_review_application_child:{path.stem}")
+            else:
+                parent, child = load_json(parent_path), load_json(child_path)
+                if (child.get("generationRound", 99) > 3 or child.get("ordinal", 99) > 3
+                        or parent.get("generationRound", parent.get("ordinal", 99)) >= 3):
+                    issues.append(f"model_review_a003_automatic_a004:{path.stem}")
+                invocation = invocations.get(result.get("invocationId"), {}) if result else {}
+                packet = packets.get(result.get("packetId"), {}) if result else {}
+                policy_id = packet.get("compiledPolicy", {}).get("compiledPolicyId")
+                policy = next((load_json(item).get("compiled") for item in (store.pipeline / "compiled-review-policies").glob("*.json")
+                               if load_json(item).get("compiled", {}).get("compiledPolicyId") == policy_id), {})
+                qualifications = _effective_qualifications(store)
+                for defect in result.get("result", {}).get("defects", []) if result else []:
+                    rule = next((item for item in policy.get("rules", []) if item.get("ruleId") == defect.get("ruleId")), {})
+                    if not any(qualification.get("state") == "auto-retry-qualified" and qualification.get("reviewer") == "cty41"
+                               and qualification.get("ruleId") == rule.get("ruleId") and qualification.get("ruleVersion") == rule.get("version")
+                               and qualification.get("model") == invocation.get("model") and qualification.get("effort") == packet.get("reasoningEffort")
+                               and qualification.get("reviewerPromptSha256") == invocation.get("promptSource", {}).get("sha256")
+                               and qualification.get("compiledPolicyId") == policy.get("compiledPolicyId")
+                               and qualification.get("compiledPolicySha256") == policy.get("sha256")
+                               and not qualification.get("suspendedAt") and not qualification.get("supersededBy")
+                               for qualification in qualifications):
+                        issues.append(f"reviewer_qualification_invalid_use:{path.stem}:{defect.get('ruleId')}")
+    for path in sorted((store.pipeline / "prompt-only-comparisons").glob("*.json")):
+        record = load_json(path)
+        try:
+            expected = artwork_review.validate_prompt_only_comparison(record.get("promptOnly", {}), record.get("reviewerClosedLoop", {}))
+            if record.get("promptComparisonId") != path.stem or expected["promptComparisonId"] != path.stem:
+                raise artwork_review.ReviewValidationError("identity")
+            sources = record.get("sources", {})
+            if set(sources) != {"promptOnly", "reviewerClosedLoop"} or not all(bound(item) for item in sources.values()):
+                raise artwork_review.ReviewValidationError("source hash")
+            for key, source in sources.items():
+                if load_json(store.absolute(source["path"], must_exist=True)) != record[{"promptOnly": "promptOnly", "reviewerClosedLoop": "reviewerClosedLoop"}[key]]:
+                    raise artwork_review.ReviewValidationError("source payload")
+            contract = expected["promptOnly"]["contract"]
+            contract_path = store.record("contracts", contract["contractId"])
+            if not contract_path.is_file() or sha256_file(contract_path) != contract["sha256"] or any(not bound(anchor) for anchor in expected["promptOnly"]["anchors"]):
+                raise artwork_review.ReviewValidationError("bindings")
+        except (artwork_review.ReviewValidationError, PipelineError, OSError, KeyError, TypeError, json.JSONDecodeError):
+            issues.append(f"prompt_only_comparison_invalid:{path.stem}")
+
+
 def strict_check(store: Store, strict: bool) -> dict[str, Any]:
     issues = []
+    remediations = _validated_exact_chroma_remediations(store, issues)
+    pose_proof_grandfathers: dict[str, str] = {}
+    if (store.pipeline / "pose-proof-grandfathers.json").is_file():
+        try:
+            pose_proof_grandfathers = _validated_pose_proof_grandfathers(store)
+        except (PipelineError, OSError, TypeError, ValueError, json.JSONDecodeError):
+            issues.append("pose_proof_grandfather_registry_invalid")
+    relicensed_paths = _validated_relicensed_paths(store, issues, remediations)
+    _strict_art_direction_sources(store, issues)
+    _strict_reviewer_records(store, issues, remediations)
+    _strict_art_direction_evidence(store, issues, remediations)
+    invalidated_syncs = set()
+    for invalidation_path in (store.pipeline / "attempt-provenance-sync-invalidations").glob("*.json"):
+        invalidation = load_json(invalidation_path)
+        payload = {key: invalidation.get(key) for key in ("attemptProvenanceSyncId", "attemptProvenanceSync", "reviewer", "reason", "invalidatedAt")}
+        if (invalidation.get("attemptProvenanceSyncInvalidationId") != invalidation_path.stem
+                or stable_id("attempt-provenance-sync-invalidation", payload) != invalidation_path.stem
+                or invalidation.get("reviewer") != "cty41" or not _artifact_binding_matches(store, invalidation.get("attemptProvenanceSync"))):
+            issues.append(f"attempt_provenance_sync_invalidation_invalid:{invalidation_path.stem}")
+        else:
+            invalidated_syncs.add(invalidation.get("attemptProvenanceSyncId"))
+    for sync_path in (store.pipeline / "attempt-provenance-syncs").glob("*.json"):
+        sync = load_json(sync_path)
+        if sync.get("attemptProvenanceSyncId") in invalidated_syncs:
+            continue
+        payload = {key: sync.get(key) for key in ("attemptId", "jobId", "contractId", "artifacts", "rights", "reviewer", "reason", "syncedAt")}
+        attempt_path = store.record("attempts", sync.get("attemptId", "")); job_path = store.record("jobs", sync.get("jobId", "")); contract_path = store.record("contracts", sync.get("contractId", ""))
+        valid = (sync.get("attemptProvenanceSyncId") == sync_path.stem == stable_id("attempt-provenance-sync", payload)
+                 and sync.get("reviewer") == "cty41" and attempt_path.is_file() and job_path.is_file() and contract_path.is_file()
+                 and all(str(item.get("path", "")).startswith("Tools/artworks/pipeline/") and _effective_artifact_binding_matches(store, item, remediations)
+                         for item in sync.get("artifacts", [])))
+        if valid:
+            attempt, job, contract = load_json(attempt_path), load_json(job_path), load_json(contract_path)
+            attempt_artifacts = {item.get("path"): item.get("sha256") for artifact in attempt.get("artifacts", {}).values()
+                                 for item in (artifact.values() if isinstance(artifact, dict) and "path" not in artifact else [artifact])
+                                 if isinstance(item, dict)}
+            eligible = sorted(({"path": path_value, "sha256": sha_value} for path_value, sha_value in attempt_artifacts.items()
+                               if str(path_value).startswith("Tools/artworks/pipeline/") and str(path_value).lower().endswith(".png")),
+                              key=lambda item: item["path"])
+            manifest = load_json(store.root / "Tools/public-release/asset-provenance.json")
+            manifest_by_path = {item.get("path"): item for item in manifest.get("entries", [])}
+            manifest_matches = True
+            for item in eligible:
+                rights = dict(sync["rights"])
+                if item["path"] in relicensed_paths and rights.get("license") == "project-owned":
+                    rights["license"] = "CC-BY-4.0"
+                target = store.absolute(item["path"])
+                expected_entry = {"path": item["path"], "sha256": sha256_file(target),
+                                  "status": "approved", **rights}
+                manifest_matches = manifest_matches and manifest_by_path.get(item["path"]) == expected_entry
+            valid = (job.get("jobId") == sync.get("jobId") and job.get("contractId") == sync.get("contractId")
+                     and contract.get("rights") == sync.get("rights") and bool(eligible)
+                     and sync.get("artifacts") == eligible and manifest_matches)
+        if not valid:
+            issues.append(f"attempt_provenance_sync_invalid:{sync_path.stem}")
     inventory_path = store.pipeline / "legacy-assets.json"
     inventory = load_json(inventory_path) if inventory_path.exists() else {"assets": []}
     inventory_by_path = {item["path"]: item for item in inventory.get("assets", [])}
@@ -3567,26 +6131,142 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
         path = store.absolute(rel)
         if not path.exists():
             issues.append(f"inventory_missing:{rel}")
-        elif sha256_file(path) != item["sha256"]:
+        elif not _effective_path_hash_matches(store, path, item["sha256"], remediations):
             issues.append(f"inventory_hash:{rel}")
     current = {store.relative(path) for path in (store.root / "Tools/artworks").rglob("*.png") if store.pipeline not in path.parents}
     registered_paths = set()
-    for attempt_path in (store.pipeline / "attempts").glob("*.json"):
-        for artifact in load_json(attempt_path).get("artifacts", {}).values():
-            values = artifact.values() if isinstance(artifact, dict) and "path" not in artifact else [artifact]
-            registered_paths.update(value["path"] for value in values if isinstance(value, dict) and value.get("path"))
     for group in ("pose-guides", "supporting-artifacts"):
         for record_path in (store.pipeline / group).glob("*.json"):
             record = load_json(record_path)
             artifact = record.get("artifact", {})
-            if artifact.get("path"):
+            artifact_exists = isinstance(artifact, dict) and artifact.get("path") and store.absolute(artifact["path"]).is_file()
+            valid = _effective_artifact_binding_matches(store, artifact, remediations)
+            legacy_missing = False
+            if group == "supporting-artifacts":
+                payload = {key: value for key, value in record.items() if key not in {"schemaVersion", "supportingArtifactId"}}
+                valid = valid and record.get("supportingArtifactId") == record_path.stem == stable_id("supporting-artifact", payload)
+                if record.get("schemaVersion") == 3:
+                    valid = (valid and record.get("reviewer") == "cty41"
+                             and record.get("rights") == {"rightsHolder": "cty41", "license": "project-owned",
+                                                          "provenance": "cty41-direct-supporting-artifact-declaration"})
+                elif record.get("schemaVersion") == 2 and not artifact_exists:
+                    legacy_missing = True
+                elif record.get("schemaVersion") != 2:
+                    valid = False
+            if valid and artifact.get("path"):
                 registered_paths.add(artifact["path"])
-    missing = sorted(current - set(inventory_by_path) - registered_paths)
-    issues.extend(f"asset_unregistered:{path}" for path in missing)
+            elif group == "supporting-artifacts" and not legacy_missing:
+                issues.append(f"supporting_artifact_invalid:{record_path.stem}")
+
+    def collect_bound_pngs(value: Any) -> None:
+        if isinstance(value, dict):
+            if isinstance(value.get("path"), str) and value["path"].lower().endswith(".png"):
+                try:
+                    target = store.absolute(value["path"])
+                    if _effective_path_hash_matches(store, target, value.get("sha256"), remediations):
+                        registered_paths.add(value["path"])
+                except (PipelineError, OSError):
+                    pass
+            else:
+                for child in value.values():
+                    collect_bound_pngs(child)
+        elif isinstance(value, list):
+            for child in value:
+                collect_bound_pngs(child)
+
+    trusted_artifact_fields = {
+        "component-migrations": ("source", "prepared", "mask"),
+        "reviewed-recontracts": ("source", "candidate", "mask"),
+        "model-review-packets": ("artifacts", "evidence"),
+        "acceptance-case-results": ("evidence",),
+        "art-direction-reviews": ("overview", "sourcePanels"),
+        "size-comparisons": ("artifact", "inputs"),
+    }
+    trusted_identity = {
+        "component-migrations": ("componentMigrationId", "component-migration"),
+        "reviewed-recontracts": ("reviewedRecontractId", "reviewed-recontract"),
+        "acceptance-case-results": ("acceptanceCaseResultId", "acceptance-case-result"),
+        "art-direction-reviews": ("artDirectionReviewId", "art-direction-review"),
+        "size-comparisons": ("sizeComparisonId", "size-comparison"),
+    }
+    for group, fields in trusted_artifact_fields.items():
+        for record_path in (store.pipeline / group).glob("*.json"):
+            record = load_json(record_path)
+            valid = False
+            try:
+                if group == "jobs":
+                    valid = (record.get("jobId") == record_path.stem
+                             and store.record("contracts", record.get("contractId", "")).is_file()
+                             and all(_effective_artifact_binding_matches(store, item, remediations) for item in record.get("inputs", [])))
+                elif group == "model-review-packets":
+                    valid = artwork_review.validate_model_review_packet(record).get("packetId") == record_path.stem
+                else:
+                    identity_key, prefix = trusted_identity[group]
+                    payload = {key: value for key, value in record.items() if key not in {"schemaVersion", identity_key}}
+                    valid = record.get(identity_key) == record_path.stem == stable_id(prefix, payload)
+                if valid and group == "component-migrations":
+                    contract_path = store.record("contracts", record.get("contractId", ""))
+                    processing = record.get("processing")
+                    parameters = processing.get("parameters") if isinstance(processing, dict) and processing.get("path") else processing
+                    valid = (record.get("reviewer") == "cty41" and record.get("invocationStatus") == "missing-pre-v3"
+                             and contract_path.is_file() and sha256_file(contract_path) == record.get("contractSha256")
+                             and all(_effective_artifact_binding_matches(store, record.get(key), remediations) for key in ("source", "prepared"))
+                             and (record.get("mask") is None or _effective_artifact_binding_matches(store, record.get("mask"), remediations))
+                             and isinstance(parameters, dict) and bool(parameters.get("operation")))
+                    if valid and isinstance(processing, dict) and processing.get("path"):
+                        valid = (_artifact_binding_matches(store, processing) and load_json(store.absolute(processing["path"])) == parameters
+                                 and str(parameters.get("operation", "")).startswith("deterministic-")
+                                 and parameters.get("runtimeEligible") is False and parameters.get("selectedBy") == "cty41")
+                if valid and group == "reviewed-recontracts":
+                    source_attempt = load_json(store.record("attempts", record.get("sourceAttemptId", "")))
+                    lineage = _validated_generation_lineage(store, source_attempt)
+                    source_job = load_json(store.record("jobs", source_attempt.get("jobId", "")))
+                    target_contract_path = store.record("contracts", record.get("targetContractId", ""))
+                    feedback_path = store.record("feedback", source_attempt.get("feedbackId", ""))
+                    feedback = load_json(feedback_path) if feedback_path.is_file() else {}
+                    valid = (record.get("reviewer") == "cty41" and target_contract_path.is_file()
+                             and sha256_file(target_contract_path) == record.get("targetContractSha256")
+                             and record.get("sourceJobId") == source_job.get("jobId")
+                             and record.get("sourceContractId") == source_job.get("contractId")
+                             and feedback.get("authorType") == "human" and feedback.get("verdict") == "selected"
+                             and feedback.get("reviewer") == "cty41"
+                             and (record.get("sourceLineage") is None or record.get("sourceLineage") == lineage))
+                    if record.get("processing"):
+                        processing = record["processing"]
+                        valid = (valid and _effective_artifact_binding_matches(store, processing, remediations)
+                                 and processing.get("parameters") == load_json(store.absolute(processing["path"])))
+                        if valid:
+                            _validate_recontract_processing(store, source_attempt, record["candidate"], processing["parameters"], remediations)
+                    valid = valid and _effective_artifact_binding_matches(store, record.get("candidate"), remediations)
+                    derived_jobs = [load_json(item) for item in (store.pipeline / "jobs").glob("*.json")
+                                    if load_json(item).get("reviewedRecontractId") == record.get("reviewedRecontractId")]
+                    derived_attempts = [load_json(item) for item in (store.pipeline / "attempts").glob("*.json")
+                                        if load_json(item).get("reviewedRecontractId") == record.get("reviewedRecontractId")]
+                    valid = (valid and len(derived_jobs) == 1 and len(derived_attempts) == 1
+                             and derived_jobs[0].get("contractId") == record.get("targetContractId")
+                             and derived_attempts[0].get("jobId") == derived_jobs[0].get("jobId")
+                             and derived_attempts[0].get("sourceAttemptId") == record.get("sourceAttemptId")
+                             and derived_attempts[0].get("generationInvocationId") == record.get("generationInvocationId")
+                             and derived_attempts[0].get("generationDeliveryId") == record.get("generationDeliveryId"))
+            except (PipelineError, artwork_review.ReviewValidationError, OSError, KeyError, TypeError, json.JSONDecodeError):
+                valid = False
+            if valid:
+                for field in fields:
+                    collect_bound_pngs(record.get(field))
+            else:
+                issues.append(f"trusted_artifact_record_invalid:{group}:{record_path.stem}")
     for path in sorted((store.pipeline / "attempts").glob("*.json")):
         attempt = load_json(path)
+        attempt_valid_for_registration = attempt.get("attemptId") == path.stem
+        try:
+            ordinal_from_id = int(path.stem.rsplit("-a", 1)[1])
+            attempt_valid_for_registration = (attempt_valid_for_registration and attempt.get("ordinal") == ordinal_from_id
+                                              and attempt.get("attemptId") == f"{attempt.get('jobId')}-a{ordinal_from_id:03d}")
+        except (ValueError, IndexError):
+            attempt_valid_for_registration = False
         if attempt.get("state") not in STATES:
             issues.append(f"attempt_state:{path.name}")
+            attempt_valid_for_registration = False
         if bool(attempt.get("artifacts", {}).get("calibrated")) != bool(attempt.get("artifacts", {}).get("calibratedMask")):
             issues.append(f"attempt_calibration_pair:{attempt.get('attemptId')}")
         for artifact in attempt.get("artifacts", {}).values():
@@ -3594,13 +6274,28 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
             for value in values:
                 if isinstance(value, dict) and value.get("path"):
                     target = store.absolute(value["path"])
-                    if not target.exists() or sha256_file(target) != value.get("sha256"):
+                    if not _effective_path_hash_matches(store, target, value.get("sha256"), remediations):
                         issues.append(f"artifact_hash:{attempt['attemptId']}:{value.get('path')}")
+                        attempt_valid_for_registration = False
         if not store.record("jobs", attempt.get("jobId", "")).is_file():
             issues.append(f"attempt_job_missing:{attempt.get('attemptId')}")
+            attempt_valid_for_registration = False
         else:
             job_record = load_json(store.record("jobs", attempt["jobId"]))
             contract_record = load_json(store.record("contracts", job_record["contractId"]))
+            if (contract_record.get("equipmentProductionSpec") or contract_record.get("styleSpec")) and attempt.get("state") in {"approved", "promoted"}:
+                artifacts = attempt.get("artifacts", {})
+                outputs = [candidate_artifact(attempt), artifacts.get("equipmentPreview"),
+                           artifacts.get("review", {}).get("preview128"),
+                           *artifacts.get("promoted", {}).values()]
+                for output in outputs:
+                    if not output or not store.absolute(output["path"]).is_file():
+                        continue  # Missing files remain errors in the binding checks above.
+                    _, pixel_issues = inspect_technical(store.absolute(output["path"]), contract_record["kind"],
+                                                        require_master_canvas=False)
+                    for issue in pixel_issues:
+                        if issue in {"exact_chroma_residue", "transparent_rgb_nonzero"}:
+                            issues.append(f"equipment_{issue}:{attempt['attemptId']}:{output['path']}")
             if contract_record.get("assetRole") == "component" and attempt.get("state") == "promoted":
                 issues.append(f"component_promoted:{attempt.get('attemptId')}")
         if attempt.get("state") in {"approved", "rejected", "promoted"} and not attempt.get("approvalId"):
@@ -3640,8 +6335,55 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
                 current_reviews = {key: value.get("sha256") for key, value in sorted(attempt.get("artifacts", {}).get("review", {}).items())}
                 if receipt_reviews is not None and receipt_reviews != current_reviews:
                     issues.append(f"attempt_review_receipt_hash:{attempt.get('attemptId')}")
+        if attempt_valid_for_registration:
+            for artifact in attempt.get("artifacts", {}).values():
+                values = artifact.values() if isinstance(artifact, dict) and "path" not in artifact else [artifact]
+                registered_paths.update(value["path"] for value in values
+                                        if isinstance(value, dict) and value.get("path"))
+    missing = sorted(current - set(inventory_by_path) - registered_paths)
+    issues.extend(f"asset_unregistered:{path}" for path in missing)
+    superseded_jobs = set()
+    for path in sorted((store.pipeline / "job-migrations").glob("*.json")):
+        migration = load_json(path)
+        old_path = store.record("jobs", migration.get("oldJobId", ""))
+        new_path = store.record("jobs", migration.get("newJobId", ""))
+        migration_id = migration.get("migrationId")
+        migration_payload = {key: value for key, value in migration.items() if key not in {"schemaVersion", "migrationId"}}
+        if stable_id("job-migration", migration_payload) != migration_id:
+            issues.append(f"job_migration_identity:{migration_id}")
+            continue
+        if not old_path.is_file() or sha256_file(old_path) != migration.get("oldJobSha256"):
+            issues.append(f"job_migration_old:{migration_id}")
+            continue
+        if not new_path.is_file() or sha256_file(new_path) != migration.get("newJobSha256"):
+            issues.append(f"job_migration_new:{migration_id}")
+            continue
+        if not migration.get("changes") or not migration.get("reason") or not migration.get("authorizedBy"):
+            issues.append(f"job_migration_evidence:{migration_id}")
+            continue
+        historical_attempts_valid = all(
+            store.record("attempts", bound.get("attemptId", "")).is_file() and
+            sha256_file(store.record("attempts", bound.get("attemptId", ""))) == bound.get("sha256")
+            for bound in migration.get("historicalAttempts", [])
+        )
+        if not historical_attempts_valid:
+            issues.append(f"job_migration_attempt:{migration_id}")
+            continue
+        superseded_jobs.add(migration["oldJobId"])
+
+    retired_historical_jobs = set()
+    retirement_dir = store.root / "Tools/artworks/pure_run/art_direction/references"
+    for retirement_path in retirement_dir.glob("retired_*.json"):
+        retirement = load_json(retirement_path)
+        retired_historical_jobs.update(
+            Path(value).stem for value in retirement.get("preservedHistoricalPipelineRecords", [])
+            if value.startswith("Tools/artworks/pipeline/jobs/")
+        )
+
     for path in sorted((store.pipeline / "jobs").glob("*.json")):
         job = load_json(path)
+        if job.get("jobId") in superseded_jobs:
+            continue
         contract_path = store.record("contracts", job.get("contractId", ""))
         if not contract_path.is_file():
             issues.append(f"job_contract_missing:{job.get('jobId')}")
@@ -3649,16 +6391,18 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
             issues.append(f"job_contract_hash:{job.get('jobId')}")
         else:
             contract = load_json(contract_path)
-            expected_requirements = None if not contract.get("occlusion") else {
+            expected_requirements = None if job.get("sourceMode") in {"reviewed_import", "reviewed_recontract"} or not contract.get("occlusion") else {
                 "occlusion": contract["occlusion"],
                 "imageGenDirective": "Draw behind-core equipment and both hand paws first, then draw the capsule body over their inner portions; only outer arcs may remain visible.",
             }
             if job.get("contractRequirements") != expected_requirements:
                 issues.append(f"job_contract_requirements:{job.get('jobId')}")
-        for bound in ([job["prompt"]] if isinstance(job.get("prompt"), dict) else []) + job.get("inputs", []):
-            target = store.absolute(bound.get("path", ""))
-            if not target.is_file() or sha256_file(target) != bound.get("sha256"):
-                issues.append(f"job_input_hash:{job.get('jobId')}:{bound.get('path')}")
+        if job.get("jobId") not in retired_historical_jobs:
+            for bound in ([job["prompt"]] if isinstance(job.get("prompt"), dict) else []) + job.get("inputs", []):
+                target = store.absolute(bound.get("path", ""))
+                if (not bound_input_hash_matches(target, bound.get("sha256"))
+                        and not _effective_path_hash_matches(store, target, bound.get("sha256"), remediations)):
+                    issues.append(f"job_input_hash:{job.get('jobId')}:{bound.get('path')}")
         try:
             _validate_job_local_references(store, job)
         except PipelineError:
@@ -3667,6 +6411,48 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
             for attempt in list_attempts(store, job["jobId"]):
                 if attempt.get("state") in {"approved", "promoted"}:
                     issues.append(f"concept_only_formal:{attempt.get('attemptId')}")
+    for path in sorted((store.pipeline / "pose-proof-exemptions").glob("*.json")):
+        try:
+            receipt = load_json(path)
+            binding = {"path": store.relative(path), "sha256": sha256_file(path),
+                       "exemptionId": receipt.get("exemptionId")}
+            synthetic_spec = {"schemaVersion": 3, "poseProofContext": receipt.get("visualMoment"),
+                              "poseProofExemption": binding}
+            _validate_pose_proof_gate(store, synthetic_spec, expected_asset_id=receipt.get("assetId"),
+                                      expected_pose=receipt.get("pose"), expected_direction=receipt.get("direction"))
+        except (PipelineError, OSError, TypeError, ValueError, KeyError, AttributeError, json.JSONDecodeError):
+            issues.append(f"pose_proof_exemption_invalid:{path.stem}")
+    for path in sorted((store.root / "Tools/artworks").rglob("pose-proofs/*.json")):
+        try:
+            record = load_json(path)
+            card = (pose_proof.validate_draft(record) if isinstance(record, dict) and "options" in record
+                    else pose_proof.validate_card(record))
+            historical = card.get("historicalEvidence")
+            if historical and not _artifact_binding_matches(store, historical):
+                raise PipelineError("pose proof historical evidence hash is invalid")
+        except (PipelineError, pose_proof.PoseProofError, OSError, TypeError, ValueError, KeyError, AttributeError, json.JSONDecodeError):
+            issues.append(f"pose_proof_card_invalid:{store.relative(path)}")
+    for path in sorted((store.pipeline / "compositions").glob("*.json")):
+        try:
+            composition = load_json(path)
+            if not isinstance(composition, dict):
+                raise PipelineError("composition is not an object")
+            payload = {key: value for key, value in composition.items() if key not in {"schemaVersion", "compositionId"}}
+            valid_identity = (composition.get("schemaVersion") in {2, 3}
+                              and composition.get("compositionId") == path.stem == stable_id("composition", payload))
+            if not valid_identity:
+                issues.append(f"composition_record_invalid:{path.stem}")
+            elif composition.get("schemaVersion") == 3:
+                valid_bindings = (_artifact_binding_matches(store, composition.get("source", {}))
+                                  and _effective_artifact_binding_matches(store, composition.get("anchor", {}), remediations))
+                if not valid_bindings:
+                    issues.append(f"composition_record_invalid:{path.stem}")
+                try:
+                    _validate_pose_proof_gate(store, composition.get("spec"), expected_asset_id=composition.get("assetId"))
+                except (PipelineError, OSError, TypeError, ValueError, KeyError, AttributeError):
+                    issues.append(f"composition_pose_proof_invalid:{path.stem}")
+        except (PipelineError, OSError, TypeError, ValueError, KeyError, AttributeError, json.JSONDecodeError):
+            issues.append(f"composition_record_invalid:{path.stem}")
     for path in sorted((store.pipeline / "contracts").glob("*.json")):
         contract = load_json(path)
         equipment_spec = contract.get("equipmentProductionSpec")
@@ -3678,10 +6464,26 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
                 issues.append(f"contract_equipment_profile_hash:{contract.get('contractId')}")
             for anchor_ref in equipment_spec.get("anchors", []):
                 target = store.absolute(anchor_ref.get("path", ""))
-                if not target.is_file() or sha256_file(target) != anchor_ref.get("sha256"):
+                if not _effective_path_hash_matches(store, target, anchor_ref.get("sha256"), remediations):
                     issues.append(f"contract_equipment_anchor_hash:{contract.get('contractId')}")
-        if contract.get("schemaVersion") == 3:
-            role = contract.get("assetRole")
+        if contract.get("schemaVersion") == ART_DIRECTION_SCHEMA_VERSION:
+            required_specs = ("artDirectionManifestSpec", "artDirectionSpec", "materialLanguageSpec",
+                              "familyProfileSpec", "briefSpec")
+            if any(not contract.get(key) for key in required_specs):
+                issues.append(f"contract_art_direction_binding_missing:{contract.get('contractId')}")
+            for key in required_specs:
+                spec = contract.get(key, {})
+                target = store.absolute(spec.get("path", ""))
+                if not target.is_file() or not bound_input_hash_matches(target, spec.get("sha256")):
+                    issues.append(f"contract_art_direction_hash:{contract.get('contractId')}:{key}")
+            for verdict_id in contract.get("anchorVerdictIds", []):
+                verdict_path = store.record("anchor-verdicts", verdict_id)
+                if not verdict_path.is_file():
+                    issues.append(f"contract_anchor_verdict_missing:{contract.get('contractId')}:{verdict_id}")
+                elif load_json(verdict_path).get("decision") != "approved-anchor":
+                    issues.append(f"contract_anchor_verdict_invalid:{contract.get('contractId')}:{verdict_id}")
+        role = contract.get("assetRole")
+        if contract.get("schemaVersion") in {3, ART_DIRECTION_SCHEMA_VERSION} and role:
             if role not in ASSET_ROLES:
                 issues.append(f"contract_asset_role:{contract.get('contractId')}")
             if role == "component":
@@ -3691,14 +6493,30 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
                 issues.append(f"contract_assembled_shape:{contract.get('contractId')}")
             if contract.get("sourceMode") not in SOURCE_MODES:
                 issues.append(f"contract_source_mode:{contract.get('contractId')}")
-        if contract.get("schemaVersion") == 2 and contract.get("requiresInvocation"):
-            composition_ref = contract.get("compositionSpec")
-            if not composition_ref:
-                issues.append(f"contract_composition_missing:{contract.get('contractId')}")
+        composition_ref = contract.get("compositionSpec")
+        composition_required = (contract.get("schemaVersion") == 2 and contract.get("requiresInvocation")
+                                and not contract.get("equipmentProductionSpec"))
+        if composition_required and not composition_ref:
+            issues.append(f"contract_composition_missing:{contract.get('contractId')}")
+        if composition_ref:
+            target = store.record("compositions", composition_ref.get("compositionId", ""))
+            if not target.is_file() or sha256_file(target) != composition_ref.get("sha256"):
+                issues.append(f"contract_composition_hash:{contract.get('contractId')}")
             else:
-                target = store.record("compositions", composition_ref.get("compositionId", ""))
-                if not target.is_file() or sha256_file(target) != composition_ref.get("sha256"):
-                    issues.append(f"contract_composition_hash:{contract.get('contractId')}")
+                try:
+                    composition_record = load_json(target)
+                    if not isinstance(composition_record, dict):
+                        raise PipelineError("composition is not an object")
+                    if contract.get("kind") == "action_pose" and composition_record.get("schemaVersion") == 2:
+                        if composition_record.get("compositionId") not in pose_proof_grandfathers:
+                            issues.append(f"contract_pose_proof_grandfather_missing:{contract.get('contractId')}")
+                    elif contract.get("kind") == "action_pose" and composition_record.get("schemaVersion") == 3:
+                        if composition_record.get("assetId") != contract.get("assetId"):
+                            raise PipelineError("action composition asset mismatch")
+                        _validate_pose_proof_gate(store, composition_record.get("spec"), expected_asset_id=contract.get("assetId"),
+                                                  expected_pose=contract.get("pose"), expected_direction=contract.get("direction"))
+                except (PipelineError, OSError, TypeError, ValueError, KeyError, AttributeError, json.JSONDecodeError):
+                    issues.append(f"contract_composition_invalid:{contract.get('contractId')}")
         occlusion = contract.get("occlusion")
         if occlusion:
             if set(occlusion.get("layerRules", {})) - OCCLUSION_LABELS:
@@ -3710,12 +6528,12 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
         anchor = contract.get("anchor")
         if anchor:
             target = store.absolute(anchor.get("path", ""))
-            if not target.is_file() or sha256_file(target) != anchor.get("sha256"):
+            if not _effective_path_hash_matches(store, target, anchor.get("sha256"), remediations):
                 issues.append(f"contract_anchor_hash:{contract.get('contractId')}")
             mask_path = anchor.get("maskPath")
             if mask_path:
                 mask = store.absolute(mask_path)
-                if not mask.is_file() or sha256_file(mask) != anchor.get("maskSha256"):
+                if not _effective_path_hash_matches(store, mask, anchor.get("maskSha256"), remediations):
                     issues.append(f"contract_anchor_mask_hash:{contract.get('contractId')}")
     for path in sorted((store.pipeline / "feedback").glob("*.json")):
         feedback = load_json(path)
@@ -3785,7 +6603,8 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
                     issues.append(f"series_attempt_duplicate:{series.get('seriesId')}:{attempt_id}")
                 seen_attempts.add(attempt_id)
                 attempt = load_json(store.record("attempts", attempt_id))
-                if attempt.get("artifacts", {}).get("raw") and not attempt.get("feedbackId"):
+                if (attempt.get("artifacts", {}).get("raw") and not attempt.get("feedbackId")
+                        and not attempt.get("technicalRemediation")):
                     issues.append(f"series_feedback_missing:{series.get('seriesId')}:{attempt_id}")
             selected = pose.get("selectedAttemptId")
             if selected and selected not in pose.get("attemptIds", []):
@@ -3829,10 +6648,51 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
         attempt_record = load_json(attempt)
         if attempt_record.get("artifacts", {}).get("raw", {}).get("sha256") != delivery.get("rawSha256"):
             issues.append(f"generation_delivery_hash:{delivery.get('generationDeliveryId')}")
+    transaction_resolutions: dict[str, dict[str, Any]] = {}
+    for resolution_path in sorted((store.pipeline / "transaction-resolutions").glob("*.json")):
+        resolution = load_json(resolution_path)
+        payload = {key: resolution.get(key) for key in ("transactionId", "transaction", "operation", "payload", "outcome", "reviewer", "reason", "decidedAt", "evidence")}
+        valid = (resolution.get("transactionResolutionId") == resolution_path.stem == stable_id("transaction-resolution", payload)
+                 and resolution.get("reviewer") == "cty41" and resolution.get("outcome") in {"committed", "aborted"}
+                 and _artifact_binding_matches(store, resolution.get("transaction")))
+        if valid:
+            transaction = load_json(store.absolute(resolution["transaction"]["path"]))
+            valid = (resolution.get("operation") == transaction.get("operation")
+                     and resolution.get("payload") == transaction.get("payload"))
+            if valid and resolution.get("outcome") == "committed":
+                attempt_path = store.record("attempts", resolution.get("payload", {}).get("attemptId", ""))
+                valid = attempt_path.is_file() and _artifact_binding_matches(store, resolution.get("evidence"))
+                if valid:
+                    attempt = load_json(attempt_path); prepared = attempt.get("artifacts", {}).get("prepared")
+                    preparation = attempt.get("preparation", {})
+                    expected_chroma = str(resolution["payload"].get("chroma", "")).replace("#", "").lower()
+                    if "," in expected_chroma:
+                        try:
+                            expected_chroma = "".join(f"{int(value.strip()):02x}" for value in expected_chroma.split(","))
+                        except ValueError:
+                            valid = False
+                    valid = (valid and prepared == resolution.get("evidence")
+                             and preparation.get("chroma") == expected_chroma
+                             and preparation.get("chromaTolerance") == resolution["payload"].get("chromaTolerance"))
+            elif valid:
+                valid = resolution.get("evidence") is None
+        if not valid or resolution.get("transactionId") in transaction_resolutions:
+            issues.append(f"transaction_resolution_invalid:{resolution_path.stem}")
+        else:
+            transaction_resolutions[resolution["transactionId"]] = resolution
     for path in sorted((store.pipeline / "transactions").glob("*.json")):
         transaction = load_json(path)
-        if transaction.get("state") not in {"committed", "aborted"}:
+        expected_id = stable_id("transaction", {"operation": transaction.get("operation"), **transaction.get("payload", {})})
+        if transaction.get("transactionId") != path.stem or expected_id != path.stem:
+            issues.append(f"transaction_identity:{path.stem}")
+        effective_terminal = transaction.get("state") in {"committed", "aborted"} or transaction.get("transactionId") in transaction_resolutions
+        if not effective_terminal:
             issues.append(f"transaction_incomplete:{transaction.get('transactionId')}")
+        legacy_resolution = transaction.get("resolution")
+        if legacy_resolution and (legacy_resolution.get("reviewer") != "cty41"
+                                  or transaction.get("state") not in {"committed", "aborted"}
+                                  or (legacy_resolution.get("evidence") and not _artifact_binding_matches(store, legacy_resolution["evidence"]))):
+            issues.append(f"transaction_resolution_invalid:{path.stem}")
     for path in sorted((store.pipeline / "assemblies").glob("*.json")):
         assembly = load_json(path)
         if assembly.get("schemaVersion") != 3:
@@ -3875,6 +6735,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--root", default=".", help="repository root")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("migrate-legacy")
+    for command_name in (
+            "register-art-direction-manifest", "register-art-direction-profile",
+            "register-family-profile", "register-material-language",
+            "create-asset-brief", "create-scene-brief"):
+        source_command = commands.add_parser(command_name)
+        source_command.add_argument("--source", required=True)
     anchor = commands.add_parser("approve-anchor")
     anchor.add_argument("--candidate", required=True); anchor.add_argument("--mask", required=True)
     anchor.add_argument("--review", required=True); anchor.add_argument("--reviewer", required=True)
@@ -3920,6 +6786,9 @@ def build_parser() -> argparse.ArgumentParser:
     create.add_argument("--component-kind", choices=sorted(COMPONENT_KINDS))
     create.add_argument("--source-mode", choices=sorted(SOURCE_MODES))
     create.add_argument("--style-profile")
+    create.add_argument("--family-profile-id")
+    create.add_argument("--brief-id")
+    create.add_argument("--anchor-verdict-id", action="append", default=[])
     create.add_argument("--target-visible-height", type=int)
     create.add_argument("--visible-height-min", type=int)
     create.add_argument("--visible-height-max", type=int)
@@ -3935,14 +6804,45 @@ def build_parser() -> argparse.ArgumentParser:
     equipment_contract.add_argument("--output-master", required=True); equipment_contract.add_argument("--output-preview", required=True)
     equipment_contract.add_argument("--rights-holder", default="cty41"); equipment_contract.add_argument("--license", default="CC-BY-4.0")
     equipment_contract.add_argument("--provenance", default="project-owned-gpt-generated")
+    equipment_contract.add_argument("--family-profile-id")
+    equipment_contract.add_argument("--brief-id")
+    equipment_contract.add_argument("--anchor-verdict-id", action="append", default=[])
     local_ref = commands.add_parser("register-local-reference")
     local_ref.add_argument("--path", required=True); local_ref.add_argument("--source-label", required=True)
     local_ref.add_argument("--role", choices=sorted(LOCAL_REFERENCE_ROLES), required=True)
+    anchor_verdict = commands.add_parser("record-anchor-verdict")
+    anchor_verdict.add_argument("--candidate", required=True); anchor_verdict.add_argument("--family", required=True)
+    anchor_verdict.add_argument("--responsibility", action="append", required=True)
+    anchor_verdict.add_argument("--excluded-use", action="append", default=[]); anchor_verdict.add_argument("--review", required=True)
+    anchor_verdict.add_argument("--decision", choices=("approved-anchor", "rejected-as-anchor", "pending-more-evidence"), required=True)
+    anchor_verdict.add_argument("--reviewer", required=True); anchor_verdict.add_argument("--reason", required=True)
+    anchor_verdict.add_argument("--decided-at", required=True)
+    acceptance = commands.add_parser("record-acceptance-case-result")
+    acceptance.add_argument("--attempt-id", required=True); acceptance.add_argument("--case-id", required=True)
+    acceptance.add_argument("--evidence", action="append", required=True)
+    acceptance.add_argument("--automated-fact", action="append", default=[])
+    acceptance.add_argument("--automated-result", choices=("passed", "warning", "failed", "not-applicable"), required=True)
+    acceptance.add_argument("--human-check", action="append", default=[])
+    acceptance.add_argument("--human-decision", choices=("pending", "passed", "failed"), required=True)
+    acceptance.add_argument("--reviewer", required=True); acceptance.add_argument("--reason", required=True)
+    acceptance.add_argument("--decided-at", required=True)
+    art_review = commands.add_parser("render-art-direction-review")
+    art_review.add_argument("--attempt-id", required=True); art_review.add_argument("--panel", action="append", required=True)
+    art_review.add_argument("--output", required=True)
+    art_verdict = commands.add_parser("record-art-direction-verdict")
+    art_verdict.add_argument("--attempt-id", required=True); art_verdict.add_argument("--review-id", required=True)
+    art_verdict.add_argument("--decision", choices=("approved", "retry"), required=True)
+    art_verdict.add_argument("--accept-warning", action="append", default=[])
+    art_verdict.add_argument("--reviewer", required=True); art_verdict.add_argument("--reason", required=True)
+    art_verdict.add_argument("--decided-at", required=True)
     job = commands.add_parser("create-job"); job.add_argument("--contract-id", required=True)
     job.add_argument("--prompt", required=True); job.add_argument("--input", action="append", default=[])
     job.add_argument("--pose-guide-id")
     job.add_argument("--local-reference-id", action="append", default=[])
     job.add_argument("--series-id"); job.add_argument("--pose-id")
+    migrate_job = commands.add_parser("migrate-ready-job-bindings")
+    migrate_job.add_argument("--job-id", required=True); migrate_job.add_argument("--reason", required=True)
+    migrate_job.add_argument("--authorized-by", required=True)
     retry_p = commands.add_parser("retry"); retry_p.add_argument("--job-id", required=True); retry_p.add_argument("--parent-attempt")
     retry_p.add_argument("--feedback-id")
     retry_p.add_argument("--technical-remediation", action="store_true")
@@ -3978,6 +6878,14 @@ def build_parser() -> argparse.ArgumentParser:
     exception.add_argument("--decided-at", required=True, help="explicit ISO-8601 timestamp")
     promote_p = commands.add_parser("promote"); promote_p.add_argument("--attempt-id", required=True)
     refresh_p = commands.add_parser("refresh-promoted-preview"); refresh_p.add_argument("--attempt-id", required=True)
+    pose_exemption = commands.add_parser("create-pose-proof-exemption")
+    pose_exemption.add_argument("--asset-id", required=True); pose_exemption.add_argument("--pose", required=True)
+    pose_exemption.add_argument("--direction", required=True); pose_exemption.add_argument("--consumer", required=True)
+    pose_exemption.add_argument("--phase", required=True); pose_exemption.add_argument("--sprite-role", required=True)
+    pose_exemption.add_argument("--category", choices=sorted(POSE_PROOF_EXEMPTIONS), required=True)
+    pose_exemption.add_argument("--approval-id", action="append", required=True)
+    pose_exemption.add_argument("--reviewer", required=True); pose_exemption.add_argument("--reason", required=True)
+    pose_exemption.add_argument("--decided-at", required=True)
     composition = commands.add_parser("create-composition"); composition.add_argument("--asset-id", required=True)
     composition.add_argument("--spec", required=True); composition.add_argument("--anchor", required=True)
     guide = commands.add_parser("render-pose-guide"); guide.add_argument("--composition-id", required=True); guide.add_argument("--output", required=True)
@@ -3995,8 +6903,65 @@ def build_parser() -> argparse.ArgumentParser:
     advisory = commands.add_parser("record-advisory-review"); advisory.add_argument("--attempt-id", required=True)
     advisory.add_argument("--reviewer", required=True); advisory.add_argument("--risk", action="append", required=True)
     advisory.add_argument("--recorded-at", required=True)
+    commands.add_parser("index-review-history")
+    case_audit = commands.add_parser("audit-review-case"); case_audit.add_argument("--source", required=True)
+    review_policy = commands.add_parser("register-project-review-policy"); review_policy.add_argument("--source", required=True)
+    review_rule = commands.add_parser("create-review-rule"); review_rule.add_argument("--source", required=True)
+    review_case = commands.add_parser("create-review-case"); review_case.add_argument("--source", required=True)
+    compiled_review = commands.add_parser("compile-review-policy")
+    compiled_review.add_argument("--project-review-policy-id", required=True); compiled_review.add_argument("--context", required=True)
+    compiled_review.add_argument("--acceptance-case-id", action="append", default=[])
+    compiled_review.add_argument("--feedback-rule-id", action="append", default=[])
+    model_packet = commands.add_parser("create-model-review-packet")
+    model_packet.add_argument("--attempt-id", required=True); model_packet.add_argument("--compiled-review-policy-id", required=True)
+    model_packet.add_argument("--required-model", required=True); model_packet.add_argument("--frozen-invariant", action="append", default=[])
+    model_packet.add_argument("--artifact", action="append", default=[]); model_packet.add_argument("--evidence", action="append", default=[])
+    shadow_packet = commands.add_parser("create-shadow-model-review-packet")
+    shadow_packet.add_argument("--review-case-record-id", required=True); shadow_packet.add_argument("--human-feedback-id", required=True)
+    shadow_packet.add_argument("--compiled-review-policy-id", required=True); shadow_packet.add_argument("--required-model", required=True)
+    shadow_packet.add_argument("--requested-effort", choices=("medium", "high", "xhigh"), required=True)
+    shadow_packet.add_argument("--review-context-contract-id", help="schema-v4 contract used only for historical case rule evaluation")
+    shadow_packet.add_argument("--review-context-brief-source", help="hash-matching brief source used only for historical case rule evaluation")
+    shadow_packet.add_argument("--frozen-invariant", action="append", default=[]); shadow_packet.add_argument("--evidence", action="append", default=[])
+    model_begin = commands.add_parser("begin-model-review")
+    model_begin.add_argument("--attempt-id", required=True); model_begin.add_argument("--packet-id", required=True)
+    model_begin.add_argument("--provider", required=True); model_begin.add_argument("--model", required=True); model_begin.add_argument("--effort", required=True)
+    model_begin.add_argument("--fresh-session-id", required=True); model_begin.add_argument("--prompt-source", required=True); model_begin.add_argument("--started-at", required=True)
+    model_record = commands.add_parser("record-model-review")
+    model_record.add_argument("--invocation-id", required=True); model_record.add_argument("--compiled-review-policy-id", required=True)
+    model_result = model_record.add_mutually_exclusive_group(required=True)
+    model_result.add_argument("--raw-result"); model_result.add_argument("--unavailable-reason")
+    qualification = commands.add_parser("record-reviewer-qualification")
+    qualification.add_argument("--review-rule-record-id", required=True); qualification.add_argument("--compiled-review-policy-id", required=True)
+    qualification.add_argument("--model", required=True); qualification.add_argument("--effort", choices=("medium", "high", "xhigh"), required=True)
+    qualification.add_argument("--reviewer-prompt-id", required=True); qualification.add_argument("--reviewer-prompt-source", required=True)
+    qualification.add_argument("--case-set-version", required=True); qualification.add_argument("--prompt-only-comparison-id", required=True)
+    qualification.add_argument("--model-review-audit-id", action="append", required=True)
+    qualification.add_argument("--reviewer", required=True); qualification.add_argument("--qualified-at", required=True)
+    supersession = commands.add_parser("supersede-reviewer-qualification")
+    supersession.add_argument("--old-qualification-id", required=True); supersession.add_argument("--new-qualification-id", required=True)
+    supersession.add_argument("--reviewer", required=True); supersession.add_argument("--reason", required=True)
+    supersession.add_argument("--superseded-at", required=True)
+    suspension = commands.add_parser("suspend-reviewer-rule")
+    suspension.add_argument("--reviewer-qualification-id", required=True); suspension.add_argument("--reviewer", required=True)
+    suspension.add_argument("--reason", required=True); suspension.add_argument("--suspended-at", required=True)
+    audit = commands.add_parser("record-model-review-audit")
+    audit.add_argument("--model-review-result-record-id", required=True); audit.add_argument("--reviewer", required=True)
+    audit.add_argument("--verdict", choices=("confirmed", "rejected"), required=True)
+    audit.add_argument("--finding", required=True); audit.add_argument("--audited-at", required=True)
+    apply_review = commands.add_parser("apply-model-review")
+    apply_review.add_argument("--model-review-result-record-id", required=True); apply_review.add_argument("--compiled-review-policy-id", required=True)
+    apply_review.add_argument("--reviewer-prompt-id", required=True); apply_review.add_argument("--case-set-version", required=True)
+    experience = commands.add_parser("create-review-experience-candidate"); experience.add_argument("--source", required=True)
+    promote_experience = commands.add_parser("promote-review-experience")
+    promote_experience.add_argument("--review-experience-candidate-record-id", required=True); promote_experience.add_argument("--reviewer", required=True)
+    promote_experience.add_argument("--reason", required=True); promote_experience.add_argument("--promoted-at", required=True)
+    prompt_comparison = commands.add_parser("record-prompt-only-comparison")
+    prompt_comparison.add_argument("--prompt-only-arm-source", required=True)
+    prompt_comparison.add_argument("--reviewer-closed-loop-arm-source", required=True)
     supporting = commands.add_parser("register-supporting-artifact"); supporting.add_argument("--path", required=True)
     supporting.add_argument("--role", default="supporting-derived"); supporting.add_argument("--note", required=True)
+    supporting.add_argument("--reviewer", required=True)
     comparison_p = commands.add_parser("render-size-comparison")
     comparison_p.add_argument("--identity", required=True); comparison_p.add_argument("--previous", required=True)
     comparison_p.add_argument("--reference", required=True); comparison_p.add_argument("--candidate", required=True)
@@ -4012,7 +6977,7 @@ def build_parser() -> argparse.ArgumentParser:
     equipment_candidate_p.add_argument("--attempt-id")
     equipment_remediation = commands.add_parser("remediate-equipment-candidate")
     equipment_remediation.add_argument("--parent-attempt", required=True); equipment_remediation.add_argument("--feedback-id", required=True)
-    equipment_remediation.add_argument("--mode", choices=("palette", "transparent-rgb"), required=True)
+    equipment_remediation.add_argument("--mode", choices=("palette", "transparent-rgb", "alpha-islands"), required=True)
     equipment_remediation.add_argument("--output", required=True); equipment_remediation.add_argument("--preview", required=True)
     equipment_review = commands.add_parser("render-equipment-review")
     equipment_review.add_argument("--attempt-id", required=True); equipment_review.add_argument("--output", required=True)
@@ -4022,17 +6987,37 @@ def build_parser() -> argparse.ArgumentParser:
     style_verdict.add_argument("--reason", required=True); style_verdict.add_argument("--decided-at", required=True)
     runtime_copy_p = commands.add_parser("register-runtime-copy")
     runtime_copy_p.add_argument("--source", required=True); runtime_copy_p.add_argument("--target", required=True)
+    sync_provenance_p = commands.add_parser("sync-attempt-provenance")
+    sync_provenance_p.add_argument("--attempt-id", required=True); sync_provenance_p.add_argument("--reviewer", required=True)
+    sync_provenance_p.add_argument("--reason", required=True); sync_provenance_p.add_argument("--synced-at", required=True)
+    invalidate_sync_p = commands.add_parser("invalidate-attempt-provenance-sync")
+    invalidate_sync_p.add_argument("--attempt-provenance-sync-id", required=True); invalidate_sync_p.add_argument("--reviewer", required=True)
+    invalidate_sync_p.add_argument("--reason", required=True); invalidate_sync_p.add_argument("--invalidated-at", required=True)
+    chroma_fix_p = commands.add_parser("remediate-exact-chroma")
+    chroma_fix_p.add_argument("--attempt-id", required=True); chroma_fix_p.add_argument("--path", action="append", required=True)
+    chroma_fix_p.add_argument("--reviewer", required=True); chroma_fix_p.add_argument("--reason", required=True)
+    chroma_fix_p.add_argument("--authorized-at", required=True)
     relicense_p = commands.add_parser("relicense-public-artifact")
     relicense_p.add_argument("--path", action="append", required=True)
     relicense_p.add_argument("--from-license", default="project-owned")
     relicense_p.add_argument("--to-license", default="CC-BY-4.0")
+    relicense_p.add_argument("--reconcile-existing-projection", action="store_true")
     relicense_p.add_argument("--reviewer", required=True); relicense_p.add_argument("--reason", required=True)
     relicense_p.add_argument("--decided-at", required=True)
+    prune_provenance_p = commands.add_parser("prune-missing-public-provenance")
+    prune_provenance_p.add_argument("--path", action="append", required=True)
+    prune_provenance_p.add_argument("--reviewer", required=True); prune_provenance_p.add_argument("--reason", required=True)
+    prune_provenance_p.add_argument("--decided-at", required=True)
     adopt_p = commands.add_parser("adopt-reviewed-sprite")
     adopt_p.add_argument("--contract-id", required=True); adopt_p.add_argument("--source", required=True)
     adopt_p.add_argument("--candidate", required=True); adopt_p.add_argument("--preview", required=True)
     adopt_p.add_argument("--size-comparison", required=True); adopt_p.add_argument("--reviewer", required=True)
     adopt_p.add_argument("--reason", required=True); adopt_p.add_argument("--accepted-at", required=True)
+    recontract_p = commands.add_parser("recontract-reviewed-attempt")
+    recontract_p.add_argument("--source-attempt-id", required=True); recontract_p.add_argument("--contract-id", required=True)
+    recontract_p.add_argument("--candidate"); recontract_p.add_argument("--processing")
+    recontract_p.add_argument("--reviewer", required=True); recontract_p.add_argument("--reason", required=True)
+    recontract_p.add_argument("--accepted-at", required=True)
     migrate_component_p = commands.add_parser("migrate-component")
     migrate_component_p.add_argument("--contract-id", required=True); migrate_component_p.add_argument("--source", required=True)
     migrate_component_p.add_argument("--prepared", required=True); migrate_component_p.add_argument("--processing", required=True)
@@ -4047,6 +7032,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     assembly_p = commands.add_parser("create-assembly"); assembly_p.add_argument("--spec", required=True)
     render_assembly_p = commands.add_parser("render-assembly"); render_assembly_p.add_argument("--assembly-id", required=True)
+    resolve_transaction_p = commands.add_parser("resolve-transaction")
+    resolve_transaction_p.add_argument("--transaction-id", required=True); resolve_transaction_p.add_argument("--reviewer", required=True)
+    resolve_transaction_p.add_argument("--reason", required=True); resolve_transaction_p.add_argument("--decided-at", required=True)
     check_p = commands.add_parser("check"); check_p.add_argument("--strict", action="store_true")
     return parser
 
@@ -4054,10 +7042,23 @@ def build_parser() -> argparse.ArgumentParser:
 def run(args: argparse.Namespace) -> dict[str, Any]:
     store = Store(Path(args.root).resolve())
     handlers = {
-        "migrate-legacy": migrate_legacy, "approve-anchor": approve_anchor, "create-series": create_series,
+        "migrate-legacy": migrate_legacy,
+        "register-art-direction-manifest": register_art_direction_manifest,
+        "register-art-direction-profile": register_art_direction_profile,
+        "register-family-profile": register_family_profile,
+        "register-material-language": register_material_language,
+        "create-asset-brief": create_asset_brief,
+        "create-scene-brief": create_scene_brief,
+        "approve-anchor": approve_anchor, "create-series": create_series,
         "set-series-output-limit": set_series_output_limit,
         "create-contract": create_contract, "create-equipment-contract": create_equipment_contract,
-        "register-local-reference": register_local_reference, "create-job": create_job,
+        "register-local-reference": register_local_reference,
+        "record-anchor-verdict": record_anchor_verdict,
+        "record-acceptance-case-result": record_acceptance_case_result,
+        "render-art-direction-review": render_art_direction_review,
+        "record-art-direction-verdict": record_art_direction_verdict,
+        "create-job": create_job,
+        "migrate-ready-job-bindings": migrate_ready_job_bindings,
         "retry": retry, "ingest": ingest, "prepare": prepare, "attach-mask": attach_mask,
         "attach-identity-mask": attach_identity_mask,
         "calibrate-core": calibrate_core,
@@ -4068,11 +7069,28 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "reject": lambda s, a: decide(s, a, "rejected"),
         "approve-exception": approve_exception, "promote": promote,
         "refresh-promoted-preview": refresh_promoted_preview,
+        "create-pose-proof-exemption": create_pose_proof_exemption,
         "create-composition": create_composition, "render-pose-guide": render_pose_guide,
         "compile-prompt": compile_prompt, "begin-generation": begin_generation,
         "compile-equipment-prompt": compile_equipment_prompt,
         "record-generation-failure": record_generation_failure,
         "attach-annotations": attach_annotations, "record-advisory-review": record_advisory_review,
+        "index-review-history": index_review_history, "audit-review-case": audit_review_case,
+        "register-project-review-policy": register_project_review_policy,
+        "create-review-rule": create_review_rule, "create-review-case": create_review_case,
+        "compile-review-policy": compile_review_policy_record,
+        "create-model-review-packet": create_model_review_packet,
+        "create-shadow-model-review-packet": create_shadow_model_review_packet,
+        "begin-model-review": begin_model_review,
+        "record-model-review": record_model_review,
+        "record-reviewer-qualification": record_reviewer_qualification,
+        "supersede-reviewer-qualification": supersede_reviewer_qualification,
+        "suspend-reviewer-rule": suspend_reviewer_rule,
+        "record-model-review-audit": record_model_review_audit,
+        "apply-model-review": apply_model_review,
+        "create-review-experience-candidate": create_review_experience_candidate,
+        "promote-review-experience": promote_review_experience,
+        "record-prompt-only-comparison": record_prompt_only_comparison,
         "register-supporting-artifact": register_supporting_artifact,
         "render-size-comparison": render_size_comparison,
         "normalize-reviewed-sprite": normalize_reviewed_sprite,
@@ -4081,10 +7099,16 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "render-equipment-review": render_equipment_review,
         "record-equipment-style-verdict": record_equipment_style_verdict,
         "register-runtime-copy": register_runtime_copy,
+        "sync-attempt-provenance": sync_attempt_provenance,
+        "invalidate-attempt-provenance-sync": invalidate_attempt_provenance_sync,
+        "remediate-exact-chroma": remediate_exact_chroma_artifacts,
         "relicense-public-artifact": relicense_public_artifacts,
+        "prune-missing-public-provenance": prune_missing_public_provenance,
         "adopt-reviewed-sprite": adopt_reviewed_sprite,
+        "recontract-reviewed-attempt": recontract_reviewed_attempt,
         "migrate-component": migrate_component, "derive-component": derive_component,
         "create-assembly": create_assembly, "render-assembly": render_assembly,
+        "resolve-transaction": resolve_transaction,
         "check": lambda s, a: strict_check(s, a.strict),
     }
     return handlers[args.command](store, args)

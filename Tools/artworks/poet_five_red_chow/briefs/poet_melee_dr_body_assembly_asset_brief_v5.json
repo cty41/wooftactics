@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "briefKind": "asset",
+  "briefId": "poet-melee-dr-body-assembly-v5",
+  "assetId": "poet-five-red-chow-melee-dr-body-assembly-v5",
+  "family": "actor",
+  "purpose": "Bind the exact cty41-selected body-first image as the body component for one deterministic Melee DR sword assembly. This project only requires a clear melee attack read, not a rigorously authored Release-to-Impact keyframe.",
+  "firstRead": ["five-red-chow-poet", "forward-leaning-melee-body", "four-attached-paws", "equipment-free-component"],
+  "targetContexts": ["master-256-assembly-review", "preview-128-assembly-review"],
+  "identityInvariants": [
+    "preserve the exact selected calibrated body bytes and framing from job-0a890f2b18e97967-a008",
+    "retain the cinnamon-red Chow identity, upright compact capsule, curled tail and exactly four visible attached paws",
+    "the body component remains equipment-free; the approved sword is introduced only as a deterministic assembly component",
+    "no scabbard, clothing, vessel, guqin, jewelry or VFX"
+  ],
+  "shapeStrategy": "No new body generation or body edit. Recontract the exact selected body and derive semantic body/paw layers from its passing mask.",
+  "colorStrategy": "Preserve the selected body pixels exactly; cty41 explicitly accepted the existing shading for the relaxed project requirement.",
+  "materialStrategy": "No additional material processing.",
+  "attentionRole": "primary",
+  "allowedVariation": ["none in the selected body pixels", "deterministic sword placement occurs only in the later assembly"],
+  "forbidden": ["new ImageGen", "body repaint", "body rescale", "body reframing", "scabbard", "additional equipment", "runtime binding"],
+  "resolvedHistory": "cty41 initially requested flatter shading, then explicitly judged the displayed body acceptable because the project only needs a readable melee attack, and authorized adding the approved sword with the scabbard hidden.",
+  "referenceResponsibilities": [
+    {"role": "selected-body-source", "path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a008/calibrated.png", "sha256": "e6feabd6ca60bf75701528c30056103e7781cb6fe5234de353c14caf41ef0404", "responsibility": "Exact immutable body appearance and framing accepted by cty41."}
+  ],
+  "requiredReviewPanels": ["candidate-master", "preview-128", "identity-overlay", "paw-contact", "equipment-absence"],
+  "acceptanceCases": [
+    {"caseId": "POET-MELEE-BODY-V5-EXACT-001", "evidence": ["candidate-master"], "automatedFacts": ["candidate SHA equals selected source SHA"], "humanChecks": ["the displayed body is the body cty41 accepted"], "passCriteria": "Selected body bytes and framing are preserved."},
+    {"caseId": "POET-MELEE-BODY-V5-IDENTITY-001", "evidence": ["candidate-master", "identity-overlay"], "automatedFacts": ["approved identity anchor remains bound"], "humanChecks": ["Poet identity and compact capsule remain readable"], "passCriteria": "The actor remains the approved Poet identity."},
+    {"caseId": "POET-MELEE-BODY-V5-TOPOLOGY-001", "evidence": ["paw-contact"], "automatedFacts": ["passing report has four paw labels, no arm/leg labels and multi-pixel core contact"], "humanChecks": ["four attached paws are acceptable for the relaxed melee presentation"], "passCriteria": "No long connecting limbs appear."},
+    {"caseId": "POET-MELEE-BODY-V5-EQUIPMENT-001", "evidence": ["equipment-absence"], "automatedFacts": ["equipment label is absent"], "humanChecks": ["body contains no sword or scabbard"], "passCriteria": "The component is clean for deterministic sword-only assembly."}
+  ]
+}

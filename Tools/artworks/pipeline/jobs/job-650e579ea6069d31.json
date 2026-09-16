@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 3,
+  "jobId": "job-650e579ea6069d31",
+  "state": "ready",
+  "contractId": "contract-57bf5c0526078c9d",
+  "contractSha256": "0af903e867b06faffc66bfa9456a31396051bc3ce1746f17d2fd2227d4593df1",
+  "prompt": null,
+  "inputs": [
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-1ea74728add24f4e/job-1ea74728add24f4e-a001/prepared.png",
+      "sha256": "36a73f0af19e8a189ef65ef292912518b805337c442104f66f750b5b9e4b4e5f"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-bacaa1733ca8a9a1/job-bacaa1733ca8a9a1-a001/prepared.png",
+      "sha256": "adccfc2c04a6637f8b7c102381dbbb2cb6bbcac05e4af225965912972b4c7999"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-93fe1ce8ccd8acf7/job-93fe1ce8ccd8acf7-a001/prepared.png",
+      "sha256": "6aaab932cbb581ae851d36b3451533febacb5abdabe7fd0f26e3cb28f6472a76"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-1814105c6a26c0a4/job-1814105c6a26c0a4-a001/prepared.png",
+      "sha256": "8ecf3de0f6859965cdc08ebae8735bfaa8d134a701e855ba422262fbf71ce0cf"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-8894f888c899803c/job-8894f888c899803c-a001/prepared.png",
+      "sha256": "fbf03fb212fc71587bc4171f87acd5318f0c1af3949df084ded43c07c8ab30e0"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-c599f86539757365/job-c599f86539757365-a001/prepared.png",
+      "sha256": "aae89655c7ebec5b5abf4ac093df8f63cceba8b3e866e1e7945deb5d1ba7bd57"
+    }
+  ],
+  "target": {
+    "direction": "down-right",
+    "pose": "idle"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": false,
+  "sourceMode": "derived"
+}

@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 2,
+  "migrationId": "job-migration-b093a1e901a6707e",
+  "oldJobId": "job-21e94d8920798d0d",
+  "oldJobSha256": "c8d35b682f8d8f5c7964a27b6c27b16809a89d1c7e27e5b7f66361cc20d5aa58",
+  "newJobId": "job-6a8a49ffd6d7ac2e",
+  "newJobSha256": "bbc41fbf9bf715cbb9f68be54d6621f6a0467c72d7d8d116952739487f444817",
+  "changes": [
+    {
+      "path": "Tools/artworks/pure_run/equipment/prompt_necromancer_dagger.md",
+      "previousSha256": "355c947452266db0057025b1d55218884081a97ff15f707f189c160a4cfaf9b2",
+      "currentSha256": "75d784f9391079bc42051c000696386df36e76b8f8bedfc2b5ba2a1366ea4c70"
+    }
+  ],
+  "historicalAttempts": [
+    {
+      "attemptId": "job-21e94d8920798d0d-a001",
+      "state": "prepared",
+      "sha256": "f5ca7f02cbfa451197f9f601b4bdc1d9b02a7686ec43775bfc3d03814435e4e2"
+    }
+  ],
+  "reason": "Direct user authorized migration of committed equipment prompt bindings blocking unified verification.",
+  "authorizedBy": "direct-user-confirmation"
+}

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-679bcd5803c7f454",
+  "attemptId": "job-0a890f2b18e97967-a001",
+  "candidateSha256": "97b4776abd5a1a6a7fa61c6c46ab6fbb29de6fdc1e752fce021aabaabe3fd82a",
+  "reviewer": "pipeline-agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "The body-first split succeeds at removing all weapon and scabbard drift, keeps one upright compact capsule, shows four visible paws without long leg segments, and preserves the cinnamon-red Chow identity.",
+    "The whole body leans down-right more coherently than full-sprite a002, and the complete silhouette has safe canvas margin."
+  ],
+  "defects": [
+    "The requested flat-value correction fails: the torso contains a large smooth orange-to-dark gradient, volumetric belly modeling, and two added bright forehead highlight ovals that are not present in the approved source treatment.",
+    "The two front paws remain oversized circular fists and project too far from the capsule edge; their action read is closer to floating/running than transmitting a committed downslash through a future grip.",
+    "The lean is visible but the Release-to-Impact compression is still weak at 256 scale, so the pose may read as a generic forward hop rather than a melee peak.",
+    "Deterministic validation fails lower-core width, row continuity, size tolerance and semantic-mask containment; these prevent this attempt from passing the technical gate."
+  ],
+  "nextPromptDelta": "Do not generate another body automatically. First obtain cty41's 256-size visual judgment; if continued, a stronger method than text-only value constraints is required for flat shading.",
+  "recordedAt": "2026-09-12T13:18:45+08:00",
+  "authorType": "agent",
+  "categories": [
+    "topology",
+    "pose_axis",
+    "core_geometry",
+    "processing",
+    "identity"
+  ],
+  "disposition": "technical_failed",
+  "frozenInvariants": [
+    "Keep the equipment-free body-first split, upright capsule, safe canvas margin, cinnamon-red identity and absence of long connecting limbs."
+  ],
+  "pendingFixes": [
+    "Match the approved Idle's sparse flat value grouping with no smooth body gradient or extra highlights.",
+    "Reduce and embed both front paws into the capsule edge while preserving a clear future grip corridor and stronger whole-core compression."
+  ]
+}

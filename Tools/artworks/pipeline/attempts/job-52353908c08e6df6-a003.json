@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 2,
+  "attemptId": "job-52353908c08e6df6-a003",
+  "jobId": "job-52353908c08e6df6",
+  "ordinal": 3,
+  "parentAttemptId": "job-52353908c08e6df6-a002",
+  "retryFeedbackId": "feedback-74399dbcfc226c91",
+  "promptDelta": "保持视觉内容不变，使用同一语义蒙版与已批准 anchor mask 参数执行确定性 256 校准",
+  "technicalRemediation": true,
+  "state": "technical_failed",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/concepts/poet_five_red_chow_idle_dr_technical_256_v01.png",
+      "sha256": "11fafd92bef34c740eaac53e6f390600ea3483c76115e17ecd4ea44bbea5831d"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-52353908c08e6df6/job-52353908c08e6df6-a003/raw.png",
+      "sha256": "11fafd92bef34c740eaac53e6f390600ea3483c76115e17ecd4ea44bbea5831d"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-52353908c08e6df6/job-52353908c08e6df6-a003/prepared.png",
+      "sha256": "c2be8e4b67217f47cb07ebf1aaddbb3e9589f029b0768c5c8e8247f07c7c35ea"
+    },
+    "maskSource": {
+      "path": "Tools/artworks/poet_five_red_chow/supporting/idle_dr_core_mask_256_v01.png",
+      "sha256": "0fb3894b4810aed7093d6dc4b20a1f51ce122d81880e1d8b429f0ca316eea295"
+    },
+    "mask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-52353908c08e6df6/job-52353908c08e6df6-a003/mask.png",
+      "sha256": "0fb3894b4810aed7093d6dc4b20a1f51ce122d81880e1d8b429f0ca316eea295"
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-496fdb2c25e586f8.json",
+    "sha256": "1aa20e00968b23f437bf44cac04666b6c6759edd809c501b6a03016b8db4e28d"
+  },
+  "approvalId": null,
+  "feedbackId": "feedback-42d105b7ba78d447",
+  "preparation": {
+    "chroma": null,
+    "chromaTolerance": 0
+  },
+  "annotationId": "annotations-28fdcf573850b5bf"
+}

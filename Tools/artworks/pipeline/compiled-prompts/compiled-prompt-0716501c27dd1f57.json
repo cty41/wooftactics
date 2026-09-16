@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "compiledPromptId": "compiled-prompt-0716501c27dd1f57",
+  "jobId": "job-7603439437c554d0",
+  "equipmentProfileSha256": "e23e540c790a57432967d944c82bdad9721f109d2cb6352b3288c0c2c7d7bbb1",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/compiled/poet_ring_pommel_tang_dao_sheathed_ul_projection_job_v1.md",
+    "sha256": "44215afd9d52d3d1169ffce05b9d1eed3024d3ab992b2d63db867a246035b203"
+  }
+}

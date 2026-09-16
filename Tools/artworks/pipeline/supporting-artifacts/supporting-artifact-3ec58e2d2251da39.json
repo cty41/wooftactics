@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-3ec58e2d2251da39",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v14_right_alpha_cleanup_128.png",
+    "sha256": "6719a0d749fac6cbed47373c554bef80602b7e1cf3f8bd94042da0c2757ab58f"
+  },
+  "role": "supporting-derived",
+  "note": "128 derivative of right-alpha-cleaned UL review; no approval, promotion or runtime binding.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

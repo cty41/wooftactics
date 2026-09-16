@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-d4b5aec242292938",
+  "artifact": {
+    "path": "Tools/artworks/pure_run/art_direction/reviews/equipment_anchor_candidate_board_v1.png",
+    "sha256": "0a0dfec82c2636fe1bbbe95906bb2ff2c65733a7ca6a166e252b81ce445a2fcd"
+  },
+  "role": "review-derived",
+  "note": "项目级Art Direction首批装备孤立与角色实装职责锚点候选板；唐刀实装仍待新Idle候选"
+}

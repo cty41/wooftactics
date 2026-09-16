@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 4,
+  "acceptanceCaseResultId": "acceptance-case-result-43018981292ebb63",
+  "attemptId": "job-392eb89806af5b42-a001",
+  "caseId": "POET-IDENTITY-001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-392eb89806af5b42/job-392eb89806af5b42-a001/prepared.png",
+    "sha256": "940606701f0cdf56a0ccd41db3486849197f699c4cab0483fc52889fea203456"
+  },
+  "contractId": "contract-57bf5c0526078c9d",
+  "contractSha256": "0af903e867b06faffc66bfa9456a31396051bc3ce1746f17d2fd2227d4593df1",
+  "evidence": {
+    "identity-overlay": {
+      "path": "Tools/artworks/pipeline/reviews/job-392eb89806af5b42-a001/overlay.png",
+      "sha256": "9ee981a98baa979b34fca74553baaabd704ff5ad8a58c8a0713ca24e130c7eb7"
+    },
+    "candidate-master": {
+      "path": "Tools/artworks/pipeline/artifacts/job-392eb89806af5b42/job-392eb89806af5b42-a001/prepared.png",
+      "sha256": "940606701f0cdf56a0ccd41db3486849197f699c4cab0483fc52889fea203456"
+    }
+  },
+  "automatedFacts": [
+    "contract binds approved poet mother SHA and core geometry passed"
+  ],
+  "automatedResult": "passed",
+  "humanChecks": [
+    "cty41 must confirm face ears five-red body attitude and feet"
+  ],
+  "humanDecision": "pending",
+  "reviewer": "agent",
+  "reason": "Identity evidence ready; human confirmation pending",
+  "decidedAt": "2026-09-03T14:45:00+08:00"
+}

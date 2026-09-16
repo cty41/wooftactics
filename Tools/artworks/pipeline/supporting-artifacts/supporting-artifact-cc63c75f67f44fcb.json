@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-cc63c75f67f44fcb",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_vertical_guard_grip_stick_preview_v07.png",
+    "sha256": "3acea8cc74645f669ae6e4324a5f9bf8769314663fa4bf6194f81a5a61a13268"
+  },
+  "role": "supporting-derived",
+  "note": "Current review-only vertical Cast stick preview following the user's sword anatomy reference: both paws stack immediately below the guard on the sheath throat, with approved short sword/body ratio and tip above ground.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

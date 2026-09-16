@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "compiledPromptId": "compiled-prompt-b15559a673a333a2",
+  "jobId": "job-5d93780ad8556eb4",
+  "poseGuideId": "pose-guide-81e8f49e368cd0f5",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/compiled/poet_cast_dr_vertical_guard_grip_v2_a001.md",
+    "sha256": "6117eb641ce81e3e8439c3790245e3012cbc2e9c738ae0c6b8ad8682bb631ac1"
+  }
+}

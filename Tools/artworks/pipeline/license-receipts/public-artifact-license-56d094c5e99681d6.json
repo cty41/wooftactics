@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "licenseReceiptId": "public-artifact-license-56d094c5e99681d6",
+  "artifacts": [
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_ring_pommel_tang_dao_unsheathed_art_direction_v02.png",
+      "sha256": "d61e708b453cbb6819bb752ae1975bb0227cee86509781be1302c1b3027fc000"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_ring_pommel_tang_dao_unsheathed_art_direction_v03.png",
+      "sha256": "6fab00619ca5843f8970aab5328e3ce6eb9a233752d8b863e88166ac5a66d232"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_body_component_art_direction_v01.png",
+      "sha256": "f8a90d3b3c8195c7713e6fb7d9884b9b5aabf09f0fb2f405080b2bb6fb7cc2e3"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_body_component_art_direction_v03.png",
+      "sha256": "7f0567ab32875b3f6147b6d10e6603b9efd2fd8f89dbe7f4fcb14bef0997d871"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_v7_art_direction_review_v01.png",
+      "sha256": "2f3b601b50d5e009c45afa67a44324613ca7b7543289a76970286da296b684c9"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_v3_source_responsibility_review.png",
+      "sha256": "b8c2c5dc4cf399beefbb227e967968fdb76c5a645bc3ca8858b0ac4aeefe0d23"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_v01_size_comparison.png",
+      "sha256": "cade16762bcee2bad2058b3c33aa1c9271b328ce30f3927be1d40386cfb8cf77"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_ring_pommel_tang_dao_ul_art_direction_review_v03.png",
+      "sha256": "246753ffdb932ff3a6a0d827be46cfc89d7d6dda3ad519f8fb4111826f48a897"
+    }
+  ],
+  "fromLicense": "project-owned",
+  "toLicense": "CC-BY-4.0",
+  "reviewer": "cty41",
+  "reason": "cty41 explicitly authorized these eight exact hash-matched project-generated Poet review/supporting PNGs for public distribution under CC-BY-4.0 during final feat/gd2 PR review.",
+  "decidedAt": "2026-09-16T15:46:59.6530205+08:00",
+  "reconcilesExistingProjection": true
+}

@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 4,
+  "reviewerQualificationId": "reviewer-qualification-66ad8635054cc301",
+  "state": "auto-retry-qualified",
+  "reviewer": "cty41",
+  "ruleId": "CAPSULE-NO-LIMBS-v1",
+  "ruleVersion": 1,
+  "model": "gpt-5.6-sol",
+  "effort": "high",
+  "reviewerPromptId": "pure-run-reviewer-prompt-v1",
+  "reviewerPromptSha256": "ea9a86b3e7e4ee724090fe0c520a4271ce4f38a34184335f865189bcf259a850",
+  "compiledPolicyId": "compiled-review-policy-9300e3319ae32600",
+  "compiledPolicySha256": "9300e3319ae326002ecf5988696284793ae6f518ca4b6e48bd62e5426e16bc53",
+  "caseSetVersion": "capsule-no-limbs-v1-neg-pos-boundary",
+  "reviewRule": {
+    "path": "Tools/artworks/pipeline/review-rules/review-rule-605b2ca5679a5fb1.json",
+    "sha256": "1e4f304c1e73aada9a3d8b8f8782cb15f1af05d92ca23a7ecb55b4ce3bd428ed"
+  },
+  "compiledPolicy": {
+    "path": "Tools/artworks/pipeline/compiled-review-policies/compiled-review-policy-record-9f25ed911f518547.json",
+    "sha256": "3518c128a1592fca3f20bdbbb98676cb6accc4cc929c30480a770e3bbd4cbd58"
+  },
+  "reviewerPrompt": {
+    "path": "Tools/artworks/pure_run/art_direction/review/reviewer_prompt_v1.md",
+    "sha256": "ea9a86b3e7e4ee724090fe0c520a4271ce4f38a34184335f865189bcf259a850"
+  },
+  "promptOnlyComparison": {
+    "promptComparisonId": "prompt-only-comparison-5f0ad61cbbfefc99",
+    "path": "Tools/artworks/pipeline/prompt-only-comparisons/prompt-only-comparison-5f0ad61cbbfefc99.json",
+    "sha256": "476853b8183aba75c20c20061358216faf9e84af264b1e2e79241c0015be54ca"
+  },
+  "qualificationAudits": [
+    {
+      "modelReviewAuditId": "model-review-audit-6f847a8a014f64e9",
+      "path": "Tools/artworks/pipeline/model-review-audits/model-review-audit-6f847a8a014f64e9.json",
+      "sha256": "80210d22fa106a71e3f2064973240f3388ab650d6ed589791e73efad1c9e3cce"
+    },
+    {
+      "modelReviewAuditId": "model-review-audit-a0d2287a2f050df9",
+      "path": "Tools/artworks/pipeline/model-review-audits/model-review-audit-a0d2287a2f050df9.json",
+      "sha256": "25bd20f35382d4336d19b270e588dfc8046bfb1c0750072fa901f3d16ebbcc41"
+    },
+    {
+      "modelReviewAuditId": "model-review-audit-b0197e3c325c2da6",
+      "path": "Tools/artworks/pipeline/model-review-audits/model-review-audit-b0197e3c325c2da6.json",
+      "sha256": "ad67b72e7450952fb3aa1e967760f0901429365162840fb334f9ce97952b2bc9"
+    }
+  ],
+  "qualifiedAt": "2026-09-04T21:15:15+08:00"
+}

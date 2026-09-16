@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 4,
+  "anchorVerdictId": "anchor-verdict-8c2e613edd03644e",
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+    "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+  },
+  "family": "actor",
+  "responsibilities": [
+    "Sole Poet Death identity, five-red Chow breed, palette, compact core volume, broad ruff, short muzzle, curled tail and no-arm four-paw topology."
+  ],
+  "excludedUses": [
+    "Do not copy standing pose or worn equipment placement. Hunter Death owns only death direction, straight short-thick supine topology and expression language. Sheathed-dao equipment anchor owns only detached dao form. Guide owns all screen geometry."
+  ],
+  "review": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_death_source_responsibility_review_v01.png",
+    "sha256": "c441dad8fb530d9fae0e06c15b7084b7a365c673861427f0634163247a4af8e9"
+  },
+  "decision": "approved-anchor",
+  "reviewer": "cty41",
+  "reason": "cty41 confirmed Hunter-style horizontal capsule death with one fully sheathed dao detached below the corpse, ring left and sheath tip right.",
+  "decidedAt": "2026-09-14T12:06:47.4813250+08:00"
+}

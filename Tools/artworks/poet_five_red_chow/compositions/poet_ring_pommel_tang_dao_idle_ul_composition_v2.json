@@ -1,0 +1,30 @@
+{
+  "canvas": [256, 256],
+  "bodyLayer": false,
+  "coreAxis": {"bottom": [128, 231], "top": [128, 121], "tiltDegrees": [-2.0, 2.0]},
+  "footCenter": [128, 236],
+  "weapon": {
+    "hiddenGrip": [161, 164],
+    "exitWindow": [151, 143, 180, 180],
+    "tipRegion": [141, 207, 164, 235],
+    "guardWindow": [149, 158, 172, 185],
+    "bladeCenterline": [149, 154, 161, 226],
+    "maxBladeWidthPx": 16,
+    "maxGemAreaPx": 0
+  },
+  "forbiddenRegions": [
+    {"name": "face-on-back", "rect": [100, 120, 158, 175]},
+    {"name": "front-layer-left-free-paw", "rect": [80, 150, 110, 210]}
+  ],
+  "requiredHiddenLabels": ["near_hand", "far_hand", "equipment"],
+  "visibleAreaCaps": {"near_hand": 0.35, "far_hand": 0.35, "equipment": 0.45},
+  "equipmentState": {"scabbard": "present", "staticEffects": "absent"},
+  "screenSpaceIntent": {
+    "direction": "upper-left back view",
+    "ringPommel": "upper-right outside or touching the shoulder silhouette",
+    "scabbard": "steep behind-body axis descending slightly toward lower-left",
+    "holdingPaw": "screen-right far paw behind core; only outer arc may remain visible",
+    "freePaw": "screen-left near paw behind core; no equipment contact",
+    "feet": "two rear paws visible at baseline"
+  }
+}

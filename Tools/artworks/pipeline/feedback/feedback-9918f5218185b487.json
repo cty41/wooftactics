@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-9918f5218185b487",
+  "attemptId": "job-43700d5eeac09fb6-a001",
+  "candidateSha256": "3da253f76ab53ba41df304cdd17a6130c99649ab3faa43eee38a5893e04a2a08",
+  "reviewer": "cty41",
+  "verdict": "retry",
+  "strengths": [
+    "七弦方向、深色漆木与无雁柱身份可保留"
+  ],
+  "defects": [
+    "琴体过于像普通木板；相对诗人角色过长，不像能背在背上的旅行古琴"
+  ],
+  "nextPromptDelta": "生成紧凑旅行古琴，完整对角长度约135px、垂直AABB约95px；琴体不再是直边木板，首宽尾收并有清楚收腰与小足",
+  "recordedAt": "2026-08-30T09:20:02.1144782+08:00",
+  "authorType": "human",
+  "categories": [
+    "identity",
+    "core_geometry"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "七弦、深栗黑漆、三分之四展示、无桌架和无雁柱"
+  ],
+  "pendingFixes": [
+    "缩短到约角色身高的便携比例；强化收腰、首尾轮廓、岳山、龙龈和小琴足；体现可配背带包裹的旅行感但不生成背包或角色"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-97bf6cbd8f5a76cf",
+  "attemptId": "job-52353908c08e6df6-a001",
+  "candidateSha256": "3a45d4c937a6b7368b5e0f2db30218cea10b25a6860cde63286ca4033b4a1a7b",
+  "reviewer": "agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "五红土松身份、胶囊轮廓、四爪和卷尾均清晰"
+  ],
+  "defects": [
+    "技术流程提前 validate，原始 1254 画布尚未附语义蒙版并校准到 256"
+  ],
+  "nextPromptDelta": "保持同一 raw，仅执行语义蒙版、注释和尺寸校准技术补救",
+  "recordedAt": "2026-08-29T21:12:54.1877632+08:00",
+  "authorType": "agent",
+  "categories": [
+    "processing"
+  ],
+  "disposition": "technical_failed",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "技术流程提前 validate，原始 1254 画布尚未附语义蒙版并校准到 256"
+  ]
+}

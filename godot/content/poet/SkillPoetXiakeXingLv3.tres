@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="SkillDefinitionResource" format=3 uid="uid://cyfypr0dbbs1g"]
+
+[ext_resource type="Script" path="res://src/Tactics.Godot.Adapter/Runtime/SkillDefinitionResource.cs" id="1_idbqt"]
+
+[resource]
+script = ExtResource("1_idbqt")
+ContentIdValue = "skill.poet.xiake-xing.lv3"
+SourceId = "godot.skill.poet.xiake-xing.lv3"
+DisplayName = "侠客行"
+Description = "侠客行"
+RoleValue = "Poet"
+KindValue = "Active"
+Level = 3
+ManaCost = 6
+MinRange = 1
+MaxRange = 5
+ExecutionKindValue = "PoetCharge"
+Damage = 1
+DamageKindValue = "Physical"
+BranchId = "poet.sword-immortal"
+PrerequisiteContentIdValue = "skill.poet.xiake-xing.lv2"
+PrerequisiteBranchId = "poet.sword-immortal"
+RequiredAttribute = "Strength"
+MinimumAttribute = 7
+KillManaRefund = 6
+AuthoringSourceKindValue = "GodotAuthored"

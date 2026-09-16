@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-56ddd0e96a223ade",
+  "attemptId": "job-f173ef66666f90e0-a001",
+  "candidateSha256": "7adc872e188154c9ea75696d31357b60c81a867e7c4b730e647d45626bc8ff21",
+  "reviewer": "pipeline-agent",
+  "verdict": "retry",
+  "strengths": [
+    "The candidate cleanly obeys the one-visible-eye/one-short-tear UL expression rule and reads as a rear-left recoil without exposing a full front face.",
+    "The fully sheathed ring-pommel dao stays behind the body and appears only as a small screen-right edge fragment; there is no active grip, bare blade, impact flash or extra VFX."
+  ],
+  "defects": [
+    "Hard four-paw topology failure: only one front paw is visible; the second front paw has no readable attached outer arc, so the required two-front-paw silhouette is not established.",
+    "Identity/volume drift: the body is a tall smooth oval with a strong side-profile face, rather than the approved compact mostly-back Idle UL capsule and restrained ruff/value grouping.",
+    "The screen-left recoil is subtle; at 128-scale the pose risks reading as a static side-view reaction rather than the same strong frozen Hit moment as DR.",
+    "The one visible front paw is oversized and round, while both hind paws are small flat slivers compared with approved Poet paw proportions."
+  ],
+  "nextPromptDelta": "Copy Image 1 rear silhouette and compact volume much more literally. Reduce side-profile muzzle visibility. Add the far front paw as a small attached outer arc on the opposite body edge without any arm. Increase the rigid screen-left lean slightly. Shrink the near front paw and restore both hind paws to approved round attached proportions while preserving one eye/one tear and rear-layer weapon.",
+  "recordedAt": "2026-09-14T10:17:47.2473084+08:00",
+  "authorType": "agent",
+  "categories": [],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "Keep one visible eye, one short tear, screen-left recoil direction, rear-layer sheathed ring-pommel dao, no active grip, no bare blade and no impact VFX."
+  ],
+  "pendingFixes": [
+    "cty41 visual verdict on Hit UL a001: accept or retry for a visible second front-paw arc and more literal Idle UL identity/volume."
+  ]
+}

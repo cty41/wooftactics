@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-539e78e83ca12586",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/candidates/poet_five_red_chow_ring_pommel_dao_idle_dr_v03_pending.png",
+    "sha256": "456ac432f2a9ea5e09abb20613ce74f6a11e819d4a99138cb931ad6629f6c768"
+  },
+  "role": "review-derived",
+  "note": "Artwork pilot intermediate or review evidence; non-runtime and not an approved generation input"
+}

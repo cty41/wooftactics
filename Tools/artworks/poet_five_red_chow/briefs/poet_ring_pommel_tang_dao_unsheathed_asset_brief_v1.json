@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "briefKind": "asset",
+  "briefId": "poet-ring-pommel-tang-dao-unsheathed-v1",
+  "assetId": "poet-ring-pommel-tang-dao-unsheathed-v1",
+  "family": "equipment",
+  "purpose": "Generate one isolated drawn straight single-edged ring-pommel Tang dao, with no scabbard or actor, using the two sources confirmed in the current human request.",
+  "firstRead": ["one_drawn_single_edged_straight_dao", "same_empty_ring_grip_guard", "restrained_cartoon_equipment"],
+  "targetContexts": ["isolated-master-256", "actual-size-128", "offline-equipment-review"],
+  "identityInvariants": ["Image 1 empty thick ring pommel", "Image 1 short wrapped grip and compact guard", "straight single-edge blade with an asymmetric tip"],
+  "shapeStrategy": "Expose one straight blade from the existing guard; blunt straight spine and one cutting edge, short oblique tip, never a symmetrical double-edged jian silhouette.",
+  "colorStrategy": "Image 1 controls overall style; Image 2 supplies only restrained metal colors and detail density, not geometry.",
+  "materialStrategy": "Bold controlled outline, few flat value regions; no realism, bloom or airbrushed gradients.",
+  "attentionRole": "secondary",
+  "allowedVariation": ["new exposed single-edged blade", "diagonal isolated inventory presentation"],
+  "forbidden": ["scabbard", "second weapon", "character", "hands", "double-edged blade", "symmetrical spear point", "curved blade", "Image 2 hilt or blade outline"],
+  "referenceResponsibilities": [
+    {"role": "equipment-identity-and-style", "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_dr_v02.png", "sha256": "eb4acedf50fe56d2c216e932a7364686de603a4df40c9bc5f1fe10c22ab55999", "responsibility": "ImageGen Image 1: ring, grip, guard, outline and cartoon style only; remove the sheath completely. Existing anchor verdict is used only for ring identity and detail-budget responsibilities, not approval of this new drawn blade."},
+    {"role": "metal-color-and-detail-reference-only", "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_tang_sword_v01.png", "sha256": "d4a4198fb47a3d84a0c5f6656d1cef0e66af369c3f85a0ae6692d5ae299164bd", "responsibility": "ImageGen Image 2: metal color and detail density only; no blade silhouette, hilt, guard or global style authority."}
+  ],
+  "requiredReviewPanels": ["candidate-master", "actual-size", "two-source-comparison", "ring-grip-guard", "single-edge-tip"],
+  "acceptanceCases": [
+    {"caseId": "POET-DRAWN-DAO-IDENTITY-001", "evidence": ["two-source-comparison", "ring-grip-guard"], "automatedFacts": ["source and candidate hashes bound"], "humanChecks": ["Image 1 ring grip guard and cartoon treatment preserved"], "passCriteria": "Same dao identity, not the double-edged sword's hilt."},
+    {"caseId": "POET-DRAWN-DAO-BLADE-001", "evidence": ["single-edge-tip", "candidate-master"], "automatedFacts": ["prompt explicitly forbids double-edged silhouette"], "humanChecks": ["straight single-edged blade with blunt spine and asymmetric tip", "one weapon without sheath or actor"], "passCriteria": "Unambiguously one drawn straight single-edged Tang dao."},
+    {"caseId": "POET-DRAWN-DAO-STYLE-001", "evidence": ["actual-size", "two-source-comparison"], "automatedFacts": ["RGBA, alpha and size report"], "humanChecks": ["readable at 128", "restrained metal palette and detail", "cty41 style verdict pending"], "passCriteria": "Matches approved cartoon equipment without metallic realism."}
+  ]
+}

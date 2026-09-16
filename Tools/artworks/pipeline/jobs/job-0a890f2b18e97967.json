@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 4,
+  "jobId": "job-0a890f2b18e97967",
+  "state": "ready",
+  "contractId": "contract-36d6d10fc7636f02",
+  "contractSha256": "f5d4cf4c53f2f1913749e01a11cc72e2c8077c1f70e1ebba20ff5dbf5533d5b7",
+  "prompt": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/poet_melee_dr_release_impact_body_v4.txt",
+    "sha256": "d24c87b855f0dd892efa7c69aa2092fc38d7fca49fff1030ef56b3f1111fad5a"
+  },
+  "inputs": [
+    {
+      "role": "image-1-approved-poet-identity-flat-values",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+      "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+    },
+    {
+      "role": "image-2-deterministic-capsule-paw-contact-guide",
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_melee_dr_release_impact_body_pose_guide_v4.png",
+      "sha256": "0440642e2b76e638b214a942d20dc7e74a127ded56c800d5dd5154ce5feaeda8"
+    }
+  ],
+  "target": {
+    "direction": "down-right",
+    "pose": "melee"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": true,
+  "poseGuide": {
+    "poseGuideId": "pose-guide-7dbf206b592058b0",
+    "sha256": "08dc51badb5ac189e10205402a789bcd2e1aab6e426c9305363b9fbe414735fd"
+  },
+  "localReferences": []
+}

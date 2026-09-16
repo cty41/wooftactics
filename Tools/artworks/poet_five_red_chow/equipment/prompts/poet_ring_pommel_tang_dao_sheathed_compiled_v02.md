@@ -1,0 +1,60 @@
+# Pure Run Equipment ImageGen Task Packet
+
+## Category
+- weapon
+
+## Frozen base style
+- clean readable silhouette at 128px
+- crisp controlled outline matching approved Pure Run class weapons
+- restrained flat material shading with only a few deliberate value regions
+- single isolated object on chroma green with no cast shadow
+
+## Category rules
+- use the approved diagonal inventory orientation
+- keep edges bold and mechanically readable
+
+## Reference responsibilities
+- character-style-anchor: Tools/artworks/doge/calibrated/doge_capsule_hunter_color_calibrated_v01.png @ 68a35da9d5d646d497ae7bf99eebc5871bcc5be26a893441d9fcece57877ac07
+- weapon-category-anchor: Tools/artworks/pure_run/equipment/approved/pure_run_equipment_necromancer_dagger_v01.png @ 7b5854a12e2515cabab1f8e263e444e2407d2e77fcfd7c808fb4314b1e837123
+
+## Negative constraints
+- no photorealistic rendering
+- no glossy cinematic lighting or excessive specular highlights
+- no airbrushed gradients, bloom, depth of field, text, border, or watermark
+- do not copy layout, UI frame, or background from a third-party reference
+
+## Feedback delta
+- none
+
+## Base prompt
+# 五红土松诗人：完全入鞘环首刀单图 v2（魔剑士风格校正版）
+
+生成且只生成一把完全入鞘的唐代环首刀。它必须像 Pure Run 魔剑士 Idle DR 身上的剑鞘一样，是为 128px 游戏角色绘制的粗轮廓卡通像素装备，而不是写实武器概念图。
+
+## 风格硬锚点
+
+- 以已批准魔剑士 Idle DR 为装备画风锚点：粗黑/深棕外轮廓、清晰大色块、低细节密度、缩到角色尺寸仍只靠轮廓和主色识别。
+- 只使用 2–3 阶硬边平涂；深红褐鞘身、单块暗影、少量灰银或暗铜包件。
+- 环首画成粗厚、空心、近圆的简单剪影，不在圆环内画动物、花纹或雕塑。
+- 护手、鞘口、鞘尾只保留大而简单的几何包件；最多一处简洁鞘箍。
+- 外轮廓必须明显粗于内部线。内部禁止细线堆叠、密集刻纹、连续高光边、皮革纹理和金属浮雕。
+
+## 唐代形制与状态
+
+- 采用用户提供照片的形制：直身窄长、圆环首、小型护手、长直刀鞘。
+- 刀身完全收入鞘内，不露刀刃或刀尖，不出现第二把刀。
+- 保持直刀，不得弯成日本刀、双刃剑、宽剑或魔法武器。
+
+## 构图
+
+- 屏幕轴从左上到右下，环首和刀柄在左上，鞘尾在右下。
+- 轴线约为水平线以下 48–55°。
+- 为角色远侧左爪在鞘口附近握持预留一个清楚、无装饰的粗柄/鞘口接触段。
+- 完整留边，准备后可见高度目标约 96px。
+
+## 禁止项
+
+- 禁止写实渲染、柔光、渐变、材质噪点、摄影质感、复杂龙纹、金属雕花、宝石、发光和投影。
+- 禁止角色、手、酒囊、古琴、桌面、刀架、文字或场景。
+- 背景必须完全均匀纯 #00ff00。
+

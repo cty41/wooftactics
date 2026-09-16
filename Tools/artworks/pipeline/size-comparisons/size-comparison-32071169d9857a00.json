@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "sizeComparisonId": "size-comparison-32071169d9857a00",
+  "inputs": [
+    {
+      "label": "Identity",
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+        "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+      }
+    },
+    {
+      "label": "Previous",
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_high_guard_mockup_v9_near_upright_calibrated.png",
+        "sha256": "f97b13fcc99f25477efb13c4b9127d9f734393469ffd1282c9400019c38edbc6"
+      }
+    },
+    {
+      "label": "Pose reference",
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_melee_ul_high_guard_v01.png",
+        "sha256": "7fde40f9dc57fd367589ffdc99e35ac49bad6f07b77a9fb1ff2453612056d5b7"
+      }
+    },
+    {
+      "label": "Candidate",
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/candidates/poet_melee_dr_high_guard_v01_reviewed_clean.png",
+        "sha256": "22d198c91f1578e1ed19c491c2b54f1106704b6317c1a59eff49bc422a58f591"
+      }
+    }
+  ],
+  "measurements": [
+    {
+      "label": "Identity",
+      "bbox": [
+        40,
+        57,
+        82,
+        121
+      ],
+      "bboxSize": [
+        42,
+        64
+      ]
+    },
+    {
+      "label": "Previous",
+      "bbox": [
+        31,
+        56,
+        101,
+        117
+      ],
+      "bboxSize": [
+        70,
+        61
+      ]
+    },
+    {
+      "label": "Pose reference",
+      "bbox": [
+        18,
+        47,
+        92,
+        117
+      ],
+      "bboxSize": [
+        74,
+        70
+      ]
+    },
+    {
+      "label": "Candidate",
+      "bbox": [
+        30,
+        55,
+        99,
+        117
+      ],
+      "bboxSize": [
+        69,
+        62
+      ]
+    }
+  ],
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_high_guard_v01_size_comparison.png",
+    "sha256": "cf78b42ceab261098e6e4c1944d73b2549c10dcc554c5b3230667f539202710e"
+  }
+}

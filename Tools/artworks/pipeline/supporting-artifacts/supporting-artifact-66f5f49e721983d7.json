@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-66f5f49e721983d7",
+  "artifact": {
+    "path": "Tools/artworks/pure_run/equipment/concepts/pure_run_equipment_iron_helmet_v04_chroma_source.png",
+    "sha256": "b336def55fce06c29bd94b1e2e486e7bdc7fb99d2c702777659d408d442555dd"
+  },
+  "role": "supporting-derived",
+  "note": "cty41 confirmed this project-generated chroma source is retained by the iron-helmet Attempt/Job lineage and authorized public provenance registration in the PR merge session.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

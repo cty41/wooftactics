@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "briefKind": "asset",
+  "briefId": "poet-idle-ul-body-component-v1",
+  "assetId": "poet-five-red-chow-idle-ul-body-component-v1",
+  "family": "actor",
+  "purpose": "Generate only the native UL back-view poet core, ears and tail for deterministic component assembly; paws and equipment are separate components.",
+  "firstRead": ["five_red_chow_back_identity", "narrow_compact_capsule_core", "body_component_without_paws_or_equipment"],
+  "targetContexts": ["master-256", "component-assembly"],
+  "identityInvariants": ["approved orange five-red chow palette", "two triangular ears", "modest fluffy tail", "narrow compact capsule core matching approved DR dimensions", "native upper-left back view", "no face"],
+  "shapeStrategy": "Draw one continuous core, ears and tail only inside the bound narrow capsule guide. Leave four assembly contact zones unobstructed. Do not draw paws, arms, legs or equipment.",
+  "colorStrategy": "Preserve approved poet colors with flat back-view lighting.",
+  "materialStrategy": "Bold outline, flat values and low detail.",
+  "attentionRole": "primary",
+  "allowedVariation": ["native back redraw of fur contour and tail"],
+  "forbidden": ["any paw", "arm", "leg", "weapon", "guqin", "wineskin", "gourd", "face", "mane seam", "wide column", "pear shape"],
+  "referenceResponsibilities": [{"role": "identity-and-core-anchor", "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png", "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753", "responsibility": "Identity, palette, ears, tail and core proportions only; not face or direction."}],
+  "requiredReviewPanels": ["candidate-master", "preview-128", "identity-context", "core-anchor-overlay", "back-view-inspection", "style-context"],
+  "acceptanceCases": [
+    {"caseId": "POET-UL-BODY-CORE-001", "evidence": ["core-anchor-overlay", "candidate-master"], "automatedFacts": ["core dimensions and bands are compared with anchor"], "humanChecks": ["narrow compact capsule", "simple continuous back silhouette"], "passCriteria": "Core matches approved volume."},
+    {"caseId": "POET-UL-BODY-IDENTITY-001", "evidence": ["identity-context", "back-view-inspection"], "automatedFacts": ["identity anchor hash is bound"], "humanChecks": ["same chow ears palette and tail", "no face or mane seam"], "passCriteria": "Reads as approved poet from behind."},
+    {"caseId": "POET-UL-BODY-ISOLATION-001", "evidence": ["candidate-master"], "automatedFacts": ["body component source mode is generated"], "humanChecks": ["contains no paws equipment or deferred props"], "passCriteria": "Clean body-only component."}
+  ]
+}

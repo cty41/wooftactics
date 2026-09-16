@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 4,
+  "acceptanceCaseResultId": "acceptance-case-result-027f29f626c9c6a8",
+  "attemptId": "job-34f6747e5a1f30d0-a001",
+  "caseId": "POET-FREE-PAW-001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-34f6747e5a1f30d0/job-34f6747e5a1f30d0-a001/prepared.png",
+    "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+  },
+  "contractId": "contract-57bf5c0526078c9d",
+  "contractSha256": "0af903e867b06faffc66bfa9456a31396051bc3ce1746f17d2fd2227d4593df1",
+  "evidence": {
+    "free-paw": {
+      "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v09/free-paw.png",
+      "sha256": "2e51b3df36d1a9fc5912c08806b8fc5555d20ebfc429008639baab63492391ec"
+    },
+    "candidate-master": {
+      "path": "Tools/artworks/pipeline/artifacts/job-34f6747e5a1f30d0/job-34f6747e5a1f30d0-a001/prepared.png",
+      "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+    }
+  },
+  "automatedFacts": [
+    "near hand has no equipment overlap"
+  ],
+  "automatedResult": "passed",
+  "humanChecks": [
+    "cty41 must confirm free paw reads relaxed"
+  ],
+  "humanDecision": "pending",
+  "reviewer": "agent",
+  "reason": "No second contact; visual decision pending",
+  "decidedAt": "2026-09-03T16:00:00+08:00"
+}

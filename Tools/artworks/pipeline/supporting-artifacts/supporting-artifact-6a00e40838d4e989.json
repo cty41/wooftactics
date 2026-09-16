@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-6a00e40838d4e989",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/components/poet_ring_pommel_tang_dao_sheathed_component_clean_v02.png",
+    "sha256": "8ecf3de0f6859965cdc08ebae8735bfaa8d134a701e855ba422262fbf71ce0cf"
+  },
+  "role": "technical-remediation",
+  "note": "用户已批准卡通像素风入鞘环首唐刀v2的确定性色幕规范化中间件，仅供schema v3迁移"
+}

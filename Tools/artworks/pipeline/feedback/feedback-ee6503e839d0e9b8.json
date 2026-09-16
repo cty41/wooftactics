@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-ee6503e839d0e9b8",
+  "attemptId": "job-43b34a4685f71ca2-a007",
+  "candidateSha256": "418da2dff0c5a62fea56adf174e7c3a365f0b33c5630a86bd44dc8b18c41e665",
+  "reviewer": "agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "用户选择继续 Poet-new 的宽度、比例与等距角度；多角色同基线预览已补齐"
+  ],
+  "defects": [
+    "生成色幕存在明显亮度波动，chroma tolerance 90 后 alpha 仍覆盖完整 1254 画布，不能建立诚实核心蒙版"
+  ],
+  "nextPromptDelta": "保持同一 raw 和视觉内容，技术补救提高色幕容差并重新检查透明四角；尾巴继续排除核心",
+  "recordedAt": "2026-08-29T22:04:22.2315723+08:00",
+  "authorType": "agent",
+  "categories": [
+    "chroma",
+    "processing"
+  ],
+  "disposition": "technical_failed",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "生成色幕存在明显亮度波动，chroma tolerance 90 后 alpha 仍覆盖完整 1254 画布，不能建立诚实核心蒙版"
+  ]
+}

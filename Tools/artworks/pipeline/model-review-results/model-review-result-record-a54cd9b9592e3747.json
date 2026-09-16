@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 4,
+  "modelReviewResultRecordId": "model-review-result-record-a54cd9b9592e3747",
+  "invocationId": "model-review-invocation-feb1391483ddef32",
+  "attemptId": "job-69a7e239bb73eef5-a001",
+  "packetId": "model-review-packet-d9815719154d9168",
+  "packetSha256": "fc62de21eedc3670e602771d2a3c51787f42164cb6cd399768e0dd79633e3715",
+  "qualificationMode": true,
+  "provider": "dsh-subagent-current-session",
+  "model": "gpt-5.6-sol",
+  "effort": "medium",
+  "freshSession": true,
+  "freshSessionId": "d73f6915-e90c-4a7f-bda3-0914ecfad8dc",
+  "promptSource": {
+    "path": "Tools/artworks/pure_run/art_direction/review/reviewer_prompt_v1.md",
+    "sha256": "ea9a86b3e7e4ee724090fe0c520a4271ce4f38a34184335f865189bcf259a850"
+  },
+  "rawResult": {
+    "path": "Tools/artworks/pure_run/art_direction/review/shadow_results/capsule_no_limbs_poet_idle_ul_v01_medium_raw.json",
+    "sha256": "b885961e10ed85ff1bc2c3e8a74a3d336faeb3ef9788dfa67b9d744c24ec7654"
+  },
+  "result": {
+    "resultId": "model-review-result-7a1d367b5c3ab51f",
+    "schemaVersion": 1,
+    "packetId": "model-review-packet-d9815719154d9168",
+    "packetSha256": "fc62de21eedc3670e602771d2a3c51787f42164cb6cd399768e0dd79633e3715",
+    "decision": "retry",
+    "summary": "The historical candidate violates the bound no-limbs capsule rule: the lateral forelimb forms read as projecting arm segments rather than paws attached directly to the capsule core.",
+    "strengths": [
+      "The back-facing capsule silhouette remains clearly readable.",
+      "The two bottom hind paws are visibly attached at the capsule base."
+    ],
+    "defects": [
+      {
+        "defectId": "visible-limb-drift",
+        "ruleId": "CAPSULE-NO-LIMBS-v1",
+        "acceptanceCaseId": "CASE-POET-IDLE-UL-V01-VISIBLE-LIMBS-v1",
+        "severity": "hard",
+        "certainty": "certain",
+        "observed": "Both lateral forelimb forms project away from the capsule as elongated arm-like stubs, with the left form especially showing a narrowed attachment and extended segment; the semantic mask does not negate the visible limb reading.",
+        "expected": "Show only paw masses directly overlapping the capsule edge with a stable multi-pixel contact surface and no visible arm, forearm, leg, lower-leg, or thin connecting segment.",
+        "evidenceRoles": [
+          "HISTORICAL_CASE_ARTIFACT",
+          "SEMANTIC_MASK",
+          "NEGATIVE_REVIEW_ONLY"
+        ],
+        "region": {
+          "x": 0.24,
+          "y": 0.34,
+          "width": 0.53,
+          "height": 0.57
+        }
+      }
+    ],
+    "frozenInvariants": [
+      "Shadow mode: no attempt state change or retry"
+    ],
+    "operations": [
+      {
+        "operation": "remove",
+        "target": "lateral forelimb segments",
+        "instruction": "Remove the elongated arm-like segments while retaining two distinct forepaws.",
+        "defectId": "visible-limb-drift"
+      },
+      {
+        "operation": "enforce",
+        "target": "forepaw-to-core attachment",
+        "instruction": "Attach each forepaw directly to the capsule edge with a broad multi-pixel overlap and no intervening limb segment.",
+        "defectId": "visible-limb-drift"
+      }
+    ]
+  },
+  "outcome": "model_reviewed",
+  "validationError": null
+}

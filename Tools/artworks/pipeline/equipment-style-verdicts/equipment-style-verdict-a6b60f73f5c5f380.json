@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "equipmentStyleVerdictId": "equipment-style-verdict-a6b60f73f5c5f380",
+  "attemptId": "job-83839806868cdd1f-a001",
+  "candidateSha256": "d4a4198fb47a3d84a0c5f6656d1cef0e66af369c3f85a0ae6692d5ae299164bd",
+  "reviewSha256": {
+    "equipmentPanel": "52463ac8a92af12d613a63238ef605999a9588c9febf58467d5f0e91ba35c2a3"
+  },
+  "reviewer": "cty41",
+  "decision": "approved",
+  "reason": "用户明确接受唐剑v1造型与Pure Run画风；接受直身双刃、小型回纹护手、棕柄、右上剑尖的装备展示",
+  "decidedAt": "2026-08-30T03:16:48.4104444+08:00"
+}

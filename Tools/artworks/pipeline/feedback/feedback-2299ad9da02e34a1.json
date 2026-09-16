@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-2299ad9da02e34a1",
+  "attemptId": "job-16985014758beabb-a002",
+  "candidateSha256": "19f8e2b74822b43c6117a79861063436a50847ffcf4dccd00693023b61da3eff",
+  "reviewer": "agent",
+  "verdict": "retry",
+  "strengths": [
+    "The weapon endpoint axis is finally correct: sheath tip upper-left and ring lower-right."
+  ],
+  "defects": [
+    "The weapon became oversized and was drawn across the front; all four paws disappeared, so this cannot enter deterministic validation."
+  ],
+  "nextPromptDelta": "Restore Image 1 exact four compact paws and Image 2 compact body. Keep corrected weapon endpoints but shrink the weapon drastically and put the entire shaft behind the body; show only a tiny upper-left sheath cue and small right-shoulder ring/grip.",
+  "recordedAt": "2026-09-08T10:32:34+08:00",
+  "authorType": "agent",
+  "categories": [
+    "topology",
+    "occlusion",
+    "equipment_scale"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "tail-right UL body turn, tiny left face cue, corrected weapon endpoint relationship, old simple colors"
+  ],
+  "pendingFixes": [
+    "restore exactly four paws; move and shrink weapon behind core"
+  ]
+}

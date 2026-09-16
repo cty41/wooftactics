@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-982bc74804934d35",
+  "attemptId": "job-f47b524a48de2ded-a001",
+  "candidateSha256": "cf7ca9a03fa655f069d5c08763821f19fbb117442d02ba22402194487fcaa2a1",
+  "reviewer": "agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "Raw generation retained unchanged."
+  ],
+  "defects": [
+    "Semantic mask authoring used noncanonical colors and mislabeled the lower-right core, causing missing-foot and core-disconnection failures."
+  ],
+  "nextPromptDelta": "No visual regeneration; replace only the semantic mask with canonical colors and corrected regions.",
+  "recordedAt": "2026-09-04T21:24:24+08:00",
+  "authorType": "agent",
+  "categories": [
+    "processing"
+  ],
+  "disposition": "technical_failed",
+  "frozenInvariants": [
+    "raw generation bytes"
+  ],
+  "pendingFixes": [
+    "Semantic mask authoring used noncanonical colors and mislabeled the lower-right core, causing missing-foot and core-disconnection failures."
+  ]
+}

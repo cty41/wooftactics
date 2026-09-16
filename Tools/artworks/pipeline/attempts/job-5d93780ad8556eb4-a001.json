@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-5d93780ad8556eb4-a001",
+  "jobId": "job-5d93780ad8556eb4",
+  "ordinal": 1,
+  "generationRound": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "prepared",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/incoming/poet_cast_dr_vertical_guard_grip_v2_raw_a001.png",
+      "sha256": "97a40c58b81ea12a6b0e0777b71d9afde3a0efafbd92f7fdf9ce35a81e2a75fa"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-5d93780ad8556eb4/job-5d93780ad8556eb4-a001/raw.png",
+      "sha256": "97a40c58b81ea12a6b0e0777b71d9afde3a0efafbd92f7fdf9ce35a81e2a75fa"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-5d93780ad8556eb4/job-5d93780ad8556eb4-a001/prepared.png",
+      "sha256": "c5f738bdc0f8fd78c033876b3b4a27689e36793e0c164f2104922d9126b7056e"
+    }
+  },
+  "report": null,
+  "approvalId": null,
+  "feedbackId": "feedback-58247b43b74838b8",
+  "generationInvocationId": "generation-invocation-238b7c812c37683e",
+  "generationDeliveryId": "generation-delivery-9d551c7b43066975",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 35
+  },
+  "feedbackAddendumIds": [
+    "feedback-addendum-2e377a97a411506a"
+  ]
+}

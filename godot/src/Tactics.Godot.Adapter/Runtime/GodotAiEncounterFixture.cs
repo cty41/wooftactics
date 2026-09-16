@@ -115,6 +115,7 @@ public partial class GodotAiEncounterFixture : Control
     private AiFixtureTurnResult ExecuteSingleTurnCore(bool refresh)
     {
         if (_state is null) throw new InvalidOperationException("Scenario is not initialized.");
+        SkipNonAiActors();
         int roundBefore = _state.Round;
         UnitInstanceId actorId = _state.ActiveUnitId;
         AiDefinition definition = _unitAi[actorId];
@@ -123,6 +124,7 @@ public partial class GodotAiEncounterFixture : Control
         AiPlanExecutionResult result = _turns.Execute(_state, plan, _skills);
         _state = result.State;
         _patternCursors[actorId] = result.NextPatternIndex;
+        SkipNonAiActors();
         _step++;
         string scores = string.Join("; ", plan.Candidates.Where(value => value.IsLegal).Take(6).Select(value => $"{value.Intent}/{value.SkillId?.Value ?? "-"}={value.TotalScore:0.##}"));
         string events = string.Join(" -> ", result.Events.Select(value => value.GetType().Name));
@@ -132,6 +134,22 @@ public partial class GodotAiEncounterFixture : Control
         _last = $"LAST ACTION: SINGLE TURN — exactly 1 AI actor.\n{line}\nScores: {scores}\nEvents: {events}";
         if (refresh) Refresh();
         return new AiFixtureTurnResult(_step, roundBefore, _state.Round, actorId.Value, _state.ActiveUnitId.Value, plan.Candidates.Count, plan.Selected.Intent.ToString(), skill, plan.UsesPattern, patternIndex, result.NextPatternIndex, events, CreateStateFingerprint());
+    }
+
+    private void SkipNonAiActors()
+    {
+        if (_state is null) return;
+        int remainingGuard = _state.Units.Count * 2 + 1;
+        while (!_unitAi.ContainsKey(_state.ActiveUnitId) && remainingGuard-- > 0)
+        {
+            BattleTransition skipped = new BattleTransitionService().Apply(_state,
+                new EndTurnCommand(_state.ActiveUnitId));
+            if (!skipped.Succeeded)
+                throw new InvalidOperationException("AI fixture could not skip a non-AI target turn.");
+            _state = skipped.State;
+        }
+        if (!_unitAi.ContainsKey(_state.ActiveUnitId))
+            throw new InvalidOperationException("AI fixture could not reach an AI-controlled actor.");
     }
 
     private void ResetScenario()

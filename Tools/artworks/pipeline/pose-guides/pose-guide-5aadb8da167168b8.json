@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 2,
+  "poseGuideId": "pose-guide-5aadb8da167168b8",
+  "compositionId": "composition-c409bbb8b820dfc6",
+  "compositionSha256": "61037ae4f926661ba3b9b7ba40a1078ebbe88bc400fd40f3f29a1e818bd158cb",
+  "anchorSha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/guides/poet_melee_dr_deep_grip_pose_guide_v7.png",
+    "sha256": "01b1bb580d031bdc87727b8742de1d7e1658d4f54c3134ceef12ffc4c3f3ad91"
+  },
+  "role": "supporting-derived"
+}

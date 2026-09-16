@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 2,
+  "contractId": "contract-86caccabf4d6f9f9",
+  "assetId": "poet-five-red-chow-hit-dr-hunter-recoil-reviewed-v1",
+  "approvedAssetId": "poet-five-red-chow-hit-dr-hunter-recoil-reviewed-v1",
+  "kind": "action_pose",
+  "direction": "down-right",
+  "pose": "hit",
+  "anchor": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+    "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+  },
+  "maskRequired": false,
+  "noArms": true,
+  "handSides": {
+    "near_hand": "left",
+    "far_hand": "right"
+  },
+  "occlusion": null,
+  "compositionSpec": {
+    "compositionId": "composition-e22496e1955a4d72",
+    "sha256": "2fd1017b4248b6625cbb59683608eb9b610ef7bf7adde071d380992e0efe4adf"
+  },
+  "identitySpec": null,
+  "requiresInvocation": false,
+  "canvasSpec": {
+    "masterSize": [
+      256,
+      256
+    ]
+  },
+  "tilePlacementSpec": null,
+  "styleSpec": null,
+  "equipmentProductionSpec": null,
+  "tolerances": {
+    "sizePx": 6,
+    "centerPx": 5
+  },
+  "outputs": {
+    "master": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_hit_dr_hunter_recoil_v01.png",
+    "preview": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_hit_dr_hunter_recoil_v01_128.png"
+  },
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-reviewed-generated-poet-hit-dr-import-with-known-deviations"
+  }
+}

@@ -1,0 +1,13 @@
+Create one complete 256×256 RGBA game character sprite on a perfectly flat pure green #00FF00 background.
+
+Image 1 is the sole character authority. Preserve the exact approved cinnamon-red five-red Chow Chow Poet identity: broad lion-like head, short wide muzzle, small upright triangular ears, two small dark eyes, restrained confident face, compact furry capsule body, thick high-set curled plume tail, flat controlled values, bold dark outlines, and exactly four small round paws directly attached to the body. Native down-right front three-quarter view. Do not copy the Idle pose or Idle weapon placement.
+
+Image 2 is the sole equipment-form authority. Preserve one completely sheathed straight compact ring-pommel Tang dao: original sword-to-body length, hollow ring pommel, short grip, guard, sheath mouth, scabbard body, complete sheath tip, palette, outline and restrained detail. It is a sword in its sheath, not a staff.
+
+Image 3 is geometry only. Follow the accepted vertical guard-grip pose: the short fully sheathed dao is almost vertical in front-right of the chest. Ring pommel and grip are above the guard. Both front paws stack immediately below the guard and clasp the sheath mouth/throat—the exact region just beyond the guard—not the handle, not the weapon midpoint, and not the lower sheath. The complete sheathed tip stops visibly above the ground. Preserve the approved sword/body ratio; never lengthen it to staff scale. Do not render guide boxes, colors, arrows or labels.
+
+The body makes a slight firm forward brace inspired only by the vertical blocking silhouette of a classic bridge wizard scene. Do not copy human anatomy, costume, beard, staff or likeness. This is one dignified unified Cast release-hold frame, not Idle, drinking, music, melee attack, Hit or recovery.
+
+NO ARMS OR LEGS. Each small round front paw must broadly overlap the body edge and the sheath throat with stable multi-pixel contact. Exactly two front paws and two grounded hind paws. No forearms, elbows, wrists, thin connectors, human hands, floating paws, missing paws or extra paws. Keep the face unobstructed.
+
+Keep the full silhouette, tail, all paws, ring pommel and sheath tip inside the canvas. Feet centered at x=128, baseline y=236. No hat, clothing, gourd, wineskin, guqin, jewelry, crystal, bare blade, drawn sword, empty second scabbard, second weapon, motion blur, glow, runes, particles, spell VFX, text or watermark. No smooth generic AI gradient, no forehead highlight ovals, and no pear-shaped humanoid torso. Redraw one coherent complete sprite.

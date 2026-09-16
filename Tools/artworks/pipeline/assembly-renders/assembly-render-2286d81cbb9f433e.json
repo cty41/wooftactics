@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 3,
+  "assemblyRenderId": "assembly-render-2286d81cbb9f433e",
+  "assemblyId": "assembly-334755f2c50d5703",
+  "rendererVersion": 4,
+  "assemblySha256": "93cd44109ae4909c3f4bb8a25731f1251cd64cb11fe8545e03c414eb12ce2621",
+  "output": {
+    "path": "Tools/artworks/pipeline/artifacts/job-650e579ea6069d31/job-650e579ea6069d31-a001/prepared.png",
+    "sha256": "9d651f834ecd727c93d13f574b405f0d56bd81aa1cff491a7e6579093d537b9e"
+  },
+  "maskOutput": {
+    "path": "Tools/artworks/pipeline/artifacts/job-650e579ea6069d31/job-650e579ea6069d31-a001/mask.png",
+    "sha256": "19bd26dff11d203ffc17764da6eaba0f0b717593e94e70ac323b087558a2421d"
+  }
+}

@@ -49,11 +49,28 @@ scopes:
   pure-run-artwork:
     concept: operations/pure-run-artwork.md
     paths:
+      - .agents/docs/pure-run-art-direction-bible.md
+      - .agents/docs/pure-run-art-direction-state-machine-design.md
       - .agents/docs/pure-run-artwork-guidelines.md
+      - .agents/docs/pure-run-single-frame-action-pose-design.md
+      - .agents/docs/game-art-production-first-principles.md
+      - .agents/docs/generative-art-current-strategy-map.md
+      - .agents/docs/generative-art-state-machine-complexity-audit.md
       - .agents/skills/pure-run-artwork-pipeline
       - Tools/artworks/amazon
       - Tools/artworks/doge
       - Tools/artworks/pure_run
+      - Tools/artworks/poet_five_red_chow
+      - Tools/artworks/pipeline/README.md
+      - godot/assets/units
+      - godot/content/poet
+      - godot/src/Tactics.Godot.Adapter/Runtime/GodotBattlePresentationPlayer.cs
+      - godot/src/Tactics.Godot.Adapter/Runtime/GodotUnitActor.cs
+      - godot/src/Tactics.Godot.Adapter/Runtime/StandardUnitPresentationResource.cs
+      - godot/src/Tactics.Godot.Adapter/Runtime/UnitDefinitionResource.cs
+      - godot/src/Tactics.Godot.Adapter/Runtime/IsometricGridProjection.cs
+      - godot/src/Tactics.Godot.Adapter/Runtime/GodotPlayableRunMain.cs
+      - src/Tactics.Application/Presentation/BattlePresentationFrame.cs
 
   okf-maintenance:
     concept: operations/okf-maintenance.md

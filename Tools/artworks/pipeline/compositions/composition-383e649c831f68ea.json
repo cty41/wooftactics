@@ -1,0 +1,306 @@
+{
+  "schemaVersion": 2,
+  "compositionId": "composition-383e649c831f68ea",
+  "assetId": "poet-five-red-chow-cast-ul-vertical-guard-grip-v1",
+  "spec": {
+    "canvas": [
+      256,
+      256
+    ],
+    "bodyLayer": false,
+    "coreBbox": [
+      83,
+      97,
+      189,
+      232
+    ],
+    "coreAxis": {
+      "bottom": [
+        128,
+        229
+      ],
+      "top": [
+        122,
+        101
+      ],
+      "tiltDegrees": [
+        -6.0,
+        -2.0
+      ]
+    },
+    "footCenter": [
+      128,
+      236
+    ],
+    "weapon": {
+      "hiddenGrip": [
+        96,
+        144
+      ],
+      "exitWindow": [
+        78,
+        112,
+        108,
+        178
+      ],
+      "tipRegion": [
+        82,
+        202,
+        106,
+        224
+      ],
+      "guardWindow": [
+        79,
+        111,
+        110,
+        134
+      ],
+      "bladeCenterline": [
+        87,
+        84,
+        104,
+        219
+      ],
+      "maxBladeWidthPx": 18,
+      "maxGemAreaPx": 0,
+      "screenAxis": [
+        [
+          96,
+          87
+        ],
+        [
+          94,
+          217
+        ]
+      ],
+      "tipMayBeOccluded": false
+    },
+    "forbiddenRegions": [
+      {
+        "name": "staff-length-upper",
+        "rect": [
+          80,
+          0,
+          111,
+          70
+        ]
+      },
+      {
+        "name": "grounded-sheath-tip",
+        "rect": [
+          76,
+          229,
+          113,
+          255
+        ]
+      },
+      {
+        "name": "wrong-front-layer",
+        "rect": [
+          110,
+          128,
+          172,
+          195
+        ]
+      }
+    ],
+    "requiredHiddenLabels": [],
+    "visibleAreaCaps": {
+      "near_hand": 0.22,
+      "far_hand": 0.08,
+      "equipment": 0.35
+    },
+    "equipmentState": {
+      "scabbard": "present",
+      "blade": "fully-sheathed",
+      "staticEffects": "absent"
+    },
+    "actionDesign": {
+      "silhouette": [
+        [
+          85,
+          205
+        ],
+        [
+          85,
+          150
+        ],
+        [
+          101,
+          111
+        ],
+        [
+          123,
+          97
+        ],
+        [
+          159,
+          101
+        ],
+        [
+          187,
+          130
+        ],
+        [
+          189,
+          201
+        ],
+        [
+          174,
+          231
+        ],
+        [
+          144,
+          236
+        ],
+        [
+          104,
+          232
+        ]
+      ],
+      "lineOfAction": [
+        [
+          128,
+          229
+        ],
+        [
+          122,
+          101
+        ]
+      ],
+      "centerOfMass": [
+        128,
+        179
+      ],
+      "supportFoot": [
+        105,
+        235
+      ],
+      "driveFoot": [
+        153,
+        235
+      ],
+      "pawContactZones": {
+        "nearHand": [
+          [
+            78,
+            128
+          ],
+          [
+            101,
+            126
+          ],
+          [
+            103,
+            151
+          ],
+          [
+            81,
+            153
+          ]
+        ],
+        "farHand": [
+          [
+            80,
+            148
+          ],
+          [
+            101,
+            147
+          ],
+          [
+            103,
+            170
+          ],
+          [
+            82,
+            172
+          ]
+        ],
+        "nearFoot": [
+          [
+            94,
+            220
+          ],
+          [
+            123,
+            220
+          ],
+          [
+            123,
+            241
+          ],
+          [
+            94,
+            241
+          ]
+        ],
+        "farFoot": [
+          [
+            142,
+            221
+          ],
+          [
+            171,
+            221
+          ],
+          [
+            171,
+            241
+          ],
+          [
+            142,
+            241
+          ]
+        ]
+      },
+      "compressionLine": [
+        [
+          151,
+          194
+        ],
+        [
+          128,
+          178
+        ],
+        [
+          98,
+          147
+        ]
+      ],
+      "counterbalanceLine": [
+        [
+          139,
+          183
+        ],
+        [
+          170,
+          174
+        ],
+        [
+          192,
+          157
+        ]
+      ]
+    },
+    "screenSpaceIntent": {
+      "direction": "native up-left back three-quarter facing",
+      "visualMoment": "same firm vertical Cast hold as approved Cast DR, redrawn natively from the approved Idle UL identity",
+      "playerRead": "Poet holds one short fully sheathed Tang dao vertically in front of the chest in world space; from the rear camera the weapon and both front paws sit behind the capsule body",
+      "bodyDynamics": "compact near-upright back-facing capsule with slight forward brace; both hind paws grounded at y236",
+      "heldDao": "approved sword/body ratio; ring pommel above guard at screen-left shoulder edge; sheath descends behind body; only outer strips and lower tip may emerge; tip remains above ground",
+      "grip": "two front paws stack immediately below guard around sheath throat, both behind core; only small outer arcs attached to the left body edge may remain visible; no arms or connectors",
+      "identity": "approved Idle UL only; preserve back of head, ears, tail, compact volume, native UL depth and exactly four attached paws",
+      "effects": "none"
+    },
+    "renderForbiddenRegions": false
+  },
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/compositions/poet_cast_ul_vertical_guard_grip_composition_v1.json",
+    "sha256": "1576cb3e48f48fe9dd2220c081ac15a3a738360dc6a07eb70744949f90d9dcf0"
+  },
+  "anchor": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_ul_v07.png",
+    "sha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512"
+  }
+}

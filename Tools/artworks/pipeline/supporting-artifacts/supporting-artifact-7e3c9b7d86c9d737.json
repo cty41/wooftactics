@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-7e3c9b7d86c9d737",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_selected_body_sword_mockup_v1.png",
+    "sha256": "bc301e63ca68fb68dac9950de644e479a1415bb9b8d409948d508e7a2f58370d"
+  },
+  "role": "supporting-derived",
+  "note": "cty41-authorized review-only deterministic composite of the selected project-owned body and approved project-owned Tang dao; not a Sprite approval or runtime asset.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

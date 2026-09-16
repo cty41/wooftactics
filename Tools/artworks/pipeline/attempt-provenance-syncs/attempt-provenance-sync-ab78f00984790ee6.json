@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 4,
+  "attemptProvenanceSyncId": "attempt-provenance-sync-ab78f00984790ee6",
+  "attemptId": "job-6addf9fb01aa3dcd-a001",
+  "jobId": "job-6addf9fb01aa3dcd",
+  "contractId": "contract-e2be0e39b367596d",
+  "artifacts": [
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-6addf9fb01aa3dcd/job-6addf9fb01aa3dcd-a001/prepared.png",
+      "sha256": "491e97c04472fc50d191095a3ff50c9b917d0cb7f68634722d4579ddd17ee2c7"
+    },
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-6addf9fb01aa3dcd/job-6addf9fb01aa3dcd-a001/raw.png",
+      "sha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4"
+    }
+  ],
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "approved-equipment-authorized-rigid-rotation"
+  },
+  "reviewer": "cty41",
+  "reason": "Backfill public provenance for the hash-bound pre-v3 component migration pipeline copies using the existing project-owned contract rights; no invocation or license is fabricated.",
+  "syncedAt": "2026-09-08T20:26:41+08:00"
+}

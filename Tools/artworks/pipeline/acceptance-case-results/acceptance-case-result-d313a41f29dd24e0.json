@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 4,
+  "acceptanceCaseResultId": "acceptance-case-result-d313a41f29dd24e0",
+  "attemptId": "job-392eb89806af5b42-a001",
+  "caseId": "POET-GRIP-001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-392eb89806af5b42/job-392eb89806af5b42-a001/prepared.png",
+    "sha256": "940606701f0cdf56a0ccd41db3486849197f699c4cab0483fc52889fea203456"
+  },
+  "contractId": "contract-57bf5c0526078c9d",
+  "contractSha256": "0af903e867b06faffc66bfa9456a31396051bc3ce1746f17d2fd2227d4593df1",
+  "evidence": {
+    "grip-original": {
+      "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v3/grip-original.png",
+      "sha256": "60d1d6fae53f9dcefe9454a62b89b1dd7982334396970d4b4a01abc5f56fdea6"
+    },
+    "grip-nearest": {
+      "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v3/grip-nearest.png",
+      "sha256": "248cfee3d3f8eac22c2303c6e13e70e58841b43a1f9af4ec4e90b283f4e9a4eb"
+    },
+    "assembly-layers": {
+      "path": "Tools/artworks/pipeline/reviews/job-392eb89806af5b42-a001/assemblyLayerReview.png",
+      "sha256": "101eead59499aabd8d3ff5651dd5a1617f8495f54866abd639a36c0a06a43097"
+    }
+  },
+  "automatedFacts": [
+    "far-hand semantic bbox 98,180 to 117,200 overlaps equipment contact zone with multi-pixel area"
+  ],
+  "automatedResult": "passed",
+  "humanChecks": [
+    "cty41 must confirm relaxed believable grip without sticker appearance"
+  ],
+  "humanDecision": "pending",
+  "reviewer": "agent",
+  "reason": "Contact geometry passed; natural grip remains human judgment",
+  "decidedAt": "2026-09-03T14:45:00+08:00"
+}

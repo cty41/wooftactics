@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "attemptId": "job-93dbc1ce4eeb846d-a003",
+  "jobId": "job-93dbc1ce4eeb846d",
+  "ordinal": 3,
+  "parentAttemptId": "job-93dbc1ce4eeb846d-a002",
+  "retryFeedbackId": "feedback-a82d9ff2a13cdbf8",
+  "promptDelta": "Back-carried orientation from the user reference: broad head above the screen-left shoulder, narrow tail descending to lower-right waist. The guqin underside/back lies against the body; from the front-right DR camera show primarily the smooth back/side edge, not the full seven-string top face. Use a steep diagonal about 65–72 degrees from horizontal.",
+  "technicalRemediation": false,
+  "state": "promoted",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_guqin_back_carried_dr_raw_v03.png",
+      "sha256": "c924ad7ae9578bbb378a80a25c7447c55dc236d98c92b3805105bbd54d2ecf30"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-93dbc1ce4eeb846d/job-93dbc1ce4eeb846d-a003/raw.png",
+      "sha256": "c924ad7ae9578bbb378a80a25c7447c55dc236d98c92b3805105bbd54d2ecf30"
+    },
+    "prepared": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_guqin_back_carried_dr_v03.png",
+      "sha256": "a4c81bfbdfca9a7faa5002685eb1b6751376b9cce3d99c9d81309483c90cc4ca"
+    },
+    "equipmentPreview": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_guqin_back_carried_dr_v03_128.png",
+      "sha256": "763af737459e063d97046fd16d5e9190234e6a96f083cbcf0fe8df03df7cadf6"
+    },
+    "review": {
+      "equipmentPanel": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_guqin_back_carried_review_v03.png",
+        "sha256": "ef639bd05e1e6f941d48e79aac7a9e74a4fb436c308e01b342dddfebe81d7049"
+      }
+    },
+    "promoted": {
+      "master": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_guqin_back_carried_dr_v01.png",
+        "sha256": "a4c81bfbdfca9a7faa5002685eb1b6751376b9cce3d99c9d81309483c90cc4ca"
+      },
+      "preview": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_guqin_back_carried_dr_v01_128.png",
+        "sha256": "763af737459e063d97046fd16d5e9190234e6a96f083cbcf0fe8df03df7cadf6"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/style-reports/equipment-style-report-6bc1ba2dde70ab8c.json",
+    "sha256": "666f107ded8b2407c73ea6cf5b34c0314c985067cf573cabec763d5c1c08f244"
+  },
+  "approvalId": "approval-ff85c4a4e8d89e45",
+  "feedbackId": null,
+  "generationInvocationId": "generation-invocation-e9795cb4113f4fca",
+  "generationDeliveryId": "generation-delivery-51e7ae96a2ab07b2",
+  "equipmentStyleReportId": "equipment-style-report-6bc1ba2dde70ab8c",
+  "equipmentStyleVerdictId": "equipment-style-verdict-d935a21326678c47",
+  "equipmentStyleVerdictIds": [
+    "equipment-style-verdict-d935a21326678c47"
+  ]
+}

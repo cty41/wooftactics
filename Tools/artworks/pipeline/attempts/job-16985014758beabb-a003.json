@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-16985014758beabb-a003",
+  "jobId": "job-16985014758beabb",
+  "ordinal": 3,
+  "generationRound": 3,
+  "parentAttemptId": "job-16985014758beabb-a002",
+  "retryFeedbackId": "feedback-2299ad9da02e34a1",
+  "promptDelta": "Restore Image 1 exact four compact paws and Image 2 compact body. Keep corrected weapon endpoints but shrink the weapon drastically and put the entire shaft behind the body; show only a tiny upper-left sheath cue and small right-shoulder ring/grip.",
+  "technicalRemediation": false,
+  "state": "prepared",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/concepts/poet_ring_pommel_tang_dao_idle_ul_v5_raw_a003.png",
+      "sha256": "8da7685e2dcf9999095dbaed6fa69eecfca534817a6cadeb6458d8cea4a1692f"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-16985014758beabb/job-16985014758beabb-a003/raw.png",
+      "sha256": "8da7685e2dcf9999095dbaed6fa69eecfca534817a6cadeb6458d8cea4a1692f"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-16985014758beabb/job-16985014758beabb-a003/prepared.png",
+      "sha256": "e02899ac4cf6c9ee5d964346fec057d355d96d744a1ba950b04da79e26bb764a"
+    }
+  },
+  "report": null,
+  "approvalId": null,
+  "feedbackId": "feedback-63d553f8be216a5a",
+  "generationInvocationId": "generation-invocation-a8e88978f5a3a7e3",
+  "generationDeliveryId": "generation-delivery-5dab9bc800ef2058",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 48
+  },
+  "feedbackAddendumIds": [
+    "feedback-addendum-96fa8e4d44983c4b"
+  ]
+}

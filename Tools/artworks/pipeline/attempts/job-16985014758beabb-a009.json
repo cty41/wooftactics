@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-16985014758beabb-a009",
+  "jobId": "job-16985014758beabb",
+  "ordinal": 9,
+  "generationRound": 8,
+  "parentAttemptId": "job-16985014758beabb-a008",
+  "retryFeedbackId": "feedback-b9a2cb25cfd7e42c",
+  "promptDelta": "Use a008 as frozen main image and approved UL body only as tail-root occlusion authority. Copy the positive relationship: tail root covers the body edge, with no body contour visible over the overlap.",
+  "technicalRemediation": false,
+  "state": "prepared",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/concepts/poet_ring_pommel_tang_dao_idle_ul_v5_raw_a009.png",
+      "sha256": "5f75351fac860390abd1676ec0e82a55465ea8109cfe6caa82451b5ca5c00725"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-16985014758beabb/job-16985014758beabb-a009/raw.png",
+      "sha256": "5f75351fac860390abd1676ec0e82a55465ea8109cfe6caa82451b5ca5c00725"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-16985014758beabb/job-16985014758beabb-a009/prepared.png",
+      "sha256": "482676a982b88be0d8d0369b2bd293a6cb27599d3876e570c176d2a14e787e29"
+    }
+  },
+  "report": null,
+  "approvalId": null,
+  "feedbackId": "feedback-4397f7db85b4ed7b",
+  "generationInvocationId": "generation-invocation-a81d743a0d2672df",
+  "generationDeliveryId": "generation-delivery-a9b6fce482007c3e",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 120
+  }
+}

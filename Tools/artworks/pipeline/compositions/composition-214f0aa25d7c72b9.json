@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 2,
+  "compositionId": "composition-214f0aa25d7c72b9",
+  "assetId": "poet-five-red-chow-idle-ul-body-component-v1",
+  "spec": {
+    "canvas": [
+      256,
+      256
+    ],
+    "bodyLayer": true,
+    "renderForbiddenRegions": false,
+    "coreBbox": [
+      94,
+      121,
+      160,
+      231
+    ],
+    "coreAxis": {
+      "bottom": [
+        127,
+        231
+      ],
+      "top": [
+        127,
+        121
+      ],
+      "tiltDegrees": [
+        -2.0,
+        2.0
+      ]
+    },
+    "footCenter": [
+      128,
+      236
+    ],
+    "weapon": {
+      "hiddenGrip": [
+        168,
+        160
+      ],
+      "exitWindow": [
+        168,
+        160,
+        168,
+        160
+      ],
+      "tipRegion": [
+        168,
+        160,
+        168,
+        160
+      ],
+      "maxBladeWidthPx": 0,
+      "maxGemAreaPx": 0
+    },
+    "forbiddenRegions": [],
+    "requiredHiddenLabels": [],
+    "visibleAreaCaps": {},
+    "equipmentState": {
+      "scabbard": "absent",
+      "staticEffects": "absent"
+    },
+    "screenSpaceIntent": {
+      "direction": "native upper-left back view",
+      "core": "body-only core fits cyan guide",
+      "exclusions": "no paws and no equipment"
+    }
+  },
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/compositions/poet_idle_ul_body_component_composition_v1.json",
+    "sha256": "648afb013f98434b974d6ea9356d46d9f9d03dffc0afe13807104f41642182dc"
+  },
+  "anchor": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+    "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753"
+  }
+}

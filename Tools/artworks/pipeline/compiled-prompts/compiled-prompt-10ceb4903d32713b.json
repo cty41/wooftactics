@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "compiledPromptId": "compiled-prompt-10ceb4903d32713b",
+  "jobId": "job-6a95f820a37e8586",
+  "poseGuideId": "pose-guide-98eff3199fa852c9",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/compiled/poet_melee_dr_close_grip_v6.md",
+    "sha256": "913d8d096da306268610cad77d66cef555fc1c670593aa433659d89140e65cad"
+  }
+}

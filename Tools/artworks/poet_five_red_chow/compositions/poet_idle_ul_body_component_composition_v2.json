@@ -1,0 +1,20 @@
+{
+  "canvas": [256, 256],
+  "bodyLayer": true,
+  "renderForbiddenRegions": false,
+  "coreBbox": [94, 121, 160, 231],
+  "coreAxis": {"bottom": [128, 231], "top": [123, 121], "tiltDegrees": [-4.0, -2.0]},
+  "footCenter": [128, 236],
+  "weapon": {"hiddenGrip": [168, 160], "exitWindow": [168, 160, 168, 160], "tipRegion": [168, 160, 168, 160], "maxBladeWidthPx": 0, "maxGemAreaPx": 0},
+  "forbiddenRegions": [],
+  "requiredHiddenLabels": [],
+  "visibleAreaCaps": {},
+  "equipmentState": {"scabbard": "absent", "staticEffects": "absent"},
+  "screenSpaceIntent": {
+    "direction": "upper-left three-quarter back, about 15–25 degrees away from straight rear",
+    "core": "narrow capsule with top center 5 px screen-left of foot center",
+    "earPlanes": "small inner plane visible on screen-left ear; screen-right ear recedes",
+    "valuePlanes": "screen-left near plane slightly lighter; screen-right back plane darker, flat values only",
+    "exclusions": "no paws, equipment, face or mane seam"
+  }
+}

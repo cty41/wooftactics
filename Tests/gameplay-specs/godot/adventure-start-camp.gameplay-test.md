@@ -10,14 +10,6 @@ setup:
 actions:
   - kind: waitForPlayerObservable
     adapter: PlayerInput
-    target: New Run
-    parameters: { observable: uiElement, elementName: New Run, maximumFrames: 180 }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: New Run
-    parameters: { targetKind: UiElement }
-  - kind: waitForPlayerObservable
-    adapter: PlayerInput
     parameters: { observable: adventureBoardReady, maximumFrames: 180 }
   - kind: clickPointerTarget
     adapter: PlayerInput
@@ -53,4 +45,4 @@ timeoutMs: 30000
 
 # Start camp party order
 
-从正式 Home 点击 New Run，进入真实 TileMapLayer 营地，通过生产鼠标依次选择 Amazon、Demonbound、Mage，再点击 Start 出口，并验证 PendingRunSetup 保留点击顺序且隔离存档没有污染生产主档。
+从空隔离存档自动进入真实 TileMapLayer 营地，通过生产鼠标依次选择 Amazon、Demonbound、Mage，再点击 Start 出口，并验证 PendingRunSetup 保留点击顺序且隔离存档没有污染生产主档。

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 4,
+  "modelReviewResultRecordId": "model-review-result-record-04ba928bbfdab3f7",
+  "invocationId": "model-review-invocation-bae9dfb6676d3a79",
+  "attemptId": "job-f40816b1c2e8b36c-a005",
+  "packetId": "model-review-packet-179a52d3facab18a",
+  "packetSha256": "c993ee703d4514aeeb24cb60a48c6f9098c9d0d7040e8bc08e7b72936161e03f",
+  "qualificationMode": true,
+  "provider": "dsh-subagent-current-session",
+  "model": "gpt-5.6-sol",
+  "effort": "medium",
+  "freshSession": true,
+  "freshSessionId": "d064ec92-b18e-4378-8c0d-a578b019b64c",
+  "promptSource": {
+    "path": "Tools/artworks/pure_run/art_direction/review/reviewer_prompt_v1.md",
+    "sha256": "ea9a86b3e7e4ee724090fe0c520a4271ce4f38a34184335f865189bcf259a850"
+  },
+  "rawResult": {
+    "path": "Tools/artworks/pure_run/art_direction/review/shadow_results/final_capsule_no_limbs_positive_medium_raw.json",
+    "sha256": "9d5df08d72fb17352584e2f30282ae8db17938e320d873c00d757fb2f02995dd"
+  },
+  "result": {
+    "resultId": "model-review-result-7c8eae9a50abda3a",
+    "schemaVersion": 1,
+    "packetId": "model-review-packet-179a52d3facab18a",
+    "packetSha256": "c993ee703d4514aeeb24cb60a48c6f9098c9d0d7040e8bc08e7b72936161e03f",
+    "decision": "pass_to_human",
+    "summary": "The packet-bound positive case satisfies CAPSULE-NO-LIMBS-v1: all four paws are compact masses attached directly to the capsule core, with no visible arm, forearm, leg, lower-leg, or thin connecting limb segment. This shadow review does not approve, reject, change attempt state, or trigger retry.",
+    "strengths": [
+      "Both lateral forepaws overlap the capsule edge directly without an intervening elongated limb segment.",
+      "Both hind paws attach directly at the capsule base without visible legs or thin connectors.",
+      "The visible topology is consistent with the bound semantic mask and approved topology comparison within the evidence region."
+    ],
+    "defects": [],
+    "frozenInvariants": [
+      "Shadow-final-policy-approved-positive-no-state-change"
+    ],
+    "operations": []
+  },
+  "outcome": "model_reviewed",
+  "validationError": null
+}

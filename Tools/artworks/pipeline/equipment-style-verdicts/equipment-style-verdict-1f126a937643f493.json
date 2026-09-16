@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "equipmentStyleVerdictId": "equipment-style-verdict-1f126a937643f493",
+  "attemptId": "job-c91127f8d0e61731-a002",
+  "candidateSha256": "704cd888947a648a9e1ee0db154804288ba230eca422fcc4c63229c145b9e82b",
+  "reviewSha256": {
+    "equipmentPanel": "ac860661ce5edaedc71060a3122311a64f3d66985b6e1ee2b31254b148a12908"
+  },
+  "reviewer": "cty41",
+  "decision": "approved",
+  "reason": "Mechanical recording of cty41 explicit acceptance of v02 proportions and displayed raw_v02 plus 128 preview overall appearance/art style. The palette complexity advisory is retained, not an automated style failure. No newly claimed observation of the fixed equipment board and no approval of future images.",
+  "decidedAt": "2026-09-10T11:10:35.5580282+08:00"
+}

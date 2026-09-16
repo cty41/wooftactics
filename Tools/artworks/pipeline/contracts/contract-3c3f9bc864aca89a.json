@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 2,
+  "contractId": "contract-3c3f9bc864aca89a",
+  "assetId": "poet-five-red-chow-idle-dr-formal-v2",
+  "approvedAssetId": "poet-five-red-chow-idle-dr-formal-v2",
+  "kind": "ground_character",
+  "direction": "down-right",
+  "pose": "idle",
+  "anchor": {
+    "path": "Tools/artworks/doge/calibrated/doge_capsule_demonbound_idle_dr_v01.png",
+    "sha256": "21559ca7aedd3e146feb2b93c5a6633affc6ce544122628c960972a982b0b5e7",
+    "maskPath": "Tools/artworks/pipeline/artifacts/job-168fd4b2f49ff6ca/job-168fd4b2f49ff6ca-a001/mask.png",
+    "maskSha256": "9f4968081aa296e73ec215a3a7e89383ad6e34c7d86fe7251af0b3511f12b2c8"
+  },
+  "maskRequired": true,
+  "noArms": true,
+  "handSides": {
+    "near_hand": null,
+    "far_hand": null
+  },
+  "occlusion": null,
+  "compositionSpec": {
+    "compositionId": "composition-3e915e219611947f",
+    "sha256": "8024204bb2eaebf729b94f5c0ce3ebb3b1fcfeeb331f3de951cf0f36524131c5"
+  },
+  "identitySpec": null,
+  "requiresInvocation": true,
+  "canvasSpec": {
+    "masterSize": [
+      256,
+      256
+    ]
+  },
+  "tilePlacementSpec": null,
+  "styleSpec": null,
+  "equipmentProductionSpec": null,
+  "tolerances": {
+    "sizePx": 3,
+    "centerPx": 2
+  },
+  "outputs": {
+    "master": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v02.png",
+    "preview": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v02_128.png"
+  },
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "generated-with-gpt-image"
+  }
+}

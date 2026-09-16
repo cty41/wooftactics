@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 4,
+  "promptComparisonId": "prompt-only-comparison-5f0ad61cbbfefc99",
+  "promptOnly": {
+    "schemaVersion": 1,
+    "arm": "prompt-only",
+    "contract": {
+      "contractId": "contract-8cfb066aab230727",
+      "sha256": "1833ba8cf30eb1692126d6e303e7f8d66297a3cfbf920d8ff4943d9fb189ce13"
+    },
+    "anchors": [
+      {
+        "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+        "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753"
+      },
+      {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_ul_v01.png",
+        "sha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4"
+      }
+    ],
+    "context": {
+      "mode": "historical-replay",
+      "compiledPolicyId": "compiled-review-policy-9300e3319ae32600",
+      "caseSetVersion": "capsule-no-limbs-v1-neg-pos-boundary"
+    },
+    "imageGenBudget": 3,
+    "rawCounts": [
+      {
+        "ruleId": "CAPSULE-NO-LIMBS-v1",
+        "context": {
+          "asset": "poet-idle-ul",
+          "direction": "up-left"
+        },
+        "escalations": 0,
+        "falsePositives": 0,
+        "imageGenRounds": 1,
+        "knownHardErrorsReachedHuman": 1,
+        "repeatedHardErrors": 1,
+        "repeatedHumanFeedback": 1,
+        "reviewerMisses": 0
+      }
+    ]
+  },
+  "reviewerClosedLoop": {
+    "schemaVersion": 1,
+    "arm": "reviewer-closed-loop",
+    "contract": {
+      "contractId": "contract-8cfb066aab230727",
+      "sha256": "1833ba8cf30eb1692126d6e303e7f8d66297a3cfbf920d8ff4943d9fb189ce13"
+    },
+    "anchors": [
+      {
+        "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+        "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753"
+      },
+      {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_ul_v01.png",
+        "sha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4"
+      }
+    ],
+    "context": {
+      "mode": "historical-replay",
+      "compiledPolicyId": "compiled-review-policy-9300e3319ae32600",
+      "caseSetVersion": "capsule-no-limbs-v1-neg-pos-boundary"
+    },
+    "imageGenBudget": 3,
+    "rawCounts": [
+      {
+        "ruleId": "CAPSULE-NO-LIMBS-v1",
+        "context": {
+          "asset": "poet-idle-ul",
+          "direction": "up-left"
+        },
+        "escalations": 0,
+        "falsePositives": 0,
+        "imageGenRounds": 1,
+        "knownHardErrorsReachedHuman": 0,
+        "repeatedHardErrors": 0,
+        "repeatedHumanFeedback": 0,
+        "reviewerMisses": 0
+      }
+    ]
+  },
+  "sources": {
+    "promptOnly": {
+      "path": "Tools/artworks/pure_run/art_direction/review/prompt_only_capsule_no_limbs_historical_replay_v1.json",
+      "sha256": "ca6f2d1b91a09d16c0b2173d76db63a13b905c4d01c1f163a697f197bcdd238d"
+    },
+    "reviewerClosedLoop": {
+      "path": "Tools/artworks/pure_run/art_direction/review/reviewer_closed_loop_capsule_no_limbs_historical_replay_v1.json",
+      "sha256": "f081601361c4e59bfe057e7a1878372649279cac32c006cfbfb270c2e07daef5"
+    }
+  }
+}

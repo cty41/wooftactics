@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 2,
+  "annotationId": "annotations-00e96e2754a66887",
+  "attemptId": "job-16985014758beabb-a011",
+  "candidateSha256": "03782a656e3b4c0714b02b9093f5f51e9c1bbf8b34bccc365da2b03e1c917ca0",
+  "maskSha256": "951ab793283199c0ed23286f6a62c982e9b708da927d88596bc2dba5560f917d",
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/annotations/poet_ring_pommel_tang_dao_idle_ul_v5_a010_annotations.json",
+    "sha256": "b7e17c40e3b3c303825779019e76773ba6beeaddca8959be50bc55d8e92c611e"
+  },
+  "regions": {
+    "eyeRegion": [
+      95,
+      135,
+      102,
+      144
+    ],
+    "weaponExit": [
+      158,
+      140,
+      174,
+      160
+    ],
+    "weaponTip": [
+      158,
+      153,
+      164,
+      160
+    ],
+    "weaponBlade": [
+      158,
+      134,
+      181,
+      161
+    ],
+    "guardRegion": [
+      157,
+      151,
+      166,
+      161
+    ],
+    "gemRegion": null,
+    "scabbard": [
+      158,
+      153,
+      164,
+      160
+    ],
+    "staticEffect": null
+  }
+}

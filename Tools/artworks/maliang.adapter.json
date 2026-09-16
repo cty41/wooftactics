@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "engine": {
+    "repository": "https://github.com/cty41/maliang.git",
+    "submodulePath": "Tools/vendor/maliang",
+    "version": "0.1.0",
+    "commit": "00d772ffe57c610c3217b8294d6b2794df175ca2"
+  },
+  "authority": {
+    "reviewer": "cty41"
+  },
+  "poseProof": {
+    "canvas": [256, 256],
+    "preview": [128, 128],
+    "baselineY": 236
+  },
+  "runtimeReview": {
+    "tilePanel": [64, 32],
+    "godotProjection": [96, 48],
+    "actorScale": 0.34
+  }
+}

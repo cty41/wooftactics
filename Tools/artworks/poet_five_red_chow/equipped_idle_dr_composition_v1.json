@@ -1,0 +1,28 @@
+{
+  "canvas": [256, 256],
+  "coreAxis": {
+    "bottom": [128, 231],
+    "top": [128, 121],
+    "tiltDegrees": [-2.0, 2.0]
+  },
+  "footCenter": [128, 236],
+  "weapon": {
+    "hiddenGrip": [155, 190],
+    "exitWindow": [146, 178, 164, 198],
+    "tipRegion": [92, 112, 114, 140],
+    "guardWindow": [142, 174, 162, 194],
+    "bladeCenterline": [101, 126, 154, 186],
+    "maxBladeWidthPx": 9,
+    "maxGemAreaPx": 1
+  },
+  "forbiddenRegions": [
+    [112, 138, 146, 158]
+  ],
+  "equipmentState": {
+    "scabbard": "absent",
+    "sword": "near-hand-front",
+    "guqin": "back-layer-diagonal",
+    "wineVessel": "far-left-waist-wineskin",
+    "staticEffects": "absent"
+  }
+}

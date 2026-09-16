@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "sizeComparisonId": "size-comparison-8201790ceb1abe3b",
+  "inputs": [
+    {
+      "label": "Identity",
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_ul_v07.png",
+        "sha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512"
+      }
+    },
+    {
+      "label": "Previous",
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_cast_dr_vertical_guard_grip_v01.png",
+        "sha256": "7cd072d554222d24c1cc4b357f3220260c01016c47be51d21c34e045d4139883"
+      }
+    },
+    {
+      "label": "Pose reference",
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/guides/poet_cast_ul_vertical_guard_grip_pose_guide_v1.png",
+        "sha256": "c633fd8742ecf2b3db7d7d046ded8d64185009d3f0633cc77c76a1e08b58f8c1"
+      }
+    },
+    {
+      "label": "Candidate",
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/candidates/poet_cast_ul_vertical_guard_grip_v01_reviewed_clean.png",
+        "sha256": "b0a4abd6330b60090edd771fd5c168aaf99c5b9e5c9ecb3e4cd935c4fa4fbfce"
+      }
+    }
+  ],
+  "measurements": [
+    {
+      "label": "Identity",
+      "bbox": [
+        42,
+        49,
+        94,
+        119
+      ],
+      "bboxSize": [
+        52,
+        70
+      ]
+    },
+    {
+      "label": "Previous",
+      "bbox": [
+        40,
+        47,
+        88,
+        119
+      ],
+      "bboxSize": [
+        48,
+        72
+      ]
+    },
+    {
+      "label": "Pose reference",
+      "bbox": [
+        38,
+        41,
+        97,
+        122
+      ],
+      "bboxSize": [
+        59,
+        81
+      ]
+    },
+    {
+      "label": "Candidate",
+      "bbox": [
+        36,
+        46,
+        92,
+        119
+      ],
+      "bboxSize": [
+        56,
+        73
+      ]
+    }
+  ],
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_ul_vertical_guard_grip_v01_size_comparison.png",
+    "sha256": "d67930be17924ba395a4948676af694773d0c381a6d21d86365895a83e380c34"
+  }
+}

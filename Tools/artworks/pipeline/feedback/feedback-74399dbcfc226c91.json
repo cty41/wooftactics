@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-74399dbcfc226c91",
+  "attemptId": "job-52353908c08e6df6-a002",
+  "candidateSha256": "3a45d4c937a6b7368b5e0f2db30218cea10b25a6860cde63286ca4033b4a1a7b",
+  "reviewer": "agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "同一 raw 的语义蒙版与关键区域已绑定"
+  ],
+  "defects": [
+    "合同未显式绑定历史 anchor mask，calibrate-core 无法执行"
+  ],
+  "nextPromptDelta": "保持视觉内容不变，使用同一语义蒙版与已批准 anchor mask 参数执行确定性 256 校准",
+  "recordedAt": "2026-08-29T21:14:05.3214506+08:00",
+  "authorType": "agent",
+  "categories": [
+    "processing"
+  ],
+  "disposition": "technical_failed",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "合同未显式绑定历史 anchor mask，calibrate-core 无法执行"
+  ]
+}

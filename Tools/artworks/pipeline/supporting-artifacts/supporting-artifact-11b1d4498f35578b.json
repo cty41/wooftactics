@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-11b1d4498f35578b",
+  "artifact": {
+    "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v09/pose-axis.png",
+    "sha256": "4fbc241396a783bf65f6927300917fb1b13266ebd2784a4b1b06dd204f1d489b"
+  },
+  "role": "review-derived",
+  "note": "Poet Idle DR v09 hash-bound Art Direction review evidence; non-runtime"
+}

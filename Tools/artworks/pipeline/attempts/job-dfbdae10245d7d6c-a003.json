@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-dfbdae10245d7d6c-a003",
+  "jobId": "job-dfbdae10245d7d6c",
+  "ordinal": 3,
+  "generationRound": 2,
+  "parentAttemptId": "job-dfbdae10245d7d6c-a002",
+  "retryFeedbackId": "feedback-40607f102a779592",
+  "promptDelta": "Reduce body width by one third while keeping height; use a smooth simple head-body contour without a mane seam; keep no paws and no equipment.",
+  "technicalRemediation": false,
+  "state": "technical_failed",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/components/concepts/poet_idle_ul_body_raw_v02.png",
+      "sha256": "95076acaf6c94e73f71b21cc60ed2d2a1d67e08b7b021583e9932dfde30a562f"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-dfbdae10245d7d6c/job-dfbdae10245d7d6c-a003/raw.png",
+      "sha256": "95076acaf6c94e73f71b21cc60ed2d2a1d67e08b7b021583e9932dfde30a562f"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-dfbdae10245d7d6c/job-dfbdae10245d7d6c-a003/prepared.png",
+      "sha256": "83e8168a5006884f10772318cca53bf7053c416bd5fa9dd4e8194c1bb561738d"
+    },
+    "maskSource": {
+      "path": "Tools/artworks/poet_five_red_chow/components/masks/poet_idle_ul_body_raw_v02_mask.png",
+      "sha256": "193a9e79a654809806621afda8ba3cd06d13c9d934e83496b3185cac6d0bb37f"
+    },
+    "mask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-dfbdae10245d7d6c/job-dfbdae10245d7d6c-a003/mask.png",
+      "sha256": "193a9e79a654809806621afda8ba3cd06d13c9d934e83496b3185cac6d0bb37f"
+    },
+    "calibrated": {
+      "path": "Tools/artworks/pipeline/artifacts/job-dfbdae10245d7d6c/job-dfbdae10245d7d6c-a003/calibrated.png",
+      "sha256": "30f90904a35ad3b23e25c029bfb0c07fb72c420bfafce2c945a6901e284d3516"
+    },
+    "calibratedMask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-dfbdae10245d7d6c/job-dfbdae10245d7d6c-a003/calibrated-mask.png",
+      "sha256": "718b509b04534086e731e855aacb9794b57e1f5a1dd0307b0801053085762aa7"
+    },
+    "review": {
+      "overlay": {
+        "path": "Tools/artworks/pipeline/reviews/job-dfbdae10245d7d6c-a003/overlay.png",
+        "sha256": "6f83cc9ecf938c053607a86595d3481ce431cdf246430a625e4269f1cac0f76a"
+      },
+      "preview128": {
+        "path": "Tools/artworks/pipeline/reviews/job-dfbdae10245d7d6c-a003/preview128.png",
+        "sha256": "8027c5edccb13031fcbb744fd129f215f8a080be8507d048b9093cbd29ec4950"
+      },
+      "tile64x32": {
+        "path": "Tools/artworks/pipeline/reviews/job-dfbdae10245d7d6c-a003/tile64x32.png",
+        "sha256": "cfafaafce83e8e051d9ac61ff9111350e3bea727dbfc2982ba47a52b5c59d93b"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-d80287dd60a06f4a.json",
+    "sha256": "d1f54aad297371706c535e1e61764696c82b9a34a29233351690744246de967a"
+  },
+  "approvalId": null,
+  "feedbackId": "feedback-1f47ea9ad398036c",
+  "generationInvocationId": "generation-invocation-d6898a1cff76e665",
+  "generationDeliveryId": "generation-delivery-90dc8819ad8ae5d0",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 120
+  },
+  "calibration": {
+    "method": "uniform-core-height",
+    "scale": 0.22111553784860558,
+    "offset": [
+      -12,
+      34
+    ],
+    "sourceCoreBbox": [
+      500,
+      390,
+      754,
+      891
+    ],
+    "anchorCoreBbox": [
+      94,
+      121,
+      160,
+      231
+    ],
+    "anchorMask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a010/calibrated-mask.png",
+      "sha256": "3e0db7ae51d77d8578a926e1f2db6224124381f15a16a4c215ea872ddbdd50fa"
+    }
+  },
+  "feedbackAddendumIds": [
+    "feedback-addendum-5897f658a38beb8e",
+    "feedback-addendum-9255ca4229943ecf"
+  ],
+  "acceptanceCaseResultIds": [
+    "acceptance-case-result-9898086d9b0caaf4",
+    "acceptance-case-result-185d8969eed26e1a",
+    "acceptance-case-result-93ac151d0f11ce77"
+  ],
+  "artDirectionReviewIds": [
+    "art-direction-review-a6fd9feb397a8a9a"
+  ],
+  "artDirectionReviewId": "art-direction-review-a6fd9feb397a8a9a",
+  "artDirectionVerdictIds": [
+    "art-direction-verdict-c8b0bb8b865016f0",
+    "art-direction-verdict-6d5ad51b39047a56"
+  ],
+  "artDirectionVerdictId": "art-direction-verdict-6d5ad51b39047a56"
+}

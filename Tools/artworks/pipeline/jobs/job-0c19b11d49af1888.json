@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "jobId": "job-0c19b11d49af1888",
+  "state": "ready",
+  "contractId": "contract-def442ba287568ed",
+  "contractSha256": "2670ad1cf504f89c1f5c7ef334f020d9d9133a848a996c31e6ecfc10b6112e36",
+  "prompt": {
+    "path": "Tools/artworks/pure_run/equipment/prompt_amazon_javelin.md",
+    "sha256": "66c8cd53925b5f66772a34ee329b671bcfd16b68be6dc5d3de9d5f2844720e80"
+  },
+  "inputs": [
+    {
+      "role": "weapon_reference",
+      "path": "Tools/artworks/doge/calibrated/doge_capsule_hunter_color_calibrated_v01.png",
+      "sha256": "68a35da9d5d646d497ae7bf99eebc5871bcc5be26a893441d9fcece57877ac07"
+    }
+  ],
+  "target": {
+    "direction": "down-right",
+    "pose": "display"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": false,
+  "poseGuide": null
+}

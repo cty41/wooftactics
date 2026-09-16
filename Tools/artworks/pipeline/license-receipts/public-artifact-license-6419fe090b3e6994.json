@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "licenseReceiptId": "public-artifact-license-6419fe090b3e6994",
+  "artifacts": [
+    {
+      "path": "Tools/artworks/pure_run/equipment/approved/pure_run_equipment_amazon_javelin_v01.png",
+      "sha256": "2ca1328677a5c83cc3e79bb9c0165c3814ae332ea981cb3a4984daf9ce85f06e"
+    },
+    {
+      "path": "Tools/artworks/pure_run/equipment/approved/pure_run_equipment_amazon_javelin_v01_128.png",
+      "sha256": "3f0484620a4ac8044012494c7841cc565545da9bd55bb008b472e9459903604d"
+    },
+    {
+      "path": "Tools/artworks/pure_run/equipment/approved/pure_run_equipment_amazon_round_shield_v01.png",
+      "sha256": "d5e14d2259d2af05a5fe5c00c275ed245ae5b543d0507ab031a23919363a2b24"
+    },
+    {
+      "path": "Tools/artworks/pure_run/equipment/approved/pure_run_equipment_amazon_round_shield_v01_128.png",
+      "sha256": "804c3c427a1ebc06bb5dcd5db9cf812f949232825fc5e377c2b295cf9d3e2445"
+    },
+    {
+      "path": "Tools/artworks/pure_run/equipment/approved/pure_run_equipment_demonbound_bound_sword_v01.png",
+      "sha256": "827056833326fe3e41a36f19a3ca9c30ad51dc8362ecb09a17cc9e5f36b8e563"
+    },
+    {
+      "path": "Tools/artworks/pure_run/equipment/approved/pure_run_equipment_demonbound_bound_sword_v01_128.png",
+      "sha256": "376e315b82fdeef73637903426aabaa18e1e5e168cb02b210a1397dda1cd28b3"
+    },
+    {
+      "path": "Tools/artworks/pure_run/equipment/approved/pure_run_equipment_iron_helmet_v04.png",
+      "sha256": "ee67ec9e8445a37d26a2db9e434402ef53861dfd82c83723f2681bf70dab0f56"
+    },
+    {
+      "path": "Tools/artworks/pure_run/equipment/approved/pure_run_equipment_iron_helmet_v04_128.png",
+      "sha256": "bb88e4a698f19147769ed2e659610af8f5fea8277ea1c72bcd01e5d3f2434008"
+    },
+    {
+      "path": "Tools/artworks/pure_run/equipment/approved/pure_run_equipment_leather_armor_v04.png",
+      "sha256": "bfa2dd69f85136690106ebb1998845ff20fdc589417012167e4988861c722b3b"
+    },
+    {
+      "path": "Tools/artworks/pure_run/equipment/approved/pure_run_equipment_leather_armor_v04_128.png",
+      "sha256": "6aa74e4e7c6497418843502eadfd19fc3b022763afe5e992511dcaf8f5433dad"
+    },
+    {
+      "path": "Tools/artworks/pure_run/equipment/approved/pure_run_equipment_leather_boots_v05.png",
+      "sha256": "cdff834d777578766e5b85297aee2060f4a682c0140eb3ef5e260f3a3bd6ec52"
+    },
+    {
+      "path": "Tools/artworks/pure_run/equipment/approved/pure_run_equipment_leather_boots_v05_128.png",
+      "sha256": "22d08bf7c21fa0e2989f845173c42d31d4a5ecde43b6ba219bbdb9c043a367d0"
+    },
+    {
+      "path": "Tools/artworks/pure_run/equipment/approved/pure_run_equipment_mage_oak_staff_v01.png",
+      "sha256": "3d0c3eb8fc37979f6a9f97483df54de1186e3b349bbc89e75f1ade896e003ea8"
+    },
+    {
+      "path": "Tools/artworks/pure_run/equipment/approved/pure_run_equipment_mage_oak_staff_v01_128.png",
+      "sha256": "b28756d35f2e0bb2e22430037c2aa6893028a0a8bbc69120e2d386a0a4a994f8"
+    },
+    {
+      "path": "Tools/artworks/pure_run/equipment/approved/pure_run_equipment_necromancer_dagger_v01.png",
+      "sha256": "7b5854a12e2515cabab1f8e263e444e2407d2e77fcfd7c808fb4314b1e837123"
+    },
+    {
+      "path": "Tools/artworks/pure_run/equipment/approved/pure_run_equipment_necromancer_dagger_v01_128.png",
+      "sha256": "7c5793e0a855ac9e0cd609371daa5a09cbe4755b26ce63757a8038d022dd1834"
+    },
+    {
+      "path": "Tools/artworks/pure_run/equipment/approved/pure_run_equipment_plain_iron_sword_v01.png",
+      "sha256": "4ca459c8a4ba3e40344707af10648218e9e34feeb022c7d453352fdbe4ded942"
+    },
+    {
+      "path": "Tools/artworks/pure_run/equipment/approved/pure_run_equipment_plain_iron_sword_v01_128.png",
+      "sha256": "0489d52554c6de949e9ba35344f8f051e4e4bbc76c8e5694c7b62b23d103741f"
+    },
+    {
+      "path": "Tools/artworks/pure_run/equipment/approved/pure_run_equipment_shadow_cloak_v04.png",
+      "sha256": "e254e333a2b7941c405e99a6104b989fc9be0683853b9929e31addd02286c787"
+    },
+    {
+      "path": "Tools/artworks/pure_run/equipment/approved/pure_run_equipment_shadow_cloak_v04_128.png",
+      "sha256": "a530895118e60e69c2c00f66da8155f89068ab1a7b18a74af217ad681f0093c1"
+    },
+    {
+      "path": "Tools/artworks/pure_run/equipment/approved/pure_run_equipment_wizard_hat_v04.png",
+      "sha256": "752963c4df58947c87c21d754e65aa6f16bead35a69e0e05a9d9f74022f0c8a7"
+    },
+    {
+      "path": "Tools/artworks/pure_run/equipment/approved/pure_run_equipment_wizard_hat_v04_128.png",
+      "sha256": "495bfaef9ac7b0785115541149ca8a1ff6b3a6f25a181d0a874fb1fb65ad0c4e"
+    },
+    {
+      "path": "Tools/artworks/pure_run/equipment/concepts/pure_run_equipment_iron_helmet_v04_chroma_source.png",
+      "sha256": "b336def55fce06c29bd94b1e2e486e7bdc7fb99d2c702777659d408d442555dd"
+    }
+  ],
+  "fromLicense": "project-owned",
+  "toLicense": "CC-BY-4.0",
+  "reviewer": "cty41",
+  "reason": "cty41 explicitly authorized these hash-matched approved project-generated equipment artifacts and the retained iron-helmet chroma source for public distribution under CC-BY-4.0 in the feat/gd2 merge-planning session.",
+  "decidedAt": "2026-09-16T14:52:37.2962140+08:00"
+}

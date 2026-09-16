@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 4,
+  "reviewedRecontractId": "reviewed-recontract-e0a8ea898b930b75",
+  "sourceAttemptId": "job-16985014758beabb-a010",
+  "sourceJobId": "job-16985014758beabb",
+  "sourceContractId": "contract-1752555cb96e6fa4",
+  "generationInvocationId": "generation-invocation-9f0ebe85c95da57f",
+  "generationDeliveryId": "generation-delivery-22b56c5fb7065aa2",
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/candidates/poet_ring_pommel_tang_dao_idle_ul_v6_a010_chroma_clean.png",
+    "sha256": "58f623c413a010b66e14c2a2c3d9503a18d4d0b2326540c21969c55eed40aa36"
+  },
+  "processing": {
+    "path": "Tools/artworks/poet_five_red_chow/components/poet_idle_ul_a010_chroma_cleanup_processing_v1.json",
+    "sha256": "692d30c066468a6c656542f8e9bb2b56f7eec50c29329ff47941bd6f5aea79a8",
+    "parameters": {
+      "schemaVersion": 1,
+      "operation": "deterministic-green-fringe-cleanup",
+      "sourceAttemptId": "job-16985014758beabb-a010",
+      "sourcePreparedSha256": "675bbd8cec8c55c50db589f0f5219749d051f37cb45a431fdaa17f71d9bdf2d2",
+      "transparentRule": "alpha=0 becomes transparent black; otherwise green>=64 and green>red+15 and green>blue+15 becomes transparent black",
+      "decontaminationRule": "remaining green channel is capped at max(red,blue)+4",
+      "geometryChange": "none other than removal of chroma/fringe pixels",
+      "authorizedVisual": "cty41-locked a010",
+      "colorAdjustment": "edge chroma decontamination only"
+    }
+  },
+  "targetContractId": "contract-ba466365ddf2fc89",
+  "targetContractSha256": "3878db536635c4afcc28a1ca099ffe56e847ce9451d3e3d12921ebd7486bb7c4",
+  "reviewer": "cty41",
+  "reason": "Preserve cty41-locked a010 geometry and visual layers while applying only documented deterministic green-fringe cleanup under the final honest contract.",
+  "acceptedAt": "2026-09-08T15:10:24+08:00"
+}

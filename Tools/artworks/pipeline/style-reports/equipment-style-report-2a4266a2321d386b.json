@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "styleReportId": "equipment-style-report-2a4266a2321d386b",
+  "contractId": "contract-6f074b0f2628fdf9",
+  "contractSha256": "16ad519813cd28bef995dc50cc46ea0e47e1a331af46a0ffbea6dc8095d42eaa",
+  "profile": {
+    "path": "Tools/artworks/pure_run/equipment/equipment_production_profile_v2.json",
+    "sha256": "e23e540c790a57432967d944c82bdad9721f109d2cb6352b3288c0c2c7d7bbb1"
+  },
+  "source": {
+    "path": "Tools/artworks/pipeline/artifacts/job-93dbc1ce4eeb846d/job-93dbc1ce4eeb846d-a002/raw.png",
+    "sha256": "3865808840a3747ca72510f6d81d23fd323c647072aba8a91dc0db57613382ba"
+  },
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_guqin_back_carried_dr_v02.png",
+    "sha256": "f87b0ccfd6d22bc50ed4c11e8c7a8f11bfe5a46b6f9f2bcddd05ef4a773dba5c"
+  },
+  "preview": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_guqin_back_carried_dr_v02_128.png",
+    "sha256": "138841b60dc392b913151e5e9cf593b8474deb3344069d9a9aaa301804bfc3d5"
+  },
+  "metrics": {
+    "interiorPixels": 5527,
+    "interiorColorBins": 89,
+    "smoothGradientRatio": 0.004968,
+    "visibleBbox": [
+      41,
+      143,
+      215,
+      237
+    ],
+    "visibleSize": [
+      174,
+      94
+    ],
+    "baseline": 236
+  },
+  "processingMode": "preserve-fidelity",
+  "quantized": false,
+  "remediation": null,
+  "hardIssues": [],
+  "advisories": [
+    "equipment_palette_complexity_review"
+  ],
+  "issues": [],
+  "passed": true
+}

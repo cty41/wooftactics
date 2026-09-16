@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "attemptId": "job-16985014758beabb-a011",
+  "inputSha256": "03782a656e3b4c0714b02b9093f5f51e9c1bbf8b34bccc365da2b03e1c917ca0",
+  "maskSha256": "951ab793283199c0ed23286f6a62c982e9b708da927d88596bc2dba5560f917d",
+  "technical": {
+    "size": [
+      256,
+      256
+    ],
+    "alphaBbox": [
+      87,
+      97,
+      192,
+      239
+    ]
+  },
+  "geometry": {
+    "boxes": {
+      "core": [
+        98,
+        123,
+        154,
+        233
+      ],
+      "head_appendage": [
+        92,
+        99,
+        189,
+        224
+      ],
+      "near_hand": [
+        89,
+        166,
+        115,
+        200
+      ],
+      "far_hand": [
+        164,
+        168,
+        188,
+        195
+      ],
+      "near_foot": [
+        99,
+        213,
+        130,
+        235
+      ],
+      "far_foot": [
+        133,
+        213,
+        167,
+        236
+      ],
+      "equipment": [
+        162,
+        124,
+        185,
+        167
+      ],
+      "wings": null,
+      "effect": null,
+      "near_arm": null,
+      "far_arm": null,
+      "near_leg": null,
+      "far_leg": null
+    },
+    "core": {
+      "bbox": [
+        98,
+        123,
+        154,
+        233
+      ],
+      "center": [
+        126.0,
+        178.0
+      ],
+      "bandMaxWidths": [
+        57,
+        57,
+        57
+      ]
+    },
+    "occlusion": {
+      "intrusionPixels": {
+        "near_hand": 0,
+        "far_hand": 0,
+        "equipment": 0
+      },
+      "visibleAreaRatios": {
+        "near_hand": 0.17177097203728361,
+        "far_hand": 0.0854416333777186,
+        "equipment": 0.10874389702618731
+      }
+    },
+    "composition": {
+      "coreTiltDegrees": 1.2873289415250384,
+      "bladeWidthPx": 24,
+      "bladeLengthPx": 28
+    }
+  },
+  "issues": [
+    "core_size_out_of_tolerance",
+    "equipment_enters_forbidden_front-layer-right-holding-paw",
+    "far_hand_contact_lt_3",
+    "weapon_blade_too_wide",
+    "weapon_tip_outside_region"
+  ],
+  "passed": false
+}

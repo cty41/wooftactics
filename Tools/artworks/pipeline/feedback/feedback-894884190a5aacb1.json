@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-894884190a5aacb1",
+  "attemptId": "job-bd7438c8b3d43bbb-a001",
+  "candidateSha256": "ff82f658119f224fe1ae9ac05eb3554e218f8d7997bbce08d4139968b53e85b1",
+  "reviewer": "cty41",
+  "verdict": "backup",
+  "strengths": [
+    "用户选择保留 B 的简化项目画风：扁平色块、少内部线、小尺寸可读性"
+  ],
+  "defects": [
+    "五红土松宽头短吻和厚鬃身份不足"
+  ],
+  "nextPromptDelta": "以 B 为画风锚点，融合 C 的犬种脸，不直接选用 B 全图",
+  "recordedAt": "2026-08-29T21:21:13.9669738+08:00",
+  "authorType": "human",
+  "categories": [
+    "identity",
+    "processing"
+  ],
+  "disposition": "backup",
+  "frozenInvariants": [
+    "B 的简化线条、扁平色块和小体量可读性"
+  ],
+  "pendingFixes": [
+    "融合 C 的宽头、短吻、厚鬃和庄重脸"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-421c8d823787d9cf",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v16_outline_restore_radius4_gray.png",
+    "sha256": "a43882b24c4cadecf53accd2e5042e89c06ba830da7093eeacbf71f4b25c888d"
+  },
+  "role": "supporting-derived",
+  "note": "Solid gray QA review for UL v16, checking full black outline continuity and absence of detached right-rear residue.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

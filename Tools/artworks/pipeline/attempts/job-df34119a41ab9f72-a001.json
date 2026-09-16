@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 3,
+  "attemptId": "job-df34119a41ab9f72-a001",
+  "jobId": "job-df34119a41ab9f72",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "technical_failed",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/concepts/poet_tang_dao_75_grip_reposition_03.png",
+      "sha256": "773dfc24bb9bac40b76a5fc1fefa14ae307c6584958f25600a2f73ddb0c63c06"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-df34119a41ab9f72/job-df34119a41ab9f72-a001/raw.png",
+      "sha256": "773dfc24bb9bac40b76a5fc1fefa14ae307c6584958f25600a2f73ddb0c63c06"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-df34119a41ab9f72/job-df34119a41ab9f72-a001/prepared.png",
+      "sha256": "adccfc2c04a6637f8b7c102381dbbb2cb6bbcac05e4af225965912972b4c7999"
+    },
+    "maskSource": {
+      "path": "Tools/artworks/poet_five_red_chow/components/poet_idle_body_grip_reposition_mask_v03.png",
+      "sha256": "7bb0c33911b1fdf882924179273b1e9a4b73da85e3747d905bddbe77d612d147"
+    },
+    "mask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-df34119a41ab9f72/job-df34119a41ab9f72-a001/mask.png",
+      "sha256": "7bb0c33911b1fdf882924179273b1e9a4b73da85e3747d905bddbe77d612d147"
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-926950c2a2597589.json",
+    "sha256": "4ba6664cf40891606fd1ee0152f7d5a57ac17d1bc7fb325d6dd53de447ea1d06"
+  },
+  "approvalId": null,
+  "feedbackId": null,
+  "componentMigrationId": "component-migration-efeeb9b1e18c435b",
+  "sourceMode": "pre_v3_import"
+}

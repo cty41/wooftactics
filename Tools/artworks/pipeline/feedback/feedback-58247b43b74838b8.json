@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-58247b43b74838b8",
+  "attemptId": "job-5d93780ad8556eb4-a001",
+  "candidateSha256": "c5f738bdc0f8fd78c033876b3b4a27689e36793e0c164f2104922d9126b7056e",
+  "reviewer": "pipeline-agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "The generated pose clearly uses a vertical fully sheathed ring-pommel object and places both visible front paws near the guard area."
+  ],
+  "defects": [
+    "Hard topology failure: the model added a long curved forearm from the torso to the upper paw, violating the no-arm capsule contract; the front paws are not both directly attached to the body.",
+    "Hard geometry failure: the sheathed tip reaches the ground beside the foot and the object reads at staff length, contrary to the accepted short sword/body ratio and tip-above-ground requirement.",
+    "Grip placement remains wrong: one paw is on or beside the handle/guard region and the two paws are not cleanly stacked together on the sheath throat immediately below the guard.",
+    "Identity/style drift repeats: generic smooth Chow rendering, bright oval forehead highlights, taller torso and undersized hind paws differ from the approved Poet."
+  ],
+  "nextPromptDelta": "Do not extend an arm. Return to the approved compact Poet body almost literally. Place two small paw pads as overlapping body-edge discs immediately below the guard, one above the other, with no limb between paw and torso. Shorten and raise the whole sheathed dao so its tip is clearly above both feet and above y220; retain Image 2 proportions. Remove forehead highlight ovals and smooth gradients.",
+  "recordedAt": "2026-09-13T20:12:10.2385882+08:00",
+  "authorType": "agent",
+  "categories": [],
+  "disposition": "technical_failed",
+  "frozenInvariants": [
+    "Retain only the user-approved semantic intent: vertical fully sheathed dao, ring pommel up, both paws intended below guard, no bare blade or VFX."
+  ],
+  "pendingFixes": [
+    "cty41 visual verdict on whether any aspect of this generated candidate should carry into a retry."
+  ]
+}

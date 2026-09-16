@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-ad24230f1ccbca93",
+  "attemptId": "job-f0fca2c8df3d55dc-a001",
+  "candidateSha256": "633e747f69b5235f9fcd0296bf165f65fa0bb687ddab7a7bfe3ea94f2d22a916",
+  "reviewer": "agent",
+  "verdict": "exhausted",
+  "strengths": [
+    "Weapon now visibly projects diagonally toward screen upper-left; back view, hidden lower sheath, one weapon, and no deferred props are preserved."
+  ],
+  "defects": [
+    "Ring/grip moved to screen-left rather than remaining at the intended screen-right shoulder endpoint.",
+    "Core remains approximately twice the approved anchor width and fails deterministic capsule geometry.",
+    "Side front paws remain vertically elongated."
+  ],
+  "nextPromptDelta": "If another attempt is authorized, lock the body to an explicit narrow silhouette guide and clarify which weapon endpoint must remain at the right shoulder.",
+  "recordedAt": "2026-09-04T21:50:26+08:00",
+  "authorType": "agent",
+  "categories": [
+    "core_geometry",
+    "pose_axis"
+  ],
+  "disposition": "exhausted",
+  "frozenInvariants": [
+    "diagonal upper-left weapon read, back view, no face, fully sheathed state, no deferred props"
+  ],
+  "pendingFixes": [
+    "cty41 visual decision"
+  ]
+}

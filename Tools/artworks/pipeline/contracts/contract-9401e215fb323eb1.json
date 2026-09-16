@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 3,
+  "contractId": "contract-9401e215fb323eb1",
+  "assetId": "poet-idle-body-full-silhouette-component-v06",
+  "approvedAssetId": "poet-idle-body-full-silhouette-component-v06",
+  "kind": "ground_character",
+  "direction": "down-right",
+  "pose": "idle",
+  "anchor": null,
+  "maskRequired": false,
+  "noArms": false,
+  "handSides": {
+    "near_hand": null,
+    "far_hand": null
+  },
+  "occlusion": null,
+  "compositionSpec": null,
+  "identitySpec": null,
+  "requiresInvocation": false,
+  "canvasSpec": {
+    "masterSize": [
+      256,
+      256
+    ]
+  },
+  "tilePlacementSpec": null,
+  "styleSpec": null,
+  "equipmentProductionSpec": null,
+  "tolerances": {
+    "sizePx": 3,
+    "centerPx": 2
+  },
+  "outputs": {
+    "master": "Tools/artworks/poet_five_red_chow/components/formal/poet_idle_body_full_silhouette_component_v06.png",
+    "preview": "Tools/artworks/poet_five_red_chow/components/formal/poet_idle_body_full_silhouette_component_v06_128.png"
+  },
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "deterministic-component-assembly"
+  },
+  "assetRole": "component",
+  "componentKind": "body",
+  "sourceMode": "pre_v3_import",
+  "runtimeEligible": false
+}

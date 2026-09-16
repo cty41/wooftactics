@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-16985014758beabb-a008",
+  "jobId": "job-16985014758beabb",
+  "ordinal": 8,
+  "generationRound": 7,
+  "parentAttemptId": "job-16985014758beabb-a007",
+  "retryFeedbackId": "feedback-181dc556d6fb84e6",
+  "promptDelta": "Freeze a007. Restrict edit to the confirmed tail-root region; make tail outline occlude the body outline while preserving tail shape and all other pixels.",
+  "technicalRemediation": false,
+  "state": "prepared",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/concepts/poet_ring_pommel_tang_dao_idle_ul_v5_raw_a008.png",
+      "sha256": "63a9f41d9c00f271cde2f1ba57e936d11868a169a4f40e28987a458c7e8221ec"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-16985014758beabb/job-16985014758beabb-a008/raw.png",
+      "sha256": "63a9f41d9c00f271cde2f1ba57e936d11868a169a4f40e28987a458c7e8221ec"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-16985014758beabb/job-16985014758beabb-a008/prepared.png",
+      "sha256": "c660238e29b16fbf1ea925f733d76cd416594d5e8055c592ec9d21c9dc235d2b"
+    }
+  },
+  "report": null,
+  "approvalId": null,
+  "feedbackId": "feedback-b9a2cb25cfd7e42c",
+  "generationInvocationId": "generation-invocation-444587df38df7006",
+  "generationDeliveryId": "generation-delivery-02489f2d3958ae79",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 48
+  }
+}

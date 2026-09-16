@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-16985014758beabb-a006",
+  "jobId": "job-16985014758beabb",
+  "ordinal": 6,
+  "generationRound": 5,
+  "parentAttemptId": "job-16985014758beabb-a005",
+  "retryFeedbackId": "feedback-569aaf61d1771e9b",
+  "promptDelta": "Preserve a005 entirely. Keep the screen-right side/front paw behind the body with body contour in front. Change only tail occlusion: tail and its root draw in front of the body, matching the selected a003 foreground tail.",
+  "technicalRemediation": false,
+  "state": "prepared",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/concepts/poet_ring_pommel_tang_dao_idle_ul_v5_raw_a006.png",
+      "sha256": "2b6bbb120da18c32dfcbb6320e630402b7dc05208b4895d2860250c40f7af823"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-16985014758beabb/job-16985014758beabb-a006/raw.png",
+      "sha256": "2b6bbb120da18c32dfcbb6320e630402b7dc05208b4895d2860250c40f7af823"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-16985014758beabb/job-16985014758beabb-a006/prepared.png",
+      "sha256": "d2a0fe9feb5795979b7e8e616a6ad46b76c66a445385f3b0b89481a0886a54c8"
+    }
+  },
+  "report": null,
+  "approvalId": null,
+  "feedbackId": "feedback-fa26659c7ef9835c",
+  "generationInvocationId": "generation-invocation-d62bac306c0ed374",
+  "generationDeliveryId": "generation-delivery-ecd19ead91c4c0ec",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 48
+  }
+}

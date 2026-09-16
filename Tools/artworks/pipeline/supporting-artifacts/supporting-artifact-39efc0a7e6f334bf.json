@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-39efc0a7e6f334bf",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_death_cross_class_pose_review_v01.png",
+    "sha256": "18497dcf3ba714abde47ab68781350f7c5d30974e070b55cdd1df15a7c3ba2e2"
+  },
+  "role": "supporting-derived",
+  "note": "Review-only comparison of runtime-bound Hunter, Mage, Necromancer and Demonbound Death sprites. Proposed Poet pose authority is Hunter horizontal capsule; proposed equipment treatment is one detached fully sheathed ring-pommel dao below the corpse, awaiting cty41 confirmation.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

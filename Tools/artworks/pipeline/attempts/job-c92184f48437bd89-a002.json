@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 2,
+  "attemptId": "job-c92184f48437bd89-a002",
+  "jobId": "job-c92184f48437bd89",
+  "ordinal": 2,
+  "parentAttemptId": "job-c92184f48437bd89-a001",
+  "retryFeedbackId": "feedback-7c229d49a917e6c4",
+  "promptDelta": "以批准 Demonbound 母图为强几何锚点，核心轮廓、脚位和前爪位置优先；五红土松特征仅作为贴服毛色与头脸变化，禁止宽胖宠物体",
+  "technicalRemediation": false,
+  "state": "prepared",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/concepts/poet_five_red_chow_idle_dr_raw_v05_capsule.png",
+      "sha256": "7dc3b5cd7affedd40e6c29c4b4ecf72e81c83f334c4a71156e94d21609459fca"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-c92184f48437bd89/job-c92184f48437bd89-a002/raw.png",
+      "sha256": "7dc3b5cd7affedd40e6c29c4b4ecf72e81c83f334c4a71156e94d21609459fca"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-c92184f48437bd89/job-c92184f48437bd89-a002/prepared.png",
+      "sha256": "eaf1815fb7e791410d5ef328cde02227e192e953e88581544fecc05d78fa8a21"
+    }
+  },
+  "report": null,
+  "approvalId": null,
+  "feedbackId": "feedback-569de0fb76efbc7a",
+  "generationInvocationId": "generation-invocation-26d73811cf23e20d",
+  "generationDeliveryId": "generation-delivery-ea7cf188fb6ec197",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 80
+  }
+}

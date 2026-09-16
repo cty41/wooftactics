@@ -8,6 +8,32 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+
+function Assert-PinnedGitBytes {
+    param([string]$RepositoryRoot, [string]$RepositoryPath, [string]$ObjectId, [string]$WorkingFile, [string]$DisplayPath)
+    $filter = (git -C $RepositoryRoot check-attr filter -- $RepositoryPath) -join "`n"
+    if ($LASTEXITCODE -ne 0) { throw "Unable to inspect Git attributes: $DisplayPath" }
+    if ($filter -match ': filter: lfs$') {
+        $pointer = (git -C $RepositoryRoot cat-file -p $ObjectId) -join "`n"
+        if ($LASTEXITCODE -ne 0 -or $pointer -notmatch 'oid sha256:(?<oid>[0-9a-f]{64})') {
+            throw "Tracked LFS pointer is invalid: $DisplayPath"
+        }
+        $expectedSha256 = $Matches.oid
+        if ($pointer -notmatch '(?m)^size (?<size>\d+)$') { throw "Tracked LFS pointer is invalid: $DisplayPath" }
+        $expectedSize = [long]$Matches.size
+        $actualSha256 = (Get-FileHash -LiteralPath $WorkingFile -Algorithm SHA256).Hash.ToLowerInvariant()
+        $actualSize = (Get-Item -LiteralPath $WorkingFile).Length
+        if ($actualSha256 -ne $expectedSha256 -or $actualSize -ne $expectedSize) {
+            throw "Tracked LFS file differs from its pinned object: $DisplayPath"
+        }
+        return
+    }
+    $actualObject = (git -C $RepositoryRoot hash-object --no-filters -- $WorkingFile).Trim()
+    if ($LASTEXITCODE -ne 0 -or $actualObject -ne $ObjectId) {
+        throw "Tracked source file differs from its pinned Git object: $DisplayPath"
+    }
+}
+
 $source = [IO.Path]::GetFullPath($SourceRoot)
 $destination = [IO.Path]::GetFullPath($DestinationRoot)
 if ($destination.Equals($source, [StringComparison]::OrdinalIgnoreCase) -or
@@ -29,9 +55,59 @@ $trackedStatus = @(git -C $source status --porcelain=v1 --untracked-files=no)
 if ($LASTEXITCODE -ne 0 -or $trackedStatus.Count -ne 0) {
     throw "RC source must have no tracked modifications: $($trackedStatus -join ', ')"
 }
-$trackedFiles = @(git -C $source ls-files)
-if ($LASTEXITCODE -ne 0 -or $trackedFiles.Count -eq 0) {
+$trackedEntries = @(git -C $source ls-files --stage)
+if ($LASTEXITCODE -ne 0 -or $trackedEntries.Count -eq 0) {
     throw 'Unable to enumerate tracked source files.'
+}
+$trackedFiles = [Collections.Generic.List[object]]::new()
+$gitlinks = [Collections.Generic.List[object]]::new()
+foreach ($entry in $trackedEntries) {
+    if ($entry -notmatch '^(?<mode>\d{6})\s+(?<object>[0-9a-f]+)\s+\d+\t(?<path>.+)$') {
+        throw "Unable to parse tracked source entry: $entry"
+    }
+    if ($Matches.mode -eq '160000') {
+        $gitlinks.Add([ordered]@{ path = $Matches.path; commit = $Matches.object })
+    } else {
+        $trackedFiles.Add([ordered]@{
+            path = $Matches.path
+            repositoryRoot = $source
+            repositoryPath = $Matches.path
+            repositoryCommit = $sourceCommit
+            object = $Matches.object
+        })
+    }
+}
+foreach ($gitlink in $gitlinks) {
+    $gitlinkPath = [string]$gitlink.path
+    $submoduleRoot = Join-Path $source $gitlinkPath
+    if (-not (Test-Path -LiteralPath $submoduleRoot -PathType Container)) {
+        throw "Tracked submodule is not materialized: $gitlinkPath"
+    }
+    $submoduleCommit = (git -C $submoduleRoot rev-parse HEAD).Trim()
+    if ($LASTEXITCODE -ne 0 -or $submoduleCommit -ne [string]$gitlink.commit) {
+        throw "Tracked submodule is not at its pinned commit: $gitlinkPath"
+    }
+    $submoduleStatus = @(git -C $submoduleRoot status --porcelain=v1 --untracked-files=no)
+    if ($LASTEXITCODE -ne 0 -or $submoduleStatus.Count -ne 0) {
+        throw "Tracked submodule has modified files: $gitlinkPath"
+    }
+    $submoduleFiles = @(git -C $submoduleRoot ls-files --stage)
+    if ($LASTEXITCODE -ne 0 -or $submoduleFiles.Count -eq 0) {
+        throw "Unable to enumerate tracked submodule files: $gitlinkPath"
+    }
+    foreach ($submoduleEntry in $submoduleFiles) {
+        if ($submoduleEntry -notmatch '^(?<mode>\d{6})\s+(?<object>[0-9a-f]+)\s+\d+\t(?<path>.+)$' -or
+            $Matches.mode -eq '160000') {
+            throw "Unable to parse tracked submodule entry: $gitlinkPath/$submoduleEntry"
+        }
+        $trackedFiles.Add([ordered]@{
+            path = "$gitlinkPath/$($Matches.path)"
+            repositoryRoot = $submoduleRoot
+            repositoryPath = $Matches.path
+            repositoryCommit = $submoduleCommit
+            object = $Matches.object
+        })
+    }
 }
 python (Join-Path $source 'Tools/public-release/validate_public_candidate.py') --root $source --candidate
 if ($LASTEXITCODE -ne 0) {
@@ -40,7 +116,8 @@ if ($LASTEXITCODE -ne 0) {
 
 New-Item -ItemType Directory -Path $destination | Out-Null
 $copied = [Collections.Generic.List[object]]::new()
-foreach ($relativePath in $trackedFiles) {
+foreach ($trackedFile in $trackedFiles) {
+    $relativePath = [string]$trackedFile.path
     $normalized = $relativePath.Replace('\', '/')
     if ($excludedPrefixes | Where-Object { $normalized.StartsWith($_, [StringComparison]::OrdinalIgnoreCase) }) {
         continue
@@ -49,6 +126,9 @@ foreach ($relativePath in $trackedFiles) {
     if (-not (Test-Path -LiteralPath $sourceFile -PathType Leaf)) {
         throw "Tracked source file is missing or not materialized: $relativePath"
     }
+    Assert-PinnedGitBytes -RepositoryRoot ([string]$trackedFile.repositoryRoot) `
+        -RepositoryPath ([string]$trackedFile.repositoryPath) -ObjectId ([string]$trackedFile.object) `
+        -WorkingFile $sourceFile -DisplayPath $relativePath
     $destinationFile = Join-Path $destination $relativePath
     $parent = Split-Path -Parent $destinationFile
     if (-not (Test-Path -LiteralPath $parent -PathType Container)) {
@@ -59,6 +139,8 @@ foreach ($relativePath in $trackedFiles) {
         path = $normalized
         size = (Get-Item -LiteralPath $destinationFile).Length
         sourceSha256 = (Get-FileHash -LiteralPath $destinationFile -Algorithm SHA256).Hash.ToLowerInvariant()
+        sourceRepositoryCommit = [string]$trackedFile.repositoryCommit
+        sourceObject = [string]$trackedFile.object
         stagedSha256 = ''
     })
 }
@@ -99,6 +181,7 @@ $manifest = [ordered]@{
     sourceCommit = $sourceCommit
     boundary = 'public-source-byte-identical-v1'
     excludedPrefixes = $excludedPrefixes
+    expandedGitlinks = @($gitlinks | ForEach-Object { [ordered]@{ path = ([string]$_.path).Replace('\\', '/'); commit = [string]$_.commit } })
     fileCount = $copied.Count
     files = @($copied | Sort-Object path)
 }

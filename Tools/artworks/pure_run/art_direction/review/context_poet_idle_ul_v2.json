@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "project": "pure-run",
+  "family": "actor",
+  "topology": "capsule",
+  "direction": "up-left",
+  "view": "back",
+  "pose": "idle",
+  "equipmentCategory": "weapon",
+  "equipmentState": "sheathed",
+  "assetId": "poet-five-red-chow-ring-pommel-dao-idle-ul-v2"
+}

@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "policyId": "pure-run-model-review-policy-v1",
+  "version": 1,
+  "title": "Pure Run model review authority policy",
+  "humanAuthority": {
+    "reviewer": "cty41",
+    "exclusiveDecisions": ["human-case-pass", "art-direction-verdict", "approval", "promotion"]
+  },
+  "modelReview": {
+    "allowedDecisions": ["retry", "escalate_to_human", "pass_to_human"],
+    "forbiddenClaims": ["approved", "humanDecision:passed", "aggregate-aesthetic-score"],
+    "formalAttempts": [
+      {"generationRound": 1, "reasoningEffort": "medium", "mayCreateNextRound": true},
+      {"generationRound": 2, "reasoningEffort": "high", "mayCreateNextRound": true},
+      {"generationRound": 3, "reasoningEffort": "xhigh", "mayCreateNextRound": false}
+    ],
+    "shadowMode": {
+      "meaning": "qualification-only; record the same proposed production review configuration without changing attempt state or creating a retry",
+      "countsTowardFormalAttemptBudget": false
+    },
+    "automaticRetryRequires": [
+      "active-hard-rule",
+      "auto-retry-eligible-rule",
+      "current-model-effort-prompt-policy-qualification",
+      "bound-acceptance-case",
+      "bound-evidence-region",
+      "controlled-retry-operations",
+      "frozen-invariants-preserved"
+    ]
+  },
+  "experienceAccumulation": {
+    "updatesModelParameters": false,
+    "curatorMayOnlyPropose": true,
+    "humanPromotionRequired": true,
+    "defaultPreference": ["add-case", "narrow-scope", "new-rule"]
+  },
+  "negativeEvidence": {
+    "reviewAllowed": true,
+    "generationInputAllowed": false
+  },
+  "promptOnlyComparison": {
+    "requiredBeforeQualification": true,
+    "aggregateAestheticScoreForbidden": true,
+    "dimensions": [
+      "known-hard-errors-reaching-human-review",
+      "repeated-hard-errors",
+      "model-review-misses",
+      "model-review-false-positives",
+      "repeated-human-hard-error-feedback",
+      "image-generation-rounds",
+      "human-escalations"
+    ]
+  }
+}

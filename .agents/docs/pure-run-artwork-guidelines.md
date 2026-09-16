@@ -1,20 +1,22 @@
 ---
 title: Pure Run 角色美术指南
 status: active
-verified_revision: c68dbebe
+verified_revision: c9ff3a710fd9
 ---
 
 # Pure Run 角色美术指南
 
-这份文档是 Pure Run 角色 Sprite 的稳定设计契约。它记录可复用的尺寸、目录和验收规则，不复制完整生成提示词或一次性候选讨论；实际 PNG 仍是外观真相源。
+这份文档是 Pure Run 角色 Sprite 的项目适配与离线生产契约。项目级视觉宪法、资产家族关系、材质抽象与审美克制由 [Pure Run 项目美术圣经](pure-run-art-direction-bible.md) 统领；本文件记录可复用的角色尺寸、目录和验收规则，不复制完整生成提示词或一次性候选讨论，实际 PNG 仍是外观真相源。项目级哈希绑定、职责锚点、Acceptance Case 与人工风格 verdict 见 [Pure Run 项目级美术方向状态机设计](pure-run-art-direction-state-machine-design.md)。
+
+> **当前 Godot 边界：** 本文仍混有退役 Unity 的 PPU、Prefab、SpriteRenderer、`.meta`、`localScale`、`FourDirectionSpriteVisual` 和旧 Grid 映射，这些不是当前运行时权威。现行棋盘投影为 `96×48`，战斗 Actor 以 `.34` 缩放，方向与动作由 `GodotUnitActor`、`GodotUnitActionPose` 和 `GodotBattlePresentationPlayer` 处理。`256×256`、`y=236`、128 预览和 `64×32` panel 仍是当前管线执行的 Pure Run 项目适配规则，但 `64×32` 对当前 Godot Game View 的有效性待重新验证，不能作为通用独立仓规范或实际运行时验收替代。运行时事实以代码、Resource、测试和[等距棋盘投影与锚点合同](isometric-grid-anchor-contract.md)为准；本轮不改写历史 receipt。
 
 ## 合同状态机
 
 - `Tools/artworks/pipeline` 是制作状态与血缘的机器权威；PNG 是像素真相源，两者必须以 SHA-256 绑定。ImageGen 仅是 `create-job` 与 `ingest` 之间的外部非确定性步骤。
-- 新合同默认使用 schema v2，读取器保留 v1 兼容且禁止原地批量重写历史记录。动作、死亡、遮挡或使用姿态参考的高风险任务必须先保存 `compositionSpec` 并确定性渲染 pose guide；规范固定核心轴、基线、隐藏握点、武器出口/尖端、禁入区、装备状态与可见面积上限。
+- 读取器保留旧 schema 兼容且禁止原地批量重写历史记录；active Art Direction Manifest 下的项目级新合同设计目标是绑定 v4 Manifest/Profile/Material/Family/Brief，但当前实现仍可在缺少 Family/Brief 时建立 v2/v3，属于已知门禁缺口而非推荐路径。动作、死亡、遮挡或使用姿态参考的高风险任务必须先保存 `compositionSpec` 并确定性渲染 pose guide；规范固定核心轴、基线、隐藏握点、武器出口/尖端、禁入区、装备状态与可见面积上限。
 - `compile-prompt` 将合同不变量、参考职责、冻结项和待修项确定性合并；`begin-generation` 在调用 ImageGen 前生成 invocation receipt。成功输出必须匹配 invocation 才能 ingest；工具失败或交付丢失只写 failure receipt，不产生 raw SHA，也不增加唯一输出数。
 - Feedback v2 区分 Human 与 Agent，支持结构化缺陷和 backup disposition。视觉模型报告只能作为 `advisoryReviews`，不改变状态；正式 approval 只能由 `cty41` 签发并绑定候选、蒙版、annotations、报告和 Review 哈希。
-- 新资产只能沿 `ready -> ingested -> prepared -> annotated -> review_pending -> approved/rejected -> promoted` 转换。技术失败固定为 `technical_failed`，后续必须新建 retry，不能修改失败 attempt 或把它作为母图。
+- Attempt 的简化主分支为 `ready -> ingested -> prepared -> annotated -> review_pending -> approved -> promoted`；`rejected` 与 `technical_failed` 都是终止分支，不能进入 promoted。实际实现另有 calibrated 与 Model Review 中间态，Job/Feedback/Series/Approval/Provenance 也是独立状态轴，详见[当前策略地图](generative-art-current-strategy-map.md)。技术失败后必须新建 retry，不能修改失败 attempt 或把它作为母图。
 - `prepare` 只负责确定性去幕、RGBA 与透明 RGB；核心体量必须由同坐标语义蒙版检查。聊天中的“通过”必须由 CLI 写成同时绑定候选和蒙版哈希的人工 receipt 才生效。
 - `legacy-assets.json` 逐文件登记历史 PNG。缺失可证血缘的 `legacy-unresolved` 只可保留和查看；目录名不能让它自动成为母图。正式旧图只有补充审核过的核心蒙版后，才能成为新任务的几何锚点。
 - 晋升只能由状态机写入 `calibrated/approved` 并同步公开 provenance。纯美术任务使用 Artwork、公开发布、LFS 与 OKF 门禁；完整 Godot Verify 仅在同时修改运行时或 Godot 代码时运行。
@@ -28,7 +30,7 @@ verified_revision: c68dbebe
 - 发布母版为 `256×256 RGBA`，完整可见轮廓高 `122 px`，底部基线为 `y=236`。游戏预览为 `128×128 RGBA`，按等比缩小后目标轮廓约 `62 px`，基线为 `y=118`。
 - `64×32` 是 Tile Review 的参考占用，不是角色母版尺寸。武器、耳朵、翅膀或法术等外部轮廓可以改变横向包围盒，但不能借此缩放或漂移胶囊身体；未校准外部轮廓只能进入候选目录。
 
-## Godot 运行时映射
+## 历史 Unity 运行时映射（非当前 Godot 权威）
 
 - `godot/assets/units` 中用于标准胶囊角色的 `256×256` 纹理保持统一尺寸，并由 Unit Resource 的脚底锚点与显示比例校准；以 `122 px` 可见轮廓计算，角色约为两格 Tile 高。
 - `64×32` 地面 Tile 继续使用 `64 Pixels Per Unit`，对应 Grid 的 `(1, 0.5, 1)` Cell Size。不要为了匹配角色而改变 Tile PPU、Grid 或相机。
@@ -36,7 +38,7 @@ verified_revision: c68dbebe
 - 单位状态不使用角色子节点上的方形 `Marker`。待命、选中、已行动和可攻击状态由 `ProceduralTileHighlightRenderer` 在 `CurrentCell` 的等距 Tile 面上绘制；友方为低饱和蓝灰，选中为柔和琥珀金，已行动为弱灰蓝，敌对/攻击范围为暖红。
 - Sprite 的底部 pivot 是运行时脚底锚点。阴影必须从主 `Sprite` 子节点的该锚点加极小向下偏移定位；不要按整张透明画布的 `Sprite.bounds.min` 或固定负 Y 值定位。
 
-## 双原生图四向显示
+## 双原生图四向显示（方向关系保留，Unity 实现术语历史）
 
 - 已接入的胶囊体单位只维护两张原生 `256×256` Sprite：`down-right` 与 `up-left`；`_128` 仅作设计层 QA，不进入运行时纹理目录。
 - `FourDirectionSpriteVisual` 只接管单位根节点下名为 `Sprite` 的主 `SpriteRenderer`，不改变 Transform scale、`Shadow` 或爆炸动画 Renderer。逻辑 `FacingDirection` 与视觉映射固定如下：

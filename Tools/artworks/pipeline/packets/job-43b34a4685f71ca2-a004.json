@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "attemptId": "job-43b34a4685f71ca2-a004",
+  "jobId": "job-43b34a4685f71ca2",
+  "promptDelta": "保持同一 raw；使用完全连续且位于主体内的矩形 core，近侧脚仅从 core 右下边缘切出连续标签，远侧脚标记 core 下方",
+  "inputs": [
+    {
+      "role": "core_anchor",
+      "path": "Tools/artworks/doge/calibrated/doge_capsule_demonbound_idle_dr_v01.png",
+      "sha256": "21559ca7aedd3e146feb2b93c5a6633affc6ce544122628c960972a982b0b5e7"
+    },
+    {
+      "role": "identity_reference",
+      "path": "Tools/artworks/poet_five_red_chow/concepts/poet_five_red_chow_idle_dr_raw_v06_formal.png",
+      "sha256": "ee964f8e2251c2b128e3f8ba6405ab13a1b2144e9f5590d4cb6b0ef0cc54d49a"
+    }
+  ],
+  "target": {
+    "direction": "down-right",
+    "pose": "idle"
+  },
+  "conceptOnly": false,
+  "contractRequirements": null
+}

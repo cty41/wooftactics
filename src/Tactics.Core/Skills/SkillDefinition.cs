@@ -3,7 +3,7 @@ using Tactics.Core.Statuses;
 
 namespace Tactics.Core.Skills;
 
-public enum SkillRole { Any, Mage, Necromancer, Amazon, Demonbound }
+public enum SkillRole { Any, Mage, Necromancer, Amazon, Demonbound, Poet }
 public enum SkillKind { Basic, Active, Passive, Utility }
 public enum SkillDamageKind { None, Physical, Magical }
 public enum SkillDamageScalingKind { None, PrimaryAttributeAboveNeutral }
@@ -43,7 +43,13 @@ public enum SkillExecutionKind
     InfernalBlast,
     Hellfire,
     DemonicRegeneration,
-    DirectAttack
+    DirectAttack,
+    PoetCharge,
+    PoetSwordRain,
+    PoetWineHeal,
+    PoetAgilityVerse,
+    PoetMoonDrink,
+    PoetDecoyRetreat
 }
 
 /// <summary>Optional normalized parameters used by the complete Pure Run Lv1/Lv2 skill set.</summary>
@@ -73,7 +79,15 @@ public sealed record SkillExecutionProfile(
     SkillDamageScalingKind DamageScaling = SkillDamageScalingKind.None,
     int LifeStealPercent = 0,
     SkillEffectScalingKind EffectScaling = SkillEffectScalingKind.None,
-    decimal AccuracyFactor = 1m);
+    decimal AccuracyFactor = 1m,
+    int KillManaRefund = 0,
+    int RepeatChancePercent = 0,
+    int RepeatDamagePercent = 0,
+    int HealingTickCount = 0,
+    int HealingBase = 0,
+    int AttributeModifier = 0,
+    int DirectHitCharges = 0,
+    int RetreatDistance = 1);
 
 /// <summary>Normalized engine-neutral execution contract for one migrated skill level.</summary>
 public sealed record SkillDefinition
@@ -135,8 +149,19 @@ public sealed record SkillDefinition
             ExecutionProfile.CorruptionCost < 0 || !Enum.IsDefined(ExecutionProfile.DamageScaling) ||
             !Enum.IsDefined(ExecutionProfile.EffectScaling) || ExecutionProfile.AccuracyFactor <= 0m)
             throw new ArgumentOutOfRangeException(nameof(executionProfile));
-        if (ExecutionProfile.LifeStealPercent is < 0 or > 100)
+        if (ExecutionProfile.LifeStealPercent is < 0 or > 100 ||
+            ExecutionProfile.RepeatChancePercent is < 0 or > 100 ||
+            ExecutionProfile.RepeatDamagePercent is < 0 or > 100 ||
+            ExecutionProfile.KillManaRefund < 0 || ExecutionProfile.HealingTickCount < 0 ||
+            ExecutionProfile.HealingBase < 0 || ExecutionProfile.AttributeModifier < 0 ||
+            ExecutionProfile.DirectHitCharges < 0 || ExecutionProfile.RetreatDistance <= 0)
             throw new ArgumentOutOfRangeException(nameof(executionProfile));
+        if (executionKind == SkillExecutionKind.PoetWineHeal && ExecutionProfile.HealingTickCount <= 0 ||
+            executionKind == SkillExecutionKind.PoetAgilityVerse && ExecutionProfile.AttributeModifier <= 0 ||
+            executionKind == SkillExecutionKind.PoetDecoyRetreat && ExecutionProfile.DirectHitCharges <= 0 ||
+            executionKind == SkillExecutionKind.PoetSwordRain &&
+            (ExecutionProfile.RepeatChancePercent == 0) != (ExecutionProfile.RepeatDamagePercent == 0))
+            throw new ArgumentException("Poet execution profile is incomplete.", nameof(executionProfile));
         RequiredAttribute = requiredAttribute.Trim();
         MinimumAttribute = minimumAttribute;
         PrerequisiteBranchId = prerequisiteBranchId.Trim();
@@ -169,10 +194,16 @@ public sealed record SkillDefinition
     public string PrerequisiteBranchId { get; }
     public bool CanCrit { get; }
     public bool IsPassive => Kind == SkillKind.Passive;
+    public bool IsDirectAttack => ExecutionKind is SkillExecutionKind.MagicAttack or SkillExecutionKind.MeleeAttack or
+        SkillExecutionKind.Fireball or SkillExecutionKind.IceBolt or SkillExecutionKind.Lightning or
+        SkillExecutionKind.BoneSpear or SkillExecutionKind.RangedAttack or SkillExecutionKind.DirectAttack or
+        SkillExecutionKind.FireDemonAttack or SkillExecutionKind.MultiStab or SkillExecutionKind.Thrust or
+        SkillExecutionKind.ChargeStrike or SkillExecutionKind.HeavyShot or SkillExecutionKind.PoisonSpear or
+        SkillExecutionKind.PoetCharge;
     public int AreaRadius => ExecutionProfile.AreaRadius > 0 ? ExecutionProfile.AreaRadius : ExecutionKind == SkillExecutionKind.AreaBlast ? 2 : 0;
-    public bool UsesLineTargeting => ExecutionKind is SkillExecutionKind.Fireball or SkillExecutionKind.IceBolt or SkillExecutionKind.BoneSpear or SkillExecutionKind.Thrust;
+    public bool UsesLineTargeting => ExecutionKind is SkillExecutionKind.Fireball or SkillExecutionKind.IceBolt or SkillExecutionKind.BoneSpear or SkillExecutionKind.Thrust or SkillExecutionKind.PoetCharge;
     public bool RequiresLineOfSight => !ExecutionProfile.IgnoreLineOfSight &&
-        ExecutionKind is (SkillExecutionKind.MagicAttack or SkillExecutionKind.Fireball or SkillExecutionKind.IceBolt or SkillExecutionKind.BoneSpear or SkillExecutionKind.RangedAttack or SkillExecutionKind.HeavyShot or SkillExecutionKind.ChargeStrike or SkillExecutionKind.FireDemonAttack);
+        ExecutionKind is (SkillExecutionKind.MagicAttack or SkillExecutionKind.Fireball or SkillExecutionKind.IceBolt or SkillExecutionKind.BoneSpear or SkillExecutionKind.RangedAttack or SkillExecutionKind.HeavyShot or SkillExecutionKind.ChargeStrike or SkillExecutionKind.FireDemonAttack or SkillExecutionKind.PoetSwordRain);
 }
 
 public sealed class SkillCatalogDefinition

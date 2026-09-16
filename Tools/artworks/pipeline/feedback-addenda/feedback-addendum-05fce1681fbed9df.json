@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "feedbackAddendumId": "feedback-addendum-05fce1681fbed9df",
+  "attemptId": "job-5ceb11280e5973fa-a001",
+  "parentFeedbackId": "feedback-3284abb54c9e7b62",
+  "reviewer": "cty41",
+  "defects": [
+    "cty41 corrected the action concept: discard the diagonal midpoint-grip geometry. Use a Gandalf bridge-style vertical fully sheathed sword, preserve the approved sword/body ratio instead of staff length, keep the sheathed tip above ground, and stack both paws immediately below the guard on the sheath throat. The v07 stick preview was explicitly accepted for one new Cast DR generation."
+  ],
+  "recordedAt": "2026-09-13T20:06:21.5576638+08:00",
+  "authorType": "human",
+  "disposition": "retry"
+}

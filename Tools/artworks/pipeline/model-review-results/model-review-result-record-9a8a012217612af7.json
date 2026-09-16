@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 4,
+  "modelReviewResultRecordId": "model-review-result-record-9a8a012217612af7",
+  "invocationId": "model-review-invocation-4b09b4211791c3b0",
+  "attemptId": "job-f40816b1c2e8b36c-a005",
+  "packetId": "model-review-packet-fc80b87edeb61ef5",
+  "packetSha256": "b45ad2c57e34dbf2a0967a06949a71a5aa8210f9d6a8bd38c3daae9cc2cf6c1a",
+  "qualificationMode": true,
+  "provider": "dsh-subagent-current-session",
+  "model": "gpt-5.6-sol",
+  "effort": "medium",
+  "freshSession": true,
+  "freshSessionId": "d986dc82-812c-4121-bb82-99712c0f5783",
+  "promptSource": {
+    "path": "Tools/artworks/pure_run/art_direction/review/reviewer_prompt_v1.md",
+    "sha256": "ea9a86b3e7e4ee724090fe0c520a4271ce4f38a34184335f865189bcf259a850"
+  },
+  "rawResult": {
+    "path": "Tools/artworks/pure_run/art_direction/review/shadow_results/capsule_no_limbs_demonbound_idle_ul_positive_medium_raw.json",
+    "sha256": "ca07bdc0228458302308a84d4b52b6002b122183fc8afd3198187b5c1e1bb05e"
+  },
+  "result": {
+    "resultId": "model-review-result-1ff9799fd63979c5",
+    "schemaVersion": 1,
+    "packetId": "model-review-packet-fc80b87edeb61ef5",
+    "packetSha256": "b45ad2c57e34dbf2a0967a06949a71a5aa8210f9d6a8bd38c3daae9cc2cf6c1a",
+    "decision": "pass_to_human",
+    "summary": "The bound positive case visually satisfies CAPSULE-NO-LIMBS-v1: all four paws read as compact masses attached directly to the capsule core, with no visible arm, forearm, leg, lower-leg, or thin connecting limb segment.",
+    "strengths": [
+      "Both lateral forepaws overlap the capsule edge directly and do not project through elongated limb segments.",
+      "Both hind paws attach directly at the capsule base without visible legs or thin connectors."
+    ],
+    "defects": [],
+    "frozenInvariants": [
+      "Shadow mode: approved positive must not be auto-retried or change attempt state"
+    ],
+    "operations": []
+  },
+  "outcome": "model_reviewed",
+  "validationError": null
+}

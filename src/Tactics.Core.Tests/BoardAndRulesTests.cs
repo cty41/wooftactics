@@ -242,6 +242,24 @@ public sealed class BoardAndRulesTests
     }
 
     [Test]
+    public void UnitFacingResolver_UsesCardinalDominantAxisAndStableTieRules()
+    {
+        Assert.Multiple(() =>
+        {
+            Assert.That(UnitFacingResolver.Initial(0), Is.EqualTo(UnitFacing.East));
+            Assert.That(UnitFacingResolver.Initial(1), Is.EqualTo(UnitFacing.West));
+            Assert.That(UnitFacingResolver.Resolve(new GridPoint(0, 0), new GridPoint(1, 3), UnitFacing.East),
+                Is.EqualTo(UnitFacing.North));
+            Assert.That(UnitFacingResolver.Resolve(new GridPoint(2, 2), new GridPoint(1, 1), UnitFacing.West),
+                Is.EqualTo(UnitFacing.West));
+            Assert.That(UnitFacingResolver.Resolve(new GridPoint(2, 2), new GridPoint(2, 2), UnitFacing.South),
+                Is.EqualTo(UnitFacing.South));
+            Assert.That(UnitFacingResolver.BackwardStep(new GridPoint(4, 4), UnitFacing.East),
+                Is.EqualTo(new GridPoint(3, 4)));
+        });
+    }
+
+    [Test]
     public void PoisonSpear_ResolvesDamageAndPoisonWithoutPresentationState()
     {
         var cells = Enumerable.Range(0, BoardSpec.Width)

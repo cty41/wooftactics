@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "attemptId": "job-bd7438c8b3d43bbb-a001",
+  "jobId": "job-bd7438c8b3d43bbb",
+  "promptDelta": null,
+  "inputs": [],
+  "target": {
+    "direction": "down-right",
+    "pose": "idle"
+  },
+  "conceptOnly": false,
+  "contractRequirements": null
+}

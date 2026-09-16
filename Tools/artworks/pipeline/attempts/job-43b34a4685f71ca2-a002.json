@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 2,
+  "attemptId": "job-43b34a4685f71ca2-a002",
+  "jobId": "job-43b34a4685f71ca2",
+  "ordinal": 2,
+  "parentAttemptId": "job-43b34a4685f71ca2-a001",
+  "retryFeedbackId": "feedback-697ae6f4903d5400",
+  "promptDelta": "严格采用 Demonbound DR 的三分之四朝向：口鼻中心位于核心轴右侧，近侧脸更完整、远侧轮廓受压；禁止正面证件照姿态",
+  "technicalRemediation": false,
+  "state": "technical_failed",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/concepts/poet_five_red_chow_idle_dr_raw_v08_isometric.png",
+      "sha256": "939c7ec5f8a55c2d173a2f3341c2d8d567a9f19ade3ae39291e17bf79e2d64d0"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a002/raw.png",
+      "sha256": "939c7ec5f8a55c2d173a2f3341c2d8d567a9f19ade3ae39291e17bf79e2d64d0"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a002/prepared.png",
+      "sha256": "c13ba540df85460a4089fd2da3355314dfe546dbb5fef3d811ed9563f3e088fb"
+    },
+    "maskSource": {
+      "path": "Tools/artworks/poet_five_red_chow/supporting/idle_dr_isometric_raw_mask_v04.png",
+      "sha256": "469197d6251a93b223ee9618147feac84dcff319771ba517a555394821acd5bc"
+    },
+    "mask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a002/mask.png",
+      "sha256": "469197d6251a93b223ee9618147feac84dcff319771ba517a555394821acd5bc"
+    },
+    "calibrated": {
+      "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a002/calibrated.png",
+      "sha256": "4dd2c055a45bfe45dea2db62d0c6bf00398a4d975eb72b94aaf59f5e72ef3a9d"
+    },
+    "calibratedMask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a002/calibrated-mask.png",
+      "sha256": "fa018db873a50f26fd0e976748915f3b158413cc741b3925398addde0ddc3ac5"
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-58c729c559a82e9e.json",
+    "sha256": "3b7e630007ea6947816cd22d7f6b113dcd521132924e887a5e8d3d89d6a27532"
+  },
+  "approvalId": null,
+  "feedbackId": "feedback-ec0bd7b9e4f64dbc",
+  "generationInvocationId": "generation-invocation-fe5bc3d2e375bc44",
+  "generationDeliveryId": "generation-delivery-432bd53dd4b4afc7",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 90
+  },
+  "annotationId": "annotations-47afc13d9ddfd180",
+  "calibration": {
+    "method": "uniform-core-height",
+    "scale": 0.18592964824120603,
+    "offset": [
+      9,
+      45
+    ],
+    "sourceCoreBbox": [
+      465,
+      395,
+      805,
+      991
+    ],
+    "anchorCoreBbox": [
+      96,
+      121,
+      159,
+      231
+    ],
+    "anchorMask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-168fd4b2f49ff6ca/job-168fd4b2f49ff6ca-a001/mask.png",
+      "sha256": "9f4968081aa296e73ec215a3a7e89383ad6e34c7d86fe7251af0b3511f12b2c8"
+    }
+  }
+}

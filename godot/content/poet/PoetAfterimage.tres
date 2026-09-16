@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="UnitDefinitionResource" format=3 uid="uid://h41angeqw2un"]
+
+[ext_resource type="PackedScene" path="res://content/units/UnitActor.tscn" id="1_8sgmi"]
+[ext_resource type="Texture2D" path="res://assets/units/doge_poet.png" id="2_p3bpn"]
+[ext_resource type="Texture2D" path="res://assets/units/pure_run_unit_shadow_1x1_v01.png" id="3_gq3lp"]
+[ext_resource type="Texture2D" path="res://assets/units/doge_poet_ul.png" id="4_gnbey"]
+[ext_resource type="Script" path="res://src/Tactics.Godot.Adapter/Runtime/UnitDefinitionResource.cs" id="5_awxdd"]
+
+[resource]
+script = ExtResource("5_awxdd")
+ContentIdValue = "unit.pure-run.poet-decoy"
+SourceId = "godot.poet-decoy"
+DisplayName = "Poet Afterimage"
+Category = "player"
+FamilyId = "summon"
+RoleId = "poet-decoy"
+Strength = 1
+Agility = 1
+Constitution = 1
+Intelligence = 1
+Charisma = 1
+Luck = 1
+MaxHealth = 2
+DerivedStatModeValue = "explicit"
+AttackRange = 1
+AttackFactor = 1.0
+DefenceFactor = 1.0
+ActorContentIdValue = "packed-scene.unit-actor"
+ActorScene = ExtResource("1_8sgmi")
+DownRightTexture = ExtResource("2_p3bpn")
+UpLeftTexture = ExtResource("4_gnbey")
+ShadowTexture = ExtResource("3_gq3lp")
+DownRightBodyOffset = Vector2(0, -108)
+UpLeftBodyOffset = Vector2(0, -108)
+ShadowOffset = Vector2(0, 3.84)
+ShadowScale = Vector2(1.6, 1.6)
+ShadowOpacity = 0.9
+BodyTint = Color(0.36, 0.84, 1, 0.72)
+BaseBodyColor = Color(0.36, 0.84, 1, 0.72)
+DeferredDependencies = PackedStringArray("starting-branch-skill")

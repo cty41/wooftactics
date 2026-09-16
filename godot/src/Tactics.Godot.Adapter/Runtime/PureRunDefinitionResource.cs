@@ -28,7 +28,7 @@ public partial class PureRunDefinitionResource : Resource
     public PureRunDefinition ToCoreDefinition()
     {
         int candidateCount = CharacterIds.Length;
-        if (SchemaVersion is not (1 or 2) || EncounterContentIds.Length != 3 || candidateCount is not (3 or 4) ||
+        if (SchemaVersion is not (1 or 2) || EncounterContentIds.Length != 3 || candidateCount is not (3 or 4 or 5) ||
             UnitContentIds.Length != candidateCount || StartingSkillContentIds.Length != candidateCount ||
             SeededStartingSkillFlags.Any(value => value is not (0 or 1)))
             throw new InvalidOperationException("Pure Run definition resource shape is invalid.");
@@ -59,7 +59,8 @@ public partial class PureRunDefinitionResource : Resource
         new(5, 5, 5, 6, 5, 5),
         new(5, 5, 5, 5, 6, 5),
         new(5, 6, 5, 5, 5, 5),
-        .. (candidateCount == 4 ? [new UnitAttributes(5, 5, 5, 5, 6, 5)] : Array.Empty<UnitAttributes>())
+        .. (candidateCount >= 4 ? [new UnitAttributes(5, 5, 5, 5, 6, 5)] : Array.Empty<UnitAttributes>()),
+        .. (candidateCount >= 5 ? [new UnitAttributes(6, 5, 5, 4, 6, 4)] : Array.Empty<UnitAttributes>())
     ];
 
     private static string[] DefaultStartingChoices(int candidateCount)
@@ -70,8 +71,12 @@ public partial class PureRunDefinitionResource : Resource
         "skill.necromancer.summon-skeleton.lv1", "skill.necromancer.amplify-damage.lv1", "skill.necromancer.bone-spear.lv1",
         "skill.amazon.thrust.lv1", "skill.poison-spear.lv1", "skill.amazon.combat-techniques.lv1"
         ];
-        return candidateCount == 3 ? existing : existing.Concat([
+        if (candidateCount == 3) return existing;
+        string[] four = existing.Concat([
             "skill.demonbound.bane.lv1", "skill.demonbound.infernal-blast.lv1", "skill.demonbound.mindfulness.lv1"
+        ]).ToArray();
+        return candidateCount == 4 ? four : four.Concat([
+            "skill.poet.xiake-xing.lv1", "skill.poet.jiang-jin-jiu.lv1", "skill.poet.moon-drink.lv1"
         ]).ToArray();
     }
 }

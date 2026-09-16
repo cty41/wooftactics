@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-5ad5484e31d83990",
+  "attemptId": "job-06be9bd09be64664-a001",
+  "candidateSha256": "063de26db67cbf4f11118b115462d8406f3fb689ef1b372ef40603b4224fe37c",
+  "reviewer": "cty41",
+  "verdict": "retry",
+  "strengths": [
+    "双球葫芦与腰绳身份清楚"
+  ],
+  "defects": [
+    "大面积渐变阴影、圆形柔光和颗粒质感AI味明显"
+  ],
+  "nextPromptDelta": "按批准Potion和匕首的扁平色块重绘；no gradient/no airbrush/no texture",
+  "recordedAt": "2026-08-30T09:51:39.0558482+08:00",
+  "authorType": "human",
+  "categories": [
+    "processing"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "改为2-3个硬边黄褐色块，删除圆形高光与柔和明暗过渡"
+  ]
+}

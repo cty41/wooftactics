@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-5e5334b7e1f14ce8",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/idle_dr_isometric_visual_review_v02.png",
+    "sha256": "df7b18516f38f3a2615fa61d5a0ff20cff5ff16c24c4fc05302cb38c05d2f7b4"
+  },
+  "role": "review-derived",
+  "note": "诗人美术人工审核辅助对比图，不是运行时Sprite"
+}

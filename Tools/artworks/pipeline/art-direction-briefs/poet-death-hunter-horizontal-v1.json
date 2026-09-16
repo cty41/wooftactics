@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "registryId": "asset-brief-2b77f9f132022686",
+  "sourceId": "poet-death-hunter-horizontal-v1",
+  "sourceType": "asset",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/briefs/poet_death_hunter_horizontal_asset_brief_v1.json",
+    "sha256": "86203ed86126b0e8c08fe07ff0a4803bf6be1d869729d3e176ad40e5da9633fb"
+  }
+}

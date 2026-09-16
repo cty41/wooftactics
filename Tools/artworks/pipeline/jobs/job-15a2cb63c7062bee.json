@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 4,
+  "jobId": "job-15a2cb63c7062bee",
+  "state": "ready",
+  "contractId": "contract-4e5a5bf7a40545f5",
+  "contractSha256": "018b7258ec91de09b21ef07491e0cf50810fa1d9f9bd2a10894076d80fada83f",
+  "prompt": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/poet_death_hunter_close_dao_prompt_v2.md",
+    "sha256": "eca263175e63edb637d686a109eca2b7b5d8130c086e89bafa3cb2ad80471ac2"
+  },
+  "inputs": [
+    {
+      "role": "image-1-approved-poet-identity-volume",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+      "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+    },
+    {
+      "role": "image-2-approved-hunter-death-pose-only",
+      "path": "Tools/artworks/doge/calibrated/doge_capsule_hunter_death_color_v04.png",
+      "sha256": "f5997651edd71cc78b926d5824ef4ac178f28604f5d7c9846f5a81ee0a2b3d19"
+    },
+    {
+      "role": "image-3-approved-sheathed-dao-form",
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_dr_v02.png",
+      "sha256": "eb4acedf50fe56d2c216e932a7364686de603a4df40c9bc5f1fe10c22ab55999"
+    },
+    {
+      "role": "image-4-approved-demonbound-death-spacing-only",
+      "path": "Tools/artworks/doge/calibrated/doge_capsule_demonbound_death_v01.png",
+      "sha256": "90218c756be1a4e3a40d8221667536f53d665447c24cca597f5f01eef0b462a0"
+    },
+    {
+      "role": "image-5-deterministic-poet-death-v2-guide",
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_death_hunter_close_dao_pose_guide_v2.png",
+      "sha256": "0936f526aa766f5636675718194f96c7b8a0c87966b11cd8839468ccf5f21e05"
+    }
+  ],
+  "target": {
+    "direction": "down-right",
+    "pose": "death"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": true,
+  "poseGuide": {
+    "poseGuideId": "pose-guide-3900f9362da0239a",
+    "sha256": "9d04b7e21e9e3caad6ccb585271646570678eea7b670f227901bd1456de1dcf2"
+  },
+  "localReferences": []
+}

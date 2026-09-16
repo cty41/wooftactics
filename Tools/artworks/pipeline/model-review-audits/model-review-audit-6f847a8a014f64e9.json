@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 4,
+  "modelReviewAuditId": "model-review-audit-6f847a8a014f64e9",
+  "modelReviewResultRecordId": "model-review-result-record-25fd73da988cbcf0",
+  "modelReviewResult": {
+    "path": "Tools/artworks/pipeline/model-review-results/model-review-result-record-25fd73da988cbcf0.json",
+    "sha256": "8904aea87eeb024332e03fc515b532134458a6477d1428c5d23be704475f03aa"
+  },
+  "reviewer": "cty41",
+  "finding": "matches-approved-positive-no-false-retry",
+  "auditedAt": "2026-09-04T21:05:54+08:00"
+}

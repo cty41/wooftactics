@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 4,
+  "caseFitnessAuditId": "case-fitness-audit-68b9aa7e725926bc",
+  "source": {
+    "path": "Tools/artworks/pure_run/art_direction/review/case_demonbound_idle_ul_no_limbs_positive_v1.json",
+    "sha256": "3e049826cddae192ec19e4e19714d11450947693eb399c7e1019cc9ed06f65a5"
+  },
+  "caseId": "CASE-DEMONBOUND-IDLE-UL-NO-LIMBS-POSITIVE-v1",
+  "audit": {
+    "status": "shadow-only",
+    "eligibleForActivePolicy": false,
+    "reasons": []
+  }
+}

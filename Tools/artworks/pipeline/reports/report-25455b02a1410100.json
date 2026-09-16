@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "attemptId": "job-93fe1ce8ccd8acf7-a001",
+  "inputSha256": "6aaab932cbb581ae851d36b3451533febacb5abdabe7fd0f26e3cb28f6472a76",
+  "maskSha256": "e6eba36fbc45f85e0459e8dbc7b3b22a10f83986c71ab46cd4f9022fa6dca605",
+  "technical": {
+    "size": [
+      256,
+      256
+    ],
+    "alphaBbox": [
+      142,
+      229,
+      157,
+      237
+    ]
+  },
+  "geometry": {
+    "componentKind": "foot_overlay"
+  },
+  "issues": [],
+  "passed": true
+}

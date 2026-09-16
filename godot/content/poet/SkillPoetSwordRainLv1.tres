@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="SkillDefinitionResource" format=3 uid="uid://galrn0qikkfr"]
+
+[ext_resource type="Script" path="res://src/Tactics.Godot.Adapter/Runtime/SkillDefinitionResource.cs" id="1_l22g1"]
+
+[resource]
+script = ExtResource("1_l22g1")
+ContentIdValue = "skill.poet.sword-rain.lv1"
+SourceId = "godot.skill.poet.sword-rain.lv1"
+DisplayName = "剑雨"
+Description = "剑雨"
+RoleValue = "Poet"
+KindValue = "Active"
+Level = 1
+ManaCost = 12
+MaxRange = 4
+ExecutionKindValue = "PoetSwordRain"
+Damage = 3
+DamageKindValue = "Physical"
+BranchId = "poet.sword-rain"
+PrerequisiteContentIdValue = "skill.poet.xiake-xing.lv1"
+PrerequisiteBranchId = "poet.sword-immortal"
+RequiredAttribute = "Strength"
+MinimumAttribute = 7
+AreaRadius = 2
+AllowsEmptyTarget = true
+AuthoringSourceKindValue = "GodotAuthored"

@@ -55,6 +55,87 @@ public sealed class StatusItemRuntimeTests
     }
 
     [Test]
+    public void TemporaryAgilityModifier_UpdatesAccuracyAndInitiativeThenRestoresBaseline()
+    {
+        var service = new StatusRuntimeService();
+        BattleUnitState unit = Unit("party.actor.0", player: 0, speed: 5f);
+        var definition = new StatusDefinition(new ContentId("buff.poet.agility"), "poet.agility", 1,
+            true, StatusPolarity.Beneficial, StatusEffectKind.None, StatusTriggerTiming.None,
+            StatusRefreshStrategy.RefreshDuration,
+            attributeModifiers: new UnitAttributeModifiers(Agility: 2));
+
+        BattleUnitState buffed = service.Apply(unit, definition, unit.Unit.InstanceId).Unit;
+        BattleUnitState restored = service.Remove(buffed, definition.ContentId);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(buffed.Unit.EffectiveAttributes.Agility, Is.EqualTo(7));
+            Assert.That(buffed.Unit.Initiative, Is.EqualTo(14));
+            Assert.That(UnitCombatStatRules.Accuracy(buffed.Unit.EffectiveAttributes), Is.EqualTo(110));
+            Assert.That(restored.Unit.EffectiveAttributes.Agility, Is.EqualTo(5));
+            Assert.That(restored.Unit.Initiative, Is.EqualTo(10));
+        });
+    }
+
+    [Test]
+    public void TemporaryAttributeRefresh_KeepsStrongestModifierAndRefreshesDuration()
+    {
+        var service = new StatusRuntimeService();
+        BattleUnitState unit = Unit("party.actor.0", player: 0, speed: 5f);
+        StatusDefinition stronger = new(new ContentId("buff.poet.agility"), "poet.agility", 1,
+            true, StatusPolarity.Beneficial, StatusEffectKind.None, StatusTriggerTiming.None,
+            StatusRefreshStrategy.RefreshDuration,
+            attributeModifiers: new UnitAttributeModifiers(Agility: 4));
+        StatusDefinition weaker = new(new ContentId("buff.poet.agility"), "poet.agility", 3,
+            true, StatusPolarity.Beneficial, StatusEffectKind.None, StatusTriggerTiming.None,
+            StatusRefreshStrategy.RefreshDuration,
+            attributeModifiers: new UnitAttributeModifiers(Agility: 2));
+
+        BattleUnitState buffed = service.Apply(unit, stronger, unit.Unit.InstanceId).Unit;
+        BattleUnitState refreshed = service.Apply(buffed, weaker, unit.Unit.InstanceId).Unit;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(refreshed.Statuses[stronger.ContentId].RemainingTurns, Is.EqualTo(3));
+            Assert.That(refreshed.Statuses[stronger.ContentId].AttributeModifiers.Agility, Is.EqualTo(4));
+            Assert.That(refreshed.Unit.EffectiveAttributes.Agility, Is.EqualTo(9));
+            Assert.That(refreshed.Unit.Initiative, Is.EqualTo(18));
+        });
+    }
+
+    [Test]
+    public void HealingOverTime_TicksThreeFutureTurnStartsAndDistributesRemainderEarly()
+    {
+        var statusService = new StatusRuntimeService();
+        BattleUnitState source = Unit("party.source.0", player: 0, speed: 5f);
+        BattleUnitState target = Unit("party.target.0", player: 0, speed: 4f,
+            position: new GridPoint(3, 1)).WithHealth(5);
+        var healing = new StatusDefinition(new ContentId("buff.poet.healing"), "poet.healing", 3,
+            true, StatusPolarity.Beneficial, StatusEffectKind.None, StatusTriggerTiming.TurnStart,
+            StatusRefreshStrategy.RefreshDuration, frozenTotalHealing: 10);
+        target = statusService.Apply(target, healing, source.Unit.InstanceId).Unit;
+        BattleState state = State(source, target);
+        var transitions = new BattleTransitionService(statusRuntime: statusService);
+
+        state = transitions.Apply(state, new EndTurnCommand(source.Unit.InstanceId)).State;
+        int first = state.Units[target.Unit.InstanceId].CurrentHealth;
+        state = transitions.Apply(state, new EndTurnCommand(target.Unit.InstanceId)).State;
+        state = transitions.Apply(state, new EndTurnCommand(source.Unit.InstanceId)).State;
+        int second = state.Units[target.Unit.InstanceId].CurrentHealth;
+        state = transitions.Apply(state, new EndTurnCommand(target.Unit.InstanceId)).State;
+        state = transitions.Apply(state, new EndTurnCommand(source.Unit.InstanceId)).State;
+        BattleUnitState completed = state.Units[target.Unit.InstanceId];
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(first, Is.EqualTo(9));
+            Assert.That(second, Is.EqualTo(12));
+            Assert.That(completed.CurrentHealth, Is.EqualTo(15));
+            Assert.That(completed.Statuses.ContainsKey(healing.ContentId), Is.False);
+        });
+    }
+
+    [Test]
     public void EndTurn_TicksStatusesInContentIdOrderAndBurningConsumesStacks()
     {
         var statusService = new StatusRuntimeService();

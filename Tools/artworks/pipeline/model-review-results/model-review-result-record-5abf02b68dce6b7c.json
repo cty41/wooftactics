@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 4,
+  "modelReviewResultRecordId": "model-review-result-record-5abf02b68dce6b7c",
+  "invocationId": "model-review-invocation-aed35c297a58550f",
+  "attemptId": "job-4affd0d3e702d0d0-a001",
+  "packetId": "model-review-packet-f56486635b978b9c",
+  "packetSha256": "95cf541a0ca3e2f440ea3e2272acd5a2ab1b0dc9874da5e98b3beaa28f9407b8",
+  "qualificationMode": false,
+  "provider": "deepseek-harness-subagent",
+  "model": "gpt-5.6-sol",
+  "effort": "medium",
+  "freshSession": true,
+  "freshSessionId": "7b5cd195-4d8f-4569-b9a9-536ba8c03203",
+  "promptSource": {
+    "path": "Tools/artworks/pure_run/art_direction/review/reviewer_prompt_v1.md",
+    "sha256": "ea9a86b3e7e4ee724090fe0c520a4271ce4f38a34184335f865189bcf259a850"
+  },
+  "rawResult": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_v7_model_review_medium_result.json",
+    "sha256": "c7b6a572e20e40c96fd9950d4e08ddcbd44c88fc28d14bb4c85b1e788e7f3aa7"
+  },
+  "result": {
+    "resultId": "model-review-result-5c26cc84cbb13fe5",
+    "schemaVersion": 1,
+    "packetId": "model-review-packet-f56486635b978b9c",
+    "packetSha256": "95cf541a0ca3e2f440ea3e2272acd5a2ab1b0dc9874da5e98b3beaa28f9407b8",
+    "decision": "pass_to_human",
+    "summary": "The candidate presents four compact, directly attached paws under the frozen occlusion arrangement, with no visible arm- or leg-like connectors.",
+    "strengths": [
+      "Visible paws are compact and attach directly to the capsule body silhouette.",
+      "No elongated limb connector is visible between any paw and the body.",
+      "The occluded screen-right side paw and mostly occluded foot remain consistent with the frozen invariant."
+    ],
+    "defects": [],
+    "frozenInvariants": [
+      "cty41-locked a010: foreground tail; screen-right side paw and foot behind body; current mostly occluded sheathed Tang dao presentation"
+    ],
+    "operations": []
+  },
+  "outcome": "model_reviewed",
+  "validationError": null
+}

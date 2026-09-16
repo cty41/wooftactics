@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "profileKind": "family",
+  "profileId": "pure-run-vfx-readability-family-v1",
+  "family": "vfx_readability",
+  "rules": [
+    "Separate telegraph, activation, impact, and decay phases.",
+    "Danger area and gameplay timing take precedence over spectacle.",
+    "Do not continuously cover actor faces, feet, tile boundaries, or interactables.",
+    "Reserve strong brightness, saturation, and area for a brief impact peak."
+  ],
+  "requiredReviewPanels": ["telegraph", "activation", "impact", "decay", "occlusion-overlay"],
+  "advisories": ["coverage-area", "peak-duration", "telegraph-impact-timing"]
+}

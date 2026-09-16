@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 3,
+  "jobId": "job-4d655b953592f8df",
+  "state": "ready",
+  "contractId": "contract-2c385915928621cf",
+  "contractSha256": "d2ce51c1f8842b1a18ce1a2ff294ff52f328d1d57b180d0244e8cb9c7fd63ad9",
+  "prompt": null,
+  "inputs": [],
+  "target": {
+    "direction": "down-right",
+    "pose": "idle"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": false,
+  "sourceMode": "pre_v3_import"
+}

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 2,
+  "attemptId": "job-ffaa562f76730ec3-a002",
+  "jobId": "job-ffaa562f76730ec3",
+  "ordinal": 2,
+  "parentAttemptId": "job-ffaa562f76730ec3-a001",
+  "retryFeedbackId": "feedback-b5ccca5c48fa4894",
+  "promptDelta": "Treat Image 1 as an edit target, not inspiration: preserve its pixels and silhouette; make only minimal equipment additions. Reject any frontal face. Reduce sword scale 25 percent and expose both guqin ends behind body.",
+  "technicalRemediation": false,
+  "state": "prepared",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/concepts/poet_five_red_chow_equipped_idle_dr_raw_v02.png",
+      "sha256": "9b0933ef696ec9966db22c43c76d84ceae9d5fad818d01bd21ccd1ced6bdbe8f"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-ffaa562f76730ec3/job-ffaa562f76730ec3-a002/raw.png",
+      "sha256": "9b0933ef696ec9966db22c43c76d84ceae9d5fad818d01bd21ccd1ced6bdbe8f"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-ffaa562f76730ec3/job-ffaa562f76730ec3-a002/prepared.png",
+      "sha256": "57eb6c16ca72d386a0bd700b51edcad2cfd15a08f9360ee8b8a5f3d0eae8874b"
+    }
+  },
+  "report": null,
+  "approvalId": null,
+  "feedbackId": "feedback-4012bb07f0a82864",
+  "generationInvocationId": "generation-invocation-340010842983e22a",
+  "generationDeliveryId": "generation-delivery-e09f213b1939aeb1",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 96
+  }
+}

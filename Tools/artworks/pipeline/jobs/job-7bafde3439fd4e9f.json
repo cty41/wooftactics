@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 2,
+  "jobId": "job-7bafde3439fd4e9f",
+  "state": "ready",
+  "contractId": "contract-730c6d668387c680",
+  "contractSha256": "46488461109eac882d68a059a3e8ff8d4de68b559a22339db1b3925b4b3089a2",
+  "prompt": null,
+  "inputs": [
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v15_outline_restore.png",
+      "sha256": "595bc79b1e2fc797b55ad86b3b7bed9b52370435df6ab10c5da1c27f976c6dfa"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_melee_ul_high_guard_v01_reviewed_clean.png",
+      "sha256": "7fde40f9dc57fd367589ffdc99e35ac49bad6f07b77a9fb1ff2453612056d5b7"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_melee_ul_high_guard_v01_reviewed_clean_128.png",
+      "sha256": "cda95859918e032c153221dca6b1d778dc622cea7f40c3e39cb37c9fe80a5b0e"
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_v01_clean_size_comparison.png",
+      "sha256": "cade16762bcee2bad2058b3c33aa1c9271b328ce30f3927be1d40386cfb8cf77"
+    }
+  ],
+  "target": {
+    "direction": "up-left",
+    "pose": "melee-high-guard"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": false,
+  "sourceMode": "reviewed_import",
+  "reviewedImportId": "reviewed-import-1c00304a8949c17c"
+}

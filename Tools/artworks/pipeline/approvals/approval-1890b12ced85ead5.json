@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 2,
+  "approvalId": "approval-1890b12ced85ead5",
+  "attemptId": "job-211e9534c3ce587f-a001",
+  "candidateSha256": "f1f9049ba256d1e649cafc742391f184d000547b47f442e557b19156adf3a9ac",
+  "maskSha256": null,
+  "reviewer": "cty41",
+  "reviewSha256": {
+    "sizeComparison": "d4494ae18ed63fa99e76a763fc423f32df776f665372889a3291b864597bc4bb"
+  },
+  "decision": "approved",
+  "reason": "cty41 explicitly approved promotion and next. Known missing second front-paw arc, identity/volume drift, weak recoil and paw-scale deviations remain documented; no Runtime binding is implied.",
+  "decidedAt": "2026-09-14T10:26:54.5192460+08:00",
+  "annotation": null,
+  "reportSha256": "8290add6b97ac49a31ad98754f245a1a367557a59dde26a8a369aa17d45a9c5c"
+}

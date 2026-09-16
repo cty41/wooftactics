@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-b189e942b5f1be54",
+  "attemptId": "job-c2fb551be9ecdd83-a005",
+  "candidateSha256": "caa4e0088564e95905dd96e91cae7a1118ad029416274d64f9475604b5336823",
+  "reviewer": "agent",
+  "verdict": "exhausted",
+  "strengths": [
+    "Ring is smaller, more oblique, connected, and remains at the right shoulder with the sheath hidden."
+  ],
+  "defects": [
+    "Ring-only regeneration failed to preserve frozen body invariants: a large mane seam returned and the core widened to 106x110 versus the 66x110 anchor.",
+    "Screen-left front paw is no longer a clean compact paw arc and is confused with the tail silhouette."
+  ],
+  "nextPromptDelta": "Do not continue whole-sprite regeneration for a local ring correction; use a separately approved equipment component and deterministic assembly or return to a new native body candidate.",
+  "recordedAt": "2026-09-05T00:30:04+08:00",
+  "authorType": "agent",
+  "categories": [
+    "identity",
+    "core_geometry",
+    "topology"
+  ],
+  "disposition": "exhausted",
+  "frozenInvariants": [
+    "one connected right-shoulder weapon cue, hidden sheath, back view, no face or deferred props"
+  ],
+  "pendingFixes": [
+    "cty41 chooses component workflow or stop"
+  ]
+}

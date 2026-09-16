@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-3aa7b1421956b11a",
+  "attemptId": "job-612e5cad5e501d50-a002",
+  "candidateSha256": "d0eeaf815fe5697a664fb65336c567b8d67a5fcc9ff4674884e60f955bd93d07",
+  "reviewer": "cty41",
+  "verdict": "retry",
+  "strengths": [
+    "平涂风格已显著改善，扁壶身份清楚"
+  ],
+  "defects": [
+    "在三种候选中未被选为当前正式酒器或未来正式装备备用"
+  ],
+  "nextPromptDelta": "",
+  "recordedAt": "2026-08-30T09:58:18.3709830+08:00",
+  "authorType": "human",
+  "categories": [
+    "identity"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "保留历史候选，不晋升；如未来重启扁壶方向需另行确认"
+  ]
+}

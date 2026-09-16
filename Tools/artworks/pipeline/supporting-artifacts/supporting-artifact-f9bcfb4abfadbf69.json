@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-f9bcfb4abfadbf69",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_guqin_only_back_spatial_review_v02.png",
+    "sha256": "1256e754a9286d24db3ef5de8dd84e8a980c00dbf0cce18812c7b7a31d9e0dc1"
+  },
+  "role": "review-derived",
+  "note": "仅角色与更横向背负古琴的空间关系审核图；古琴按拟定最终108x58显示，不是可晋升Sprite"
+}

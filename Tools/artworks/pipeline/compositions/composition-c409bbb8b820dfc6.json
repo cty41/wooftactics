@@ -1,0 +1,260 @@
+{
+  "schemaVersion": 2,
+  "compositionId": "composition-c409bbb8b820dfc6",
+  "assetId": "poet-five-red-chow-melee-dr-deep-grip-v7",
+  "spec": {
+    "canvas": [
+      256,
+      256
+    ],
+    "coreBbox": [
+      69,
+      117,
+      175,
+      240
+    ],
+    "coreAxis": {
+      "bottom": [
+        128,
+        236
+      ],
+      "top": [
+        147,
+        120
+      ],
+      "tiltDegrees": [
+        6.0,
+        16.0
+      ]
+    },
+    "footCenter": [
+      128,
+      236
+    ],
+    "weapon": {
+      "hiddenGrip": [
+        137,
+        193
+      ],
+      "exitWindow": [
+        146,
+        193,
+        158,
+        207
+      ],
+      "tipRegion": [
+        198,
+        220,
+        222,
+        243
+      ],
+      "guardWindow": [
+        145,
+        191,
+        159,
+        207
+      ],
+      "bladeCenterline": [
+        151,
+        197,
+        214,
+        239
+      ],
+      "screenAxis": [
+        [
+          136,
+          192
+        ],
+        [
+          212,
+          236
+        ]
+      ],
+      "tipMayBeOccluded": false,
+      "minBladeWidthPx": 4,
+      "maxBladeWidthPx": 12,
+      "bladeLengthRangePx": [
+        60,
+        80
+      ]
+    },
+    "forbiddenRegions": [],
+    "requiredHiddenLabels": [],
+    "visibleAreaCaps": {},
+    "equipmentState": {
+      "scabbard": "absent",
+      "blade": "visible",
+      "staticEffects": "absent"
+    },
+    "actionDesign": {
+      "silhouette": [
+        [
+          69,
+          175
+        ],
+        [
+          86,
+          130
+        ],
+        [
+          126,
+          116
+        ],
+        [
+          160,
+          127
+        ],
+        [
+          175,
+          166
+        ],
+        [
+          164,
+          215
+        ],
+        [
+          139,
+          239
+        ],
+        [
+          91,
+          231
+        ]
+      ],
+      "lineOfAction": [
+        [
+          111,
+          229
+        ],
+        [
+          150,
+          122
+        ]
+      ],
+      "centerOfMass": [
+        132,
+        178
+      ],
+      "pawContactZones": {
+        "nearHand": [
+          [
+            132,
+            189
+          ],
+          [
+            147,
+            188
+          ],
+          [
+            151,
+            202
+          ],
+          [
+            135,
+            205
+          ]
+        ],
+        "farHand": [
+          [
+            128,
+            181
+          ],
+          [
+            142,
+            182
+          ],
+          [
+            146,
+            195
+          ],
+          [
+            131,
+            197
+          ]
+        ],
+        "nearFoot": [
+          [
+            89,
+            213
+          ],
+          [
+            108,
+            213
+          ],
+          [
+            109,
+            235
+          ],
+          [
+            91,
+            235
+          ]
+        ],
+        "farFoot": [
+          [
+            126,
+            221
+          ],
+          [
+            138,
+            221
+          ],
+          [
+            138,
+            237
+          ],
+          [
+            127,
+            237
+          ]
+        ]
+      },
+      "compressionLine": [
+        [
+          103,
+          207
+        ],
+        [
+          132,
+          178
+        ],
+        [
+          144,
+          193
+        ]
+      ],
+      "counterbalanceLine": [
+        [
+          112,
+          172
+        ],
+        [
+          88,
+          154
+        ],
+        [
+          72,
+          142
+        ]
+      ]
+    },
+    "screenSpaceIntent": {
+      "direction": "native down-right front three-quarter facing",
+      "visualMoment": "readable compact melee strike",
+      "editScope": "preserve Image 1 outside a tiny front-paw/grip patch",
+      "frontPaws": "two small paws overlap each other and sit mostly inside the torso silhouette; only their outer arcs are visible",
+      "grip": "ring pommel and most handle are hidden inside the torso/paws; handle passes between overlapping paws; guard touches torso edge",
+      "weapon": "one approved narrow Tang dao follows the raised down-right axis",
+      "equipment": "no scabbard or second weapon"
+    },
+    "renderForbiddenRegions": false
+  },
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/compositions/poet_melee_dr_deep_grip_composition_v7.json",
+    "sha256": "91970c1cbe02a7cf24ea363cdcc51eb2224ab504bd6906100b9f1a5cd055fa5e"
+  },
+  "anchor": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+    "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+  }
+}

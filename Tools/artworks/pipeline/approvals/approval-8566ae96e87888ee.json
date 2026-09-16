@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 4,
+  "approvalId": "approval-8566ae96e87888ee",
+  "attemptId": "job-9a531767f319b957-a001",
+  "candidateSha256": "9c37f61930aefd4aac08ad6f82a2e1ff6282faf90ca5f0ed42dbfb3e4d29a387",
+  "maskSha256": "eed18dfa2a3e19af9b0f154cfaa3d22e0324f8cf4dddc51de953573040774276",
+  "reviewer": "cty41",
+  "reviewSha256": {
+    "overlay": "ff48db8dfdead8c407a51be0c99826e739d5da143f08e17c4839463292e95dc1",
+    "preview128": "33e1f63723d23989e1f9932c80c26fba42fd08eaacbedae24fe2d3c85f04aee8",
+    "tile64x32": "9d39493ed2ba0725c9dab02225f3dd58ab2dae31243b9279ba5fac298f215270"
+  },
+  "decision": "approved",
+  "reason": "Approved body-only component for deterministic assembly; all gates and acceptance cases pass.",
+  "decidedAt": "2026-09-05T11:35:13+08:00",
+  "annotation": null,
+  "reportSha256": "c98bbb4e4aa76b2a0698ec3997fb8c16df8123b973eff6bd7aff59e54ce5469e",
+  "artDirectionVerdict": {
+    "artDirectionVerdictId": "art-direction-verdict-62c23d8884fa6fda",
+    "sha256": "02f7c1d40d8d5cc4977cf134e9694c2c8d41a3667781b8bf2f06b83c00624310"
+  }
+}

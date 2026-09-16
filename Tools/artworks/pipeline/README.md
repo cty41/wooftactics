@@ -2,7 +2,7 @@
 
 This directory is the versioned, machine-readable state authority for artwork production. ImageGen is an external non-deterministic step between `create-job` and `ingest`; every local transition is deterministic and hash-bound.
 
-States are `ready -> ingested -> prepared -> annotated -> review_pending -> approved/rejected -> promoted`. A failed technical gate produces terminal `technical_failed`; continue with `retry`, never by editing or promoting the failed attempt.
+The simplified approval branch is `ready -> ingested -> prepared -> annotated -> review_pending -> approved -> promoted`; `rejected` and `technical_failed` are terminal branches and never lead to promotion. The implementation also has calibrated and Model Review intermediate states, while Job, Feedback and Series maintain separate projections. Continue a failed attempt with `retry`, never by editing or promoting it.
 
 Registry groups:
 
@@ -21,4 +21,4 @@ Run the CLI from the repository root:
 python .agents/skills/pure-run-artwork-pipeline/scripts/artwork_pipeline.py --root . check --strict
 ```
 
-The current Demonbound records intentionally stop before approval: the original 1254px ImageGen output fails the native-size gate, while the prior full-AABB-calibrated candidate is only `prepared` pending a reviewed semantic mask. Neither is a formal mother image.
+Current production progress must be read from the immutable Series/Attempt/Approval records and the synced OKF summary rather than a static example in this README. The Demonbound series now contains promoted, active and pending poses; older failed/prepared attempts remain historical evidence and do not become mother images automatically.

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-d6107acddc9751b9",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v12_rear_paw_occlusion.png",
+    "sha256": "6c6f06bfdcc32e28457d3390178281c2ac954000eef04898ef7a66dc13a1dca0"
+  },
+  "role": "supporting-derived",
+  "note": "Superseded deterministic UL rear-paw occlusion review; replacing the retained near-hand region with clean-body pixels introduced a visible shading patch.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

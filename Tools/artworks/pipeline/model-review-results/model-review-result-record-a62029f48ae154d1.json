@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 4,
+  "modelReviewResultRecordId": "model-review-result-record-a62029f48ae154d1",
+  "invocationId": "model-review-invocation-476f45680d9d2f9a",
+  "attemptId": "job-38caaa8120d4a303-a006",
+  "packetId": "model-review-packet-624eb4d50db9e522",
+  "packetSha256": "9306ed5b83d53931b83c3152f26f12a36f978ce6ca2edcfc86d7b946a73e31c7",
+  "qualificationMode": true,
+  "provider": "dsh-subagent-current-session",
+  "model": "gpt-5.6-sol",
+  "effort": "medium",
+  "freshSession": true,
+  "freshSessionId": "1d3ab29c-b392-4902-b72c-6efad80b07a5",
+  "promptSource": {
+    "path": "Tools/artworks/pure_run/art_direction/review/reviewer_prompt_v1.md",
+    "sha256": "ea9a86b3e7e4ee724090fe0c520a4271ce4f38a34184335f865189bcf259a850"
+  },
+  "rawResult": {
+    "path": "Tools/artworks/pure_run/art_direction/review/shadow_results/final_capsule_no_limbs_boundary_medium_raw.json",
+    "sha256": "8d7fba05fe736d9e893b7b4069f148edd3b6227425ae43ef9ec8a51a5964b00e"
+  },
+  "result": {
+    "resultId": "model-review-result-da8578a46d8abe96",
+    "schemaVersion": 1,
+    "packetId": "model-review-packet-624eb4d50db9e522",
+    "packetSha256": "9306ed5b83d53931b83c3152f26f12a36f978ce6ca2edcfc86d7b946a73e31c7",
+    "decision": "escalate_to_human",
+    "summary": "The bound boundary-case evidence is insufficient to determine CAPSULE-NO-LIMBS-v1 compliance: both lateral paw areas are heavily occluded by the capsule core and equipment, so the visible pixels do not establish whether hidden arm or connecting limb segments exist. This shadow qualification result does not approve, reject, change attempt state, or trigger retry.",
+    "strengths": [
+      "No clearly visible arm, forearm, leg, lower-leg, or thin connecting limb segment can be identified within the bound evidence region.",
+      "The semantic mask localizes the lateral paw regions but does not supply visible-anatomy evidence behind the occlusion."
+    ],
+    "defects": [],
+    "frozenInvariants": [
+      "Shadow-final-policy-boundary-no-state-change"
+    ],
+    "operations": []
+  },
+  "outcome": "model_reviewed",
+  "validationError": null
+}

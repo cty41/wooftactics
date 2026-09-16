@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-e43f96ef8c65768a",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v15_outline_restore_gray.png",
+    "sha256": "70cec5aef75f164409bea5668e5c8e62052acc29f7c06fbbaad0fc18fb0bf391"
+  },
+  "role": "supporting-derived",
+  "note": "Solid gray QA review for UL v15, checking restored continuous body outline and continued absence of disconnected right-rear alpha residue.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

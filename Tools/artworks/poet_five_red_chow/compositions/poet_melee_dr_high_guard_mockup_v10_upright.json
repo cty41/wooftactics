@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "reviewOnly": true,
+  "assetId": "poet-melee-dr-high-guard-mockup-v10-upright",
+  "parentReviewedMockup": "poet-melee-dr-high-guard-mockup-v9-near-upright-calibrated",
+  "humanFeedback": "Remove the remaining whole-body lean completely; let the raised sword carry the melee read.",
+  "sourceReview": {"path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_selected_body_sword_mockup_v5_high_guard.png", "sha256": "c53dcf020fbce4481a140af7e58034ad6735fcf1f2a81d6360d93e8acbe0f887"},
+  "transform": {"wholeCompositeRotationDegreesCounterClockwise": 10, "rotationCenterFootAnchor": [128, 236], "purpose": "neutralize the original apparent whole-body forward lean; melee read comes from the high-guard sword and paws"},
+  "equipmentState": {"blade": "visible", "scabbard": "absent", "staticEffects": "absent"},
+  "notes": "Deterministic review-only transform from accepted v5. Total lean correction is 10 degrees; all internal sword/body/paw relationships are preserved."
+}

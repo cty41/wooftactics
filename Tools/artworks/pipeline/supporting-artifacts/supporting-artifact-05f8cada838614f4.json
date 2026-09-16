@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-05f8cada838614f4",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/components/migrated/poet_idle_ul_dao_from_approved_dr_rot180_v01.png",
+    "sha256": "671ec862e3980920b88faec831b2d93a44a3f52eebe8b25d7cc21e44ffbad401"
+  },
+  "role": "historical-review-only",
+  "note": "Historical Idle UL construction or review evidence; never a runtime Sprite or generation authority."
+}

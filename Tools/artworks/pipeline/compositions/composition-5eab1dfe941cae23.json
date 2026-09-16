@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 2,
+  "compositionId": "composition-5eab1dfe941cae23",
+  "assetId": "poet-five-red-chow-melee-ul-high-guard-v1",
+  "spec": {
+    "schemaVersion": 2,
+    "canvas": [
+      256,
+      256
+    ],
+    "bodyLayer": false,
+    "coreAxis": {
+      "top": [
+        118,
+        96
+      ],
+      "bottom": [
+        128,
+        229
+      ],
+      "tiltDegrees": [
+        -10.0,
+        2.0
+      ]
+    },
+    "footCenter": [
+      128,
+      236
+    ],
+    "weapon": {
+      "hiddenGrip": [
+        91,
+        181
+      ],
+      "exitWindow": [
+        75,
+        164,
+        100,
+        195
+      ],
+      "tipRegion": [
+        32,
+        130,
+        55,
+        155
+      ]
+    },
+    "forbiddenRegions": [],
+    "requiredHiddenLabels": [
+      "scabbard",
+      "effect"
+    ],
+    "visibleAreaCaps": {
+      "near_hand": 0.22,
+      "far_hand": 0.08
+    },
+    "equipmentState": {
+      "blade": "visible",
+      "scabbard": "absent",
+      "staticEffects": "absent"
+    },
+    "reviewedImport": {
+      "source": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v15_outline_restore.png",
+      "sha256": "595bc79b1e2fc797b55ad86b3b7bed9b52370435df6ab10c5da1c27f976c6dfa",
+      "humanVerdict": "provisional usable; explicitly authorized for promotion by cty41",
+      "knownAcceptedImperfection": "minor right body-outline discontinuity remains; v16 repair was rejected because it reintroduced residue"
+    }
+  },
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/compositions/poet_melee_ul_high_guard_reviewed_import_v1.json",
+    "sha256": "259d0f9ef05e77eeab1ae1e19919bd25e7e4ac0ef7d7e28e88fa1214847a8362"
+  },
+  "anchor": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+    "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+  }
+}

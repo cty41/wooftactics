@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 3,
+  "componentMigrationId": "component-migration-1367648df45bd1ee",
+  "contractId": "contract-5736c5e73f075f8c",
+  "contractSha256": "a532731eb2875f4e799cd9a2472907751d9ab260d215a9f80b399bc5510293a4",
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_ring_pommel_tang_dao_sheathed_dr_raw_v02.png",
+    "sha256": "ff471c229606afa86685a5e011335f8d2ff122e8be52ddf48f7de5db66c2d269"
+  },
+  "prepared": {
+    "path": "Tools/artworks/poet_five_red_chow/components/poet_ring_pommel_tang_dao_sheathed_component_clean_v02.png",
+    "sha256": "8ecf3de0f6859965cdc08ebae8735bfaa8d134a701e855ba422262fbf71ce0cf"
+  },
+  "processing": {
+    "operation": "approved-v2-equipment-copy-and-chroma-normalization",
+    "sourceAttemptId": "job-a23d495fca781338-a001",
+    "sourceApprovalId": "approval-443769ae51e78f8a",
+    "pixelTransform": "clean_resampled_chroma(#00ff00,tolerance=12)",
+    "geometryTransform": "none",
+    "semanticLabel": "equipment",
+    "note": "仅清除用户已批准卡通像素风入鞘环首唐刀v2边缘色幕残留，不改变粗轮廓、平涂色阶、环首、直鞘或比例。"
+  },
+  "reviewer": "cty41",
+  "reason": "迁入用户明确批准的卡通像素风完全入鞘环首唐刀v2，仅做确定性色幕规范化，供后续正确握持Idle DR Assembly",
+  "acceptedAt": "2026-09-03T09:39:00.6441495+08:00",
+  "invocationStatus": "missing-pre-v3"
+}

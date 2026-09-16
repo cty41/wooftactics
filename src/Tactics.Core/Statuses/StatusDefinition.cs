@@ -1,4 +1,5 @@
 using Tactics.Core.Content;
+using Tactics.Core.Units;
 
 namespace Tactics.Core.Statuses;
 
@@ -90,12 +91,16 @@ public sealed record StatusDefinition
         int meleeRetaliationDuration = 0,
         int initiativeModifier = 0,
         int movementModifier = 0,
-        int frozenTotalDamage = 0)
+        int frozenTotalDamage = 0,
+        UnitAttributeModifiers attributeModifiers = default,
+        int frozenTotalHealing = 0)
     {
         if (string.IsNullOrWhiteSpace(sourceId))
             throw new ArgumentException("SourceId cannot be empty.", nameof(sourceId));
         if (frozenTotalDamage < 0)
             throw new ArgumentOutOfRangeException(nameof(frozenTotalDamage));
+        if (frozenTotalHealing < 0)
+            throw new ArgumentOutOfRangeException(nameof(frozenTotalHealing));
         if (defaultDuration <= 0)
             throw new ArgumentOutOfRangeException(nameof(defaultDuration));
         if (!Enum.IsDefined(polarity))
@@ -143,6 +148,8 @@ public sealed record StatusDefinition
         InitiativeModifier = initiativeModifier;
         MovementModifier = movementModifier;
         FrozenTotalDamage = frozenTotalDamage;
+        AttributeModifiers = attributeModifiers;
+        FrozenTotalHealing = frozenTotalHealing;
     }
 
     public ContentId ContentId { get; }
@@ -164,4 +171,6 @@ public sealed record StatusDefinition
     public int InitiativeModifier { get; }
     public int MovementModifier { get; }
     public int FrozenTotalDamage { get; }
+    public UnitAttributeModifiers AttributeModifiers { get; }
+    public int FrozenTotalHealing { get; }
 }

@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "registryId": "asset-brief-e65dcd9d5dc78c4c",
+  "sourceId": "poet-melee-dr-release-impact-v3",
+  "sourceType": "asset",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/briefs/poet_melee_dr_release_impact_asset_brief_v3.json",
+    "sha256": "5045df2cf3c5a94cd5cc985c74785fb35a1ea71c9ceb45e6299a33495d811fe5"
+  }
+}

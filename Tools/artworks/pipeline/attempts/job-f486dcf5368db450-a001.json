@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 3,
+  "attemptId": "job-f486dcf5368db450-a001",
+  "jobId": "job-f486dcf5368db450",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "technical_failed",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_ring_pommel_tang_dao_sheathed_ul_projection_raw_v03.png",
+      "sha256": "0fbdf4fce3a8b2ddfcc0f23e73e578c1059713af722631cf3087026a90d1e025"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-f486dcf5368db450/job-f486dcf5368db450-a001/raw.png",
+      "sha256": "0fbdf4fce3a8b2ddfcc0f23e73e578c1059713af722631cf3087026a90d1e025"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-f486dcf5368db450/job-f486dcf5368db450-a001/prepared.png",
+      "sha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4"
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-7d8cba10d968e1e9.json",
+    "sha256": "8b17ce10c3d22d08768d884aa08c5af51f963f33642b7bdb73b90fc554abaa17"
+  },
+  "approvalId": null,
+  "feedbackId": null,
+  "componentMigrationId": "component-migration-c233fe751df85dbe",
+  "sourceMode": "pre_v3_import"
+}

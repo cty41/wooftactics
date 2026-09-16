@@ -33,6 +33,7 @@ public static class UnitCombatStatRules
                 SkillRole.Mage => effectiveAttributes.Intelligence,
                 SkillRole.Necromancer => effectiveAttributes.Constitution,
                 SkillRole.Demonbound => effectiveAttributes.Charisma,
+                SkillRole.Poet => effectiveAttributes.Strength,
                 _ => 0
             };
             contribution = FloorDiv(primary, divisor);

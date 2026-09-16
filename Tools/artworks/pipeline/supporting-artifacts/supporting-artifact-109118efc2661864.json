@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-109118efc2661864",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/idle_dr_capsule_visual_review_v01.png",
+    "sha256": "a9f085575c6e5034766e42543adc326c197c160c3d912cf713b12d809278d7af"
+  },
+  "role": "review-derived",
+  "note": "诗人美术人工审核辅助对比图，不是运行时Sprite"
+}

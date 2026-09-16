@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "seriesId": "poet-five-red-chow-final-v3",
+  "assetId": "poet-five-red-chow-idle-dr-final-v3",
+  "maxUniqueOutputs": null,
+  "currentPoseId": "idle-dr",
+  "provisionalAnchorAttemptId": null,
+  "poses": [
+    {
+      "poseId": "idle-dr",
+      "state": "promoted",
+      "jobIds": [
+        "job-43b34a4685f71ca2"
+      ],
+      "attemptIds": [
+        "job-43b34a4685f71ca2-a001",
+        "job-43b34a4685f71ca2-a002",
+        "job-43b34a4685f71ca2-a003",
+        "job-43b34a4685f71ca2-a004",
+        "job-43b34a4685f71ca2-a005",
+        "job-43b34a4685f71ca2-a006",
+        "job-43b34a4685f71ca2-a007",
+        "job-43b34a4685f71ca2-a008",
+        "job-43b34a4685f71ca2-a009",
+        "job-43b34a4685f71ca2-a010"
+      ],
+      "selectedAttemptId": null
+    }
+  ]
+}

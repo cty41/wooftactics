@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "compiledPromptId": "compiled-prompt-e6d367aba68f6bc7",
+  "jobId": "job-06be9bd09be64664",
+  "equipmentProfileSha256": "e23e540c790a57432967d944c82bdad9721f109d2cb6352b3288c0c2c7d7bbb1",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/pipeline/wine_gourd_compiled_v2_flat.md",
+    "sha256": "355336d5c834c100c021278295b926f0cc678577eb0902c6ed7544ad9add6e30"
+  }
+}

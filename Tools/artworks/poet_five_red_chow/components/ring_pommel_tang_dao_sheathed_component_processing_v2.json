@@ -1,0 +1,9 @@
+{
+  "operation": "approved-v2-equipment-copy-and-chroma-normalization",
+  "sourceAttemptId": "job-a23d495fca781338-a001",
+  "sourceApprovalId": "approval-443769ae51e78f8a",
+  "pixelTransform": "clean_resampled_chroma(#00ff00,tolerance=12)",
+  "geometryTransform": "none",
+  "semanticLabel": "equipment",
+  "note": "仅清除用户已批准卡通像素风入鞘环首唐刀v2边缘色幕残留，不改变粗轮廓、平涂色阶、环首、直鞘或比例。"
+}

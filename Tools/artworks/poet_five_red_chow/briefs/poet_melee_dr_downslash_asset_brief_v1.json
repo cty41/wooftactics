@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "briefKind": "asset",
+  "briefId": "poet-melee-dr-downslash-v1",
+  "assetId": "poet-five-red-chow-melee-dr-downslash-v1",
+  "family": "actor",
+  "purpose": "Create one complete single-frame Melee DR sprite at the readable peak of a forward diagonal downward slash with the approved drawn ring-pommel Tang dao.",
+  "firstRead": ["approved_equipped_five_red_chow_poet", "down_right_facing", "peak_forward_diagonal_downslash", "drawn_ring_pommel_tang_dao"],
+  "targetContexts": ["master-256", "preview-128", "tile-64x32", "battle-actor"],
+  "identityInvariants": ["Image 1 approved equipped Idle DR v03 is the sole identity and volume authority", "five-red chow face and markings", "compact no-arm no-leg capsule topology with four attached paws", "approved hat clothing gourd and carried-scabbard relationship", "DR three-quarter anatomy", "Idle foot baseline anchor"],
+  "shapeStrategy": "Redraw the complete character as one coherent action sprite. Keep the approved compact capsule volume while rotating the pose into a readable peak forward downslash; do not use deterministic weapon assembly.",
+  "colorStrategy": "Preserve Image 1 character colors and Image 2 weapon colors without added glow, slash light, trails, or effects.",
+  "materialStrategy": "Preserve the Pure Run bold outline, flat-value, low-detail cartoon language. The drawn blade geometry must follow Image 2 exactly enough to retain ring pommel, grip, guard, and single-edged Tang dao identity.",
+  "attentionRole": "primary",
+  "allowedVariation": ["coherent body lean and attached-paw placement required by the strike", "natural partial body occlusion of the retained empty scabbard", "minor overlap needed for a stable implicit front-paw grip"],
+  "forbidden": ["identity drift", "core-volume drift", "wrong facing", "arm", "leg connector", "floating paw", "single-pixel grip connector", "detached weapon", "missing scabbard", "drawn second blade", "double-edged sword", "curved katana", "guqin", "extra gourd", "motion blur", "afterimage", "slash trail", "blade glow", "spark", "impact effect", "additional VFX", "cropped silhouette", "deterministic weapon assembly"],
+  "referenceResponsibilities": [
+    {"role": "image-1-approved-equipped-idle-dr", "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png", "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3", "responsibility": "Character identity, compact volume, DR facing and anatomy, clothing, hat, gourd, four-paw topology, foot anchor, and the attached carried relationship of the now-empty scabbard at the body side/back."},
+    {"role": "image-2-approved-unsheathed-dao-v02", "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v02.png", "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1", "responsibility": "Exact drawn weapon authority only: thick empty ring pommel, grip, guard, straight single-edged Tang dao blade, blade proportions, tip, colors, and detail budget. It must not replace character identity, scale, direction, or pose."}
+  ],
+  "requiredReviewPanels": ["candidate-master", "preview-128", "identity-overlay", "direction-action", "weapon-inspection", "grip-contact", "scabbard-occlusion", "tile-review", "style-anchor-context"],
+  "acceptanceCases": [
+    {"caseId": "POET-MELEE-DR-IDENTITY-001", "evidence": ["candidate-master", "identity-overlay"], "automatedFacts": ["identity anchor and core mask hashes match contract", "core bands and baseline are measured against equipped Idle DR v03"], "humanChecks": ["five-red chow face markings hat clothing and gourd remain immediately recognizable", "complete four-paw no-arm topology remains coherent"], "passCriteria": "The action sprite is unmistakably the approved equipped poet rather than a redesigned character."},
+    {"caseId": "POET-MELEE-DR-ACTION-001", "evidence": ["direction-action", "candidate-master"], "automatedFacts": ["blade exits the high body-adjacent grip window and reaches the lower-right tip region"], "humanChecks": ["character faces down-right", "the frozen moment reads as the clear peak of a forward diagonal downward slash toward screen lower-right"], "passCriteria": "Facing and peak downslash are immediately readable in screen space."},
+    {"caseId": "POET-MELEE-DR-WEAPON-001", "evidence": ["weapon-inspection", "candidate-master"], "automatedFacts": ["one drawn weapon and one empty retained scabbard are required"], "humanChecks": ["drawn dao preserves Image 2 ring pommel grip guard straight single edge blade and tip", "weapon is not floating or connected by a thin line"], "passCriteria": "The exact approved drawn Tang dao identity and stable implicit grip are readable."},
+    {"caseId": "POET-MELEE-DR-SCABBARD-001", "evidence": ["scabbard-occlusion", "candidate-master"], "automatedFacts": ["equipment state records drawn blade plus present empty scabbard"], "humanChecks": ["empty scabbard remains tied at the body side/back", "body appropriately occludes part of the scabbard without deleting it"], "passCriteria": "The scabbard remains attached and spatially plausible during the slash."},
+    {"caseId": "POET-MELEE-DR-COMPOSITION-001", "evidence": ["candidate-master", "preview-128", "tile-review"], "automatedFacts": ["256x256 RGBA and y236 foot anchor are required", "complete alpha silhouette stays inside canvas"], "humanChecks": ["blade tip and all character features are uncropped", "foot placement matches the Idle anchor on the 64x32 tile"], "passCriteria": "Complete silhouette and production anchor remain valid at 256 and 128."},
+    {"caseId": "POET-MELEE-DR-EXCLUSION-001", "evidence": ["candidate-master", "style-anchor-context"], "automatedFacts": ["only two approved ImageGen source images are bound"], "humanChecks": ["no arms motion blur afterimage slash trail blade glow sparks impact marks or extra effects", "no extra prop or second weapon"], "passCriteria": "All prohibited anatomy props and effects are absent."}
+  ]
+}

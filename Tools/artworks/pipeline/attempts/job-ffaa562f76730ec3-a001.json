@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 2,
+  "attemptId": "job-ffaa562f76730ec3-a001",
+  "jobId": "job-ffaa562f76730ec3",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "prepared",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/concepts/poet_five_red_chow_equipped_idle_dr_raw_v01.png",
+      "sha256": "43abb531b49b7bf3ccdce4aa516cda2755aa74b84c5355a630ca4f93fe00b781"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-ffaa562f76730ec3/job-ffaa562f76730ec3-a001/raw.png",
+      "sha256": "43abb531b49b7bf3ccdce4aa516cda2755aa74b84c5355a630ca4f93fe00b781"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-ffaa562f76730ec3/job-ffaa562f76730ec3-a001/prepared.png",
+      "sha256": "02f2ff614ff8c9afb34d6e983a047adb1f358a7b33230b23698037cbaa534f67"
+    }
+  },
+  "report": null,
+  "approvalId": null,
+  "feedbackId": "feedback-b5ccca5c48fa4894",
+  "generationInvocationId": "generation-invocation-25fe8fdcbdbdb78a",
+  "generationDeliveryId": "generation-delivery-7cf9909fa4ec8ee3",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 96
+  }
+}

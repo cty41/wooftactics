@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-5603e12f789e0b3d",
+  "attemptId": "job-e2f0b006eb756a24-a001",
+  "candidateSha256": "6333b766b9d72915780f62f6af1dbc82a40ae40052d2431f9ad8318c92d1c4f5",
+  "reviewer": "cty41",
+  "verdict": "retry",
+  "strengths": [
+    "收腰、首尾、七弦和旅行古琴身份较v1清楚，风格方向可保留"
+  ],
+  "defects": [
+    "正式127x95px候选仍然过长，背负时会明显超出诗人身高"
+  ],
+  "nextPromptDelta": "目标AABB约102x76px，对角约127px；同时原生缩短琴体长宽比，不能只做单轴压缩",
+  "recordedAt": "2026-08-30T09:38:21.2921815+08:00",
+  "authorType": "human",
+  "categories": [
+    "core_geometry"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "七弦、收腰、宽首窄尾、深栗黑漆、三分之四方向"
+  ],
+  "pendingFixes": [
+    "进一步缩短完整对角长度并降低垂直AABB，使其在同尺度下可斜背且不明显超出角色"
+  ]
+}

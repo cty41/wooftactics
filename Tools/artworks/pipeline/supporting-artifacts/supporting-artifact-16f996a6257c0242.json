@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-16f996a6257c0242",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_vertical_two_hand_stick_preview_v04.png",
+    "sha256": "9bdb83958c7765f845461c67d6b44137fd4a4ad51c64f56b75b4a5d1ac804449"
+  },
+  "role": "supporting-derived",
+  "note": "Superseded first vertical two-hand Cast stick preview based on the user's Gandalf bridge reference; label layout was refined in v05.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

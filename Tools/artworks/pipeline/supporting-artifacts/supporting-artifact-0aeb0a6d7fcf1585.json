@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-0aeb0a6d7fcf1585",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_ring_pommel_tang_dao_idle_scale_preview_v01.png",
+    "sha256": "3c34f469082391b0b89d1531d2c38788a8d8ceb7b37c6c7c3551f25a810fd9a4"
+  },
+  "role": "review-derived",
+  "note": "入鞘环首刀单图在诗人低位闲适斜持中的80%缩放空间预览，仅辅助装备尺寸审核，不是角色候选或可晋升Sprite"
+}

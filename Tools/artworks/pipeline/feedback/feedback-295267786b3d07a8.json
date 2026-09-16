@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-295267786b3d07a8",
+  "attemptId": "job-43b34a4685f71ca2-a004",
+  "candidateSha256": "4dd2c055a45bfe45dea2db62d0c6bf00398a4d975eb72b94aaf59f5e72ef3a9d",
+  "reviewer": "agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "核心 bbox、中心、宽度趋势、倾角、双手双脚标签均通过；仅剩单一 mask 越界问题"
+  ],
+  "defects": [
+    "完整 341px 宽 core 矩形在毛茸轮廓局部超出 subject alpha"
+  ],
+  "nextPromptDelta": "保持同一 raw；改用主体内部 291x504 核心区以保持与 anchor 相同宽高比，并调整脚底标签维持 y236",
+  "recordedAt": "2026-08-29T21:41:43.0170533+08:00",
+  "authorType": "agent",
+  "categories": [
+    "processing"
+  ],
+  "disposition": "technical_failed",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "完整 341px 宽 core 矩形在毛茸轮廓局部超出 subject alpha"
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 4,
+  "jobId": "job-f173ef66666f90e0",
+  "state": "ready",
+  "contractId": "contract-8766a06f308f8ff5",
+  "contractSha256": "3861fd6d90a0c65b713200281ff5786376af6a2fb0012baeff63617fb022b129",
+  "prompt": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/poet_hit_ul_hunter_recoil_prompt_v1.md",
+    "sha256": "48b6aff6ac44620925185bf462171d3739470c77c7c739434aa7d822940569bd"
+  },
+  "inputs": [
+    {
+      "role": "image-1-approved-poet-idle-ul-identity-volume",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_ul_v07.png",
+      "sha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512"
+    },
+    {
+      "role": "image-2-approved-poet-hit-dr-moment-only",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_hit_dr_hunter_recoil_v01.png",
+      "sha256": "4d8b87f7407295f9f6c166086acde62d7976393de172a7061fbff77909edb92d"
+    },
+    {
+      "role": "image-3-approved-hunter-hit-ul-direction-only",
+      "path": "godot/assets/units/actions/doge_hunter_hit_ul.png",
+      "sha256": "0eb88380ebee80e99d1208b0adf5dca6b91ed368c94039ae298b9c4bb0c297af"
+    },
+    {
+      "role": "image-4-deterministic-poet-hit-ul-guide",
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_hit_ul_hunter_recoil_pose_guide_v1.png",
+      "sha256": "f54eab6d7fbae45e88ef484147cb8af6bc9f37dc1118188d637782099afee549"
+    }
+  ],
+  "target": {
+    "direction": "up-left",
+    "pose": "hit"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": {
+    "occlusion": {
+      "layerRules": {
+        "equipment": "behind-core"
+      },
+      "visibilityCaps": {
+        "equipment": 0.25
+      }
+    },
+    "imageGenDirective": "Draw behind-core equipment and both hand paws first, then draw the capsule body over their inner portions; only outer arcs may remain visible."
+  },
+  "requiresInvocation": true,
+  "poseGuide": {
+    "poseGuideId": "pose-guide-d303f007d0c9df7c",
+    "sha256": "fecb703c537b484cf6e5474daa97b8a5e7bf773e46e286e63c286376662aaa56"
+  },
+  "localReferences": []
+}

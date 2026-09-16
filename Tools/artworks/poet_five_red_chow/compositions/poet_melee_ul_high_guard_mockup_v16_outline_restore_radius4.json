@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "reviewOnly": true,
+  "assetId": "poet-melee-ul-high-guard-mockup-v16-outline-restore-radius4",
+  "parentReviewedMockup": "poet-melee-ul-high-guard-mockup-v15-outline-restore",
+  "humanFeedback": "The radius-2 restoration still leaves visible breaks in the body outline.",
+  "cleanedBase": {"path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v14_right_alpha_cleanup.png", "sha256": "17fb636eb8e4264b343eaaaa235fec69cda48625c59c1cae9c6e17f7dd98528a"},
+  "preCleanupReference": {"path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v13_rear_paw_occlusion_clean.png", "sha256": "8d73db10f35431c7a337aff75d7f205345372ab9123f36073c1c045704f23d0f"},
+  "restoration": {
+    "operation": "using an immutable v14 alpha snapshot, restore exact v13 RGBA for pixels reduced by v14 when within Chebyshev radius 4 of a v14 alpha>=128 subject pixel",
+    "adjacencyRadius": 4,
+    "purpose": "recover the full multi-pixel body outline thickness while keeping detached right-rear ghost marks removed"
+  },
+  "retained": ["5-degree pose", "rear-layer paw depth", "approved Tang dao", "no scabbard", "baseline y=236"],
+  "notes": "Deterministic review-only v16; no generative or freehand repainting. Gray-background QA remains mandatory before human judgment."
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-af1b4c141bd056ea",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v13_rear_paw_occlusion_clean.png",
+    "sha256": "8d73db10f35431c7a337aff75d7f205345372ab9123f36073c1c045704f23d0f"
+  },
+  "role": "supporting-derived",
+  "note": "cty41-authorized deterministic review-only UL high-guard depth correction: retain formal near paw, second paw behind body and mostly occluded, approved sword behind body/paws, 5-degree pose, no scabbard, baseline y=236; no ImageGen or runtime binding.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

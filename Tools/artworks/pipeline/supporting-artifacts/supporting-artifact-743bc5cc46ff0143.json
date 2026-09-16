@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-743bc5cc46ff0143",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/processing/unsheathed_exact_green_v1/preview_128.png",
+    "sha256": "1b91c243f9a60003f5fb5a7aa2e841117b9da7daf72149514f18575399d90606"
+  },
+  "role": "supporting-derived",
+  "note": "cty41 explicitly authorizes this current file individually as project-owned technical QA for this two-pixel cleanup closure task; not a new visual session, not a runtime sprite, no unrelated approval reused, no license upgrade; historical v1 remains QA only.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

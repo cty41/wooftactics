@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "registryId": "family-profile-9543467befa5dad1",
+  "sourceId": "pure-run-equipment-family-v1",
+  "sourceType": "family",
+  "artifact": {
+    "path": "Tools/artworks/pure_run/art_direction/families/equipment_v1.json",
+    "sha256": "c1462b6cc71959a3f3ba0685cb022fb1bb08e7c55a1c775ca709ab1e9834a75e"
+  }
+}

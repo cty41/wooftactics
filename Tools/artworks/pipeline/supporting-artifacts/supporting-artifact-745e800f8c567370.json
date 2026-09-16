@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-745e800f8c567370",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v6_two_paw_reconstruction.png",
+    "sha256": "a40de16eb97dc952e74dbf2f3a2aac746ca02c2a54f40a57042bedebf7d1cd4e"
+  },
+  "role": "supporting-derived",
+  "note": "Superseded deterministic UL reconstruction; head overlay introduced a visible seam, never approved.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

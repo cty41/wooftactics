@@ -26,7 +26,8 @@ public sealed class AiDecisionService
     public AiTurnPlan Decide(BattleState state, AiDefinition definition,
         IReadOnlyDictionary<ContentId, SkillDefinition> skills, int patternIndex = 0,
         TargetRelationshipStrategy strategy = TargetRelationshipStrategy.StandardHostile,
-        UnitInstanceId? priorityTargetId = null)
+        UnitInstanceId? priorityTargetId = null,
+        bool requirePriorityTarget = false)
     {
         BattleUnitState actor = state.Units[state.ActiveUnitId];
         BattleUnitState[] enemies = state.Units.Values.Where(unit => IsTarget(actor, unit, strategy))
@@ -67,7 +68,8 @@ public sealed class AiDecisionService
                     ? DirectionCell(origin, target.Unit.Position)
                     : target.Unit.Position;
                 BattleTransition probe = _transitions.Apply(probeState, new UseSkillCommand(actor.Unit.InstanceId, target.Unit.InstanceId, targetCell, skill));
-                if (!probe.Succeeded) continue;
+                if (!probe.Succeeded || !ActuallyTargets(probeState, probe, actor.Unit.InstanceId,
+                        target.Unit.InstanceId, skill)) continue;
                 int distance = Manhattan(origin, target.Unit.Position);
                 int targets = skill.ExecutionKind == SkillExecutionKind.AreaBlast
                     ? probeState.Units.Values.Count(unit => IsTarget(actor, unit, strategy) &&
@@ -113,10 +115,25 @@ public sealed class AiDecisionService
         candidates.Add(new AiIntentCandidate(AiIntentKind.HoldPosition, null, actor.Unit.Position, null, actor.Unit.Position, 0, 0, 0, 0, true, string.Empty,
             IntentPriority(definition, "HoldPosition", 1)));
 
-        if (definition.Archetype == AiArchetype.PredatoryDiver)
-            return SelectPredatoryDiver(state, actor, skills, enemies, candidates, patternIndex);
+        IReadOnlyList<AiIntentCandidate> eligibleCandidates = candidates;
+        bool priorityForced = false;
+        if (requirePriorityTarget && priorityTargetId is UnitInstanceId requiredTarget)
+        {
+            AiIntentCandidate[] forced = candidates.Where(candidate => candidate.TargetId == requiredTarget &&
+                candidate.SkillId is ContentId skillId && skills[skillId].IsDirectAttack &&
+                candidate.Intent is AiIntentKind.Attack or AiIntentKind.FinishOff)
+                .ToArray();
+            if (forced.Length > 0)
+            {
+                eligibleCandidates = forced;
+                priorityForced = true;
+            }
+        }
 
-        IOrderedEnumerable<AiIntentCandidate> ranked = candidates.OrderByDescending(item => item.TotalScore).ThenBy(item => item.Intent)
+        if (definition.Archetype == AiArchetype.PredatoryDiver && !priorityForced)
+            return SelectPredatoryDiver(state, actor, skills, enemies, eligibleCandidates, patternIndex);
+
+        IOrderedEnumerable<AiIntentCandidate> ranked = eligibleCandidates.OrderByDescending(item => item.TotalScore).ThenBy(item => item.Intent)
             .ThenBy(item => item.SkillId?.Value ?? string.Empty, StringComparer.Ordinal).ThenBy(item => item.Destination.X).ThenBy(item => item.Destination.Y)
             .ThenBy(item => item.TargetId?.Value ?? string.Empty, StringComparer.Ordinal);
         ContentId? patternSkill = definition.PatternSkillIds.Count == 0 ? null : definition.PatternSkillIds[patternIndex % definition.PatternSkillIds.Count];
@@ -173,6 +190,33 @@ public sealed class AiDecisionService
             .ThenBy(Cost).ThenBy(candidate => candidate.Destination.X).ThenBy(candidate => candidate.Destination.Y)
             .FirstOrDefault() ?? candidates.Single(candidate => candidate.Intent == AiIntentKind.HoldPosition);
         return new AiTurnPlan(actor.Unit.InstanceId, selected, candidates, patternIndex, false);
+    }
+
+    private static bool ActuallyTargets(BattleState before, BattleTransition transition,
+        UnitInstanceId actorId, UnitInstanceId targetId, SkillDefinition skill)
+    {
+        DamageAppliedEvent[] damage = transition.Events.OfType<DamageAppliedEvent>()
+            .Where(value => value.SourceId == actorId && value.SkillId == skill.ContentId).ToArray();
+        if (damage.Length > 0)
+            return damage.Any(value => value.TargetId == targetId);
+
+        CombatRollResolvedEvent[] rolls = transition.Events.OfType<CombatRollResolvedEvent>()
+            .Where(value => value.SourceId == actorId && value.SkillId == skill.ContentId).ToArray();
+        if (rolls.Length > 0)
+            return rolls.Any(value => value.TargetId == targetId);
+
+        StatusAppliedEvent[] statuses = transition.Events.OfType<StatusAppliedEvent>()
+            .Where(value => value.SourceId == actorId).ToArray();
+        if (statuses.Length > 0)
+            return statuses.Any(value => value.TargetId == targetId);
+
+        if (before.Units.TryGetValue(targetId, out BattleUnitState? previous) &&
+            transition.State.Units.TryGetValue(targetId, out BattleUnitState? current) &&
+            !Equals(previous, current))
+            return true;
+
+        return transition.Events.OfType<SkillUsedEvent>().Any(value =>
+            value.ActorId == actorId && value.SkillId == skill.ContentId && value.TargetId == targetId);
     }
 
     private static float PreferredRangeBonus(AiDefinition definition, GridPoint current, GridPoint destination, GridPoint target)

@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-1513ff53256de9ed",
+  "attemptId": "job-43b34a4685f71ca2-a006",
+  "candidateSha256": "d5f1be52561aa87099b61dbe638827928610fd586319fce662a941e17ceda6e0",
+  "reviewer": "cty41",
+  "verdict": "retry",
+  "strengths": [
+    "down-right 等距角度、五红土松身份、简化画风和 Tile 落点得到保留"
+  ],
+  "defects": [
+    "缺少与猎人、法师、死灵、Demonbound 的统一 128 预览比较；肉眼判断诗人实际胶囊躯干偏窄，现有人工内部矩形 mask 可能未忠实覆盖视觉躯干"
+  ],
+  "nextPromptDelta": "以猎人、法师、死灵与 Demonbound 正式 DR 母图共同确定视觉宽度；中央躯干加宽约10%-15%，中段近似平行、下段持平或内收；不得把尾巴计入核心或单轴拉伸",
+  "recordedAt": "2026-08-29T21:59:48.9075772+08:00",
+  "authorType": "human",
+  "categories": [
+    "core_geometry",
+    "processing"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "down-right 三分之四视角、五红土松头脸、红棕毛色、小卷尾、简化平涂和四爪层级"
+  ],
+  "pendingFixes": [
+    "重新生成更饱满但下段不外扩的视觉胶囊体；尾巴继续排除在核心缩放之外；补齐多角色同屏和 anchorTileCompare"
+  ]
+}

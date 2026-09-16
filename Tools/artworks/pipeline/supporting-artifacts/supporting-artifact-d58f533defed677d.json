@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-d58f533defed677d",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_vertical_two_hand_stick_preview_v06_sword_scale.png",
+    "sha256": "5b132648ca5f90ce5b8a251fc6b39a97f317835e4a51554a1038b7001a603c17"
+  },
+  "role": "supporting-derived",
+  "note": "Current review-only vertical two-hand Cast stick preview using the approved sword-to-body length ratio; sheathed tip remains above ground. Awaiting cty41 confirmation.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

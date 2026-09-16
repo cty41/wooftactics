@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "registryId": "asset-brief-df7d1d9dbea09e82",
+  "sourceId": "poet-hit-ul-hunter-recoil-v1",
+  "sourceType": "asset",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/briefs/poet_hit_ul_hunter_recoil_asset_brief_v1.json",
+    "sha256": "61cd887d516ad3bf831d482c77c9cf3290fafcb967cf2bbcaf3bb5365fe0874e"
+  }
+}

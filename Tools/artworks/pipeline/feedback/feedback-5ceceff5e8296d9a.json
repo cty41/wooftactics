@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-5ceceff5e8296d9a",
+  "attemptId": "job-392eb89806af5b42-a001",
+  "candidateSha256": "940606701f0cdf56a0ccd41db3486849197f699c4cab0483fc52889fea203456",
+  "reviewer": "cty41",
+  "verdict": "retry",
+  "strengths": [
+    "75% Tang dao ratio, low diagonal axis, and overall placement are correct"
+  ],
+  "defects": [
+    "tail silhouette was cut by the lossy historical body partition",
+    "rear foot paws were cut and visually damaged"
+  ],
+  "nextPromptDelta": "Do not change equipment scale, axis, identity, or grip; replace lossy body partition with complete approved mother silhouette and re-run cases",
+  "recordedAt": "2026-09-03T15:00:00+08:00",
+  "authorType": "human",
+  "categories": [
+    "topology",
+    "processing"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "75% Tang dao scale and transform direction",
+    "selected C low relaxed grip"
+  ],
+  "pendingFixes": [
+    "restore complete approved mother tail and foot-paw pixels"
+  ]
+}

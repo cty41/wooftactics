@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 4,
+  "acceptanceCaseResultId": "acceptance-case-result-6cef6a2e34b671c0",
+  "attemptId": "job-a254d0afc9b7b286-a001",
+  "caseId": "POET-DRAWN-DAO-IDENTITY-001",
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/processing/unsheathed_exact_green_v2/candidate.png",
+    "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1"
+  },
+  "contractId": "contract-a6b9130f239467e7",
+  "contractSha256": "0383c9e2ca93f829b8c739162b55fa9f0b5d3f8232055ffcff884add13dcd928",
+  "evidence": {
+    "equipment-review": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_ring_pommel_tang_dao_unsheathed_review_v03.png",
+      "sha256": "e28ee5193b7bdbcbe2e0b43e0f2f5c1aef5410de624ccafcb5a62146493e84f5"
+    }
+  },
+  "automatedFacts": [
+    "Exact pixel comparison: only (117,166) RGBA 0,255,0,3 and (169,236) RGBA 0,255,0,2 changed to transparent zero; 256x256 unchanged; report passed; visible 90x96 baseline236; palette advisory retained."
+  ],
+  "automatedResult": "passed",
+  "humanChecks": [
+    "Prior accepted source and explicit task authorization for two-pixel cleanup plus automatic acceptance closure; technical rebind only, no new visual session."
+  ],
+  "humanDecision": "passed",
+  "reviewer": "cty41",
+  "reason": "Explicit user-authorized technical acceptance of new SHA without claiming new visual review.",
+  "decidedAt": "2026-09-10T12:44:49Z"
+}

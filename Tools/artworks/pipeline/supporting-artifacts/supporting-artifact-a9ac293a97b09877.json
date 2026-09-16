@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-a9ac293a97b09877",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_tang_dao_v2_pose_guide_options.png",
+    "sha256": "3b430647219457e2f531608450c3052bfde8947896d08ff2db09a62bdc48abbd"
+  },
+  "role": "review-derived",
+  "note": "Artwork pilot intermediate or review evidence; non-runtime and not an approved generation input"
+}

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "attemptId": "job-4d655b953592f8df-a001",
+  "inputSha256": "536104fe2659c3694c448c02d2a4b981b781964fc9a27d543d5e942b4f54715f",
+  "maskSha256": "514399b5cdb89d73db993235e964511daf595afee78b69db54cbb2807558f773",
+  "technical": {
+    "size": [
+      256,
+      256
+    ],
+    "alphaBbox": [
+      98,
+      143,
+      158,
+      237
+    ]
+  },
+  "geometry": {
+    "componentKind": "equipment"
+  },
+  "issues": [],
+  "passed": true
+}

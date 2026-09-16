@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 4,
+  "acceptanceCaseResultId": "acceptance-case-result-10a844eb32fb9b1f",
+  "attemptId": "job-392eb89806af5b42-a001",
+  "caseId": "POET-REGRESSION-001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-392eb89806af5b42/job-392eb89806af5b42-a001/prepared.png",
+    "sha256": "940606701f0cdf56a0ccd41db3486849197f699c4cab0483fc52889fea203456"
+  },
+  "contractId": "contract-57bf5c0526078c9d",
+  "contractSha256": "0af903e867b06faffc66bfa9456a31396051bc3ce1746f17d2fd2227d4593df1",
+  "evidence": {
+    "rejected-regression": {
+      "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v3/rejected-regression.png",
+      "sha256": "c63c9ba3f898560ace40feafd898ba4be381062e3a44de1004444c19dbd2bf45"
+    },
+    "style-context": {
+      "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v3/style-context.png",
+      "sha256": "da038568de0e32d91eb25645339ae851fa0152ebcb2d716de27fbde85e5e8fb0"
+    },
+    "grip-nearest": {
+      "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v3/grip-nearest.png",
+      "sha256": "248cfee3d3f8eac22c2303c6e13e70e58841b43a1f9af4ec4e90b283f4e9a4eb"
+    }
+  },
+  "automatedFacts": [
+    "negative descriptor assets are absent from assembly inputs and appear only in review evidence"
+  ],
+  "automatedResult": "passed",
+  "humanChecks": [
+    "cty41 must confirm realistic detail and old bad grip do not recur"
+  ],
+  "humanDecision": "pending",
+  "reviewer": "agent",
+  "reason": "Negative input isolation passed; regression visual judgment pending",
+  "decidedAt": "2026-09-03T14:45:00+08:00"
+}

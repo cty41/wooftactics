@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "briefKind": "asset",
+  "briefId": "poet-ring-pommel-tang-dao-idle-ul-v1",
+  "assetId": "poet-five-red-chow-ring-pommel-tang-dao-idle-ul",
+  "family": "actor",
+  "purpose": "Create the native Idle UL back view of the approved five-red chow poet carrying the approved fully sheathed UL-projected ring-pommel Tang dao in a relaxed low pose.",
+  "firstRead": ["approved_five_red_chow_poet_back_view", "relaxed_idle", "steep_foreshortened_sheathed_ring_pommel_dao_behind_body"],
+  "targetContexts": ["master-256", "preview-128", "tile-64x32", "battle-actor"],
+  "identityInvariants": ["same chow breed and orange five-red palette", "same rounded capsule volume", "two triangular ears and full fluffy tail", "native upper-left back view", "both front paws behind the core", "two rear foot paws at baseline", "no guqin"],
+  "shapeStrategy": "Redraw the poet natively from the upper-left back view. Keep the approved steep UL Tang dao projection behind the body on the screen-right side; reveal only the ring, grip contact, and limited lower scabbard segments permitted by the body silhouette.",
+  "colorStrategy": "Preserve approved poet and Tang dao colors; back lighting remains flat and restrained, with the face absent rather than rotated onto the back.",
+  "materialStrategy": "Keep the actor and dao in the same bold-outline, low-detail, flat-value Pure Run language.",
+  "attentionRole": "primary",
+  "allowedVariation": ["native back-view redraw of head body markings tail and feet", "small rear arcs of both front paws", "body-driven occlusion of the approved UL dao"],
+  "forbidden": ["front or three-quarter face", "eyes nose mouth on back view", "2D-mirrored DR body", "2D-mirrored DR dao", "identity drift", "pear-shaped core", "front-layer front paw", "fully exposed holding paw", "fully exposed dao across the back", "guqin", "wineskin", "exposed blade", "second weapon", "combat-ready pose", "thin arm or leg connectors", "realistic weapon rendering"],
+  "referenceResponsibilities": [
+    {
+      "role": "immutable-identity-anchor",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+      "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753",
+      "responsibility": "Poet breed, palette, ears, tail, approved capsule volume and four-paw identity only; not the UL projection."
+    },
+    {
+      "role": "approved-ul-equipment-projection",
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_ul_v01.png",
+      "sha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4",
+      "responsibility": "Only valid Tang dao UL 3D projection: steep axis, oblique ring visibility, straight fully sheathed state and equipment pixels."
+    },
+    {
+      "role": "mounted-style-anchor",
+      "path": "Tools/artworks/doge/calibrated/doge_capsule_demonbound_idle_dr_v01.png",
+      "sha256": "21559ca7aedd3e146feb2b93c5a6633affc6ce544122628c960972a982b0b5e7",
+      "responsibility": "Mounted equipment abstraction, outline weight and detail balance only; not identity, direction, weapon shape or pose."
+    }
+  ],
+  "requiredReviewPanels": ["candidate-master", "preview-128", "identity-context", "back-view-inspection", "equipment-inspection", "pose-axis", "paw-depth", "occlusion-depth", "tile-review", "amazon-tile-compare", "style-context", "rejected-regression"],
+  "acceptanceCases": [
+    {"caseId": "POET-UL-STYLE-001", "evidence": ["style-context", "candidate-master"], "automatedFacts": ["style advisories are reported without an aggregate aesthetic score"], "humanChecks": ["same Pure Run bold-outline flat-value cartoon language", "dao is not more realistic than actor"], "passCriteria": "Actor and equipment remain one coherent medium."},
+    {"caseId": "POET-UL-IDENTITY-001", "evidence": ["identity-context", "back-view-inspection"], "automatedFacts": ["approved identity anchor and candidate hashes are bound", "core and baseline facts are reported"], "humanChecks": ["same chow ears palette markings tail volume and feet", "no face copied onto the back"], "passCriteria": "Reads as the approved poet from behind."},
+    {"caseId": "POET-UL-EQUIPMENT-001", "evidence": ["equipment-inspection", "pose-axis"], "automatedFacts": ["job binds approved UL Tang dao projection SHA", "one equipment input only"], "humanChecks": ["same approved steep UL ring side view", "fully sheathed straight dao"], "passCriteria": "Approved isolated UL dao survives actor context without projection drift."},
+    {"caseId": "POET-UL-POSE-001", "evidence": ["candidate-master", "pose-axis"], "automatedFacts": ["direction and weapon endpoints are reported"], "humanChecks": ["native upper-left back view", "relaxed idle rather than attack readiness"], "passCriteria": "UL direction and low relaxed carry are unambiguous."},
+    {"caseId": "POET-UL-PAW-001", "evidence": ["paw-depth", "occlusion-depth"], "automatedFacts": ["near and far hand labels are both declared behind-core"], "humanChecks": ["both front paws remain behind body", "holding paw inner area is hidden", "free paw does not touch equipment"], "passCriteria": "No front-layer or sticker paw regression."},
+    {"caseId": "POET-UL-OCCLUSION-001", "evidence": ["occlusion-depth", "equipment-inspection"], "automatedFacts": ["equipment and both hands use behind-core rules with visibility caps"], "humanChecks": ["body hides weapon middle and paw interiors", "only plausible outer arcs and equipment endpoints remain"], "passCriteria": "Back-view depth is physically coherent."},
+    {"caseId": "POET-UL-COMPOSITION-001", "evidence": ["preview-128", "tile-review", "amazon-tile-compare"], "automatedFacts": ["256 RGBA, 128 preview and 64x32 tile placement facts pass"], "humanChecks": ["back identity and ring remain readable at scale", "actor size is coherent beside canonical red-shiba Amazon"], "passCriteria": "Production-scale and Tilemap readability pass."},
+    {"caseId": "POET-UL-EXCLUSION-001", "evidence": ["candidate-master", "rejected-regression"], "automatedFacts": ["no guqin wineskin exposed blade second weapon or rejected source is bound"], "humanChecks": ["no forbidden object or visual residue"], "passCriteria": "All exclusions remain absent."},
+    {"caseId": "POET-UL-REGRESSION-001", "evidence": ["rejected-regression", "paw-depth", "pose-axis"], "automatedFacts": ["rejected projection studies and equipment v01/v02 are review-only"], "humanChecks": ["no flat ground-laid dao", "no frontal ring", "no front-layer paw", "no mirrored DR face"], "passCriteria": "Known UL projection and layer failures do not recur."}
+  ]
+}

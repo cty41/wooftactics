@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "styleReportId": "equipment-style-report-585c5f7396d4aefa",
+  "contractId": "contract-852f75ad018ad758",
+  "contractSha256": "d06912136bfdca67e3812e7e42e8819fc69e55e5227b5f53c7cea50fd4050e95",
+  "profile": {
+    "path": "Tools/artworks/pure_run/equipment/equipment_production_profile_v2.json",
+    "sha256": "e23e540c790a57432967d944c82bdad9721f109d2cb6352b3288c0c2c7d7bbb1"
+  },
+  "source": {
+    "path": "Tools/artworks/pipeline/artifacts/job-06be9bd09be64664/job-06be9bd09be64664-a001/raw.png",
+    "sha256": "344059103515135767567455c23a9a5e6374d4a586bdaef0b1569b8f4bfbbbe6"
+  },
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_wine_gourd_v01.png",
+    "sha256": "063de26db67cbf4f11118b115462d8406f3fb689ef1b372ef40603b4224fe37c"
+  },
+  "preview": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_wine_gourd_v01_128.png",
+    "sha256": "25bebb72c038a5eda6900ef44800e6c60ffcd1873ea67c9f12e4d5fa4b87ac58"
+  },
+  "metrics": {
+    "interiorPixels": 1848,
+    "interiorColorBins": 73,
+    "smoothGradientRatio": 0.067682,
+    "visibleBbox": [
+      104,
+      159,
+      152,
+      237
+    ],
+    "visibleSize": [
+      48,
+      78
+    ],
+    "baseline": 236
+  },
+  "processingMode": "preserve-fidelity",
+  "quantized": false,
+  "remediation": null,
+  "hardIssues": [],
+  "advisories": [
+    "equipment_palette_complexity_review"
+  ],
+  "issues": [],
+  "passed": true
+}

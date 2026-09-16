@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-b71d5163e1521288",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/components/migrated/poet_idle_ul_tang_dao_rotated_v03.png",
+    "sha256": "491e97c04472fc50d191095a3ff50c9b917d0cb7f68634722d4579ddd17ee2c7"
+  },
+  "role": "supporting-derived",
+  "note": "cty41-authorized Poet production evidence included in the CC-BY-4.0 public artwork set.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

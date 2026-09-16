@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "sizeComparisonId": "size-comparison-01dbf76576299c7a",
+  "inputs": [
+    {
+      "label": "Identity",
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_ul_v07.png",
+        "sha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512"
+      }
+    },
+    {
+      "label": "Previous",
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_hit_dr_hunter_recoil_v01.png",
+        "sha256": "4d8b87f7407295f9f6c166086acde62d7976393de172a7061fbff77909edb92d"
+      }
+    },
+    {
+      "label": "Pose reference",
+      "artifact": {
+        "path": "godot/assets/units/actions/doge_hunter_hit_ul.png",
+        "sha256": "0eb88380ebee80e99d1208b0adf5dca6b91ed368c94039ae298b9c4bb0c297af"
+      }
+    },
+    {
+      "label": "Candidate",
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/candidates/poet_hit_ul_hunter_recoil_v01_reviewed_clean.png",
+        "sha256": "f1f9049ba256d1e649cafc742391f184d000547b47f442e557b19156adf3a9ac"
+      }
+    }
+  ],
+  "measurements": [
+    {
+      "label": "Identity",
+      "bbox": [
+        42,
+        49,
+        94,
+        119
+      ],
+      "bboxSize": [
+        52,
+        70
+      ]
+    },
+    {
+      "label": "Previous",
+      "bbox": [
+        35,
+        47,
+        94,
+        119
+      ],
+      "bboxSize": [
+        59,
+        72
+      ]
+    },
+    {
+      "label": "Pose reference",
+      "bbox": [
+        38,
+        57,
+        90,
+        119
+      ],
+      "bboxSize": [
+        52,
+        62
+      ]
+    },
+    {
+      "label": "Candidate",
+      "bbox": [
+        34,
+        46,
+        94,
+        119
+      ],
+      "bboxSize": [
+        60,
+        73
+      ]
+    }
+  ],
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_hit_ul_hunter_recoil_v01_size_comparison.png",
+    "sha256": "d4494ae18ed63fa99e76a763fc423f32df776f665372889a3291b864597bc4bb"
+  }
+}

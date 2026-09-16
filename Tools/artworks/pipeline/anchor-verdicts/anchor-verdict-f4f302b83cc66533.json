@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 4,
+  "anchorVerdictId": "anchor-verdict-f4f302b83cc66533",
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+    "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+  },
+  "family": "actor",
+  "responsibilities": [
+    "Sole Poet identity, compact core volume, cinnamon-red palette, native DR anatomy, exactly-four-attached-paw topology, curled tail and restrained facial style for vertical guard-grip Cast DR v2."
+  ],
+  "excludedUses": [
+    "Do not copy Idle pose or weapon placement; accepted v07 and deterministic vertical guide own the short vertical axis, below-guard sheath-throat grip and tip-above-ground geometry."
+  ],
+  "review": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_vertical_source_responsibility_review_v02.png",
+    "sha256": "0c0bd575de23797df85250e2c92f3af2f591fca3982081a4c0d543da1e303149"
+  },
+  "decision": "approved-anchor",
+  "reviewer": "cty41",
+  "reason": "cty41 corrected and then explicitly accepted the v07 vertical Cast concept and authorized one generated version; this board preserves the approved Idle solely as Poet identity and volume authority.",
+  "decidedAt": "2026-09-13T20:08:32.8790144+08:00"
+}

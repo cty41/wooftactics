@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 4,
+  "artDirectionVerdictId": "art-direction-verdict-62c23d8884fa6fda",
+  "attemptId": "job-9a531767f319b957-a001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-9a531767f319b957/job-9a531767f319b957-a001/calibrated.png",
+    "sha256": "9c37f61930aefd4aac08ad6f82a2e1ff6282faf90ca5f0ed42dbfb3e4d29a387"
+  },
+  "artDirectionReviewId": "art-direction-review-121ff1cc1c22db2a",
+  "reviewSha256": "153e96e1ced143c66ceea6584f446d7aad10ee25744a3ff5d8fb1d66a060ce35",
+  "decision": "approved",
+  "acceptedWarnings": [],
+  "reviewer": "cty41",
+  "reason": "cty41 approved the corrected tail-right face-left UL body component after direct comparison.",
+  "decidedAt": "2026-09-05T11:33:25+08:00"
+}

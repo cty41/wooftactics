@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 4,
+  "caseFitnessAuditId": "case-fitness-audit-c6f5c338516de142",
+  "source": {
+    "path": "Tools/artworks/pure_run/art_direction/review/case_poet_idle_ul_v01_visible_limbs_v1.json",
+    "sha256": "f6ab069208e860f4ca4f3e0e5f51d67710711328ca87f6d68efa9a28ae27bd97"
+  },
+  "caseId": "CASE-POET-IDLE-UL-V01-VISIBLE-LIMBS-v1",
+  "audit": {
+    "status": "historical-only",
+    "eligibleForActivePolicy": false,
+    "reasons": [
+      "not_observable_at_review_size"
+    ]
+  }
+}

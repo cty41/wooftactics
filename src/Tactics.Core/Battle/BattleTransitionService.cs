@@ -66,7 +66,7 @@ public sealed class BattleTransitionService
         if (command is not EndTurnCommand && !_statusRuntime.CanAct(actor))
             return Rejected(state, command.ActorId, "status_prevents_action");
 
-        return command switch
+        BattleTransition transition = command switch
         {
             MoveUnitCommand move => ApplyMove(state, actor, move),
             UsePoisonSpearCommand poisonSpear => ApplyPoisonSpear(state, actor, poisonSpear),
@@ -76,6 +76,7 @@ public sealed class BattleTransitionService
             EndTurnCommand endTurn => ApplyEndTurn(state, endTurn),
             _ => Rejected(state, command.ActorId, "unsupported_command")
         };
+        return transition.Succeeded ? CommitFacing(state, command, transition) : transition;
     }
 
     private BattleTransition ApplySkill(BattleState state, BattleUnitState actor, UseSkillCommand command)
@@ -186,6 +187,42 @@ public sealed class BattleTransitionService
         return new BattleTransition(finalState.WithUnit(usedActor), finalEvents);
     }
 
+    private static BattleTransition CommitFacing(BattleState source, BattleCommand command, BattleTransition transition)
+    {
+        if (!source.TryGetUnit(command.ActorId, out BattleUnitState? before) || before is null ||
+            !transition.State.TryGetUnit(command.ActorId, out BattleUnitState? after) || after is null)
+            return transition;
+
+        GridPoint? target = command switch
+        {
+            MoveUnitCommand move => move.Destination,
+            UseSkillCommand skill when skill.TargetCell != before.Unit.Position => skill.TargetCell,
+            UsePoisonSpearCommand poison when source.TryGetUnit(poison.TargetId, out BattleUnitState? victim) && victim is not null
+                => victim.Unit.Position,
+            _ => null
+        };
+        if (target is not GridPoint destination)
+            return transition;
+
+        UnitMovedEvent? movement = transition.Events.OfType<UnitMovedEvent>()
+            .LastOrDefault(value => value.UnitId == command.ActorId);
+        UnitFacing facing;
+        if (movement is { Path.Count: > 0 })
+        {
+            GridPoint from = movement.Path.Count > 1 ? movement.Path[^2] : movement.Origin;
+            facing = UnitFacingResolver.Resolve(from, movement.Path[^1], before.Unit.Facing);
+        }
+        else
+        {
+            facing = UnitFacingResolver.Resolve(before.Unit.Position, destination, before.Unit.Facing);
+        }
+
+        if (facing == after.Unit.Facing)
+            return transition;
+        BattleUnitState faced = after.WithUnitFacts(after.Unit with { Facing = facing });
+        return new BattleTransition(transition.State.WithUnit(faced), transition.Events);
+    }
+
     private BattleTransition ApplyMove(BattleState state, BattleUnitState actor, MoveUnitCommand command)
     {
         if (actor.HasMovedThisTurn)
@@ -280,7 +317,8 @@ public sealed class BattleTransitionService
         if (!action.Succeeded)
             return Rejected(state, command.ActorId, action.FailureReason);
 
-        int healthAfterDamage = Math.Max(0, target.CurrentHealth - action.Damage);
+        int directDamage = IsPoetDecoy(target) && action.Damage > 0 ? 1 : action.Damage;
+        int healthAfterDamage = Math.Max(0, target.CurrentHealth - directDamage);
         int appliedDamage = target.CurrentHealth - healthAfterDamage;
         BattleUnitState updatedTarget = target.WithHealth(healthAfterDamage);
         BattleUnitState updatedActor = actor.WithMana(actor.CurrentMana - command.Definition.ManaCost);
@@ -504,7 +542,7 @@ public sealed class BattleTransitionService
         foreach (BattleStatusState status in outgoing.Statuses.Values
                      .OrderBy(item => item.ContentId.Value, StringComparer.Ordinal))
         {
-            if (status.EffectKind == StatusEffectKind.Burning)
+            if (status.EffectKind == StatusEffectKind.Burning || status.FrozenTotalHealingRemaining > 0)
                 continue;
             int remainingTurns = status.RemainingTurns - 1;
             if (remainingTurns == 0)
@@ -534,12 +572,39 @@ public sealed class BattleTransitionService
             if (!incoming.IsAlive)
                 continue;
             tickSourceId = status.SourceId;
+            if (status.FrozenTotalHealingRemaining > 0)
+            {
+                int scheduledHealing = (int)Math.Ceiling(status.FrozenTotalHealingRemaining /
+                    (double)Math.Max(1, status.RemainingTurns));
+                int appliedHealing = incoming.CanReceiveStandardHealing
+                    ? Math.Min(scheduledHealing, incoming.MaxHealth - incoming.CurrentHealth)
+                    : 0;
+                incoming = incoming.WithHealth(incoming.CurrentHealth + appliedHealing);
+                int remainingHealing = Math.Max(0, status.FrozenTotalHealingRemaining - scheduledHealing);
+                int remainingTurns = status.RemainingTurns - 1;
+                events.Add(new StatusHealingTickedEvent(status.SourceId, incoming.Unit.InstanceId,
+                    status.ContentId, appliedHealing, incoming.CurrentHealth));
+                if (remainingTurns == 0 || remainingHealing == 0)
+                {
+                    incoming = _statusRuntime.Remove(incoming, status.ContentId);
+                    events.Add(new StatusExpiredEvent(incoming.Unit.InstanceId, status.ContentId));
+                }
+                else
+                {
+                    incoming = incoming.WithStatus(status.WithRemainingTurns(remainingTurns)
+                        .WithFrozenTotalHealingRemaining(remainingHealing));
+                    events.Add(new StatusDurationChangedEvent(incoming.Unit.InstanceId,
+                        status.ContentId, remainingTurns));
+                }
+                continue;
+            }
             int tickDamage = status.FrozenTotalDamageRemaining > 0
                 ? (int)Math.Ceiling(status.FrozenTotalDamageRemaining / (double)Math.Max(1, status.RemainingTurns))
                 : status.EffectKind == StatusEffectKind.Burning
                 ? status.StackCount
                 : status.DamagePerTurn;
-            if (tickDamage <= 0)
+            if (IsPoetDecoy(incoming)) tickDamage = 0;
+            if (tickDamage <= 0 && status.EffectKind != StatusEffectKind.Burning)
                 continue;
             int healthAfterDamage = Math.Max(0, incoming.CurrentHealth - tickDamage);
             int appliedDamage = incoming.CurrentHealth - healthAfterDamage;
@@ -580,6 +645,10 @@ public sealed class BattleTransitionService
         nextState = ApplyDefeat(nextState, tickActor, incomingBeforeTicks, incoming, events);
         return new BattleTransition(nextState, events);
     }
+
+    private static bool IsPoetDecoy(BattleUnitState unit) =>
+        unit.Unit.DefinitionId == new ContentId("unit.pure-run.poet-decoy") ||
+        unit.Unit.InstanceId.Value.Contains(".poet-decoy.", StringComparison.Ordinal);
 
     private static BattleTransition Rejected(BattleState state, UnitInstanceId actorId, string reason) =>
         new(state, new BattleEvent[] { new CommandRejectedEvent(actorId, reason) });

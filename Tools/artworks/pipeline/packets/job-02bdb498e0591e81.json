@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 2,
+  "jobId": "job-02bdb498e0591e81",
+  "state": "ready",
+  "contractId": "contract-f5c6d1c1f77f72ab",
+  "contractSha256": "c105e79e9c1517a52d565e2d5ea6e1d8445fc925196758c186e20ec3d89f35be",
+  "prompt": {
+    "path": "Tools/artworks/pure_run/equipment/prompt_plain_iron_sword.md",
+    "sha256": "2ad1f0d8234fcb6a089a1d7d6a05ec01cba953e27328478c2942d49f95c7ecea"
+  },
+  "inputs": [],
+  "target": {
+    "direction": "down-right",
+    "pose": "display"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": false,
+  "poseGuide": null
+}

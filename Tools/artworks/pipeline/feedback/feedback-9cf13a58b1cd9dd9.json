@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-9cf13a58b1cd9dd9",
+  "attemptId": "job-c2fb551be9ecdd83-a001",
+  "candidateSha256": "b351b804fdc1267551dea1623fdefbdbe9ff86603f41db456503f5b97e539d17",
+  "reviewer": "agent",
+  "verdict": "retry",
+  "strengths": [
+    "Back view and upper-left diagonal weapon direction are visible."
+  ],
+  "defects": [
+    "Two ring-pommel weapons were drawn, violating the single-weapon contract.",
+    "Core remains too wide and fails the explicit narrow-capsule dimensions.",
+    "Side paws remain tall ovals rather than compact attached paw masses."
+  ],
+  "nextPromptDelta": "Generate one weapon only: a single ring at the right shoulder with one diagonal sheath cue passing behind the body toward upper-left; shrink body width by roughly one third; side paws must be tiny circular bumps.",
+  "recordedAt": "2026-09-04T23:02:46+08:00",
+  "authorType": "agent",
+  "categories": [
+    "equipment_state",
+    "core_geometry",
+    "topology"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "native back view, diagonal upper-left axis, no face, no deferred props"
+  ],
+  "pendingFixes": [
+    "deterministic report and Reviewer"
+  ]
+}

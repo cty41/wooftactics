@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 3,
+  "attemptId": "job-4d655b953592f8df-a001",
+  "jobId": "job-4d655b953592f8df",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "review_pending",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_guqin_back_carried_dr_raw_v03.png",
+      "sha256": "c924ad7ae9578bbb378a80a25c7447c55dc236d98c92b3805105bbd54d2ecf30"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-4d655b953592f8df/job-4d655b953592f8df-a001/raw.png",
+      "sha256": "c924ad7ae9578bbb378a80a25c7447c55dc236d98c92b3805105bbd54d2ecf30"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-4d655b953592f8df/job-4d655b953592f8df-a001/prepared.png",
+      "sha256": "536104fe2659c3694c448c02d2a4b981b781964fc9a27d543d5e942b4f54715f"
+    },
+    "maskSource": {
+      "path": "Tools/artworks/poet_five_red_chow/components/poet_guqin_back_carried_dr_equipment_mask_v02.png",
+      "sha256": "514399b5cdb89d73db993235e964511daf595afee78b69db54cbb2807558f773"
+    },
+    "mask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-4d655b953592f8df/job-4d655b953592f8df-a001/mask.png",
+      "sha256": "514399b5cdb89d73db993235e964511daf595afee78b69db54cbb2807558f773"
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-4e01a30acfbc94be.json",
+    "sha256": "8372a755576cb69767ef53d477bff0e956c2236288ddcf48085f8cf677fe4ea8"
+  },
+  "approvalId": null,
+  "feedbackId": null,
+  "componentMigrationId": "component-migration-e0a61c7780f768e0",
+  "sourceMode": "pre_v3_import"
+}

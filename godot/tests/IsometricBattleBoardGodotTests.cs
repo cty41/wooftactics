@@ -122,13 +122,23 @@ public sealed class IsometricBattleBoardGodotTests
     }
 
     [TestCase]
-    public void TargetingFacingUsesFirstMoveStepAndSkillTarget()
+    public void TargetingFacingUsesFinalMoveSegmentAndSkillTarget()
     {
         GridPoint origin = new(1, 4);
         AssertThat(GodotPresentationFacingResolver.PreviewMove(origin,
-            new[] { new GridPoint(2, 4), new GridPoint(3, 4) }, GodotUnitFacing.North)).IsEqual(GodotUnitFacing.East);
+            new[] { new GridPoint(2, 4), new GridPoint(2, 5) }, GodotUnitFacing.East)).IsEqual(GodotUnitFacing.North);
         AssertThat(GodotPresentationFacingResolver.PreviewTarget(origin,
             new GridPoint(1, 2), GodotUnitFacing.East)).IsEqual(GodotUnitFacing.South);
+    }
+
+    [TestCase]
+    public void InitiativeStripCapsPortraitsAtNineAndUsesTenthSlotForEllipsis()
+    {
+        AssertThat(GodotInitiativeStrip.VisiblePortraitCount(9)).IsEqual(9);
+        AssertThat(GodotInitiativeStrip.ShowsEllipsis(9)).IsFalse();
+        AssertThat(GodotInitiativeStrip.VisiblePortraitCount(10)).IsEqual(9);
+        AssertThat(GodotInitiativeStrip.ShowsEllipsis(10)).IsTrue();
+        AssertThat(GodotInitiativeStrip.TransitionDurationSeconds).IsBetween(.2, .25);
     }
 
     [TestCase]
@@ -302,7 +312,7 @@ public sealed class IsometricBattleBoardGodotTests
         AssertThat(catalog).IsNotNull();
         if (board is null || catalog is null) return;
         AssertThat(board.TileSize).IsEqual(new Vector2(96, 48));
-        AssertThat(catalog.Entries.Length).IsEqual(166);
+        AssertThat(catalog.Entries.Length).IsEqual(185);
         AssertThat(catalog.Entries.Count(entry => entry.ContentIdValue == "battle-board.pure-run.isometric-v1")).IsEqual(1);
     }
 
@@ -317,7 +327,7 @@ public sealed class IsometricBattleBoardGodotTests
         AssertThat(profiles.Single(value=>value.ProgrammaticKind=="fireball").LevelOneHasAreaEffect).IsFalse();
         AssertThat(profiles.Single(value=>value.ProgrammaticKind=="bone-spear").MaximumGhosts).IsEqual(2);
         var catalog=ResourceLoader.Load<GodotResourceCatalog>("res://content/ContentCatalog.tres")!;
-        AssertThat(catalog.Entries.Length).IsEqual(166);
+        AssertThat(catalog.Entries.Length).IsEqual(185);
     }
 
     [TestCase]

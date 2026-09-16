@@ -1,0 +1,13 @@
+Make exactly one tightly scoped edit on exact #00ff00 green.
+
+Image 1 owns the complete selected body. Preserve its head, face, torso, tail, hind paws, shading, size, position and silhouette. Change only the smallest front-paw/grip patch.
+
+Image 2 solely owns one narrow straight single-edged ring-pommel Tang dao. No scabbard.
+
+Image 3 owns placement. Pull both front paws MUCH FARTHER INTO the torso than the previous result. Each paw must be mostly hidden inside the body silhouette; show only a small outer crescent of each paw. The paws overlap each other and must never appear as two complete circles beside the body.
+
+Hide the ring pommel and most of the handle inside the torso and overlapping paws. Route the handle between both paws. The far paw is mostly behind handle/body; the near paw crosses over the handle. Put the guard directly against the body edge. Outside the torso, primarily show guard and blade—not a chain of paws and handle.
+
+Raise the complete blade moderately down-right along Image 3’s white axis. Preserve safe tip margin.
+
+No body redraw, new shading, arm, leg, wrist, human hand, floating paw, full circular external paws, loose grip, broad double-edged sword, second weapon, scabbard, clothing, VFX, text, watermark, crop, or guide marks.

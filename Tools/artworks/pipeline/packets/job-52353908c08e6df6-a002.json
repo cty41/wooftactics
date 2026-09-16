@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "attemptId": "job-52353908c08e6df6-a002",
+  "jobId": "job-52353908c08e6df6",
+  "promptDelta": "保持同一 raw，仅执行语义蒙版、注释和尺寸校准技术补救",
+  "inputs": [],
+  "target": {
+    "direction": "down-right",
+    "pose": "idle"
+  },
+  "conceptOnly": false,
+  "contractRequirements": null
+}

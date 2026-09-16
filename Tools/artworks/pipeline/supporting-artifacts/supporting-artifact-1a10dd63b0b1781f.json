@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-1a10dd63b0b1781f",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/candidates/poet_cast_ul_vertical_guard_grip_v01_reviewed_clean_128.png",
+    "sha256": "7efa64d4b81d15dc5f9b90a5e1d06a9308627ac5d8b9344fd14d047802dc1e8c"
+  },
+  "role": "supporting-derived",
+  "note": "cty41-authorized Poet production evidence included in the CC-BY-4.0 public artwork set.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

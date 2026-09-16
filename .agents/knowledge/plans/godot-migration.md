@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Godot migration provenance
 description: 已完成迁移的冻结来源、Godot ownership、生成批次与验证边界。
 tags: [migration, godot, provenance, testing]
-timestamp: "2026-08-24T16:30:50+08:00"
+timestamp: "2026-09-11T11:08:39+08:00"
 status: active
 catalog_scope: godot-migration
 repo_paths:
@@ -16,7 +16,7 @@ repo_paths:
   - Tools/migration
   - Tools/migration/manifest/retirement
 verified_revision: 2b341cb3
-source_fingerprint: sha256:d9870f79278579656312af1b866f2f8256814ed783c9a7093fcda807273bed02
+source_fingerprint: sha256:b0d16b3c73b74df2e996e7f4a8b2ae671c1c457cb39fe8f72327ffedeb622b49
 ---
 
 # Current State
@@ -25,7 +25,7 @@ Godot 4.7 C# 是唯一产品主线，`godot/project.godot` 是唯一项目。Cor
 
 迁移来源已冻结在最终 Tag、FrozenOracle、Golden、DTO、receipt、ownership ledger 与 retirement manifest 中。它们只用于来源审计、确定性回归和许可证证明，不提供 live 旧编辑器、旧 MCP 或旧资产写入路径。
 
-内容生成只消费已绑定的冻结输入，经 Application typed draft、ResourceSaver/PackedScene、Catalog/UID、target hash、幂等与 rollback 门禁进入 Godot。公开根缺少一次性 Unity DTO 时，已提交 Unit Resource 仍通过专用 ResourceSaver 升级入口应用当前属性派生合同并由主线门禁校验。自动验证不能替代视觉、操作、真实 Editor Reload 或干净 Windows 启动验收。
+内容生成只消费已绑定的冻结输入，经 Application typed draft、ResourceSaver/PackedScene、Catalog/UID、target hash、幂等与 rollback 门禁进入 Godot。诗人是 Godot-owned 新内容，不来自 Unity 冻结迁移：`PoetAssetFactory` 通过 ResourceSaver 生成 15 技能、2 状态、诗人单位和分身，canonical Catalog 当前为 185；已批准 Idle DR/UL 以保留 `project-owned` 权利绑定的逐字节副本导入，生成器显式保持动作字段为空并配置方向 Idle、Death 与分身回退合同；ownership receipt 继续将人工质量门禁分离为 pending。公开根缺少一次性 Unity DTO 时，已提交 Unit Resource 仍通过专用 ResourceSaver 升级入口应用当前属性派生合同并由主线门禁校验。自动验证不能替代视觉、操作、真实 Editor Reload 或干净 Windows 启动验收。
 
 属性命中公式切换后的 `PresentationMiss` 使用固定 RNG state 6 继续验证生产 End Turn 输入产生 committed dodge 与灰色 Miss 数字；checkpoint 哈希和跟踪 plan 与该状态共同受门禁约束。
 

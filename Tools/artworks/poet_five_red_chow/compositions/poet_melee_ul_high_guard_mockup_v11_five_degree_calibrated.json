@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "reviewOnly": true,
+  "assetId": "poet-melee-ul-high-guard-mockup-v11-five-degree-calibrated",
+  "parentMockup": "poet-melee-ul-high-guard-mockup-v10-five-degree-forward",
+  "source": {"path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v10_five_degree_forward.png", "sha256": "732f07f229f989b511adefeded0fe5afc061114fbd12d4b3d14abf5e416dc402"},
+  "postTranslation": [0,-1],
+  "expectedAlphaBbox": [36,93,186,236],
+  "equipmentState": {"blade": "visible", "scabbard": "absent", "staticEffects": "absent"},
+  "notes": "Deterministic review-only calibration: translate the requested 5-degree forward UL composite upward one pixel to restore baseline y=236."
+}

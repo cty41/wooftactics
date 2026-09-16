@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 4,
+  "anchorVerdictId": "anchor-verdict-ad20c0e8a3d88042",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-9a531767f319b957/job-9a531767f319b957-a001/calibrated.png",
+    "sha256": "9c37f61930aefd4aac08ad6f82a2e1ff6282faf90ca5f0ed42dbfb3e4d29a387"
+  },
+  "family": "actor",
+  "responsibilities": [
+    "UL tail-right face-left three-quarter direction and 68x110 core volume only."
+  ],
+  "excludedUses": [
+    "No paw or equipment identity because this is a body-only component."
+  ],
+  "review": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_body_v3_direction_compare_v01.png",
+    "sha256": "15ed2cd450c30c077aa0c84fb0517e7cfd38dc80d00f785364cb0e54f1ccef2a"
+  },
+  "decision": "approved-anchor",
+  "reviewer": "cty41",
+  "reason": "cty41 explicitly approved this corrected UL body direction and limited face cue.",
+  "decidedAt": "2026-09-08T10:19:25+08:00"
+}

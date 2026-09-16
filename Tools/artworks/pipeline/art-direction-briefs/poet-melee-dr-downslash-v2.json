@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "registryId": "asset-brief-aa21615aa313c3f1",
+  "sourceId": "poet-melee-dr-downslash-v2",
+  "sourceType": "asset",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/briefs/poet_melee_dr_downslash_asset_brief_v2.json",
+    "sha256": "5f7b25b95649ea46b09ef7441c5c21a121d8151155b2fb50dbd30f4ee7412b94"
+  }
+}

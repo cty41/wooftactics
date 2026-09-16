@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-b0a86ad7881afdd5",
+  "attemptId": "job-06be9bd09be64664-a002",
+  "candidateSha256": "406a76267d7c4146a5c810a0e9c529b33e39088674059532dca098ce9ab9b13e",
+  "reviewer": "cty41",
+  "verdict": "backup",
+  "strengths": [
+    "平涂双球葫芦身份与Pure Run风格通过，保留为未来正式装备备用"
+  ],
+  "defects": [],
+  "nextPromptDelta": "",
+  "recordedAt": "2026-08-30T09:58:18.3709830+08:00",
+  "authorType": "human",
+  "categories": [],
+  "disposition": "backup",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "本轮不晋升；等待未来装备设计任务明确授权"
+  ]
+}

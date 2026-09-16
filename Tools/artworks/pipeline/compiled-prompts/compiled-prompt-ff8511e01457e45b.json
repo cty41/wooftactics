@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "compiledPromptId": "compiled-prompt-ff8511e01457e45b",
+  "jobId": "job-a6df55a1b4f8ac96",
+  "poseGuideId": "pose-guide-7c02479ae4b1484e",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/compiled/poet_melee_dr_downslash_v1_a005.md",
+    "sha256": "7e932c2aa909df61970ee415a1799fe15ff80dd367e6557e08ae58367f91e7b4"
+  }
+}

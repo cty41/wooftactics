@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-1a06c051b1d7dd66",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_selected_body_sword_mockup_v1_128.png",
+    "sha256": "8115af9d691074c1f7d9509e6683e666b52d5f32864c93ed462d11cd0783963f"
+  },
+  "role": "supporting-derived",
+  "note": "cty41-authorized 128 review derivative of the v1 deterministic sword mockup; not a Sprite approval or runtime asset.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

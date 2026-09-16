@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 2,
+  "poseGuideId": "pose-guide-be23aba538f72bbb",
+  "compositionId": "composition-94d1b7316ef6f275",
+  "compositionSha256": "6f25351a07be76b3aed7d339053446f8a2d1fab2e361e4f7c422993c56e7f8ab",
+  "anchorSha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/guides/poet_death_hunter_horizontal_pose_guide_v1.png",
+    "sha256": "5ede27b5a7b8635848dcff27da80e91aa97e07bb718372ce4379352e6efb6a29"
+  },
+  "role": "supporting-derived"
+}

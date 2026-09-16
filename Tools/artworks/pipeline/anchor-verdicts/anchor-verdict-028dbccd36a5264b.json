@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 4,
+  "anchorVerdictId": "anchor-verdict-028dbccd36a5264b",
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_dr_v02.png",
+    "sha256": "eb4acedf50fe56d2c216e932a7364686de603a4df40c9bc5f1fe10c22ab55999"
+  },
+  "family": "equipment",
+  "responsibilities": [
+    "completely-sheathed-straight-ring-pommel-dao",
+    "cartoon-equipment-detail-budget"
+  ],
+  "excludedUses": [
+    "mounted-grip-pose",
+    "all-melee-equipment"
+  ],
+  "review": {
+    "path": "Tools/artworks/pure_run/art_direction/reviews/equipment_anchor_candidate_board_v1.png",
+    "sha256": "0a0dfec82c2636fe1bbbe95906bb2ff2c65733a7ca6a166e252b81ce445a2fcd"
+  },
+  "decision": "approved-anchor",
+  "reviewer": "cty41",
+  "reason": "用户明确批准本次诗人试点最小职责：指导完全入鞘、直身、空心粗环首和已批准卡通刀鞘，不指导角色握持",
+  "decidedAt": "2026-09-03T14:00:00+08:00"
+}

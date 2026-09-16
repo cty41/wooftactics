@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 2,
+  "attemptId": "job-e2f0b006eb756a24-a001",
+  "jobId": "job-e2f0b006eb756a24",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "review_pending",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_guqin_travel_raw_v02.png",
+      "sha256": "4e2521d8878739b40458bfeb4b755e9e97c64e2c8b6d6f9d9ed720cc21f2498b"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-e2f0b006eb756a24/job-e2f0b006eb756a24-a001/raw.png",
+      "sha256": "4e2521d8878739b40458bfeb4b755e9e97c64e2c8b6d6f9d9ed720cc21f2498b"
+    },
+    "prepared": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_guqin_travel_v02.png",
+      "sha256": "6333b766b9d72915780f62f6af1dbc82a40ae40052d2431f9ad8318c92d1c4f5"
+    },
+    "equipmentPreview": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_guqin_travel_v02_128.png",
+      "sha256": "24b30692f25caf360fdbfb75755104d8d1e2452de75329f445e2c809767b94e2"
+    },
+    "review": {
+      "equipmentPanel": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_guqin_travel_review_v02.png",
+        "sha256": "fb743b4090385b03a86f951318f6c30f84bb6e0e264b1338caa073b158250168"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/style-reports/equipment-style-report-987d1c5bcec5b00a.json",
+    "sha256": "3f197d6150e89395bfb37c83ebef534763c179f06ea8770bdca1eb2d04be34d9"
+  },
+  "approvalId": null,
+  "feedbackId": "feedback-5603e12f789e0b3d",
+  "generationInvocationId": "generation-invocation-bd0d676001af66cd",
+  "generationDeliveryId": "generation-delivery-e7261ae094e8b23c",
+  "equipmentStyleReportId": "equipment-style-report-987d1c5bcec5b00a",
+  "equipmentStyleVerdictId": "equipment-style-verdict-68d0dcd233bc50b1",
+  "equipmentStyleVerdictIds": [
+    "equipment-style-verdict-68d0dcd233bc50b1"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 2,
+  "canvas": [256, 256],
+  "bodyLayer": false,
+  "coreAxis": {
+    "top": [136, 108],
+    "bottom": [128, 229],
+    "tiltDegrees": [-2.0, 10.0]
+  },
+  "footCenter": [128, 236],
+  "weapon": {
+    "hiddenGrip": [151, 187],
+    "exitWindow": [143, 174, 166, 201],
+    "tipRegion": [183, 108, 204, 133]
+  },
+  "forbiddenRegions": [],
+  "requiredHiddenLabels": ["scabbard", "effect"],
+  "visibleAreaCaps": {},
+  "equipmentState": {
+    "blade": "visible",
+    "scabbard": "absent",
+    "staticEffects": "absent"
+  },
+  "reviewedImport": {
+    "source": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_high_guard_mockup_v11_upright_calibrated.png",
+    "sha256": "113cad67f8305d6c12f6c322a91a79c755faecc15bfff15acbfee5a3909bd4bf",
+    "humanVerdict": "direction accepted and explicitly selected for promotion by cty41",
+    "technicalCleanup": "clear 23 exact #00ff00 edge pixels, max alpha 23; retain bbox and visible pose"
+  }
+}

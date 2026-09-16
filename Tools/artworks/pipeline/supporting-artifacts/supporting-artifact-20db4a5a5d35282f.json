@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-20db4a5a5d35282f",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_ring_pommel_tang_dao_ul_projection_review_v01.png",
+    "sha256": "aaaa32e341257ac067d90833cba04a5adc840da71758f4df9f8167ec9d1e97c7"
+  },
+  "role": "review-derived",
+  "note": "Isolated UL Tang dao v01 actual-size and nearest-neighbor projection review; human decision pending; 2D mirror explicitly negative"
+}

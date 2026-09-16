@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 2,
+  "attemptId": "job-b428606f17132f21-a001",
+  "jobId": "job-b428606f17132f21",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "promoted",
+  "sourceMode": "reviewed_import",
+  "reviewedImportId": "reviewed-import-ce8c3517b16653ac",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_death_hunter_close_dao_v2_a001_quick_scale_review.png",
+      "sha256": "b0d8c8204614f035abeb1f3fbcdb155b33b4249609d7da2399361db5eecb63e7"
+    },
+    "prepared": {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_death_hunter_close_dao_v02_reviewed_clean.png",
+      "sha256": "235922e278fd3946e74763084e7576a0b1eed8128195b03361939f13c0a8940e"
+    },
+    "importedPreview": {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_death_hunter_close_dao_v02_reviewed_clean_128.png",
+      "sha256": "cae1bb361b0312980e22a5601d86cc4c5f6e524b3f2283e558a4747f3faa0b5a"
+    },
+    "review": {
+      "sizeComparison": {
+        "path": "Tools/artworks/poet_five_red_chow/reviews/poet_death_hunter_close_dao_v02_size_comparison.png",
+        "sha256": "474ab9ea31f6faea9b960c0f7b0a678c88d58d854c7c4dd23f3378d0096f94fe"
+      }
+    },
+    "promoted": {
+      "master": {
+        "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_death_hunter_close_dao_v02.png",
+        "sha256": "235922e278fd3946e74763084e7576a0b1eed8128195b03361939f13c0a8940e"
+      },
+      "preview": {
+        "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_death_hunter_close_dao_v02_128.png",
+        "sha256": "cae1bb361b0312980e22a5601d86cc4c5f6e524b3f2283e558a4747f3faa0b5a"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-6de8cad5a6a9d783.json",
+    "sha256": "8de4e8c89330fad99a70a6f924b9c1970744dc163b2f2268eaf7e6f50077496f"
+  },
+  "approvalId": "approval-a82de15554b82a59",
+  "feedbackId": null
+}

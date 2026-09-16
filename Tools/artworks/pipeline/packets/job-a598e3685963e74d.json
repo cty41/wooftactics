@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 4,
+  "jobId": "job-a598e3685963e74d",
+  "state": "ready",
+  "contractId": "contract-d8cf6afd3fc49dd5",
+  "contractSha256": "1a728bcdd25d69f73fef8a14f71e1cab6f3ffdc4e87e0ae1f46f149912c1cb7e",
+  "prompt": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/poet_hit_dr_hunter_recoil_prompt_v1.md",
+    "sha256": "a620f470134e5128b77ab3bf9cb56a6d2c37e3dd6579d6ae895d769c1a287af2"
+  },
+  "inputs": [
+    {
+      "role": "image-1-approved-poet-idle-dr-identity-volume",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+      "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+    },
+    {
+      "role": "image-2-approved-hunter-hit-dr-action-only",
+      "path": "godot/assets/units/actions/doge_hunter_hit_dr.png",
+      "sha256": "a921486bec40be843d02efdce8617e2a1b764c33e6a9e8e4278cf76c92fa9e01"
+    },
+    {
+      "role": "image-3-approved-sheathed-dao-form",
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_dr_v02.png",
+      "sha256": "eb4acedf50fe56d2c216e932a7364686de603a4df40c9bc5f1fe10c22ab55999"
+    },
+    {
+      "role": "image-4-deterministic-poet-hit-guide",
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_hit_dr_hunter_recoil_pose_guide_v1.png",
+      "sha256": "60e3e2fb3a90d7a2d66ba497637b0eeb14e98fa9abc0e8b7723eb0335e4569cb"
+    }
+  ],
+  "target": {
+    "direction": "down-right",
+    "pose": "hit"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": true,
+  "poseGuide": {
+    "poseGuideId": "pose-guide-0e745c478ed8149e",
+    "sha256": "811d298a32933fdcf9d3d27214f554dfecb6abdaf34aca7569056bad6d31d723"
+  },
+  "localReferences": []
+}

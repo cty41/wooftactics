@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "feedbackAddendumId": "feedback-addendum-5897f658a38beb8e",
+  "attemptId": "job-dfbdae10245d7d6c-a003",
+  "parentFeedbackId": "feedback-1f47ea9ad398036c",
+  "reviewer": "cty41",
+  "defects": [
+    "Selected the first narrow body candidate as the body component basis; accepts reviewing its 57x110 versus 66x110 size deviation as a limited exception."
+  ],
+  "recordedAt": "2026-09-05T01:07:14+08:00",
+  "authorType": "human",
+  "disposition": "selected"
+}

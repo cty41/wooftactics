@@ -24,7 +24,7 @@ public class BuffItemBatchGodotTests
 
         BuffItemBatchValidation validation = BuffItemBatchValidator.Validate(batchCatalog, globalCatalog);
         AssertThat(validation.BatchCatalogEntryCount).IsEqual(29);
-        AssertThat(validation.GlobalCatalogEntryCount is 114 or 115 or 116 or 119 or 123 or 124 or 125 or 131 or 132 or 141 or 142 or 143 or 160 or 161 or 162 or 166).IsTrue();
+        AssertThat(validation.GlobalCatalogEntryCount is 114 or 115 or 116 or 119 or 123 or 124 or 125 or 131 or 132 or 141 or 142 or 143 or 160 or 161 or 162 or 166 or 185).IsTrue();
         AssertThat(validation.StatusCount).IsEqual(14);
         AssertThat(validation.ConsumableCount).IsEqual(3);
         AssertThat(validation.EquipmentCount).IsEqual(12);
@@ -101,7 +101,7 @@ public class BuffItemBatchGodotTests
             return;
 
         catalog.Validate();
-        AssertThat(catalog.Entries.Length is 114 or 115 or 116 or 119 or 123 or 124 or 125 or 131 or 132 or 141 or 142 or 143 or 160 or 161 or 162 or 166).IsTrue();
+        AssertThat(catalog.Entries.Length is 114 or 115 or 116 or 119 or 123 or 124 or 125 or 131 or 132 or 141 or 142 or 143 or 160 or 161 or 162 or 166 or 185).IsTrue();
         AssertThat(catalog.Entries.Select(entry => entry.ContentIdValue).Distinct().Count()).IsEqual(catalog.Entries.Length);
         foreach (GodotResourceEntry entry in catalog.Entries.Where(entry => !ResourceUid.HasId(
                      ResourceUid.TextToId(entry.ResourceUidValue))))

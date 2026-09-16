@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-5e3964fa3cf2be40",
+  "attemptId": "job-823050db4231b9ae-a001",
+  "candidateSha256": "940f604b9841c9d0b1cbcdc011c6869d6c7e9f6e70739074d706df3464ac884b",
+  "reviewer": "cty41",
+  "verdict": "retry",
+  "strengths": [
+    "皮囊水滴轮廓、缝边与菱形压纹可保留"
+  ],
+  "defects": [
+    "腹部柔和渐变与材质渲染过强，缺少既有武器道具的硬边简化"
+  ],
+  "nextPromptDelta": "严格参考批准武器和盾牌的轮廓与色块；no gradient/no soft shading/no texture",
+  "recordedAt": "2026-08-30T09:51:39.0558482+08:00",
+  "authorType": "human",
+  "categories": [
+    "processing"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "皮革改成少量硬边平涂区，缝线更简化，删除柔光"
+  ]
+}

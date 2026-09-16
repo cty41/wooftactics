@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "styleReportId": "equipment-style-report-09d51b7fe7986ddc",
+  "contractId": "contract-fbacbbe93e212895",
+  "contractSha256": "faff4d948e9a783094e9b8fca34cb02c160eef1057273c2ad448cd00a16eeb7f",
+  "profile": {
+    "path": "Tools/artworks/pure_run/equipment/equipment_production_profile_v2.json",
+    "sha256": "e23e540c790a57432967d944c82bdad9721f109d2cb6352b3288c0c2c7d7bbb1"
+  },
+  "source": {
+    "path": "Tools/artworks/pipeline/artifacts/job-83839806868cdd1f/job-83839806868cdd1f-a001/raw.png",
+    "sha256": "7bfc851ed05e47ef7a6563d1b45cbc43f1129646f46d6096639fa6f488a3c931"
+  },
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_tang_sword_v01.png",
+    "sha256": "d4a4198fb47a3d84a0c5f6656d1cef0e66af369c3f85a0ae6692d5ae299164bd"
+  },
+  "preview": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_tang_sword_v01_128.png",
+    "sha256": "d1732f9a23fdd32b6758a89a54b87c9bb0921bca8f7802b5ea8d083846e1d866"
+  },
+  "metrics": {
+    "interiorPixels": 2651,
+    "interiorColorBins": 77,
+    "smoothGradientRatio": 0.0,
+    "visibleBbox": [
+      59,
+      77,
+      197,
+      237
+    ],
+    "visibleSize": [
+      138,
+      160
+    ],
+    "baseline": 236
+  },
+  "processingMode": "preserve-fidelity",
+  "quantized": false,
+  "remediation": null,
+  "hardIssues": [],
+  "advisories": [
+    "equipment_palette_complexity_review"
+  ],
+  "issues": [],
+  "passed": true
+}

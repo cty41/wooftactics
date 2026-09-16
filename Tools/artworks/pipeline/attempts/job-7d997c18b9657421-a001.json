@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 2,
+  "attemptId": "job-7d997c18b9657421-a001",
+  "jobId": "job-7d997c18b9657421",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "promoted",
+  "sourceMode": "reviewed_import",
+  "reviewedImportId": "reviewed-import-07f40087ba847d44",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_vertical_guard_grip_v2_a001_quick_scale_review.png",
+      "sha256": "205fb41759f8c5ac05ea0c0987dd601b1ffd3904a7a15458851a34ff08752d8e"
+    },
+    "prepared": {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_cast_dr_vertical_guard_grip_v01_reviewed_clean.png",
+      "sha256": "7cd072d554222d24c1cc4b357f3220260c01016c47be51d21c34e045d4139883"
+    },
+    "importedPreview": {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_cast_dr_vertical_guard_grip_v01_reviewed_clean_128.png",
+      "sha256": "4484f6e763572acf4115adb14ce355b3c96b4eb4af2aa2c46d9775baa4769cda"
+    },
+    "review": {
+      "sizeComparison": {
+        "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_vertical_guard_grip_v01_size_comparison.png",
+        "sha256": "f9405a29a6547e0dd1c6ba839b6caa0015fdd3532807d37777a5283b3f6346fe"
+      }
+    },
+    "promoted": {
+      "master": {
+        "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_cast_dr_vertical_guard_grip_v01.png",
+        "sha256": "7cd072d554222d24c1cc4b357f3220260c01016c47be51d21c34e045d4139883"
+      },
+      "preview": {
+        "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_cast_dr_vertical_guard_grip_v01_128.png",
+        "sha256": "4484f6e763572acf4115adb14ce355b3c96b4eb4af2aa2c46d9775baa4769cda"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-6999f168602941c8.json",
+    "sha256": "f33be2d3d475428d66964fb07e463f225bd0194601985f822bd284c7794b45b1"
+  },
+  "approvalId": "approval-32b77c999dfb1010",
+  "feedbackId": null
+}

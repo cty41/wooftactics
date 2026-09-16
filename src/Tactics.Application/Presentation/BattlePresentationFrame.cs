@@ -77,6 +77,11 @@ public static class BattlePresentationFrameCompiler
                     cues.Add(Cue(PresentationCueKind.StatusTick, tick.TargetId, tick.TargetId, null,
                         ticking.Cell, ticking.Cell, [], [tick.TargetId], tick.SourceId));
                     break;
+                case StatusHealingTickedEvent tick when tick.Amount > 0:
+                    BattleUiUnitSnapshot healing = Find(before, after, tick.TargetId);
+                    cues.Add(Cue(PresentationCueKind.StatusTick, tick.TargetId, tick.TargetId, null,
+                        healing.Cell, healing.Cell, [], [tick.TargetId], tick.SourceId));
+                    break;
                 case UnitDefeatedEvent defeated:
                     BattleUiUnitSnapshot unit = Find(before, after, defeated.UnitId);
                     cues.Add(Cue(PresentationCueKind.Defeat, defeated.UnitId, null, null, unit.Cell, unit.Cell, [], [defeated.UnitId]));
@@ -102,15 +107,25 @@ public static class BattlePresentationFrameCompiler
         for (int index = 0; index < cues.Count; index++)
         {
             BattlePresentationCue cue = cues[index];
-            if (cue.SkillId is null) continue;
-            cues[index] = cue with { Effects = effects };
+            if (cue.SkillId is not null)
+            {
+                cues[index] = cue with { Effects = effects };
+                continue;
+            }
+            if (cue.Kind == PresentationCueKind.StatusTick)
+                cues[index] = cue with
+                {
+                    Effects = effects.Where(effect => effect.Kind == BattlePresentationEffectKind.StatusTicked &&
+                        effect.TargetId == cue.TargetId).ToArray()
+                };
         }
         return new BattlePresentationFrame(stage, before, after, cues, CompileNumbers(events));
     }
 
     private static PresentationCueKind ResolveAction(SkillDefinition skill) => skill.ExecutionKind switch
     {
-        SkillExecutionKind.MeleeAttack or SkillExecutionKind.DirectAttack or SkillExecutionKind.Thrust or SkillExecutionKind.MultiStab or SkillExecutionKind.Bane => PresentationCueKind.Melee,
+        SkillExecutionKind.MeleeAttack or SkillExecutionKind.DirectAttack or SkillExecutionKind.Thrust or
+            SkillExecutionKind.MultiStab or SkillExecutionKind.Bane or SkillExecutionKind.PoetCharge => PresentationCueKind.Melee,
         SkillExecutionKind.RangedAttack or SkillExecutionKind.HeavyShot or SkillExecutionKind.PoisonSpear => PresentationCueKind.Ranged,
         _ => PresentationCueKind.Cast
     };
@@ -125,7 +140,8 @@ public static class BattlePresentationFrameCompiler
             return new GridPoint(origin.X + dx * 2, origin.Y + dy * 2);
         }
         if (skill.ExecutionKind is not (SkillExecutionKind.SummonSkeleton or
-            SkillExecutionKind.SummonSkeletonMage or SkillExecutionKind.SummonFireDemon or SkillExecutionKind.Decoy))
+            SkillExecutionKind.SummonSkeletonMage or SkillExecutionKind.SummonFireDemon or
+            SkillExecutionKind.Decoy or SkillExecutionKind.PoetDecoyRetreat))
             return fallback;
         return events.OfType<UnitSummonedEvent>()
             .FirstOrDefault(value => value.OwnerId == used.ActorId)?.Cell ?? fallback;
@@ -152,6 +168,7 @@ public static class BattlePresentationFrameCompiler
     {
         StatusAppliedEvent status => [new(BattlePresentationEffectKind.StatusApplied, status.SourceId, status.TargetId, status.StatusId, null, status.RemainingTurns)],
         StatusTickedEvent status => [new(BattlePresentationEffectKind.StatusTicked, status.SourceId, status.TargetId, status.StatusId, null, status.Amount)],
+        StatusHealingTickedEvent status => [new(BattlePresentationEffectKind.StatusTicked, status.SourceId, status.TargetId, status.StatusId, null, status.Amount)],
         StatusDurationChangedEvent status => [new(BattlePresentationEffectKind.StatusDurationChanged, status.TargetId, status.TargetId, status.StatusId, null, status.RemainingTurns)],
         StatusStackChangedEvent status => [new(BattlePresentationEffectKind.StatusStackChanged, status.TargetId, status.TargetId, status.StatusId, null, status.StackCount)],
         StatusExpiredEvent status => [new(BattlePresentationEffectKind.StatusExpired, status.TargetId, status.TargetId, status.StatusId, null, 0)],
@@ -185,6 +202,9 @@ public static class BattlePresentationFrameCompiler
                     break;
                 case StatusTickedEvent status when status.Amount > 0:
                     result.Add(new(BattlePresentationNumberKind.Normal, status.TargetId, $"-{status.Amount}", PresentationMarkerKind.Impact, result.Count));
+                    break;
+                case StatusHealingTickedEvent status when status.Amount > 0:
+                    result.Add(new(BattlePresentationNumberKind.Heal, status.TargetId, $"+{status.Amount}", PresentationMarkerKind.Impact, result.Count));
                     break;
                 case HealthRestoredEvent health when health.Amount > 0:
                     result.Add(new(BattlePresentationNumberKind.Heal, health.TargetId, $"+{health.Amount}", PresentationMarkerKind.Impact, result.Count));

@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "exactChromaRemediationId": "exact-chroma-remediation-309864a85ec2aa5c",
+  "sourceAttemptId": "job-cb212e931b8f5c37-a001",
+  "sourceAttempt": {
+    "path": "Tools/artworks/pipeline/attempts/job-cb212e931b8f5c37-a001.json",
+    "sha256": "d4171e9a8e3f73e196e821264ea74cd121dfdb7433400355278da7f1cd43c4c3"
+  },
+  "approval": {
+    "path": "Tools/artworks/pipeline/approvals/approval-80a1018c0d14ae8c.json",
+    "sha256": "26e38e1553bc8ca60dc23c93b335d1a96919852b3320a9be3efa60394d664716"
+  },
+  "artifacts": [
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_guqin_compact_v03.png",
+      "beforeSha256": "1abc09cbedfee504d9f3ad33fc71f44f5996cf5d0ba1eab07091b1c7b0cf7cb7",
+      "afterSha256": "eb02ab8ecba224e1e0672128044bb11a492eadf56beec27b1a232cdf6dae6236",
+      "pixels": [
+        {
+          "x": 115,
+          "y": 189,
+          "rgba": [
+            0,
+            255,
+            0,
+            1
+          ]
+        },
+        {
+          "x": 115,
+          "y": 236,
+          "rgba": [
+            0,
+            255,
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_guqin_compact_v03.png",
+      "beforeSha256": "1abc09cbedfee504d9f3ad33fc71f44f5996cf5d0ba1eab07091b1c7b0cf7cb7",
+      "afterSha256": "eb02ab8ecba224e1e0672128044bb11a492eadf56beec27b1a232cdf6dae6236",
+      "pixels": [
+        {
+          "x": 115,
+          "y": 189,
+          "rgba": [
+            0,
+            255,
+            0,
+            1
+          ]
+        },
+        {
+          "x": 115,
+          "y": 236,
+          "rgba": [
+            0,
+            255,
+            0,
+            1
+          ]
+        }
+      ]
+    }
+  ],
+  "operation": "deterministic-low-alpha-exact-chroma-cleanup",
+  "reviewer": "cty41",
+  "reason": "cty41 authorized deterministic removal of all low-alpha exact green/magenta residue while preserving every other RGBA pixel and historical approval record.",
+  "authorizedAt": "2026-09-14T16:25:32.3675727+08:00"
+}

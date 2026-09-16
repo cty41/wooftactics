@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-9fc3b6c229ef3df2",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v7_two_paw_patch.png",
+    "sha256": "1e671114044442a262f594f415979bdfdd9136cc02f959792a385c895a14679a"
+  },
+  "role": "supporting-derived",
+  "note": "Superseded deterministic UL patch; moved far hand remained fully occluded and did not satisfy visible two-hand correspondence.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

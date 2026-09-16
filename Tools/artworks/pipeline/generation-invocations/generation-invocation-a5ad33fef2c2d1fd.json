@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "invocationId": "generation-invocation-a5ad33fef2c2d1fd",
+  "state": "started",
+  "attemptId": "job-93dbc1ce4eeb846d-a002",
+  "compiledPromptId": "compiled-prompt-ad8537c2754639a8",
+  "compiledPromptSha256": "f849d98ccf9893ff750d56106cf044813702eaca16bb7cd2ced641fe008126fb",
+  "provider": "gpt-image-2",
+  "startedAt": "2026-08-30T19:22:52.5824291+08:00"
+}

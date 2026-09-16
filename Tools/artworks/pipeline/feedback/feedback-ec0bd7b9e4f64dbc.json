@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-ec0bd7b9e4f64dbc",
+  "attemptId": "job-43b34a4685f71ca2-a002",
+  "candidateSha256": "4dd2c055a45bfe45dea2db62d0c6bf00398a4d975eb72b94aaf59f5e72ef3a9d",
+  "reviewer": "agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "用户已确认 down-right 三分之四视角正确；图像身份、风格与整体胶囊轮廓保持稳定"
+  ],
+  "defects": [
+    "首版等距语义 mask 将手爪覆盖到 core 内部导致行断裂，并使下段宽度统计失真；core 垂直中心仍偏上"
+  ],
+  "nextPromptDelta": "保持同一 raw；core 改为连续矩形语义区 y411..1007，手爪仅标主体外弧，脚爪仅标 core 下方",
+  "recordedAt": "2026-08-29T21:39:49.4141399+08:00",
+  "authorType": "agent",
+  "categories": [
+    "core_geometry",
+    "processing"
+  ],
+  "disposition": "technical_failed",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "首版等距语义 mask 将手爪覆盖到 core 内部导致行断裂，并使下段宽度统计失真；core 垂直中心仍偏上"
+  ]
+}

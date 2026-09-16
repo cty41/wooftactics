@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 2,
+  "poseGuideId": "pose-guide-0e745c478ed8149e",
+  "compositionId": "composition-e22496e1955a4d72",
+  "compositionSha256": "2fd1017b4248b6625cbb59683608eb9b610ef7bf7adde071d380992e0efe4adf",
+  "anchorSha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/guides/poet_hit_dr_hunter_recoil_pose_guide_v1.png",
+    "sha256": "60e3e2fb3a90d7a2d66ba497637b0eeb14e98fa9abc0e8b7723eb0335e4569cb"
+  },
+  "role": "supporting-derived"
+}

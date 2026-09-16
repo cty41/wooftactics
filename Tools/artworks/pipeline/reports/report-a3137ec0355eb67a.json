@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "attemptId": "job-50532e1e9fe7c307-a001",
+  "inputSha256": "69b22d7bea3c1c41df7a715ad65ec109224060c95fd068e9bd5ff1cad2016425",
+  "maskSha256": "ec0602fb6eec58cb90bc76fb3e882f0d8661a99c210b62160703162350ec7923",
+  "technical": {
+    "size": [
+      256,
+      256
+    ],
+    "alphaBbox": [
+      75,
+      118,
+      180,
+      254
+    ]
+  },
+  "geometry": {
+    "boxes": {
+      "core": [
+        92,
+        123,
+        161,
+        233
+      ],
+      "head_appendage": null,
+      "near_hand": [
+        99,
+        167,
+        123,
+        194
+      ],
+      "far_hand": [
+        148,
+        179,
+        164,
+        203
+      ],
+      "near_foot": [
+        100,
+        198,
+        123,
+        236
+      ],
+      "far_foot": [
+        132,
+        200,
+        153,
+        236
+      ],
+      "equipment": [
+        112,
+        169,
+        177,
+        251
+      ],
+      "wings": null,
+      "effect": null,
+      "near_arm": null,
+      "far_arm": null,
+      "near_leg": null,
+      "far_leg": null
+    },
+    "core": {
+      "bbox": [
+        92,
+        123,
+        161,
+        233
+      ],
+      "center": [
+        126.5,
+        178.0
+      ],
+      "bandMaxWidths": [
+        64,
+        70,
+        61
+      ]
+    },
+    "occlusion": {
+      "intrusionPixels": {},
+      "visibleAreaRatios": {}
+    }
+  },
+  "issues": [
+    "annotations_missing",
+    "core_row_disconnected"
+  ],
+  "passed": false
+}

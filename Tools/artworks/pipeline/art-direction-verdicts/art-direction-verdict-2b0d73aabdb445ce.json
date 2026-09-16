@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 4,
+  "artDirectionVerdictId": "art-direction-verdict-2b0d73aabdb445ce",
+  "attemptId": "job-7603439437c554d0-a003",
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_sheathed_ul_projection_v03.png",
+    "sha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4"
+  },
+  "artDirectionReviewId": "art-direction-review-3376ad7715046e7c",
+  "reviewSha256": "36210084028a0fe5c99c70c3f51f16bd57c2dcb790dc3409557d8cc0f618a1c0",
+  "decision": "approved",
+  "acceptedWarnings": [],
+  "reviewer": "cty41",
+  "reason": "用户逐版审核独立UL唐刀投影，否决v01平放感与v02环首过度侧视后，明确确认v03可以并要求结合角色生成UL",
+  "decidedAt": "2026-09-03T18:37:00+08:00"
+}

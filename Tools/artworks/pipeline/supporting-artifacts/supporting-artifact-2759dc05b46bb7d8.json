@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-2759dc05b46bb7d8",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_source_responsibility_review_v01.png",
+    "sha256": "51b78ae5016dc766ed1f027ddb932ce265e60cdc3a0300d0fc06493314702aab"
+  },
+  "role": "supporting-derived",
+  "note": "Cast DR source-responsibility board binding approved Poet identity, approved sheathed-dao form, user-selected B pose and deterministic geometry guide.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="SkillDefinitionResource" format=3 uid="uid://dkcyfpxi80gpw"]
+
+[ext_resource type="Script" path="res://src/Tactics.Godot.Adapter/Runtime/SkillDefinitionResource.cs" id="1_u324m"]
+
+[resource]
+script = ExtResource("1_u324m")
+ContentIdValue = "skill.poet.mountain-dialogue.lv2"
+SourceId = "godot.skill.poet.mountain-dialogue.lv2"
+DisplayName = "山中与幽人对酌"
+Description = "山中与幽人对酌"
+RoleValue = "Poet"
+KindValue = "Active"
+Level = 2
+ManaCost = 5
+ExecutionKindValue = "PoetDecoyRetreat"
+DamageKindValue = "None"
+CanCrit = false
+BranchId = "poet.mountain-dialogue"
+PrerequisiteContentIdValue = "skill.poet.mountain-dialogue.lv1"
+PrerequisiteBranchId = "poet.mountain-dialogue"
+RequiredAttribute = "Strength"
+MinimumAttribute = 7
+SummonDefinitionIdValue = "unit.pure-run.poet-decoy"
+DirectHitCharges = 2
+AuthoringSourceKindValue = "GodotAuthored"

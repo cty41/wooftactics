@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Pure Run Model Review 优化 Brief</title>
+  <style>
+    :root{color-scheme:dark;--bg:#121419;--panel:#1c1f26;--line:#343945;--text:#e8e9ed;--muted:#a7adb8;--gold:#e4b85b;--red:#f06b6b;--green:#72d49a;--blue:#78b8ee}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.65 system-ui,"Microsoft YaHei",sans-serif}.wrap{max-width:1120px;margin:auto;padding:48px 24px 72px}h1{font-size:34px;line-height:1.2;margin:0 0 12px}h2{margin:42px 0 16px;font-size:22px;color:var(--gold)}h3{margin:0 0 8px;font-size:16px}.lead{max-width:850px;color:var(--muted);font-size:17px}.badge{display:inline-block;border:1px solid var(--gold);color:var(--gold);padding:3px 9px;border-radius:999px;font-size:12px;margin-bottom:18px}.notice{margin:24px 0;padding:14px 16px;border-left:3px solid var(--gold);background:#1a1b1f;color:#d9dbe1}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px}.bad{border-top:3px solid var(--red)}.good{border-top:3px solid var(--green)}.muted{color:var(--muted)}.flow{display:grid;grid-template-columns:repeat(7,auto);gap:8px;align-items:center;overflow:auto;padding:18px;background:var(--panel);border:1px solid var(--line);border-radius:10px}.node{min-width:125px;text-align:center;padding:13px 10px;border:1px solid var(--line);border-radius:8px;background:#242832}.node.vision{border-color:var(--blue)}.node.human{border-color:var(--gold)}.arrow{color:var(--muted);font-size:20px}.comparison{width:100%;border-collapse:collapse;background:var(--panel)}th,td{border:1px solid var(--line);padding:12px 14px;text-align:left;vertical-align:top}th{color:var(--gold);background:#232630}.layers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.layer{padding:16px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}.rounds{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.round{text-align:center;padding:18px;border:1px solid var(--line);background:var(--panel);border-radius:8px}.round strong{display:block;color:var(--blue);font-size:20px}.guard{display:grid;grid-template-columns:1fr 1fr;gap:16px}.yes{color:var(--green)}.no{color:var(--red)}code{color:#b9d8f5}footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}@media(max-width:780px){.grid,.layers,.rounds,.guard{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);text-align:center}}
+  </style>
+</head>
+<body><main class="wrap">
+  <span class="badge">DESIGN BRIEF · 尚未实施</span>
+  <h1>从“记录约束”升级为“执行约束”</h1>
+  <p class="lead">Pure Run schema v4 已经能绑定 Brief、Contract、Acceptance Case、SHA 与人工裁决；本次优化将在此基础上增加生图后的独立多模态审核闭环，让明显违反既定规则的候选稳定地无法进入 cty41 的审美审核。</p>
+  <div class="notice"><strong>目标不是让 ImageGen 幂等，</strong>而是让同一合同下的失败结果以尽可能一致的方式被识别、隔离和修正。</div>
+
+  <h2>为什么旧状态机会重复犯错</h2>
+  <div class="grid">
+    <section class="card bad"><h3>验证了“标注”，没有充分验证“图像事实”</h3><p class="muted">例如 <code>noArms</code> 只会拒绝蒙版中的 arm/leg 标签。图像画出胳膊后，若被误标成 hand/core，仍可能绕过门禁。</p></section>
+    <section class="card bad"><h3>几何合规不等于视觉拓扑正确</h3><p class="muted">bbox、中心和三段宽度能发现部分尺寸错误，却不能可靠识别梨形身体、独立腿段、浮空爪或角色身份漂移。</p></section>
+    <section class="card bad"><h3>遮挡检查不理解视觉连续性</h3><p class="muted">装备标签面积可以合规，但上下两段在人眼看来仍可能像断裂。旧 Composition 甚至会因设置多个出口而鼓励过度展示装备。</p></section>
+    <section class="card bad"><h3>没有自动反馈闭环</h3><p class="muted">技术报告只产生 issue/warning，无法把“唐刀断裂、环首过正、出现四肢”等问题自动转成受约束的 retry delta。</p></section>
+  </div>
+
+  <h2>新状态流</h2>
+  <div class="flow" aria-label="优化后的审核流程">
+    <div class="node">GPT‑Image‑2<br><small>生成</small></div><div class="arrow">→</div>
+    <div class="node">确定性门禁<br><small>可证明事实</small></div><div class="arrow">→</div>
+    <div class="node vision">GPT‑5.6 Sol<br><small>独立视觉 Reviewer</small></div><div class="arrow">→</div>
+    <div class="node human">cty41<br><small>唯一终审</small></div>
+  </div>
+  <p class="muted">新生成的 raw 默认处于隔离状态。确定性校验和 Model Review 完成前，不作为正式人工候选展示。</p>
+
+  <h2>比旧状态机强在哪里</h2>
+  <table class="comparison">
+    <thead><tr><th>维度</th><th>现有 schema v4</th><th>优化后</th></tr></thead>
+    <tbody>
+      <tr><td>约束对象</td><td>主要验证记录、哈希、蒙版与局部几何</td><td>同时审查实际图像、蒙版诚实性、视觉拓扑与上下文关系</td></tr>
+      <tr><td>错误发现</td><td>大量依赖 cty41 首次指出</td><td>明确合同违反先由独立 Reviewer 拦截</td></tr>
+      <tr><td>失败处理</td><td>人工反馈后手动 retry</td><td>生成结构化 defect、冻结正确项并有限自动 retry</td></tr>
+      <tr><td>历史经验</td><td>OKF、文档、案例与 150 条 Feedback 分散存在</td><td>编译成当前 Job 适用的精简审核政策与正反案例包</td></tr>
+      <tr><td>装备遮挡</td><td>常以可见窗口和面积上限描述</td><td>新增“空间关系优先、零最低展示量、视觉连续性”规则</td></tr>
+      <tr><td>裁决权限</td><td>cty41 唯一批准</td><td>保持不变；模型只能 retry、升级人工或放行给人工</td></tr>
+    </tbody>
+  </table>
+
+  <h2>历史知识不再只是文档</h2>
+  <div class="layers">
+    <section class="layer"><h3>Rule Registry</h3><p class="muted">胶囊体、无四肢、爪直接接触、UL 原生投影、后层遮挡、装备克制等稳定规则。</p></section>
+    <section class="layer"><h3>Case Registry</h3><p class="muted">绑定真实 approved/rejected 图片、Feedback、人工理由与 SHA；反例仅供审核。</p></section>
+    <section class="layer"><h3>Compiled Policy</h3><p class="muted">按 family、pose、direction、equipment state 为当前 Job 选择相关规则，避免把全部历史塞进提示词。</p></section>
+    <section class="layer"><h3>Lesson Promotion</h3><p class="muted">当前反馈立即服务当前 Job；只有 cty41 明确授权，才升级为资产、家族或项目级共享规则。</p></section>
+  </div>
+
+  <h2>有限自动修正预算</h2>
+  <div class="rounds">
+    <div class="round"><strong>a001 · low</strong>发现明确问题即可 retry</div>
+    <div class="round"><strong>a002 · medium</strong>复核上一轮修正与回归</div>
+    <div class="round"><strong>a003 · high</strong>最后自动轮；仍失败则交人工</div>
+  </div>
+  <p class="muted">每个 Job 总共最多三个“生成＋Reviewer”轮次，不生成 a004。透明边缘等技术重处理不占生图轮次。</p>
+
+  <h2>权限护栏</h2>
+  <div class="guard">
+    <section class="card good"><h3 class="yes">模型可以</h3><ul><li>识别明确 Acceptance Case 违反</li><li>指出图像区域和对应规则</li><li>生成结构化 retry delta</li><li>冻结上一轮正确特征</li><li>无法判断时升级给人工</li></ul></section>
+    <section class="card bad"><h3 class="no">模型不可以</h3><ul><li>批准或 promote 资产</li><li>把审美偏好包装成硬失败</li><li>输出综合美学分数</li><li>把 rejected 图作为生图输入</li><li>修改 cty41 已冻结的规则</li></ul></section>
+  </div>
+
+  <h2>本次诗人 UL 会怎样被提前拦截</h2>
+  <div class="grid">
+    <section class="card"><h3>胳膊与腿复发</h3><p class="muted">Reviewer 直接看候选与蒙版叠加图；即便蒙版声称它们是 hand/foot，也会报告视觉拓扑与标注不一致。</p></section>
+    <section class="card"><h3>胶囊体漂移</h3><p class="muted">同时比较母图核心轮廓、三段宽度和批准 UL 角色上下文，而不只看校准后的 bbox。</p></section>
+    <section class="card"><h3>唐刀像断成两截</h3><p class="muted">检查视觉连续性与遮挡可推断性；不再要求露出下方鞘尾，大部分唐刀完全不可见是合法结果。</p></section>
+    <section class="card"><h3>环首角度过正</h3><p class="muted">将独立批准投影与最终实装视角分别审核；角色遮挡不会成为重新画成正面圆环的理由。</p></section>
+  </div>
+
+  <footer>认证策略：优先由 DeepSeek Harness 通过 ChatGPT/Codex OAuth 启动全新 GPT‑5.6 Sol 子 Agent；标准 OpenAI API 仍是未来可选、独立计费的 Adapter。本页描述的是已确认设计方向，不表示功能已经落地。</footer>
+</main></body>
+</html>

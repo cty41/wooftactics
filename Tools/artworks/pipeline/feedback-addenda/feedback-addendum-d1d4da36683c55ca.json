@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "feedbackAddendumId": "feedback-addendum-d1d4da36683c55ca",
+  "attemptId": "job-0a890f2b18e97967-a001",
+  "parentFeedbackId": "feedback-679bcd5803c7f454",
+  "reviewer": "cty41",
+  "defects": [
+    "cty41 now accepts this exact body visual for the project's relaxed melee requirement: preserve it unchanged, hide the scabbard, and test the approved unsheathed Tang dao by deterministic assembly without another ImageGen call."
+  ],
+  "recordedAt": "2026-09-12T17:07:12+08:00",
+  "authorType": "human",
+  "disposition": "selected"
+}

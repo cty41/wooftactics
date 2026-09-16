@@ -1,0 +1,32 @@
+{
+  "canvas": [256, 256],
+  "bodyLayer": false,
+  "coreAxis": {"bottom": [128, 231], "top": [128, 121], "tiltDegrees": [-2.0, 2.0]},
+  "footCenter": [128, 236],
+  "weapon": {
+    "hiddenGrip": [159, 158],
+    "exitWindow": [148, 139, 172, 177],
+    "tipRegion": [126, 194, 151, 228],
+    "guardWindow": [149, 151, 169, 181],
+    "maxBladeWidthPx": 13,
+    "maxGemAreaPx": 0
+  },
+  "forbiddenRegions": [
+    {"name": "face-on-back", "rect": [98, 116, 160, 176]},
+    {"name": "front-layer-left-free-paw", "rect": [78, 149, 111, 211]},
+    {"name": "front-layer-right-holding-paw", "rect": [145, 149, 181, 211]},
+    {"name": "visible-lower-scabbard-fragment", "rect": [128, 182, 172, 232]}
+  ],
+  "requiredHiddenLabels": ["near_hand", "far_hand", "equipment"],
+  "visibleAreaCaps": {"near_hand": 0.28, "far_hand": 0.28, "equipment": 0.22},
+  "equipmentState": {"scabbard": "present", "staticEffects": "absent"},
+  "screenSpaceIntent": {
+    "direction": "native upper-left back view",
+    "ringPommel": "small oblique edge-on ring immediately outside or touching the screen-right shoulder silhouette",
+    "scabbard": "fully sheathed and mostly or completely hidden behind the capsule; no isolated lower fragment",
+    "continuity": "ring short grip and optional throat cue form one connected shoulder-side object",
+    "holdingPaw": "screen-right far paw behind core; only compact outer paw arc may remain visible",
+    "freePaw": "screen-left near paw behind core; compact outer arc only and no equipment contact",
+    "feet": "two compact rear paws directly attached at baseline without leg segments"
+  }
+}

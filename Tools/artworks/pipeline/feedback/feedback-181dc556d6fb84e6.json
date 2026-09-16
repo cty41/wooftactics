@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-181dc556d6fb84e6",
+  "attemptId": "job-16985014758beabb-a007",
+  "candidateSha256": "da2f1638275425be3a69bc2ad1457ef9cdf084b8c5935eb6b22cd49b8ae3f1c7",
+  "reviewer": "cty41",
+  "verdict": "retry",
+  "strengths": [
+    "Right paw is correctly behind the body and the candidate remains selected."
+  ],
+  "defects": [
+    "Tail still reads behind the body; cty41 approved a tail-root-only local edit using a007 as frozen main source and an extracted tail edit region."
+  ],
+  "nextPromptDelta": "Freeze a007. Restrict edit to the confirmed tail-root region; make tail outline occlude the body outline while preserving tail shape and all other pixels.",
+  "recordedAt": "2026-09-08T11:19:52+08:00",
+  "authorType": "human",
+  "categories": [
+    "occlusion"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "a007 outside tail-root edit region; right paw behind body"
+  ],
+  "pendingFixes": [
+    "tail-root foreground overlap only"
+  ]
+}

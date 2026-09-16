@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-242aa949ed8a9998",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_vertical_two_hand_stick_preview_v05.png",
+    "sha256": "2b35e1d4a4e983aa2f579c4b53c0c7d5a6b1fd5560cd4db69f780a5619c5571e"
+  },
+  "role": "supporting-derived",
+  "note": "Current review-only vertical two-hand Cast stick preview: ring pommel up, fully sheathed tip planted on ground, two hands stacked; awaiting cty41 pose confirmation.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

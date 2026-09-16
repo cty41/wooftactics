@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 4,
+  "modelReviewResultRecordId": "model-review-result-record-25fd73da988cbcf0",
+  "invocationId": "model-review-invocation-a651213aca74e9fe",
+  "attemptId": "job-f40816b1c2e8b36c-a005",
+  "packetId": "model-review-packet-fae9d37edc3f8bfd",
+  "packetSha256": "767a2d1b1c58ec3ff792e93de30d18102b72ded526992a89eb7e36617fbf3d03",
+  "qualificationMode": true,
+  "provider": "dsh-subagent-current-session",
+  "model": "gpt-5.6-sol",
+  "effort": "high",
+  "freshSession": true,
+  "freshSessionId": "b5b3a06b-f0d9-4b2d-85b3-36b3fd3166ae",
+  "promptSource": {
+    "path": "Tools/artworks/pure_run/art_direction/review/reviewer_prompt_v1.md",
+    "sha256": "ea9a86b3e7e4ee724090fe0c520a4271ce4f38a34184335f865189bcf259a850"
+  },
+  "rawResult": {
+    "path": "Tools/artworks/pure_run/art_direction/review/shadow_results/final_capsule_no_limbs_positive_high_raw.json",
+    "sha256": "d9b742e9041882d5ca88789c33c219b6a09b48775404eca931d1c150e70768fc"
+  },
+  "result": {
+    "resultId": "model-review-result-743f3b328f78a6cc",
+    "schemaVersion": 1,
+    "packetId": "model-review-packet-fae9d37edc3f8bfd",
+    "packetSha256": "767a2d1b1c58ec3ff792e93de30d18102b72ded526992a89eb7e36617fbf3d03",
+    "decision": "pass_to_human",
+    "summary": "The bound positive case visually satisfies CAPSULE-NO-LIMBS-v1: all four paw masses attach directly to the capsule core without visible arm, forearm, leg, lower-leg, or thin connecting limb segments. This shadow qualification result does not approve, reject, change attempt state, or trigger retry.",
+    "strengths": [
+      "Both lateral forepaws read as compact paw masses directly overlapping the capsule edge rather than projecting limb segments.",
+      "Both hind paws attach directly at the capsule base with no visible legs or thin connectors.",
+      "The visible artifact and semantic mask are consistent with the approved topology comparison within the bound evidence region."
+    ],
+    "defects": [],
+    "frozenInvariants": [
+      "Shadow-final-policy-approved-positive-no-state-change"
+    ],
+    "operations": []
+  },
+  "outcome": "model_reviewed",
+  "validationError": null
+}

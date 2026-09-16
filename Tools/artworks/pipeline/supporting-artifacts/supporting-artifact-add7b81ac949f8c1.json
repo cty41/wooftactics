@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-add7b81ac949f8c1",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_ul_vertical_guard_grip_v1_a001_quick_scale_review.png",
+    "sha256": "82efcd7e796d297c1eb705ceb7851df40dc5dba18832a63d2ee3a76f5be23ff1"
+  },
+  "role": "supporting-derived",
+  "note": "Deterministic game-scale review of Cast UL a001. Successful rear-layer depth and no-arm topology but identity, compact volume, tip clearance and style issues are recorded in feedback-7a603e9f226904a3.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

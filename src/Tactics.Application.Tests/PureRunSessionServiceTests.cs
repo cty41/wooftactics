@@ -98,6 +98,32 @@ public sealed class PureRunSessionServiceTests
     }
 
     [Test]
+    public void FiveCandidateSetup_ChoosesExactlyThreeAndSupportsSeededPoet()
+    {
+        var store = new MemoryRunStore();
+        var service = new PureRunSessionService(DefinitionWithPoet(), store);
+
+        Assert.That(service.BeginNewRunSetup(41).Succeeded, Is.True);
+        Assert.That(service.ChooseParty(["amazon", "poet", "mage"]).Succeeded, Is.True);
+        Assert.That(service.ChooseStartingSkill("amazon", new ContentId("skill.poison-spear.lv1")).Succeeded,
+            Is.True);
+        Assert.That(service.ChooseStartingSkill("mage", new ContentId("skill.mage.fireball.lv1")).Succeeded,
+            Is.True);
+
+        PureRunState run = store.Snapshot!.ActiveRun!;
+        RunCharacterState poet = run.Party.Single(character => character.CharacterId == "poet");
+        Assert.Multiple(() =>
+        {
+            Assert.That(run.Party.Select(character => character.CharacterId),
+                Is.EqualTo(new[] { "amazon", "poet", "mage" }));
+            Assert.That(poet.StartingSkillContentId, Is.AnyOf(
+                new ContentId("skill.poet.xiake-xing.lv1"),
+                new ContentId("skill.poet.jiang-jin-jiu.lv1"),
+                new ContentId("skill.poet.moon-drink.lv1")));
+        });
+    }
+
+    [Test]
     public void FourCandidateSetup_RejectsInvalidPartySelection()
     {
         var service = new PureRunSessionService(DefinitionWithDemonbound(), new MemoryRunStore());
@@ -762,6 +788,18 @@ public sealed class PureRunSessionServiceTests
                 new ContentId("skill.demonbound.mindfulness.lv1")],
             SeededStartingSkill: true,
             InherentSkills: [new ContentId("skill.demonbound.meditation")])));
+
+    private static PureRunDefinition DefinitionWithPoet() => new(
+        new ContentId("run.pure-run.five-candidate-v1"),
+        new[] { "encounter.pure-run.n1", "encounter.pure-run.n2", "encounter.pure-run.n3" }
+            .Select(value => new ContentId(value)),
+        DefinitionWithDemonbound().Party.Append(new PureRunPartyTemplate(
+            "poet", new ContentId("unit.pure-run.poet"),
+            new ContentId("skill.poet.xiake-xing.lv1"), new UnitAttributes(6, 5, 5, 4, 6, 4), 1,
+            [new ContentId("skill.poet.xiake-xing.lv1"),
+                new ContentId("skill.poet.jiang-jin-jiu.lv1"),
+                new ContentId("skill.poet.moon-drink.lv1")],
+            SeededStartingSkill: true)));
 
     private static PureRunMapDefinition LayerFourMap() => new(new ContentId("run-map.pure-run.layer4-v1"), 2,
     [

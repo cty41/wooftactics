@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-5737f34f8b290511",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_ring_pommel_dao_idle_dr_far_paw_overlay_test_v01.png",
+    "sha256": "edee559d126ef994008654310eff6da9da4d679adf494b3a70d8bf9c6a66cf8b"
+  },
+  "role": "review-derived",
+  "note": "当前持刀候选与完整远侧爪覆盖测试的对照，仅用于判断握持可读性，不可晋升"
+}

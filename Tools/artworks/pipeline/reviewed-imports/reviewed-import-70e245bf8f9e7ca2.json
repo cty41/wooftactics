@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 2,
+  "reviewedImportId": "reviewed-import-70e245bf8f9e7ca2",
+  "contractId": "contract-97e614a21f39dd29",
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_ul_vertical_guard_grip_v1_a001_quick_scale_review.png",
+    "sha256": "82efcd7e796d297c1eb705ceb7851df40dc5dba18832a63d2ee3a76f5be23ff1"
+  },
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/candidates/poet_cast_ul_vertical_guard_grip_v01_reviewed_clean.png",
+    "sha256": "b0a4abd6330b60090edd771fd5c168aaf99c5b9e5c9ecb3e4cd935c4fa4fbfce"
+  },
+  "preview": {
+    "path": "Tools/artworks/poet_five_red_chow/candidates/poet_cast_ul_vertical_guard_grip_v01_reviewed_clean_128.png",
+    "sha256": "7efa64d4b81d15dc5f9b90a5e1d06a9308627ac5d8b9344fd14d047802dc1e8c"
+  },
+  "sizeComparison": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_ul_vertical_guard_grip_v01_size_comparison.png",
+    "sha256": "d67930be17924ba395a4948676af694773d0c381a6d21d86365895a83e380c34"
+  },
+  "reviewer": "cty41",
+  "reason": "cty41 explicitly selected the displayed Cast UL a001 for promotion. Acceptance consciously retains the documented side-profile bias, oversized cylindrical core, tiny hind paws, weak sheath-tip clearance and style drift. Deterministic processing only uniformly scales/places the selected display, clears exact low-alpha chroma residue and aligns the preview baseline.",
+  "acceptedAt": "2026-09-14T01:28:34.4495054+08:00",
+  "sourceMode": "reviewed_import"
+}

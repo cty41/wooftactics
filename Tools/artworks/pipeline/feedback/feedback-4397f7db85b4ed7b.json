@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-4397f7db85b4ed7b",
+  "attemptId": "job-16985014758beabb-a009",
+  "candidateSha256": "482676a982b88be0d8d0369b2bd293a6cb27599d3876e570c176d2a14e787e29",
+  "reviewer": "cty41",
+  "verdict": "retry",
+  "strengths": [
+    "Tail foreground relationship is approved and must remain locked."
+  ],
+  "defects": [
+    "Screen-right bottom foot/paw is still drawn in front of the body; it must be placed behind the body using the same explicit local-occlusion correction method."
+  ],
+  "nextPromptDelta": "Freeze a009, especially foreground tail and rear screen-right side paw. Edit only screen-right bottom foot overlap: body lower contour covers its inner/top part; retain a compact visible outer/lower crescent attached behind the body.",
+  "recordedAt": "2026-09-08T11:42:51+08:00",
+  "authorType": "human",
+  "categories": [
+    "occlusion"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "a009 except screen-right bottom foot overlap; foreground tail; screen-right side paw behind body"
+  ],
+  "pendingFixes": [
+    "move screen-right bottom foot to visual rear layer"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-6da83888ab2c0136",
+  "attemptId": "job-1102150ebf2aacd4-a001",
+  "candidateSha256": "288422b1108a8f504a63fc3a96b31c5108344f59f8a938bafe6e62f9cb669551",
+  "reviewer": "pipeline-agent",
+  "verdict": "retry",
+  "strengths": [
+    "The Death read is immediate at game scale: head points upper-right, two X eyes and slack mouth are clear, and the corpse is compact rather than standing.",
+    "Exactly four paws are visible and attached directly to the continuous body; the detached object is one fully sheathed ring-pommel dao below the corpse with ring left and tip right, with no blood or FX."
+  ],
+  "defects": [
+    "The detached dao is substantially longer and thinner than the approved compact sheathed-dao authority, producing a staff-like line and expanding the corpse AABB.",
+    "The body reads somewhat side-curled/bean-shaped rather than as the project-standard straight short-thick supine capsule; the lower contour bends around the tail and paws.",
+    "Identity is simplified toward a generic smooth orange Chow: approved five-red facial value grouping and dense broad ruff texture are reduced.",
+    "The corpse-plus-dao scale is larger than the runtime Hunter Death reference; final Tile review will need to confirm whether the accepted footprint is intentional."
+  ],
+  "nextPromptDelta": "Shorten the detached sheathed dao by about 30 percent and thicken it to match Image 3 proportions; keep it close below the corpse. Straighten and widen the corpse core into a short thick supine capsule without curling. Copy Image 1 ruff and five-red face values more literally while preserving all four attached paws and the accepted death expression.",
+  "recordedAt": "2026-09-14T12:10:09.1264748+08:00",
+  "authorType": "agent",
+  "categories": [],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "Keep the clear upper-right head direction, X eyes, slack mouth, exactly four attached paws, detached fully sheathed dao below the corpse with ring left/tip right, and no extra props or FX."
+  ],
+  "pendingFixes": [
+    "cty41 visual verdict on Poet Death a001: accept or retry for a shorter thicker compact dao and straighter supine capsule."
+  ]
+}

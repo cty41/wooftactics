@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-ec3a48d5ca6c2a49",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v11_five_degree_calibrated_128.png",
+    "sha256": "5ad3a661d5559d335aa752b1e634dc322507753da9b386a5d6ff1f09d248a18d"
+  },
+  "role": "supporting-derived",
+  "note": "128 derivative of calibrated 5-degree Melee UL review; no approval, promotion or runtime binding.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

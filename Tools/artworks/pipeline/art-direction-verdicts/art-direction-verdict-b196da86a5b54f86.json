@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 4,
+  "artDirectionVerdictId": "art-direction-verdict-b196da86a5b54f86",
+  "attemptId": "job-4affd0d3e702d0d0-a001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-4affd0d3e702d0d0/job-4affd0d3e702d0d0-a001/calibrated.png",
+    "sha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512"
+  },
+  "artDirectionReviewId": "art-direction-review-efcc1e7c48bc5764",
+  "reviewSha256": "826825513e1fb70a4ff5fae4c843c16494e5a20e8695e6d0fb1d3ccf63e0df75",
+  "decision": "approved",
+  "acceptedWarnings": [],
+  "reviewer": "cty41",
+  "reason": "cty41 reviewed the clean calibrated sprite, confirmed final paw/tail depth, accepted the mostly occluded sheathed Tang dao presentation, and explicitly authorized offline promotion.",
+  "decidedAt": "2026-09-08T19:10:59+08:00"
+}

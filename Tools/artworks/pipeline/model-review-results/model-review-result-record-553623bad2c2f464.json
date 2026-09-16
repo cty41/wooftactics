@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 4,
+  "modelReviewResultRecordId": "model-review-result-record-553623bad2c2f464",
+  "invocationId": "model-review-invocation-481a5dc6baa433b6",
+  "attemptId": "job-f40816b1c2e8b36c-a005",
+  "packetId": "model-review-packet-90ec41a4e7b48cc3",
+  "packetSha256": "4818e3275f677fd2384df3604cd2d6d2d35bdfceec378484259dc10a88939a44",
+  "qualificationMode": true,
+  "provider": "dsh-subagent-current-session",
+  "model": "gpt-5.6-sol",
+  "effort": "xhigh",
+  "freshSession": true,
+  "freshSessionId": "a453b345-7dce-48a7-a893-c32a9f5e5c4c",
+  "promptSource": {
+    "path": "Tools/artworks/pure_run/art_direction/review/reviewer_prompt_v1.md",
+    "sha256": "ea9a86b3e7e4ee724090fe0c520a4271ce4f38a34184335f865189bcf259a850"
+  },
+  "rawResult": {
+    "path": "Tools/artworks/pure_run/art_direction/review/shadow_results/final_capsule_no_limbs_positive_xhigh_raw.json",
+    "sha256": "b695d2e3bad8b8d496b5a16f69e0badb9845417e820881f86e6436674e1d00f0"
+  },
+  "result": {
+    "resultId": "model-review-result-4bec8902f8c519ed",
+    "schemaVersion": 1,
+    "packetId": "model-review-packet-90ec41a4e7b48cc3",
+    "packetSha256": "4818e3275f677fd2384df3604cd2d6d2d35bdfceec378484259dc10a88939a44",
+    "decision": "pass_to_human",
+    "summary": "The packet-bound positive case conforms to CAPSULE-NO-LIMBS-v1: all four paw masses attach directly to the capsule core without visible arm, forearm, leg, lower-leg, or thin connecting segments.",
+    "strengths": [
+      "Both lateral forepaws overlap the capsule edge directly with no intervening limb segment.",
+      "Both hind paws attach at the capsule base without visible legs or thin connectors.",
+      "The visible topology agrees with the packet-bound semantic mask and approved topology comparison."
+    ],
+    "defects": [],
+    "frozenInvariants": [
+      "Shadow-final-policy-approved-positive-no-state-change"
+    ],
+    "operations": []
+  },
+  "outcome": "model_reviewed",
+  "validationError": null
+}

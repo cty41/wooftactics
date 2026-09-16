@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 4,
+  "modelReviewResultRecordId": "model-review-result-record-aec9289ba0bf5484",
+  "invocationId": "model-review-invocation-9ccc3d246eafa60a",
+  "attemptId": "job-69a7e239bb73eef5-a001",
+  "packetId": "model-review-packet-3a92035c15bb4bbb",
+  "packetSha256": "83f9d55ac5702f97a1ae2a30fcf7878a924c15f52be30cb458979b17255f53ca",
+  "qualificationMode": true,
+  "provider": "dsh-subagent-current-session",
+  "model": "gpt-5.6-sol",
+  "effort": "xhigh",
+  "freshSession": true,
+  "freshSessionId": "5432d751-39cc-4a5c-b198-510901af4d5e",
+  "promptSource": {
+    "path": "Tools/artworks/pure_run/art_direction/review/reviewer_prompt_v1.md",
+    "sha256": "ea9a86b3e7e4ee724090fe0c520a4271ce4f38a34184335f865189bcf259a850"
+  },
+  "rawResult": {
+    "path": "Tools/artworks/pure_run/art_direction/review/shadow_results/capsule_no_limbs_poet_idle_ul_v01_xhigh_raw.json",
+    "sha256": "9e78ef9c7d920a7822839db4d1b50ee3bd73006502d04822fbb475a3e48cda79"
+  },
+  "result": {
+    "resultId": "model-review-result-200822f6e03e06b6",
+    "schemaVersion": 1,
+    "packetId": "model-review-packet-3a92035c15bb4bbb",
+    "packetSha256": "83f9d55ac5702f97a1ae2a30fcf7878a924c15f52be30cb458979b17255f53ca",
+    "decision": "retry",
+    "summary": "The negative-case artifact visibly violates the capsule no-limbs topology: the two lateral forepaw forms read as elongated limb segments projecting from the core rather than compact paws directly attached to it. This is a shadow qualification result only and does not change attempt state or trigger a retry.",
+    "strengths": [
+      "The rear body and two bottom paws remain a continuous, readable capsule silhouette.",
+      "The semantic mask clearly identifies the lateral green regions for localized topology review."
+    ],
+    "defects": [
+      {
+        "defectId": "visible-limb-drift",
+        "ruleId": "CAPSULE-NO-LIMBS-v1",
+        "acceptanceCaseId": "CASE-POET-IDLE-UL-V01-VISIBLE-LIMBS-v1",
+        "severity": "hard",
+        "certainty": "certain",
+        "observed": "Within the bound negative-case region, orange appendages project from both lateral sides of the capsule as vertically elongated, arm-like forms with body-to-appendage transitions; the semantic mask marks corresponding lateral regions but does not negate their visible limb reading.",
+        "expected": "Only compact forepaws should overlap and attach directly to the capsule edge with a stable multi-pixel contact surface; no arm, forearm, leg, lower-leg, or thin connecting segment may be visible.",
+        "evidenceRoles": [
+          "HISTORICAL_CASE_ARTIFACT",
+          "SEMANTIC_MASK",
+          "NEGATIVE_REVIEW_ONLY"
+        ],
+        "region": {
+          "x": 0.24,
+          "y": 0.34,
+          "width": 0.53,
+          "height": 0.57
+        }
+      }
+    ],
+    "frozenInvariants": [
+      "Shadow-mode-no-state-change-or-retry"
+    ],
+    "operations": [
+      {
+        "operation": "remove",
+        "target": "lateral visible limb segments",
+        "instruction": "Remove the elongated arm-like extensions on both sides while retaining two compact forepaws directly overlapping the capsule edge with broad multi-pixel contact.",
+        "defectId": "visible-limb-drift"
+      }
+    ]
+  },
+  "outcome": "model_reviewed",
+  "validationError": null
+}

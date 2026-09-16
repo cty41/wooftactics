@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 2,
+  "compositionId": "composition-6a1f2be0a944e8ec",
+  "assetId": "poet-five-red-chow-melee-dr-downslash-v1",
+  "spec": {
+    "canvas": [
+      256,
+      256
+    ],
+    "bodyLayer": false,
+    "coreBbox": [
+      90,
+      112,
+      166,
+      231
+    ],
+    "coreAxis": {
+      "bottom": [
+        128,
+        231
+      ],
+      "top": [
+        119,
+        114
+      ],
+      "tiltDegrees": [
+        2.0,
+        10.0
+      ]
+    },
+    "footCenter": [
+      128,
+      236
+    ],
+    "weapon": {
+      "hiddenGrip": [
+        145,
+        159
+      ],
+      "exitWindow": [
+        137,
+        145,
+        164,
+        174
+      ],
+      "tipRegion": [
+        190,
+        199,
+        240,
+        235
+      ],
+      "guardWindow": [
+        143,
+        149,
+        174,
+        181
+      ],
+      "bladeCenterline": [
+        155,
+        169,
+        222,
+        222
+      ],
+      "maxBladeWidthPx": 18,
+      "maxGemAreaPx": 0,
+      "screenAxis": [
+        [
+          150,
+          162
+        ],
+        [
+          224,
+          222
+        ]
+      ],
+      "tipMayBeOccluded": false
+    },
+    "forbiddenRegions": [
+      {
+        "name": "eye-and-face-weapon-exclusion",
+        "rect": [
+          91,
+          105,
+          151,
+          151
+        ]
+      },
+      {
+        "name": "wrong-upper-left-blade-tip",
+        "rect": [
+          0,
+          0,
+          96,
+          112
+        ]
+      },
+      {
+        "name": "detached-lower-left-weapon",
+        "rect": [
+          0,
+          175,
+          82,
+          255
+        ]
+      }
+    ],
+    "requiredHiddenLabels": [],
+    "visibleAreaCaps": {},
+    "equipmentState": {
+      "scabbard": "present",
+      "blade": "drawn-single-ring-pommel-tang-dao",
+      "staticEffects": "absent"
+    },
+    "screenSpaceIntent": {
+      "direction": "native down-right front three-quarter facing",
+      "core": "preserve the approved equipped Idle DR v03 compact capsule volume and complete four-paw silhouette; body top remains slightly left of the y236 foot center during the forward strike",
+      "action": "single frozen peak of a forward diagonal downward slash",
+      "drawnDao": "starts at the high body-adjacent implicit front-paw grip and sweeps clearly toward screen lower-right; guard near body and blade tip inside lower-right target region",
+      "grip": "no visible arm; implied front paw overlaps the grip with a broad multi-pixel body-contact surface, never floating and never connected by a thin line",
+      "scabbard": "empty scabbard remains tied at the body side/back and is partly hidden by the body",
+      "feet": "complete feet remain anchored to the same y236 Idle ground point",
+      "effects": "none: no motion blur afterimage slash trail blade glow sparks or impact effect"
+    },
+    "renderForbiddenRegions": false
+  },
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/compositions/poet_melee_dr_downslash_composition_v1.json",
+    "sha256": "7ea672e7823818c32beb204ab9f014058d764f1439c5129c7b61e60e961a10a6"
+  },
+  "anchor": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+    "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+  }
+}

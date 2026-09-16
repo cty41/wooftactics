@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 2,
+  "attemptId": "job-06be9bd09be64664-a001",
+  "jobId": "job-06be9bd09be64664",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "review_pending",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_wine_gourd_raw_v01.png",
+      "sha256": "344059103515135767567455c23a9a5e6374d4a586bdaef0b1569b8f4bfbbbe6"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-06be9bd09be64664/job-06be9bd09be64664-a001/raw.png",
+      "sha256": "344059103515135767567455c23a9a5e6374d4a586bdaef0b1569b8f4bfbbbe6"
+    },
+    "prepared": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_wine_gourd_v01.png",
+      "sha256": "063de26db67cbf4f11118b115462d8406f3fb689ef1b372ef40603b4224fe37c"
+    },
+    "equipmentPreview": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_wine_gourd_v01_128.png",
+      "sha256": "25bebb72c038a5eda6900ef44800e6c60ffcd1873ea67c9f12e4d5fa4b87ac58"
+    },
+    "review": {
+      "equipmentPanel": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_wine_gourd_review_v01.png",
+        "sha256": "591f1caf73967b9c69ebbcefb9a6161f86a8ec71d9d4c3cdf43dff642ed2c49a"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/style-reports/equipment-style-report-585c5f7396d4aefa.json",
+    "sha256": "af5802f60a57358448d589c67b5eeeda37e4c5237f2f3b0ca3050e1b9048b0e6"
+  },
+  "approvalId": null,
+  "feedbackId": "feedback-5ad5484e31d83990",
+  "generationInvocationId": "generation-invocation-13d673acc2ad945f",
+  "generationDeliveryId": "generation-delivery-8e98a71bece48130",
+  "equipmentStyleReportId": "equipment-style-report-585c5f7396d4aefa",
+  "equipmentStyleVerdictId": "equipment-style-verdict-0cbec130cf1fc86d",
+  "equipmentStyleVerdictIds": [
+    "equipment-style-verdict-0cbec130cf1fc86d"
+  ]
+}

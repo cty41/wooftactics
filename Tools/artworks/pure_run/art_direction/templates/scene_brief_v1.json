@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "templateKind": "scene-brief-schema",
+  "templateId": "pure-run-scene-brief-v1",
+  "required": ["briefId", "sceneId", "gameplayFlow", "narrativeBeat", "viewPath", "movementPath", "primaryFocus", "secondaryFoci", "quietZones", "actorStates", "interactableDiscoveryOrder", "localColorStrategy", "localShapeStrategy", "localMaterialStrategy", "dynamicEmphasis", "modularAssets", "heroAssets", "noDecorationZones", "requiredReviewPanels", "acceptanceCases"],
+  "constraints": {"primaryFocusMax": 1, "secondaryFociMax": 2, "themeProfileOptional": true, "cannotOverrideProjectRules": true}
+}

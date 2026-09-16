@@ -814,10 +814,6 @@ public sealed class GodotGameplayRuntimeContext(GodotGameplayScenarioPlan plan, 
         tree.Root.AddChild(Root);
         await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
         Main = Root.PlayableRun ?? throw new GodotGameplayScenarioException(GodotGameplayFailureKind.Action, "main_restart_failed");
-        RunStoreResult loaded = SaveStore.Load();
-        if (loaded.Succeeded && loaded.Snapshot is { } snapshot &&
-            (snapshot.ActiveRun is not null || snapshot.TerminalSummary is not null || snapshot.PendingRunSetup is not null))
-            await ClickButtonAsync("Continue", token);
         token.ThrowIfCancellationRequested();
     }
 
@@ -851,6 +847,7 @@ public sealed class GodotGameplayRuntimeContext(GodotGameplayScenarioPlan plan, 
                     before.BattleSnapshot?.TargetingMode != BattleTargetingMode.None && after.BattleSnapshot?.TargetingMode == BattleTargetingMode.None ||
                     !before.PauseMenuVisible && after.PauseMenuVisible;
             }, token);
+            await WaitFramesAsync(1, token);
             return;
         }
         await WaitForStateDifferentAsync(StateHash(before), token);
@@ -951,7 +948,7 @@ public sealed class GodotGameplayRuntimeContext(GodotGameplayScenarioPlan plan, 
             if (probe.PresentationPlaying || probe.PresentationLocked) { _sameHashCount = 0; continue; }
             if (after == _lastHash) _sameHashCount++; else { _lastHash = after; _sameHashCount = 0; }
             if (_sameHashCount >= Plan.Watchdog.NoProgressLimit)
-                throw new GodotGameplayScenarioException(GodotGameplayFailureKind.NoProgress, "no_progress");
+                throw new GodotGameplayScenarioException(GodotGameplayFailureKind.NoProgress, "no_progress:" + DescribeProbe());
         }
         token.ThrowIfCancellationRequested();
     }
@@ -980,10 +977,12 @@ public sealed class GodotGameplayRuntimeContext(GodotGameplayScenarioPlan plan, 
         string units = battle is null ? "none" : string.Join(',', battle.Units.Where(value => value.IsAlive)
             .OrderBy(value => value.UnitId.Value, StringComparer.Ordinal)
             .Select(value => $"{value.UnitId.Value}@{value.Cell}:{value.CurrentHealth}/{value.MaxHealth}:p{value.PlayerNumber}"));
+        string adventure = probe.Adventure is null ? "none" :
+            $"{probe.Adventure.BoardContentId}:leader={probe.Adventure.LeaderId ?? "none"}:actors={string.Join(',', probe.Adventure.ActorCells.Select(value => $"{value.Key}@{value.Value}"))}";
         return $"page={probe.PageTitle}:battle={battle?.Phase.ToString() ?? "none"}:round={battle?.Round.ToString() ?? "none"}:" +
             $"active={battle?.ActiveUnitId.Value ?? "none"}:targeting={battle?.TargetingMode.ToString() ?? "none"}:" +
             $"locked={probe.PresentationLocked}:playing={probe.PresentationPlaying}:automatic={probe.AutomaticFramesPending}:" +
-            $"status={probe.StatusText ?? "none"}:units={units}";
+            $"status={probe.StatusText ?? "none"}:adventure={adventure}:units={units}";
     }
 
     public BattleAuthorityStamp CaptureBattleAuthorityStamp() =>
@@ -1181,7 +1180,7 @@ public sealed class GodotGameplayRuntimeContext(GodotGameplayScenarioPlan plan, 
     public bool InventoryProjectionEnteredBattle()
         => Main.ValidateInventoryProjectionEnteredBattle();
 
-    public async Task ValidateCheckpointAsync(CancellationToken token)
+    public Task ValidateCheckpointAsync(CancellationToken token)
     {
         RunStoreResult loaded = SaveStore.Load();
         if (!loaded.Succeeded || loaded.Snapshot is null || Plan.Checkpoint is null)
@@ -1189,9 +1188,8 @@ public sealed class GodotGameplayRuntimeContext(GodotGameplayScenarioPlan plan, 
         ValidatedGodotRunCheckpoint actual = ValidatedGodotRunCheckpoint.Create(Plan.Checkpoint.Id, Plan.Checkpoint.Path, loaded.Snapshot);
         if (!string.Equals(actual.SemanticHash, Plan.Checkpoint.SemanticHash, StringComparison.Ordinal))
             throw new GodotGameplayScenarioException(GodotGameplayFailureKind.Contract, "validated_checkpoint_hash_mismatch");
-        if (loaded.Snapshot.ActiveRun is not null || loaded.Snapshot.TerminalSummary is not null ||
-            loaded.Snapshot.PendingRunSetup is not null)
-            await ClickButtonAsync("Continue", token);
+        token.ThrowIfCancellationRequested();
+        return Task.CompletedTask;
     }
 
     private static string CaptureProductionSaveEvidence()

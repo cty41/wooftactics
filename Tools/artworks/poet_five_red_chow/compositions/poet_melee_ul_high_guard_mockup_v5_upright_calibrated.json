@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "reviewOnly": true,
+  "assetId": "poet-melee-ul-high-guard-mockup-v5-upright-calibrated",
+  "correspondenceAnchor": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_high_guard_mockup_v11_upright_calibrated.png",
+    "sha256": "113cad67f8305d6c12f6c322a91a79c755faecc15bfff15acbfee5a3909bd4bf",
+    "responsibility": "Upright whole-body action amplitude and high-guard preparation moment only; not an image-generation input or mirrored identity source."
+  },
+  "sourceUlMockup": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v2.png",
+    "sha256": "db67dd932993f73467fd283476cfac8369f814cf3c09aed6035922086e747c92",
+    "responsibility": "Native approved Idle UL identity, rear-layer approved Tang dao, removed scabbard ring and upright pose."
+  },
+  "postTranslation": [0, -4],
+  "expectedAlphaBbox": [27, 93, 189, 236],
+  "equipmentState": {"blade": "visible", "scabbard": "absent", "staticEffects": "absent"},
+  "notes": "Deterministic review-only UL counterpart to accepted upright DR v11. Do not apply the rejected 7-degree UL forward lean. Translate the native upright UL mockup upward four pixels solely to match the shared y=236 baseline."
+}

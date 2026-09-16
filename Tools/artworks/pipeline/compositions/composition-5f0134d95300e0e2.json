@@ -1,0 +1,293 @@
+{
+  "schemaVersion": 2,
+  "compositionId": "composition-5f0134d95300e0e2",
+  "assetId": "poet-five-red-chow-death-hunter-close-dao-v2",
+  "spec": {
+    "canvas": [
+      256,
+      256
+    ],
+    "bodyLayer": false,
+    "coreBbox": [
+      73,
+      105,
+      182,
+      202
+    ],
+    "coreAxis": {
+      "bottom": [
+        89,
+        188
+      ],
+      "top": [
+        165,
+        117
+      ],
+      "tiltDegrees": [
+        43.0,
+        49.0
+      ]
+    },
+    "footCenter": [
+      128,
+      158
+    ],
+    "weapon": {
+      "hiddenGrip": [
+        102,
+        192
+      ],
+      "exitWindow": [
+        72,
+        181,
+        177,
+        211
+      ],
+      "tipRegion": [
+        150,
+        190,
+        177,
+        213
+      ],
+      "guardWindow": [
+        91,
+        181,
+        117,
+        205
+      ],
+      "bladeCenterline": [
+        81,
+        188,
+        167,
+        203
+      ],
+      "maxBladeWidthPx": 19,
+      "maxGemAreaPx": 0,
+      "screenAxis": [
+        [
+          81,
+          188
+        ],
+        [
+          167,
+          203
+        ]
+      ],
+      "tipMayBeOccluded": true
+    },
+    "forbiddenRegions": [
+      {
+        "name": "standing-zone",
+        "rect": [
+          108,
+          40,
+          151,
+          91
+        ]
+      },
+      {
+        "name": "impact-vfx",
+        "rect": [
+          14,
+          69,
+          60,
+          193
+        ]
+      }
+    ],
+    "requiredHiddenLabels": [],
+    "visibleAreaCaps": {},
+    "equipmentState": {
+      "scabbard": "present",
+      "blade": "fully-sheathed",
+      "staticEffects": "absent"
+    },
+    "actionDesign": {
+      "silhouette": [
+        [
+          70,
+          180
+        ],
+        [
+          75,
+          145
+        ],
+        [
+          97,
+          124
+        ],
+        [
+          127,
+          108
+        ],
+        [
+          160,
+          112
+        ],
+        [
+          183,
+          135
+        ],
+        [
+          184,
+          166
+        ],
+        [
+          167,
+          190
+        ],
+        [
+          133,
+          202
+        ],
+        [
+          96,
+          201
+        ]
+      ],
+      "lineOfAction": [
+        [
+          89,
+          188
+        ],
+        [
+          165,
+          117
+        ]
+      ],
+      "centerOfMass": [
+        128,
+        158
+      ],
+      "supportFoot": [
+        91,
+        185
+      ],
+      "driveFoot": [
+        151,
+        125
+      ],
+      "pawContactZones": {
+        "nearHand": [
+          [
+            141,
+            151
+          ],
+          [
+            164,
+            139
+          ],
+          [
+            177,
+            155
+          ],
+          [
+            156,
+            170
+          ]
+        ],
+        "farHand": [
+          [
+            115,
+            129
+          ],
+          [
+            135,
+            118
+          ],
+          [
+            148,
+            133
+          ],
+          [
+            128,
+            147
+          ]
+        ],
+        "nearFoot": [
+          [
+            76,
+            169
+          ],
+          [
+            98,
+            172
+          ],
+          [
+            101,
+            192
+          ],
+          [
+            79,
+            193
+          ]
+        ],
+        "farFoot": [
+          [
+            94,
+            191
+          ],
+          [
+            116,
+            187
+          ],
+          [
+            125,
+            203
+          ],
+          [
+            103,
+            207
+          ]
+        ]
+      },
+      "compressionLine": [
+        [
+          83,
+          169
+        ],
+        [
+          128,
+          156
+        ],
+        [
+          174,
+          137
+        ]
+      ],
+      "counterbalanceLine": [
+        [
+          101,
+          194
+        ],
+        [
+          137,
+          176
+        ],
+        [
+          176,
+          153
+        ]
+      ]
+    },
+    "screenSpaceIntent": {
+      "direction": "universal capsule death, chest and face upward, head toward screen upper-right",
+      "visualMoment": "same final still Death as v1: straight short thick capsule lies supine along lower-left to upper-right, with X eyes and a small slack mouth",
+      "playerRead": "five-red Chow Poet is unmistakably dead and fully grounded",
+      "bodyDynamics": "one continuous generated body-ear-four-paw silhouette; never curled, arched, standing or segmented",
+      "heldDao": "one compact completely sheathed ring-pommel Tang dao is detached but tucked immediately against and partly beneath the lower corpse contour, following Demonbound Death placement compactness only; ring left, sheath tip right, no large green gap",
+      "grip": "no paw grips the dao; slight corpse overlap proves ground contact while the complete sheathed form remains readable",
+      "identity": "approved Poet only; Hunter owns body pose; Demonbound owns close dropped-weapon spacing only",
+      "effects": "no bare blade, blood, wounds, tears, stars, particles or death VFX"
+    },
+    "renderForbiddenRegions": false
+  },
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/compositions/poet_death_hunter_close_dao_composition_v2.json",
+    "sha256": "ca68bfaaeb75f84c5486ca7a7a1fae2235df58bcb3dc8784bf212c72a9174e8f"
+  },
+  "anchor": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+    "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+  }
+}

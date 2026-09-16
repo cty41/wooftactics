@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "exactChromaRemediationId": "exact-chroma-remediation-408da8dc5f0a4977",
+  "sourceAttemptId": "job-7603439437c554d0-a003",
+  "sourceAttempt": {
+    "path": "Tools/artworks/pipeline/attempts/job-7603439437c554d0-a003.json",
+    "sha256": "c4f4ce4a46f5eff192200966f6019e9086ac3f0b67ca8c1cdf84d1653069b317"
+  },
+  "approval": {
+    "path": "Tools/artworks/pipeline/approvals/approval-dec0462fb13537e6.json",
+    "sha256": "6b1e4990889dc8811dead659edc3828dd9959a39416d9bcb12a68aec09cb04d4"
+  },
+  "artifacts": [
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_ul_v01.png",
+      "beforeSha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4",
+      "afterSha256": "ce80561f7357bd3735c255bbb976373addd386e13ea5b76d40b178336ff6d785",
+      "pixels": [
+        {
+          "x": 135,
+          "y": 183,
+          "rgba": [
+            255,
+            0,
+            255,
+            1
+          ]
+        },
+        {
+          "x": 126,
+          "y": 229,
+          "rgba": [
+            0,
+            255,
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_sheathed_ul_projection_v03.png",
+      "beforeSha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4",
+      "afterSha256": "ce80561f7357bd3735c255bbb976373addd386e13ea5b76d40b178336ff6d785",
+      "pixels": [
+        {
+          "x": 135,
+          "y": 183,
+          "rgba": [
+            255,
+            0,
+            255,
+            1
+          ]
+        },
+        {
+          "x": 126,
+          "y": 229,
+          "rgba": [
+            0,
+            255,
+            0,
+            1
+          ]
+        }
+      ]
+    }
+  ],
+  "operation": "deterministic-low-alpha-exact-chroma-cleanup",
+  "reviewer": "cty41",
+  "reason": "cty41 authorized deterministic removal of all low-alpha exact green/magenta residue while preserving every other RGBA pixel and historical approval record.",
+  "authorizedAt": "2026-09-14T16:25:32.3675727+08:00"
+}

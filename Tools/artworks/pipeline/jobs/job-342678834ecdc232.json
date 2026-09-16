@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 4,
+  "jobId": "job-342678834ecdc232",
+  "state": "ready",
+  "contractId": "contract-006ab2f8f7e5b899",
+  "contractSha256": "06330f27d7307293c23bd77ba27a5f3663271d13788494018e2b4a80b93e0e24",
+  "prompt": null,
+  "inputs": [
+    {
+      "path": "Tools/artworks/pipeline/artifacts/job-16985014758beabb/job-16985014758beabb-a010/prepared.png",
+      "sha256": "675bbd8cec8c55c50db589f0f5219749d051f37cb45a431fdaa17f71d9bdf2d2"
+    }
+  ],
+  "target": {
+    "direction": "up-left",
+    "pose": "idle"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": false,
+  "sourceMode": "reviewed_recontract",
+  "reviewedRecontractId": "reviewed-recontract-277049c2af462894"
+}

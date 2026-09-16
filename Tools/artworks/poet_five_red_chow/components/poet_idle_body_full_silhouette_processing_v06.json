@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "operation": "deterministic-full-silhouette-preservation",
+  "source": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+  "trigger": "cty41 rejected formal v3 candidate because tail and foot paws were cut",
+  "steps": [
+    "start again from the complete approved poet v03 mother rather than the lossy historical body partition",
+    "preserve the complete approved tail and both rear foot-paw silhouettes byte-for-byte",
+    "remove only the old screen-left circular front-paw outline that conflicts with the selected low grip",
+    "keep the new far-paw grip and approved Tang dao outside this body component",
+    "assign restored non-core silhouette pixels to the body-supporting semantic region; foot overlays retain their explicit final role labels"
+  ],
+  "runtimeEligible": false
+}

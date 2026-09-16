@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "feedbackAddendumId": "feedback-addendum-cb4e813397b86693",
+  "attemptId": "job-1102150ebf2aacd4-a001",
+  "parentFeedbackId": "feedback-6da83888ab2c0136",
+  "reviewer": "cty41",
+  "defects": [
+    "cty41 requested another Death candidate: use the approved Demonbound Death only as the close-body dropped-weapon placement reference, moving the still fully sheathed Poet dao tight against/partly under the corpse instead of leaving a large gap. Hunter remains the sole body-pose authority; Demonbound bare blade and identity must not transfer."
+  ],
+  "recordedAt": "2026-09-14T14:13:45.3825701+08:00",
+  "authorType": "human",
+  "disposition": "retry"
+}

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 4,
+  "anchorVerdictId": "anchor-verdict-4903a93fb59a44a4",
+  "candidate": {
+    "path": "Tools/artworks/doge/calibrated/doge_capsule_demonbound_death_v01.png",
+    "sha256": "90218c756be1a4e3a40d8221667536f53d665447c24cca597f5f01eef0b462a0"
+  },
+  "family": "actor",
+  "responsibilities": [
+    "Only close-body dropped-weapon spacing for Poet Death v2: detached weapon tight against and partly beneath corpse."
+  ],
+  "excludedUses": [
+    "Do not transfer Demonbound identity, body pose, colors, bare blade, sword form, paws, proportions or effects. Poet uses its approved fully sheathed compact dao."
+  ],
+  "review": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_death_cross_class_pose_review_v01.png",
+    "sha256": "18497dcf3ba714abde47ab68781350f7c5d30974e070b55cdd1df15a7c3ba2e2"
+  },
+  "decision": "approved-anchor",
+  "reviewer": "cty41",
+  "reason": "cty41 explicitly requested the Demonbound effect only to place the Poet sheathed dao close to the corpse.",
+  "decidedAt": "2026-09-14T14:16:08.0228463+08:00"
+}

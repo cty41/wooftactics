@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 4,
+  "jobId": "job-a6df55a1b4f8ac96",
+  "state": "ready",
+  "contractId": "contract-84c98689a42bf2bb",
+  "contractSha256": "d1060584b8fedb3ea6df06811b1ff8e9862cfd1b232a21edba4e017017188c65",
+  "prompt": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/poet_melee_dr_downslash_v1.txt",
+    "sha256": "696f759a1d67f50c2d5428bc7f00a7b5d0d63f683c8bde91d7b7f1c7e8fd5da8"
+  },
+  "inputs": [
+    {
+      "role": "image-1-approved-equipped-idle-dr",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+      "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+    },
+    {
+      "role": "image-2-approved-unsheathed-dao-v02",
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v02.png",
+      "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1"
+    }
+  ],
+  "target": {
+    "direction": "down-right",
+    "pose": "melee"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": true,
+  "poseGuide": {
+    "poseGuideId": "pose-guide-7c02479ae4b1484e",
+    "sha256": "f00e0fc5711238342ecd3dcff1c539e1e7d6cc41bca57adba6ab5189a804a7d4"
+  },
+  "localReferences": []
+}

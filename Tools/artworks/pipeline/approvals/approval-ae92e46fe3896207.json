@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 2,
+  "approvalId": "approval-ae92e46fe3896207",
+  "attemptId": "job-b68aa40bd7cd26c5-a001",
+  "candidateSha256": "4d8b87f7407295f9f6c166086acde62d7976393de172a7061fbff77909edb92d",
+  "maskSha256": null,
+  "reviewer": "cty41",
+  "reviewSha256": {
+    "sizeComparison": "3197edcee9e8dadb8333ec1b48ad23faedf0dbc5a7513df909297ef00a12df52"
+  },
+  "decision": "approved",
+  "reason": "cty41 explicitly approved promotion and next. Known identity, core-shape, tear-size, grip and paw-scale deviations remain documented; no Runtime binding is implied.",
+  "decidedAt": "2026-09-14T10:06:15.2342206+08:00",
+  "annotation": null,
+  "reportSha256": "d78e95cc1558815fea4aee616c9a49c7f59058541eac6f6ed0c65bb3de0a4882"
+}

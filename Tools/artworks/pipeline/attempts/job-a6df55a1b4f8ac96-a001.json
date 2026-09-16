@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-a6df55a1b4f8ac96-a001",
+  "jobId": "job-a6df55a1b4f8ac96",
+  "ordinal": 1,
+  "generationRound": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "technical_failed",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a001/raw.png",
+      "sha256": "67c4bcb15d19febcbf18e811a00d179865f928014e812bee3d81c2790bdb9cdd"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a001/raw.png",
+      "sha256": "67c4bcb15d19febcbf18e811a00d179865f928014e812bee3d81c2790bdb9cdd"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-a6df55a1b4f8ac96/job-a6df55a1b4f8ac96-a001/prepared.png",
+      "sha256": "aa258b5a67024453fc599723f6bc2807a74f3d53df77057a9aa3de2c703e921d"
+    },
+    "review": {
+      "overlay": {
+        "path": "Tools/artworks/pipeline/reviews/job-a6df55a1b4f8ac96-a001/overlay.png",
+        "sha256": "e533bc268a120507d48eba3956ed70e17d1f0c29ccde7da320e1ca14189289ee"
+      },
+      "preview128": {
+        "path": "Tools/artworks/pipeline/reviews/job-a6df55a1b4f8ac96-a001/preview128.png",
+        "sha256": "ba150e4ab0071b7f44e57c7c91891ac1974461b2887311275f86abea5167c515"
+      },
+      "tile64x32": {
+        "path": "Tools/artworks/pipeline/reviews/job-a6df55a1b4f8ac96-a001/tile64x32.png",
+        "sha256": "30b94f8478ef495ef33ab875b32eadea0ff9044195e2e5d0df04cf514c8a43fd"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-3d55b3543e54bcae.json",
+    "sha256": "d5291fdfb9d8f45ae55dd3e66c5f4fffbb97ed4dce326d86db233e013be878f7"
+  },
+  "approvalId": null,
+  "feedbackId": "feedback-9da67a4bb72428b7",
+  "generationInvocationId": "generation-invocation-988f5e108fd0bc95",
+  "generationDeliveryId": "generation-delivery-60fbe566f2cf0315",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 0
+  }
+}

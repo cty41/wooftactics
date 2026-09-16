@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 2,
+  "generationFailureId": "generation-failure-2bbbdcb4b99c9d78",
+  "invocationId": "generation-invocation-e0665c394b981486",
+  "attemptId": "job-16985014758beabb-a003",
+  "reason": "OpenAI Codex image request failed before delivering image bytes.",
+  "failedAt": "2026-09-08T10:34:07+08:00"
+}

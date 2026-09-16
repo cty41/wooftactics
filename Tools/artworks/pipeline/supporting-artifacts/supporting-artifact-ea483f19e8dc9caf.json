@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-ea483f19e8dc9caf",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v14_right_alpha_cleanup_gray.png",
+    "sha256": "a5a30ecec8bc4d18e70273c25e1e80eb10052fe6b82f1377087299b87e239230"
+  },
+  "role": "supporting-derived",
+  "note": "Solid gray QA review of UL v14 proving user-marked right-rear ghost coating is absent; supporting review only.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

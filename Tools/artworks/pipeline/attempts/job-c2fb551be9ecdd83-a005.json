@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-c2fb551be9ecdd83-a005",
+  "jobId": "job-c2fb551be9ecdd83",
+  "ordinal": 5,
+  "generationRound": 4,
+  "parentAttemptId": "job-c2fb551be9ecdd83-a004",
+  "retryFeedbackId": "feedback-eabdc9e08297b859",
+  "promptDelta": "Human decides whether the near-target body and continuous hidden-sheath solution merit another attempt focused only on an edge-on ring and exact center.",
+  "technicalRemediation": false,
+  "state": "technical_failed",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/concepts/poet_ring_pommel_tang_dao_idle_ul_raw_v04_a005.png",
+      "sha256": "ab1070452619a78a79641dbb51f77da47eee7b5e9449e6db437735f1a5db1aab"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-c2fb551be9ecdd83/job-c2fb551be9ecdd83-a005/raw.png",
+      "sha256": "ab1070452619a78a79641dbb51f77da47eee7b5e9449e6db437735f1a5db1aab"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-c2fb551be9ecdd83/job-c2fb551be9ecdd83-a005/prepared.png",
+      "sha256": "a7a2205b89ef5c3c6b90b169691893b68b57a37a4543492ad1a73c55e9ec79f3"
+    },
+    "maskSource": {
+      "path": "Tools/artworks/poet_five_red_chow/masks/poet_ring_pommel_tang_dao_idle_ul_raw_v04_a005_mask.png",
+      "sha256": "e2d98d5c25555f985c3ad3ac0606a0283e4a39d6f9642efe87d78489ae2615d1"
+    },
+    "mask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-c2fb551be9ecdd83/job-c2fb551be9ecdd83-a005/mask.png",
+      "sha256": "e2d98d5c25555f985c3ad3ac0606a0283e4a39d6f9642efe87d78489ae2615d1"
+    },
+    "calibrated": {
+      "path": "Tools/artworks/pipeline/artifacts/job-c2fb551be9ecdd83/job-c2fb551be9ecdd83-a005/calibrated.png",
+      "sha256": "caa4e0088564e95905dd96e91cae7a1118ad029416274d64f9475604b5336823"
+    },
+    "calibratedMask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-c2fb551be9ecdd83/job-c2fb551be9ecdd83-a005/calibrated-mask.png",
+      "sha256": "0f174e8ccde694e52ec2a9c95dabedd91ffd282bbba7d532e4054a3a8e71269b"
+    },
+    "review": {
+      "overlay": {
+        "path": "Tools/artworks/pipeline/reviews/job-c2fb551be9ecdd83-a005/overlay.png",
+        "sha256": "cd2f59e66f0ea8d9d6816039a5f94251feeb0c34f56c413c0caec01d08513960"
+      },
+      "preview128": {
+        "path": "Tools/artworks/pipeline/reviews/job-c2fb551be9ecdd83-a005/preview128.png",
+        "sha256": "2ee155be8f47772a78caad3580eda5f4e1cf3dc6f2bb35a97c7b45be8ebb4538"
+      },
+      "tile64x32": {
+        "path": "Tools/artworks/pipeline/reviews/job-c2fb551be9ecdd83-a005/tile64x32.png",
+        "sha256": "3f6ba2d03da7f344b98ab6cadd84ed0d5259da528e8897d182461befeb90b316"
+      },
+      "depthReview": {
+        "path": "Tools/artworks/pipeline/reviews/job-c2fb551be9ecdd83-a005/depthReview.png",
+        "sha256": "564ffcfaae70392a8ac88b0ccad011160fb0a7ac96ffce5fbe84b97e6c3c3584"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-b8d9d0f29f029665.json",
+    "sha256": "5f94de235ee5c18af9a8288699bac2d95d8d063687b3ea738181799db2a74e58"
+  },
+  "approvalId": null,
+  "feedbackId": "feedback-b189e942b5f1be54",
+  "generationInvocationId": "generation-invocation-498e6c7ce053be54",
+  "generationDeliveryId": "generation-delivery-a5b6316247a2b1d1",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 120
+  },
+  "calibration": {
+    "method": "uniform-core-height",
+    "scale": 0.2991913746630728,
+    "offset": [
+      -58,
+      -110
+    ],
+    "sourceCoreBbox": [
+      441,
+      710,
+      799,
+      1080
+    ],
+    "anchorCoreBbox": [
+      94,
+      121,
+      160,
+      231
+    ],
+    "anchorMask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a010/calibrated-mask.png",
+      "sha256": "3e0db7ae51d77d8578a926e1f2db6224124381f15a16a4c215ea872ddbdd50fa"
+    }
+  }
+}

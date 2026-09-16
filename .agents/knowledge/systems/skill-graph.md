@@ -4,11 +4,12 @@ resource: https://github.com/cty41/tactics/tree/main/src/Tactics.Core/Skills
 title: SkillGraph
 description: Godot Pure Run 的技能定义、解释执行、共享目标规则和 typed authoring 主链。
 tags: [gameplay, skills, skill-graph, godot]
-timestamp: "2026-08-24T16:30:50+08:00"
+timestamp: "2026-09-11T10:56:44+08:00"
 status: active
 catalog_scope: skill-graph
 repo_paths:
   - .agents/docs/skill-graph-system.md
+  - .agents/docs/poet-class-design.md
   - .agents/skills/gameplay-design-constraints/SKILL.md
   - src/Tactics.Core/Skills
   - src/Tactics.Application/Content
@@ -17,7 +18,7 @@ repo_paths:
   - godot/src/Tactics.Godot.Adapter/Editor
   - godot/src/Tactics.Godot.Adapter/Runtime
 verified_revision: c56d71ad4ebd
-source_fingerprint: sha256:ecd776ab53b5725924dee93dba68813a70abc6b8a4067220c4808c6ec01c8378
+source_fingerprint: sha256:b90228fb558ef2e6248f5afad1a0c18925930b6849a3f076d0ab736276dd674c
 ---
 
 # Current State
@@ -28,7 +29,7 @@ source_fingerprint: sha256:ecd776ab53b5725924dee93dba68813a70abc6b8a4067220c4808
 
 Godot typed Resource 与 Catalog 保存正式技能和 Presentation 引用。Tactics Tooling 通过 Application typed ChangeSet、revision、Undo/Redo、ResourceSaver 和 reload-safe bridge 修改资源；不允许手写 `.tres/.tscn` 或开放任意属性 patch。
 
-技能执行配置增加近战物理、远程物理、魔法、治疗、护盾和持续伤害成长类型以及命中系数。直接效果在基础值后叠加统一属性贡献；多段每段半额，DoT 在施加时冻结总额。被动配置本身不读取属性，被动触发的标准动作只按动作自身规则结算一次。
+技能执行配置覆盖近战物理、远程物理、魔法、治疗、护盾和持续伤害成长类型以及命中系数。诗人新增冲锋、区域剑雨、冻结总量持续治疗、敏捷诗句、百分比自疗净化与朝向后撤分身六种执行原语；15 个等级由同一 authoring JSON/typed Resource 投影进入 Core，分支与公式合同见 `.agents/docs/poet-class-design.md`。直接效果在基础值后叠加统一属性贡献；多段每段半额，DoT 在施加时冻结总额。被动配置本身不读取属性，被动触发的标准动作只按动作自身规则结算一次。
 
 表现层只消费强类型玩法结果并负责动作、投射物、状态反馈、时间线与清理。当前程序化表现是可玩基线，不代表正式 VFX 或人工体验通过。
 

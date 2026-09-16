@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "sizeComparisonId": "size-comparison-f40bbe9251d4e92f",
+  "inputs": [
+    {
+      "label": "Identity",
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_ul_v07.png",
+        "sha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512"
+      }
+    },
+    {
+      "label": "Previous",
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v16_outline_restore_radius4.png",
+        "sha256": "bf2a3fabbbf66f278b68b843732a777fea3924bc112ca41d6f9c9ef1dfe1aa24"
+      }
+    },
+    {
+      "label": "Pose reference",
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_high_guard_mockup_v11_upright_calibrated.png",
+        "sha256": "113cad67f8305d6c12f6c322a91a79c755faecc15bfff15acbfee5a3909bd4bf"
+      }
+    },
+    {
+      "label": "Candidate",
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/candidates/poet_melee_ul_high_guard_v01_reviewed_clean.png",
+        "sha256": "7fde40f9dc57fd367589ffdc99e35ac49bad6f07b77a9fb1ff2453612056d5b7"
+      }
+    }
+  ],
+  "measurements": [
+    {
+      "label": "Identity",
+      "bbox": [
+        42,
+        49,
+        94,
+        119
+      ],
+      "bboxSize": [
+        52,
+        70
+      ]
+    },
+    {
+      "label": "Previous",
+      "bbox": [
+        18,
+        47,
+        92,
+        117
+      ],
+      "bboxSize": [
+        74,
+        70
+      ]
+    },
+    {
+      "label": "Pose reference",
+      "bbox": [
+        30,
+        55,
+        99,
+        117
+      ],
+      "bboxSize": [
+        69,
+        62
+      ]
+    },
+    {
+      "label": "Candidate",
+      "bbox": [
+        18,
+        47,
+        92,
+        117
+      ],
+      "bboxSize": [
+        74,
+        70
+      ]
+    }
+  ],
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_v01_clean_size_comparison.png",
+    "sha256": "cade16762bcee2bad2058b3c33aa1c9271b328ce30f3927be1d40386cfb8cf77"
+  }
+}

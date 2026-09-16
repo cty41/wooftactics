@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 3,
+  "contractId": "contract-a4d34dfe07e5299c",
+  "assetId": "poet-idle-body-grip-reposition-component-v03",
+  "approvedAssetId": "poet-idle-body-grip-reposition-component-v03",
+  "kind": "ground_character",
+  "direction": "down-right",
+  "pose": "idle",
+  "anchor": null,
+  "maskRequired": false,
+  "noArms": true,
+  "handSides": {
+    "near_hand": null,
+    "far_hand": null
+  },
+  "occlusion": null,
+  "compositionSpec": null,
+  "identitySpec": null,
+  "requiresInvocation": false,
+  "canvasSpec": {
+    "masterSize": [
+      256,
+      256
+    ]
+  },
+  "tilePlacementSpec": null,
+  "styleSpec": null,
+  "equipmentProductionSpec": null,
+  "tolerances": {
+    "sizePx": 3,
+    "centerPx": 2
+  },
+  "outputs": {
+    "master": "Tools/artworks/poet_five_red_chow/components/formal/poet_idle_body_grip_reposition_component_v03.png",
+    "preview": "Tools/artworks/poet_five_red_chow/components/formal/poet_idle_body_grip_reposition_component_v03_128.png"
+  },
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "deterministic-component-assembly"
+  },
+  "assetRole": "component",
+  "componentKind": "body",
+  "sourceMode": "pre_v3_import",
+  "runtimeEligible": false
+}

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "reviewOnly": true,
+  "assetId": "poet-melee-dr-high-guard-mockup-v6-reduced-lean",
+  "parentAcceptedMockup": "poet-melee-dr-selected-body-sword-mockup-v5-high-guard",
+  "humanFeedback": "Existing grounded character Melee sprites remain mostly upright. Stop compensating by exaggerating Melee UL; first reduce the accepted DR body's forward lean.",
+  "evidenceSummary": "Approved Demonbound Melee DR is upright; Hunter and Splitjaw grounded Melee candidates express attack mainly through equipment and paws rather than a large whole-body tilt. The poet DR forward lean is therefore not required for melee readability.",
+  "sourceReview": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_selected_body_sword_mockup_v5_high_guard.png",
+    "sha256": "c53dcf020fbce4481a140af7e58034ad6735fcf1f2a81d6360d93e8acbe0f887"
+  },
+  "transform": {
+    "wholeCompositeRotationDegreesCounterClockwise": 5,
+    "rotationCenterFootAnchor": [128, 236],
+    "purpose": "reduce screen-right body-axis lean while preserving the accepted high-guard sword/body relationship"
+  },
+  "equipmentState": {"blade": "visible", "scabbard": "absent", "staticEffects": "absent"},
+  "notes": "Deterministic review-only transform. No pixels are regenerated. Rotation is applied uniformly to the accepted DR high-guard composite around its foot anchor; a follow-up integer translation may be recorded separately if baseline calibration requires it."
+}

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "equipmentStyleVerdictId": "equipment-style-verdict-d800e567514a29b7",
+  "attemptId": "job-a23d495fca781338-a001",
+  "candidateSha256": "eb4acedf50fe56d2c216e932a7364686de603a4df40c9bc5f1fe10c22ab55999",
+  "reviewSha256": {
+    "equipmentPanel": "2cb04e87234cf891f0f2c48f8098c3c540c056858898ea057560a1e1e71e4b86"
+  },
+  "reviewer": "cty41",
+  "decision": "approved",
+  "reason": "用户明确确认卡通像素风完全入鞘环首唐刀v2通过；粗轮廓、低细节、大色块与魔剑士装备语言一致",
+  "decidedAt": "2026-09-03T09:37:42.8184859+08:00"
+}

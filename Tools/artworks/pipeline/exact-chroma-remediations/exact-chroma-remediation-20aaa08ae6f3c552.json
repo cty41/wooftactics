@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "exactChromaRemediationId": "exact-chroma-remediation-20aaa08ae6f3c552",
+  "sourceAttemptId": "job-a23d495fca781338-a001",
+  "sourceAttempt": {
+    "path": "Tools/artworks/pipeline/attempts/job-a23d495fca781338-a001.json",
+    "sha256": "d5dc315e10e8d9b4ce43a49d4e39ded6954ff28ca1cec8c06c565e4fa6e6bb6f"
+  },
+  "approval": {
+    "path": "Tools/artworks/pipeline/approvals/approval-443769ae51e78f8a.json",
+    "sha256": "a39bbd314f2220029e172ba71935b563b5799c6b6902a18661685eb5cebd8a58"
+  },
+  "artifacts": [
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_dr_v02.png",
+      "beforeSha256": "eb4acedf50fe56d2c216e932a7364686de603a4df40c9bc5f1fe10c22ab55999",
+      "afterSha256": "68bb9717eca4d21a812e70f421762a9a809208febc7f2fd1f800c942fc2f4641",
+      "pixels": [
+        {
+          "x": 109,
+          "y": 177,
+          "rgba": [
+            0,
+            255,
+            0,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_sheathed_dr_v02.png",
+      "beforeSha256": "eb4acedf50fe56d2c216e932a7364686de603a4df40c9bc5f1fe10c22ab55999",
+      "afterSha256": "68bb9717eca4d21a812e70f421762a9a809208febc7f2fd1f800c942fc2f4641",
+      "pixels": [
+        {
+          "x": 109,
+          "y": 177,
+          "rgba": [
+            0,
+            255,
+            0,
+            2
+          ]
+        }
+      ]
+    }
+  ],
+  "operation": "deterministic-low-alpha-exact-chroma-cleanup",
+  "reviewer": "cty41",
+  "reason": "cty41 authorized deterministic removal of all low-alpha exact green/magenta residue while preserving every other RGBA pixel and historical approval record.",
+  "authorizedAt": "2026-09-14T16:25:32.3675727+08:00"
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-b73226c96888b0fe",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v11_five_degree_calibrated.png",
+    "sha256": "1528d299bc7e3ebeeda43718ee82c52444da7d494519fd8d2202cf5b36e6a474"
+  },
+  "role": "supporting-derived",
+  "note": "cty41-authorized deterministic review-only Melee UL candidate with requested 5-degree attack-direction lean, DR-corresponding two-paw grip, approved high-left Tang dao, no scabbard and baseline y=236; no ImageGen or runtime binding.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

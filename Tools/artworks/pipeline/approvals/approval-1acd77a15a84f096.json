@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 2,
+  "approvalId": "approval-1acd77a15a84f096",
+  "attemptId": "job-43b34a4685f71ca2-a010",
+  "candidateSha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753",
+  "maskSha256": "3e0db7ae51d77d8578a926e1f2db6224124381f15a16a4c215ea872ddbdd50fa",
+  "reviewer": "cty41",
+  "reviewSha256": {
+    "overlay": "cc42636b1f7401360ffa87c9c1f5f1d0816121d8dd1f102db308194119009eab",
+    "preview128": "df64185b179a94dae064f9e626ef0085f5f3f3ea8c2322caec843887e4355120",
+    "tile64x32": "b2046c53f5228a1969f7e1957e83c623843fd2604809b107fad4536f1a5aa19a"
+  },
+  "decision": "approved",
+  "reason": "用户查看与赤柴猎人的真实64x32 Tilemap比例对比后明确回复批准晋升；接受五红土松诗人的宽度、高度、down-right等距角度与落点",
+  "decidedAt": "2026-08-29T23:36:53.7798114+08:00",
+  "annotation": {
+    "annotationId": "annotations-291b8e7bfae495e4",
+    "sha256": "479af0ec8cad78e3b37641b3ebc8707373b8b0116fb93f340c7ede785ac8e2d8"
+  },
+  "reportSha256": "af000ff7541cfe40942f7ba34c178de633a8e0f2be265de169c40f0576d2ec9f"
+}

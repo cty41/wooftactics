@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 4,
+  "acceptanceCaseResultId": "acceptance-case-result-93ac151d0f11ce77",
+  "attemptId": "job-dfbdae10245d7d6c-a003",
+  "caseId": "POET-UL-BODY-ISOLATION-001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-dfbdae10245d7d6c/job-dfbdae10245d7d6c-a003/calibrated.png",
+    "sha256": "30f90904a35ad3b23e25c029bfb0c07fb72c420bfafce2c945a6901e284d3516"
+  },
+  "contractId": "contract-54fa481aba0912ab",
+  "contractSha256": "61bdeed019e9a6653973d16f8f9e1fb8ad2bdf21be92aac1f65aa781102ec985",
+  "evidence": {
+    "mask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-dfbdae10245d7d6c/job-dfbdae10245d7d6c-a003/calibrated-mask.png",
+      "sha256": "718b509b04534086e731e855aacb9794b57e1f5a1dd0307b0801053085762aa7"
+    }
+  },
+  "automatedFacts": [
+    "Mask contains only core and head_appendage; no paws limbs or equipment."
+  ],
+  "automatedResult": "passed",
+  "humanChecks": [
+    "Body contains no paws or equipment."
+  ],
+  "humanDecision": "passed",
+  "reviewer": "cty41",
+  "reason": "Isolation suitable for deterministic assembly.",
+  "decidedAt": "2026-09-05T01:07:59+08:00"
+}

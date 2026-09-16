@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "equipmentStyleVerdictId": "equipment-style-verdict-d978ab98805610f2",
+  "attemptId": "job-06be9bd09be64664-a002",
+  "candidateSha256": "406a76267d7c4146a5c810a0e9c529b33e39088674059532dca098ce9ab9b13e",
+  "reviewSha256": {
+    "equipmentPanel": "e32b16be493565ccc0f1d53c1575968c4e639c3891c920bf227d6f9c69f546e6"
+  },
+  "reviewer": "cty41",
+  "decision": "approved",
+  "reason": "用户将平涂酒葫芦指定为未来正式装备备用；视觉风格与身份可接受，但本轮不晋升",
+  "decidedAt": "2026-08-30T09:58:18.3709830+08:00"
+}

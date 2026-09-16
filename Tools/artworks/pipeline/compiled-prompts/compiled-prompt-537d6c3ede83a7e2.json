@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "compiledPromptId": "compiled-prompt-537d6c3ede83a7e2",
+  "jobId": "job-0a6c57acd0d21d59",
+  "poseGuideId": "pose-guide-e156d4cb46ff0e9c",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/compiled/poet_melee_dr_release_impact_v3_retry_a002.md",
+    "sha256": "dd320bca6ba8475257bf8a1e5e1fadcb7a266a0c721f73f488c987969efa77f5"
+  }
+}

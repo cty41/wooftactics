@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-2b35a7d1f16b8472",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_high_guard_mockup_v10_upright.png",
+    "sha256": "9fcab3541ad4a914200d295e31b361708e4c6c50a6063b355b15c197dc3ab81e"
+  },
+  "role": "supporting-derived",
+  "note": "Intermediate deterministic DR high-guard review applying total 10-degree correction to remove remaining whole-body lean; superseded by baseline-calibrated v11.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

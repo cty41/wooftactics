@@ -27,24 +27,6 @@
     {
       "adapter": "PlayerInput",
       "kind": "waitForPlayerObservable",
-      "target": "New Run",
-      "parameters": {
-        "observable": "uiElement",
-        "elementName": "New Run",
-        "maximumFrames": 180
-      }
-    },
-    {
-      "adapter": "PlayerInput",
-      "kind": "clickPointerTarget",
-      "target": "New Run",
-      "parameters": {
-        "targetKind": "UiElement"
-      }
-    },
-    {
-      "adapter": "PlayerInput",
-      "kind": "waitForPlayerObservable",
       "parameters": {
         "observable": "adventureBoardReady",
         "maximumFrames": 180

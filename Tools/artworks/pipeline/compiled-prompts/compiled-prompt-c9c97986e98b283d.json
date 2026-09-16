@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "compiledPromptId": "compiled-prompt-c9c97986e98b283d",
+  "jobId": "job-83839806868cdd1f",
+  "equipmentProfileSha256": "e23e540c790a57432967d944c82bdad9721f109d2cb6352b3288c0c2c7d7bbb1",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/pipeline/tang_sword_compiled_prompt_v1.md",
+    "sha256": "1f8b6495457131bb05647f4f9a41e474d03597aa40514d542caa6da4e1faf5a8"
+  }
+}

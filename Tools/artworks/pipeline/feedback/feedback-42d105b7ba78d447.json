@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-42d105b7ba78d447",
+  "attemptId": "job-52353908c08e6df6-a003",
+  "candidateSha256": "c2be8e4b67217f47cb07ebf1aaddbb3e9589f029b0768c5c8e8247f07c7c35ea",
+  "reviewer": "agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "五红土松身份鲜明；宽头短吻、红棕鬃毛、卷尾和胶囊四爪清晰；缩小后轮廓可读"
+  ],
+  "defects": [
+    "现有旧合同未绑定 anchor mask；手工语义蒙版覆盖关系不合格；重采样后仍有色幕残边；Idle composition 的虚拟武器窗口导致无关失败"
+  ],
+  "nextPromptDelta": "若用户认可视觉方向，重建无虚拟武器检查且显式绑定 anchor mask 的正式合同；保持身份与轮廓，重新生成/校准并制作精确语义蒙版",
+  "recordedAt": "2026-08-29T21:14:53.8782509+08:00",
+  "authorType": "agent",
+  "categories": [
+    "processing",
+    "chroma",
+    "core_geometry"
+  ],
+  "disposition": "technical_failed",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "现有旧合同未绑定 anchor mask；手工语义蒙版覆盖关系不合格；重采样后仍有色幕残边；Idle composition 的虚拟武器窗口导致无关失败"
+  ]
+}

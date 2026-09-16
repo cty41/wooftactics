@@ -60,7 +60,8 @@ public sealed class PlayableBattleSessionFactory
                 .Select(id => playableSkills[id]).ToArray();
             SkillRole role = learnedDefinitions.Select(skill => skill.Role)
                 .FirstOrDefault(value => value != SkillRole.Any);
-            ContentId basicId = role is SkillRole.Amazon or SkillRole.Demonbound ? MeleeAttackId : MagicAttackId;
+            ContentId basicId = role is SkillRole.Amazon or SkillRole.Demonbound or SkillRole.Poet
+                ? MeleeAttackId : MagicAttackId;
             IEnumerable<ContentId> learned=new[] { basicId }.Concat(character.LearnedSkills);
             if(role == SkillRole.Amazon) learned=learned.Append(PickupSpearId);
             SkillDefinition[] unitSkills = learned.Distinct().Select(id => playableSkills[id]).ToArray();
@@ -202,6 +203,7 @@ public sealed class PlayableBattleSessionFactory
             SkillRole.Necromancer => attributes.Constitution,
             SkillRole.Demonbound => attributes.Charisma,
             SkillRole.Amazon => attributes.Agility,
+            SkillRole.Poet => attributes.Strength,
             _ => 5
         };
         return Math.Max(0, primary - 5);

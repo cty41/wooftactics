@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 2,
+  "annotationId": "annotations-28fdcf573850b5bf",
+  "attemptId": "job-52353908c08e6df6-a003",
+  "candidateSha256": "c2be8e4b67217f47cb07ebf1aaddbb3e9589f029b0768c5c8e8247f07c7c35ea",
+  "maskSha256": "0fb3894b4810aed7093d6dc4b20a1f51ce122d81880e1d8b429f0ca316eea295",
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/idle_dr_256_v01_annotations.json",
+    "sha256": "c94ebe26d2681224f430c6346b964707b0792e88b9ee233ba1f3fee8f3dd27c1"
+  },
+  "regions": {
+    "eyeRegion": [
+      126,
+      142,
+      158,
+      156
+    ],
+    "weaponExit": [
+      120,
+      210,
+      122,
+      212
+    ],
+    "weaponTip": [
+      120,
+      210,
+      122,
+      212
+    ],
+    "gemRegion": [
+      120,
+      210,
+      122,
+      212
+    ]
+  }
+}

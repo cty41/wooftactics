@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "feedbackAddendumId": "feedback-addendum-68a38b2d82ecd142",
+  "attemptId": "job-7c41706595ff4e35-a003",
+  "parentFeedbackId": "feedback-33de6c52fdf6e447",
+  "reviewer": "cty41",
+  "defects": [
+    "Tilt concept is correct but direction is wrong: tail belongs on screen-right; turn head farther toward screen-left and allow a tiny eye and nose cue like the earlier UL example."
+  ],
+  "recordedAt": "2026-09-05T10:21:13+08:00",
+  "authorType": "human",
+  "disposition": "retry"
+}

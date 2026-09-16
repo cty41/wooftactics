@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-1b621cde9a81a3f3",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_ul_source_responsibility_review_v01.png",
+    "sha256": "f6d70bde709b2914c2a224c2f8d07ea5d140f02288976eb5ae1aef80d1d46bb4"
+  },
+  "role": "supporting-derived",
+  "note": "Cast UL source-responsibility board: approved native UL identity, approved Cast DR action moment only, approved sheathed-dao form and deterministic rear-layer UL guide.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

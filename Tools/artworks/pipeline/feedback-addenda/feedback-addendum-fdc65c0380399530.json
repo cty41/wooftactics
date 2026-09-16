@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 2,
+  "feedbackAddendumId": "feedback-addendum-fdc65c0380399530",
+  "attemptId": "job-0a890f2b18e97967-a001",
+  "parentFeedbackId": "feedback-679bcd5803c7f454",
+  "reviewer": "cty41",
+  "defects": [
+    "The body-first direction is closer to the intended result but still requires correction; do not proceed directly to weapon assembly or approval.",
+    "Retain the body-first strategy while finding a more controllable way to restore the approved flat value treatment and smaller body-edge paws before another generation."
+  ],
+  "recordedAt": "2026-09-12T13:20:19+08:00",
+  "authorType": "human",
+  "disposition": "retry"
+}

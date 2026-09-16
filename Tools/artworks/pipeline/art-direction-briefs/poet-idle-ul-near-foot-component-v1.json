@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "registryId": "asset-brief-e3cc7154dd14474b",
+  "sourceId": "poet-idle-ul-near-foot-component-v1",
+  "sourceType": "asset",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/briefs/poet_idle_ul_near_foot_component_brief_v1.json",
+    "sha256": "c5062ceddcd4602b19c715534302d41312037acb58b597ec37bf3a65885d7e35"
+  }
+}

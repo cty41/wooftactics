@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 2,
+  "attemptId": "job-7bafde3439fd4e9f-a001",
+  "jobId": "job-7bafde3439fd4e9f",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "promoted",
+  "sourceMode": "reviewed_import",
+  "reviewedImportId": "reviewed-import-1c00304a8949c17c",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v15_outline_restore.png",
+      "sha256": "595bc79b1e2fc797b55ad86b3b7bed9b52370435df6ab10c5da1c27f976c6dfa"
+    },
+    "prepared": {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_melee_ul_high_guard_v01_reviewed_clean.png",
+      "sha256": "7fde40f9dc57fd367589ffdc99e35ac49bad6f07b77a9fb1ff2453612056d5b7"
+    },
+    "importedPreview": {
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_melee_ul_high_guard_v01_reviewed_clean_128.png",
+      "sha256": "cda95859918e032c153221dca6b1d778dc622cea7f40c3e39cb37c9fe80a5b0e"
+    },
+    "review": {
+      "sizeComparison": {
+        "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_v01_clean_size_comparison.png",
+        "sha256": "cade16762bcee2bad2058b3c33aa1c9271b328ce30f3927be1d40386cfb8cf77"
+      }
+    },
+    "promoted": {
+      "master": {
+        "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_melee_ul_high_guard_v01.png",
+        "sha256": "7fde40f9dc57fd367589ffdc99e35ac49bad6f07b77a9fb1ff2453612056d5b7"
+      },
+      "preview": {
+        "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_melee_ul_high_guard_v01_128.png",
+        "sha256": "cda95859918e032c153221dca6b1d778dc622cea7f40c3e39cb37c9fe80a5b0e"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-39cb41af4a00816c.json",
+    "sha256": "68a6020648be3192d0b698b6a31b881177b5317411a0b43fe0557838323113a4"
+  },
+  "approvalId": "approval-e913d6270f923eb7",
+  "feedbackId": null
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "profileKind": "material-language",
+  "profileId": "pure-run-material-language-v1",
+  "status": "active",
+  "materials": [
+    {"materialId": "metal", "allowed": ["base color", "one hard shadow block", "at most one structural highlight"], "forbidden": ["environment reflections", "continuous highlight strips", "dense engraving"]},
+    {"materialId": "wood", "allowed": ["large color regions", "few structural or joint lines"], "forbidden": ["surface-wide woodgrain noise", "dense random scratches"]},
+    {"materialId": "leather", "allowed": ["warm value regions", "one edging or seam language"], "forbidden": ["pores", "dense wear", "multiple glossy bands"]},
+    {"materialId": "stone", "allowed": ["large planes", "grouped low-contrast cracks", "limited edge damage"], "forbidden": ["uniform crack coverage", "high-frequency battlefield floor texture"]},
+    {"materialId": "cloth", "allowed": ["large folds", "directional hard shadow", "clear hanging silhouette"], "forbidden": ["fine fibers", "dense wrinkle noise"]},
+    {"materialId": "fur", "allowed": ["body color blocks", "outer fur tufts", "few directional edge marks"], "forbidden": ["individual hairs", "photographic softness"]},
+    {"materialId": "bone", "allowed": ["ivory base", "large joints", "few grouped cracks"], "forbidden": ["wet realism", "dense pores", "realistic flesh residue"]},
+    {"materialId": "glass-liquid", "allowed": ["clear container silhouette", "liquid level symbol", "one controlled highlight", "limited transparency layers"], "forbidden": ["realistic caustics", "many reflections", "photographic refraction"]}
+  ]
+}

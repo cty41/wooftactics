@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 2,
+  "poseGuideId": "pose-guide-58f829e24a467c90",
+  "compositionId": "composition-90c63d53854fd334",
+  "compositionSha256": "122d17656b7cdac69c5f172617bfde3bcf1a331c29d45562bcec2ebbe1d4bdaf",
+  "anchorSha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/guides/poet_cast_dr_sheathed_focus_pose_guide_v1.png",
+    "sha256": "47ed30369fb33f6afb1607184ceac72cf7bb657d730efb8ecbc52948d3c92640"
+  },
+  "role": "supporting-derived"
+}

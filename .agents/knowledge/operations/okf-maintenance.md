@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics/tree/main/Tools/okf
 title: OKF Maintenance
 description: 将工作区变更映射到 catalog_scope，并由 Agent 同步受影响知识概念的维护流程。
 tags: [agent, okf, knowledge, automation]
-timestamp: "2026-08-24T13:38:52+08:00"
+timestamp: "2026-09-17T00:07:58+08:00"
 status: active
 catalog_scope: okf-maintenance
 repo_paths:
@@ -14,7 +14,7 @@ repo_paths:
   - Tools/okf/catalog_impact.py
   - Tools/okf/validate_bundle.py
 verified_revision: c56d71ad4ebd
-source_fingerprint: sha256:df2d1559a9a4a36b435e4babea31772c0d24e81e30dc535c4e723aa236195182
+source_fingerprint: sha256:6fe1ef2aac5e0f0dac5479e110f0a562dd23c81d115b17adb637f54a2e5fdaa8
 ---
 
 # Current State
@@ -25,7 +25,7 @@ source_fingerprint: sha256:df2d1559a9a4a36b435e4babea31772c0d24e81e30dc535c4e723
 
 `.agents/skills/project-doc-organization`、`plan-mode-plan-writer`、`make-dev-plan` 已上移全局 `cty41/skills`（`~/.agents/skills`），不再属于本仓库监控路径；本地只保留项目专属技能与 `knowledge-maintenance`（完整 `Tools/okf`）、`manual-qa-handoff`（被 `Tools/agent-policy` 硬引用）两个特化。
 
-这一流程由 Agent 规则触发，不依赖 Git hook 或远端 CI。未映射但位于受监控目录的路径会显示为警告，Agent 必须判断它应加入已有 scope、建立新概念，还是明确保持不受 OKF 管理。
+这一流程由 Agent 规则和本地轻量命令触发，不依赖 Git hook 或远端 CI，也不得仅为刷新 OKF/文档证据主动派发高耗时 GitHub workflow。未映射但位于受监控目录的路径会显示为警告，Agent 必须判断它应加入已有 scope、建立新概念，还是明确保持不受 OKF 管理。
 
 当前设计来自 `.agents/docs/` 的主题权威文档，`brainstorm.md` 仅保存未经验证的临时灵感。当前任务只来自仍活跃的 `.agents/plans/`。计划完成后应先迁移长期知识并删除计划；OKF 中需要保留的历史概念使用 `archived` 或 `superseded`，不继续把旧计划当当前依据。
 

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 4,
+  "artDirectionVerdictId": "art-direction-verdict-6d5ad51b39047a56",
+  "attemptId": "job-dfbdae10245d7d6c-a003",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-dfbdae10245d7d6c/job-dfbdae10245d7d6c-a003/calibrated.png",
+    "sha256": "30f90904a35ad3b23e25c029bfb0c07fb72c420bfafce2c945a6901e284d3516"
+  },
+  "artDirectionReviewId": "art-direction-review-a6fd9feb397a8a9a",
+  "reviewSha256": "cc471fd88a75bdf636ac8bc7daad25066bfd745e48bba250e30e35c144df5c4f",
+  "decision": "retry",
+  "acceptedWarnings": [],
+  "reviewer": "cty41",
+  "reason": "Later human review supersedes the preliminary body selection: UL three-quarter direction is not readable.",
+  "decidedAt": "2026-09-05T08:23:44+08:00"
+}

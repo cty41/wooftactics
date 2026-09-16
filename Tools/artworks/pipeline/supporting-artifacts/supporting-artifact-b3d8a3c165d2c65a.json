@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-b3d8a3c165d2c65a",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_component_mockup_v1.png",
+    "sha256": "2c67d5de65acbefc2d3fa85bf306df02378e1ab9bcdbe4f9d5cbf780746f5570"
+  },
+  "role": "supporting-derived",
+  "note": "Superseded deterministic six-role UL component review: clean body lacked final facial identity; never approved or runtime-bound.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

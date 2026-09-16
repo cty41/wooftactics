@@ -6,7 +6,7 @@ requiredAdapters: [Map, PlayerInput, Battle, UI]
 setup:
   - kind: loadValidatedCheckpoint
     adapter: Map
-    parameters: { id: numbers-miss-v1, path: "validated://numbers-miss-v1", semanticHash: 19b5db213502e64ab3646f7690fb821ccebdf3b1a56fdedeb09afe6fc2d5ed6e }
+    parameters: { id: numbers-miss-v1, path: "validated://numbers-miss-v1", semanticHash: 9a6718898e311e99470ff6f55ad67ad76baf22a715ab0d5e4108af613ab3e0e4 }
   - kind: initializePlayerInput
     adapter: PlayerInput
     parameters: {}

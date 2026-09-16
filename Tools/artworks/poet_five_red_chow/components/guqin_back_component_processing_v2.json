@@ -1,0 +1,9 @@
+{
+  "operation": "approved-v2-equipment-copy-and-chroma-normalization",
+  "sourceAttemptId": "job-93dbc1ce4eeb846d-a003",
+  "sourceApprovalId": "approval-ff85c4a4e8d89e45",
+  "pixelTransform": "clean_resampled_chroma(#00ff00,tolerance=12)",
+  "geometryTransform": "none",
+  "semanticLabel": "equipment",
+  "note": "仅清除已批准组件缩放边缘的色幕残留，不改变几何、朝向或可见形状。"
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-084c07f2023d0f49",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_selected_body_sword_mockup_v5_high_guard.png",
+    "sha256": "c53dcf020fbce4481a140af7e58034ad6735fcf1f2a81d6360d93e8acbe0f887"
+  },
+  "role": "supporting-derived",
+  "note": "cty41-authorized corrected deterministic high-guard composite using exact selected body and approved unsheathed Tang dao; review-only, no scabbard or runtime binding.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

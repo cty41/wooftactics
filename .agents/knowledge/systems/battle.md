@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Battle System
 description: Godot Pure Run 的棋盘、回合、技能、状态、AI 合法性、结算与表现投影主链。
 tags: [gameplay, battle, turn-based, godot]
-timestamp: "2026-08-24T17:02:05+08:00"
+timestamp: "2026-09-11T11:08:38+08:00"
 status: active
 catalog_scope: battle-system
 repo_paths:
@@ -13,6 +13,8 @@ repo_paths:
   - .agents/docs/attribute-system-design.md
   - .agents/docs/buff-system-rules.md
   - .agents/docs/battle-facing-rules.md
+  - .agents/docs/battle-initiative-rules.md
+  - .agents/docs/poet-class-design.md
   - .agents/docs/isometric-grid-anchor-contract.md
   - .agents/docs/maw-bat-enemy-slice-design.md
   - src/Tactics.Core/Battle
@@ -25,7 +27,7 @@ repo_paths:
   - godot/src/Tactics.Godot.Adapter/Runtime/GodotPlayableRunMain.cs
   - godot/tests/CoreGoldenVectorGodotTests.cs
 verified_revision: 04c75ec4
-source_fingerprint: sha256:16e627cd5548d672ffe8c9367a818edfa09b939d1b59e0365e7c2c48f128b1b7
+source_fingerprint: sha256:b0cf670d2f9c81cc3b7d9f8dafb55fc7ea62386cbcc8a1844c5d00846d2d40bb
 ---
 
 # Current State
@@ -38,7 +40,7 @@ Gameplay runner 的 Battle/Adventure 生产指针坐标统一转换到 Canvas �
 
 跨引擎沿用的属性、状态、朝向与等距投影规则已整理为带稳定 Contract ID 的 Godot 权威文档。新角色或机制必须显式引用相关合同；旧 Unity 类名和编辑器结构不再作为规则来源。
 
-属性系统正在切换到六维统一战斗投影：装备后的有效属性参与技能贡献、命中、闪避和统一暴击，永久属性单独承担高级/大师解锁。敏捷决定先攻，体质决定移动，旧 Speed 覆写不再改变战斗行动值；减速独立施加先攻与移动修正。多段逐段判定并使用半额贡献，毒素冻结施加时总伤害后按前高后低分配。
+六维统一战斗投影已支持状态携带有符号临时属性修正：有效属性从 BaseAttributes 与全部活动修正重算，敏捷同步派生命中和先攻，状态移除后恢复。回合顺序由 Core `InitiativeRoundState` 分区维护；新回合完整排序，轮中只重排 remaining，行动召唤可按新 InstanceId 插入，Decoy 不入队。持续治疗冻结施加时总量并按前高后低的未来 TurnStart tick 分配。
 
 固定战场使用 10×10、零基坐标。单位实例身份使用 `UnitInstanceId`，不能用内容 `ContentId` 代替。合法性预览、
 AI 和真实 Transition 必须复用 Core 规则；表现 cue、Tween、伤害数字和 Sprite 姿态不能修改战斗状态。
@@ -78,6 +80,8 @@ Air 可越过动态占位与 flyover 障碍但不能停在其上；absolute 障�
 厄运魔刃使用相邻方向输入并按近到远命中前方两格；墙体和第一格单位都不截断半月斩。技能效果通过统一成长类型读取战斗有效属性，不再使用“高于中立值”的独立伤害加值。表现层把 Bane 编译为近战挥剑 Cue，并在半月斩抵达第一、第二格时依次插入受击和数字；规则提交仍早于表现，表现暂停或取消不改变结算。
 
 固定种子数值循环已有 Core 规则层诊断代理：三种 Demonbound 队伍标签各跑相同 10 seed，复用正式 `AiDecisionService`、`AiTurnService` 与 `BattleTransitionService`，记录终局、腐化峰值、冥想、首次附身、友伤、Down、永久死亡和技能次数，并验证同 seed 重放一致。其无尸体诊断夹具和简化队友策略只用于证明采样管线及发现规则问题；未接入生产 Run 路线、Resource 数值和完整职业策略前，不得视为完整平衡证据或人工体验替代。
+
+诗人作为第五名候选、仍只选三人出战，基础六维 `6/5/5/4/6/4` 且力量为主属性。剑仙、诗仙、酒仙共 15 个技能等级已通过 Core 执行器、Application snapshot/AI 和 Godot typed Resource 接入；后撤分身读取 Core Facing，分身不参与行动队列并以直接命中段作为吸收层。诗人已接入 `cty41` 批准的五红土松装备版 Idle DR/UL：南/西取 DR、北/东取 UL，东/西仅镜像身体；正式动作对保持空值并回退方向 Idle，Death 暂用不镜像 Idle DR。分身继承该身份并用半透明青色区分、清空动作/死亡且不产尸；独立动作、正式死亡与正式分身美术仍待后续。装备系统本身只有未来设计文档。
 
 # Relationships
 

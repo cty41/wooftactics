@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-fa26659c7ef9835c",
+  "attemptId": "job-16985014758beabb-a006",
+  "candidateSha256": "d2a0fe9feb5795979b7e8e616a6ad46b76c66a445385f3b0b89481a0886a54c8",
+  "reviewer": "agent",
+  "verdict": "retry",
+  "strengths": [
+    "The screen-right paw remains correctly behind the body and the selected image is otherwise preserved."
+  ],
+  "defects": [
+    "Tail is still visually behind the body because the continuous black body contour is drawn over the tail root."
+  ],
+  "nextPromptDelta": "Erase only the black body-outline segment that crosses in front of the tail root, then extend the existing tail-root orange and tail outline over that overlap so the tail is unmistakably foreground. Preserve everything else.",
+  "recordedAt": "2026-09-08T11:06:58+08:00",
+  "authorType": "agent",
+  "categories": [
+    "occlusion"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "a006 entire image except tail-root overlap; screen-right paw behind body"
+  ],
+  "pendingFixes": [
+    "remove body contour over tail root and draw tail root in front"
+  ]
+}

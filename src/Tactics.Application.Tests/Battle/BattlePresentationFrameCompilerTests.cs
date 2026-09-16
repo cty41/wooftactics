@@ -162,6 +162,33 @@ public sealed class BattlePresentationFrameCompilerTests
     }
 
     [Test]
+    public void HealingStatusTickCreatesHealEffectNumberAndStatusCue()
+    {
+        UnitInstanceId source = new("poet"), target = new("ally");
+        ContentId statusId = new("buff.poet.wine-healing");
+        BattleUiSnapshot snapshot = Snapshot(source, target, new GridPoint(1, 1), new GridPoint(2, 1), true);
+
+        BattlePresentationFrame frame = BattlePresentationFrameCompiler.Compile("turn-start", snapshot, snapshot,
+            [new StatusHealingTickedEvent(source, target, statusId, 3, 8)],
+            new Dictionary<ContentId, SkillDefinition>());
+
+        BattlePresentationCue cue = frame.Cues.Single();
+        BattlePresentationEffect effect = cue.Effects!.Single();
+        Assert.Multiple(() =>
+        {
+            Assert.That(cue.Kind, Is.EqualTo(PresentationCueKind.StatusTick));
+            Assert.That(cue.ActorId, Is.EqualTo(target));
+            Assert.That(cue.InstigatorId, Is.EqualTo(source));
+            Assert.That(effect.Kind, Is.EqualTo(BattlePresentationEffectKind.StatusTicked));
+            Assert.That(effect.ContentId, Is.EqualTo(statusId));
+            Assert.That(effect.Amount, Is.EqualTo(3));
+            Assert.That(frame.Numbers.Single().Kind, Is.EqualTo(BattlePresentationNumberKind.Heal));
+            Assert.That(frame.Numbers.Single().Text, Is.EqualTo("+3"));
+            Assert.That(frame.Numbers.Single().TargetId, Is.EqualTo(target));
+        });
+    }
+
+    [Test]
     public void MultiHitRollsAreCorrelatedInEventOrderWithoutDuplicateKeyFailure()
     {
         UnitInstanceId actor=new("amazon"),target=new("enemy");

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "jobId": "job-f459872cd76a6956",
+  "state": "ready",
+  "contractId": "contract-59b37b935d43f071",
+  "contractSha256": "e838328c0cb6b1acb6a5c6c7bda12e8e52908e2884812044c2b813acf56a91c1",
+  "prompt": {
+    "path": "Tools/artworks/pure_run/equipment/prompt_amazon_round_shield.md",
+    "sha256": "dbc2f6f5a0f878c8b13d5c9dbd78b27c22363713a5be8a3f5caab88f521a05be"
+  },
+  "inputs": [
+    {
+      "role": "shield_reference",
+      "path": "Tools/artworks/doge/calibrated/doge_capsule_hunter_color_calibrated_v01.png",
+      "sha256": "68a35da9d5d646d497ae7bf99eebc5871bcc5be26a893441d9fcece57877ac07"
+    }
+  ],
+  "target": {
+    "direction": "down-right",
+    "pose": "display"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": false,
+  "poseGuide": null
+}

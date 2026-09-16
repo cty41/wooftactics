@@ -1,0 +1,11 @@
+Edit one complete 256×256 Pure Run sprite on exact flat #00ff00 green.
+
+Image 1 is the selected body. Preserve its head, face, ears, torso, tail, hind paws, shading, scale, position and silhouette exactly. Modify ONLY both front paws and the new sword/grip region.
+
+Image 2 solely owns the narrow straight single-edged ring-pommel Tang dao form, proportions and colors. Add exactly one complete sword. No scabbard.
+
+Image 3 owns only placement. Redraw two SMALL ROUND front paws tightly against Image 1’s right body edge inside the two green zones. They must overlap the torso, not form a chain extending away from it. Pass the narrow handle BETWEEN both paws: far paw partly behind the handle, near paw visibly over the handle, guard immediately outside the near paw. Both paws must visibly grip the same handle with broad contact; the sword must not look loose or about to leave the paws.
+
+Aim the blade moderately down-right along Image 3’s white axis, ending around its orange tip box—clearly higher than the prior low slash. Preserve exactly two hind paws.
+
+No arm, leg, human hand, floating paw, broad double-edged sword, second weapon, scabbard, clothing, vessel, guqin, VFX, new highlight, new body shading, text, watermark, crop, or guide marks.

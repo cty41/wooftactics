@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 2,
+  "approvalId": "approval-443769ae51e78f8a",
+  "attemptId": "job-a23d495fca781338-a001",
+  "candidateSha256": "eb4acedf50fe56d2c216e932a7364686de603a4df40c9bc5f1fe10c22ab55999",
+  "maskSha256": null,
+  "reviewer": "cty41",
+  "reviewSha256": {
+    "equipmentPanel": "2cb04e87234cf891f0f2c48f8098c3c540c056858898ea057560a1e1e71e4b86"
+  },
+  "decision": "approved",
+  "reason": "用户明确确认环首唐刀v2通过；固定Equipment Review、像素检查与魔剑士同屏风格对比完成",
+  "decidedAt": "2026-09-03T09:37:42.8184859+08:00",
+  "annotation": null,
+  "reportSha256": "908a5e5b5675fef1f5fe8fb14c104047a70c90245e10f1f8f663b11923ad6e00"
+}

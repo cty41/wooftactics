@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 4,
+  "approvalId": "approval-40e551d85e6899c1",
+  "attemptId": "job-c91127f8d0e61731-a002",
+  "candidateSha256": "704cd888947a648a9e1ee0db154804288ba230eca422fcc4c63229c145b9e82b",
+  "maskSha256": null,
+  "reviewer": "cty41",
+  "reviewSha256": {
+    "equipmentPanel": "ac860661ce5edaedc71060a3122311a64f3d66985b6e1ee2b31254b148a12908"
+  },
+  "decision": "approved",
+  "reason": "cty41 accepted v02 proportions, then explicitly accepted displayed raw_v02 and 128 preview overall appearance and art style; current user authorized mechanical closeout of this exact SHA only. Fixed QA panels archive existing evidence, not a new human viewing session. Retain palette-complexity advisory as accepted by that explicit overall-style verdict; no future images or character actions approved.",
+  "decidedAt": "2026-09-10T11:10:48.9664521+08:00",
+  "annotation": null,
+  "reportSha256": "2396be1077b1c1b2864b71b5c953a53b4b2abe81d677be6b1a8a05ec0495380b",
+  "artDirectionVerdict": {
+    "artDirectionVerdictId": "art-direction-verdict-67590b39415c014d",
+    "sha256": "a7c3c8ede806f10b230677b193a4631f984bf8a242fa868199ee3a1afd03ffba"
+  }
+}

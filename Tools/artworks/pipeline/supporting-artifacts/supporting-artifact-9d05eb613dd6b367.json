@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-9d05eb613dd6b367",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v9_dr_corresponding_hands.png",
+    "sha256": "5f5e67c5d1e9648f6cc34f833a50a060b909726541b0bf1848c7b853bd3d565d"
+  },
+  "role": "supporting-derived",
+  "note": "cty41-authorized deterministic review-only Melee UL candidate: native approved UL identity, mirrored exact DR hand labels for corresponding two-paw placement, approved high-left Tang dao, no scabbard, baseline y=236; no ImageGen or runtime binding.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

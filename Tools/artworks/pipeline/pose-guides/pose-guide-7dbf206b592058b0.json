@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 2,
+  "poseGuideId": "pose-guide-7dbf206b592058b0",
+  "compositionId": "composition-cdee2509ef117712",
+  "compositionSha256": "e6883e36fbaf966b190b0662f75d8de6c963f88e1a9dcaf7274e775589c61941",
+  "anchorSha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/guides/poet_melee_dr_release_impact_body_pose_guide_v4.png",
+    "sha256": "0440642e2b76e638b214a942d20dc7e74a127ded56c800d5dd5154ce5feaeda8"
+  },
+  "role": "supporting-derived"
+}

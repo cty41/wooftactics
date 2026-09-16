@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-cca2b409fad58c3f",
+  "artifact": {
+    "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v3/grip-nearest.png",
+    "sha256": "248cfee3d3f8eac22c2303c6e13e70e58841b43a1f9af4ec4e90b283f4e9a4eb"
+  },
+  "role": "review-derived",
+  "note": "Artwork pilot intermediate or review evidence; non-runtime and not an approved generation input"
+}

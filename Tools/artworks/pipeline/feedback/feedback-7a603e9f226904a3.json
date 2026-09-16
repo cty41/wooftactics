@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-7a603e9f226904a3",
+  "attemptId": "job-1f834522a953c67a-a001",
+  "candidateSha256": "3ce6dc5efb5c9999be94c927b109c4142b6bfebb97e24261173a937d0e4219a1",
+  "reviewer": "pipeline-agent",
+  "verdict": "retry",
+  "strengths": [
+    "The generated candidate obeys the selected rear-layer concept unusually well: the vertical sheathed dao and both stacked front paws stay behind the left body edge, the core remains continuous, and no arm connector is visible.",
+    "Ring pommel, guard and fully sheathed state read clearly at 128-scale, with no added prop or spell VFX."
+  ],
+  "defects": [
+    "Native UL identity is too weak: the head turns into a strong left-facing side profile instead of the approved mostly-back three-quarter read, and the approved Idle UL head/ear silhouette is not preserved.",
+    "Core volume is too tall, broad and cylindrical compared with the approved compact capsule; hind paws are reduced to tiny edge slivers and the body dominates the frame.",
+    "The sheath extends nearly to the foot line, so the short-sword/tip-above-ground distinction is weak even though it is partly occluded; approved Image 3 equipment proportions and fittings are simplified.",
+    "Rendering is smoother and more generic than the approved UL anchor, with weaker restrained pixel detail and different ruff/value grouping."
+  ],
+  "nextPromptDelta": "Copy Image 1 rear silhouette and compact body much more literally. Show mostly the back of the head with only a tiny muzzle sliver, not a left profile. Reduce core width/height to the approved capsule, restore readable attached hind paws, and raise/shorten the sheath so its tip is clearly above the feet while preserving the same behind-core paw and equipment layering.",
+  "recordedAt": "2026-09-13T22:21:41.1197338+08:00",
+  "authorType": "agent",
+  "categories": [],
+  "disposition": "retry",
+  "frozenInvariants": [
+    "Keep the successful rear-layer depth: both paws and the entire vertical sheathed dao behind the continuous core, with only left-edge arcs visible; no arms, bare blade, props or VFX."
+  ],
+  "pendingFixes": [
+    "cty41 visual verdict on a001: accept this clear rear-layer read or retry for literal Idle UL identity and compact volume."
+  ]
+}

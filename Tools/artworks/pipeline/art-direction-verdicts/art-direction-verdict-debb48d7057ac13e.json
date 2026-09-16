@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 4,
+  "artDirectionVerdictId": "art-direction-verdict-debb48d7057ac13e",
+  "attemptId": "job-a254d0afc9b7b286-a001",
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/processing/unsheathed_exact_green_v2/candidate.png",
+    "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1"
+  },
+  "artDirectionReviewId": "art-direction-review-0cd0f80e063cbead",
+  "reviewSha256": "52e17bb772ad6f82b91e64c63bfea43cbb0e9aaa461412bf50509d166bb3d325",
+  "decision": "approved",
+  "acceptedWarnings": [],
+  "reviewer": "cty41",
+  "reason": "Explicit user authorization: technical SHA rebind after exact two-pixel cleanup and successful checks, carrying prior accepted identity blade and style; no new human visual session; palette complexity remains advisory.",
+  "decidedAt": "2026-09-10T12:45:21Z"
+}

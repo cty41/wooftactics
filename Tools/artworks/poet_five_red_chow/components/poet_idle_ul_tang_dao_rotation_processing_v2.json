@@ -1,0 +1,14 @@
+{
+  "operation": "approved-component-chroma-clean-and-rigid-rotation",
+  "sourceAttemptId": "job-7603439437c554d0-a003",
+  "sourceApprovalId": "approval-dec0462fb13537e6",
+  "sourcePreparedSha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4",
+  "chromaCleanup": "transparent pixels and green-dominant screen residue removed; artwork pixels otherwise preserved",
+  "rotationDegreesClockwise": 112,
+  "resampling": "Pillow BICUBIC",
+  "crop": "source alpha bounding box",
+  "placement": "rotated bounds centered on 256x256 transparent canvas",
+  "colorAdjustment": "none",
+  "authorizedBy": "cty41",
+  "authorization": "Keep the old approved Tang dao artwork and rotate the complete component offline; do not regenerate its pattern or design."
+}

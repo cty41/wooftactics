@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "descriptorKind": "third-party-local-ui-references",
+  "descriptorId": "pure-run-ui-reference-descriptors-v1",
+  "publicImagesIncluded": false,
+  "references": [
+    {
+      "sourceLabel": "Xuanyuan Sword 3 main game",
+      "responsibility": "restraint, compact decisions, direct current-to-new value comparison, translucent context-preserving panels, sparse warm-gold emphasis",
+      "files": [
+        {"fileName": "Snipaste_2026-09-03_12-58-06.png", "sha256": "941c576b18c7f736e7a3589c3e07b5c5e0e2b72d38612cb31471facf1a757923"},
+        {"fileName": "Snipaste_2026-09-03_13-00-29.png", "sha256": "7fbb2b80a4a2d06162488afa964c4df036700d92b7c74f356cb71dbceb65973b"},
+        {"fileName": "Snipaste_2026-09-03_13-00-41.png", "sha256": "d2838f7cd42050ef77116a627bbd96e663a4835f8c1723c62896dfdad6dde022"},
+        {"fileName": "Snipaste_2026-09-03_13-00-50.png", "sha256": "0f1cda5687db95e52172fe3e59c158e72b5647c54e7f03daee312977fbf0d78a"},
+        {"fileName": "Snipaste_2026-09-03_13-01-34.png", "sha256": "08c906bcdc95026c9a3de6511aaffbf39aed162b33e3e9b7c90f9d69ed49f61a"}
+      ],
+      "excludedUses": ["oriental scroll identity", "calligraphy identity", "talisman motifs", "color-only selection", "low-contrast inactive text"]
+    },
+    {
+      "sourceLabel": "Diablo II Resurrected",
+      "responsibility": "stable docking, persistent HUD placement, grid organization, label-value hierarchy, chrome-content separation",
+      "files": [
+        {"fileName": "Snipaste_2026-09-03_13-06-48.png", "sha256": "8d7b8dc63da2ad29c6c677d8a0fdeec5868c9d56298ea27fd7fb6e1bd3d08982"},
+        {"fileName": "Snipaste_2026-09-03_13-07-28.png", "sha256": "768c78827bbec45d3bcb1419e4f01b47f4f7a5f9e425f13fbb212d28c3db6f31"},
+        {"fileName": "Snipaste_2026-09-03_13-07-48.png", "sha256": "f6b68e9849d5b6c5feb7c42e6f824d26a0c3bf3824a1e09f496f14026022300a"},
+        {"fileName": "Snipaste_2026-09-03_13-08-01.png", "sha256": "f61a5ab16ff945b622edb195eab6fde41e5d537e15cd1e5631c05ac803aa37cd"}
+      ],
+      "excludedUses": ["photorealistic stone chrome", "gargoyle sculptures", "heavy gothic layering", "ornamental narrow body font", "multiple simultaneous large panels as default"]
+    }
+  ]
+}

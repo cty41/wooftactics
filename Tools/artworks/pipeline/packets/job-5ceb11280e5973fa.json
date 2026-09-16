@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 4,
+  "jobId": "job-5ceb11280e5973fa",
+  "state": "ready",
+  "contractId": "contract-ea42c99fdb9d813e",
+  "contractSha256": "f3da5103577cf74c56d95f3df647d0436c1fda28b716cc2c2668047f775e9c5c",
+  "prompt": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/poet_cast_dr_sheathed_focus_prompt_v1.md",
+    "sha256": "bffa555f3072843cf641d7d53cd0b243dacd88388f583b508192d774ef1ee0b9"
+  },
+  "inputs": [
+    {
+      "role": "image-1-approved-poet-identity-volume-dr",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+      "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+    },
+    {
+      "role": "image-2-approved-fully-sheathed-dao-form",
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_dr_v02.png",
+      "sha256": "eb4acedf50fe56d2c216e932a7364686de603a4df40c9bc5f1fe10c22ab55999"
+    },
+    {
+      "role": "image-3-deterministic-unified-cast-guide",
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_cast_dr_sheathed_focus_pose_guide_v1.png",
+      "sha256": "47ed30369fb33f6afb1607184ceac72cf7bb657d730efb8ecbc52948d3c92640"
+    }
+  ],
+  "target": {
+    "direction": "down-right",
+    "pose": "cast"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": true,
+  "poseGuide": {
+    "poseGuideId": "pose-guide-58f829e24a467c90",
+    "sha256": "eeddb78893e9f02d6a26888e58b9659aa40eaed268f158566afbd6b883973801"
+  },
+  "localReferences": []
+}

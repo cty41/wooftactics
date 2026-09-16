@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="SkillDefinitionResource" format=3 uid="uid://rkuw42n27dte"]
+
+[ext_resource type="Script" path="res://src/Tactics.Godot.Adapter/Runtime/SkillDefinitionResource.cs" id="1_gcpxi"]
+
+[resource]
+script = ExtResource("1_gcpxi")
+ContentIdValue = "skill.poet.road-is-hard.lv1"
+SourceId = "godot.skill.poet.road-is-hard.lv1"
+DisplayName = "行路难"
+Description = "行路难"
+RoleValue = "Poet"
+KindValue = "Active"
+Level = 1
+ManaCost = 8
+ExecutionKindValue = "PoetAgilityVerse"
+DamageKindValue = "None"
+StatusContentIdValue = "status.poet.agility-verse"
+StatusDuration = 1
+CanCrit = false
+BranchId = "poet.road-is-hard"
+PrerequisiteContentIdValue = "skill.poet.jiang-jin-jiu.lv1"
+PrerequisiteBranchId = "poet.poetry-immortal"
+RequiredAttribute = "Strength"
+MinimumAttribute = 7
+AreaRadius = 2
+AttributeModifier = 2
+AuthoringSourceKindValue = "GodotAuthored"

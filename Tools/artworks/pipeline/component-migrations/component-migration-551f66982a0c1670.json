@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 3,
+  "componentMigrationId": "component-migration-551f66982a0c1670",
+  "contractId": "contract-e2be0e39b367596d",
+  "contractSha256": "de5da3fb8dd122d80aee83228fdaf03ae2838387900768ab797ef04fe85aa8eb",
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_ul_v01.png",
+    "sha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4"
+  },
+  "prepared": {
+    "path": "Tools/artworks/poet_five_red_chow/components/migrated/poet_idle_ul_tang_dao_rotated_v03.png",
+    "sha256": "491e97c04472fc50d191095a3ff50c9b917d0cb7f68634722d4579ddd17ee2c7"
+  },
+  "processing": {
+    "operation": "approved-component-chroma-clean-and-rigid-rotation",
+    "sourceAttemptId": "job-7603439437c554d0-a003",
+    "sourceApprovalId": "approval-dec0462fb13537e6",
+    "sourcePreparedSha256": "28a2de2782aace589855fd7aafb86e90ff11204bb085a12c5a4bf0ee2613eed4",
+    "chromaCleanup": "transparent pixels and green-dominant screen residue removed; artwork pixels otherwise preserved",
+    "rotationDegreesClockwise": 112,
+    "resampling": "Pillow BICUBIC",
+    "crop": "source alpha bounding box",
+    "placement": "rotated bounds centered on 256x256 transparent canvas",
+    "colorAdjustment": "none",
+    "authorizedBy": "cty41",
+    "authorization": "Keep the old approved Tang dao artwork and rotate the complete component offline; do not regenerate its pattern or design."
+  },
+  "reviewer": "cty41",
+  "reason": "Direct human authorization to reuse the old approved Tang dao and rotate the whole component offline without regenerating its design.",
+  "acceptedAt": "2026-09-07T11:13:43+08:00",
+  "invocationStatus": "missing-pre-v3"
+}

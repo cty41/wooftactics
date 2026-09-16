@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 4,
+  "acceptanceCaseResultId": "acceptance-case-result-185d8969eed26e1a",
+  "attemptId": "job-dfbdae10245d7d6c-a003",
+  "caseId": "POET-UL-BODY-IDENTITY-001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-dfbdae10245d7d6c/job-dfbdae10245d7d6c-a003/calibrated.png",
+    "sha256": "30f90904a35ad3b23e25c029bfb0c07fb72c420bfafce2c945a6901e284d3516"
+  },
+  "contractId": "contract-54fa481aba0912ab",
+  "contractSha256": "61bdeed019e9a6653973d16f8f9e1fb8ad2bdf21be92aac1f65aa781102ec985",
+  "evidence": {
+    "candidate": {
+      "path": "Tools/artworks/pipeline/artifacts/job-dfbdae10245d7d6c/job-dfbdae10245d7d6c-a003/calibrated.png",
+      "sha256": "30f90904a35ad3b23e25c029bfb0c07fb72c420bfafce2c945a6901e284d3516"
+    }
+  },
+  "automatedFacts": [
+    "Approved poet anchor hash-bound; candidate native back-view."
+  ],
+  "automatedResult": "passed",
+  "humanChecks": [
+    "Selected clean orange chow body with ears, tail, no face or mane seam."
+  ],
+  "humanDecision": "passed",
+  "reviewer": "cty41",
+  "reason": "Selected as body component basis.",
+  "decidedAt": "2026-09-05T01:07:59+08:00"
+}

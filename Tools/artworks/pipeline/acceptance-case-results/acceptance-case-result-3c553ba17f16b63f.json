@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 4,
+  "acceptanceCaseResultId": "acceptance-case-result-3c553ba17f16b63f",
+  "attemptId": "job-392eb89806af5b42-a001",
+  "caseId": "POET-COMPOSITION-001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-392eb89806af5b42/job-392eb89806af5b42-a001/prepared.png",
+    "sha256": "940606701f0cdf56a0ccd41db3486849197f699c4cab0483fc52889fea203456"
+  },
+  "contractId": "contract-57bf5c0526078c9d",
+  "contractSha256": "0af903e867b06faffc66bfa9456a31396051bc3ce1746f17d2fd2227d4593df1",
+  "evidence": {
+    "candidate-master": {
+      "path": "Tools/artworks/pipeline/artifacts/job-392eb89806af5b42/job-392eb89806af5b42-a001/prepared.png",
+      "sha256": "940606701f0cdf56a0ccd41db3486849197f699c4cab0483fc52889fea203456"
+    },
+    "preview-128": {
+      "path": "Tools/artworks/pipeline/reviews/job-392eb89806af5b42-a001/preview128.png",
+      "sha256": "08b9c517a7bab270eb577107b356ebceb577e5263949b874e0bc81d2c62fdf27"
+    },
+    "tile-review": {
+      "path": "Tools/artworks/pipeline/reviews/job-392eb89806af5b42-a001/tile64x32.png",
+      "sha256": "d82e47fe02de70bd014adf7bcc3e4a58cdc2591f86bf4d0d0d63b297fecf8f7d"
+    }
+  },
+  "automatedFacts": [
+    "256 RGBA alpha bbox 81,115 to 163,237 and baseline checks passed"
+  ],
+  "automatedResult": "passed",
+  "humanChecks": [
+    "cty41 must confirm 128 and tile readability"
+  ],
+  "humanDecision": "pending",
+  "reviewer": "agent",
+  "reason": "Technical scale and placement passed; readability pending",
+  "decidedAt": "2026-09-03T14:45:00+08:00"
+}

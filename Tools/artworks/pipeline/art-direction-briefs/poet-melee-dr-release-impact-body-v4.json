@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "registryId": "asset-brief-96058a5687305485",
+  "sourceId": "poet-melee-dr-release-impact-body-v4",
+  "sourceType": "asset",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/briefs/poet_melee_dr_release_impact_body_asset_brief_v4.json",
+    "sha256": "d74340ce634e85d6a31b288d7083c426693f80ab40a88e2e761c796be4099580"
+  }
+}

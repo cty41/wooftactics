@@ -1,0 +1,33 @@
+{
+  "canvas": [256, 256],
+  "coreAxis": {
+    "bottom": [128, 228],
+    "top": [128, 118],
+    "tiltDegrees": [-2.0, 2.0]
+  },
+  "footCenter": [128, 236],
+  "pose": {
+    "worldFacing": "down-right",
+    "camera": "fixed-isometric-45-degrees",
+    "stance": "upright-capsule-dog-idle",
+    "allFourPawsRequired": true,
+    "frontPawsAttachedToCore": true,
+    "hindPawsOnBaseline": true,
+    "tail": "high-set-curled-clear-of-face"
+  },
+  "weapon": {
+    "hiddenGrip": [128, 186],
+    "exitWindow": [124, 182, 132, 190],
+    "tipRegion": [124, 182, 132, 190],
+    "maxBladeWidthPx": 0,
+    "maxGemAreaPx": 0
+  },
+  "forbiddenRegions": [],
+  "equipmentState": {
+    "scabbard": "absent",
+    "sword": "absent",
+    "guqin": "absent",
+    "wineVessel": "absent",
+    "staticEffects": "absent"
+  }
+}

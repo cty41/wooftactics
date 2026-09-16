@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 2,
+  "attemptId": "job-43b34a4685f71ca2-a010",
+  "jobId": "job-43b34a4685f71ca2",
+  "ordinal": 10,
+  "parentAttemptId": "job-43b34a4685f71ca2-a009",
+  "retryFeedbackId": "feedback-aba57b5407af90eb",
+  "promptDelta": "保持同一 raw；以固定 x630 为中心取逐行最大对称连续主体段，lower band 半径上限小于 middle，并将手爪只标 core 外弧",
+  "technicalRemediation": true,
+  "state": "promoted",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/concepts/poet_five_red_chow_idle_dr_raw_v09_width.png",
+      "sha256": "c4eb8d2a35284931050d2796b6c260ab25b19555f8609c6b90d0241a4c3320cf"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a010/raw.png",
+      "sha256": "c4eb8d2a35284931050d2796b6c260ab25b19555f8609c6b90d0241a4c3320cf"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a010/prepared.png",
+      "sha256": "0205843d40e0ef248fd7cb701b6f56ca956ff81213c3831f2df3be0e87e03889"
+    },
+    "maskSource": {
+      "path": "Tools/artworks/poet_five_red_chow/supporting/idle_dr_width_raw_mask_v11.png",
+      "sha256": "62fc521bf113b4d6d9eaf95b5df45a0594976fd7207da9a0dd4b23e089d8cde5"
+    },
+    "mask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a010/mask.png",
+      "sha256": "62fc521bf113b4d6d9eaf95b5df45a0594976fd7207da9a0dd4b23e089d8cde5"
+    },
+    "calibrated": {
+      "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a010/calibrated.png",
+      "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753"
+    },
+    "calibratedMask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a010/calibrated-mask.png",
+      "sha256": "3e0db7ae51d77d8578a926e1f2db6224124381f15a16a4c215ea872ddbdd50fa"
+    },
+    "review": {
+      "overlay": {
+        "path": "Tools/artworks/pipeline/reviews/job-43b34a4685f71ca2-a010/overlay.png",
+        "sha256": "cc42636b1f7401360ffa87c9c1f5f1d0816121d8dd1f102db308194119009eab"
+      },
+      "preview128": {
+        "path": "Tools/artworks/pipeline/reviews/job-43b34a4685f71ca2-a010/preview128.png",
+        "sha256": "df64185b179a94dae064f9e626ef0085f5f3f3ea8c2322caec843887e4355120"
+      },
+      "tile64x32": {
+        "path": "Tools/artworks/pipeline/reviews/job-43b34a4685f71ca2-a010/tile64x32.png",
+        "sha256": "b2046c53f5228a1969f7e1957e83c623843fd2604809b107fad4536f1a5aa19a"
+      }
+    },
+    "promoted": {
+      "master": {
+        "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+        "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753"
+      },
+      "preview": {
+        "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03_128.png",
+        "sha256": "df64185b179a94dae064f9e626ef0085f5f3f3ea8c2322caec843887e4355120"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-a77f683153804151.json",
+    "sha256": "af000ff7541cfe40942f7ba34c178de633a8e0f2be265de169c40f0576d2ec9f"
+  },
+  "approvalId": "approval-1acd77a15a84f096",
+  "feedbackId": null,
+  "generationInvocationId": "generation-invocation-6483af0b3100d3e9",
+  "generationDeliveryId": "generation-delivery-cd0aa8cc2a6ac17a",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 150
+  },
+  "annotationId": "annotations-291b8e7bfae495e4",
+  "calibration": {
+    "method": "uniform-core-height",
+    "scale": 0.14378238341968913,
+    "offset": [
+      37,
+      85
+    ],
+    "sourceCoreBbox": [
+      400,
+      249,
+      860,
+      1020
+    ],
+    "anchorCoreBbox": [
+      96,
+      121,
+      159,
+      231
+    ],
+    "anchorMask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-168fd4b2f49ff6ca/job-168fd4b2f49ff6ca-a001/mask.png",
+      "sha256": "9f4968081aa296e73ec215a3a7e89383ad6e34c7d86fe7251af0b3511f12b2c8"
+    }
+  }
+}

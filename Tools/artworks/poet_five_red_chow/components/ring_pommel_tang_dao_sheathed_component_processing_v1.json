@@ -1,0 +1,9 @@
+{
+  "operation": "approved-v2-equipment-copy-and-chroma-normalization",
+  "sourceAttemptId": "job-ffb58eed1dd89ce2-a001",
+  "sourceApprovalId": "approval-510e68d0cbf259ac",
+  "pixelTransform": "clean_resampled_chroma(#00ff00,tolerance=12)",
+  "geometryTransform": "none",
+  "semanticLabel": "equipment",
+  "note": "仅清除用户已批准入鞘环首刀组件边缘的色幕残留，不改变环首、直鞘、装具、比例或轴线。"
+}

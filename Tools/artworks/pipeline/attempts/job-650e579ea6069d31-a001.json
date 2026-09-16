@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 3,
+  "attemptId": "job-650e579ea6069d31-a001",
+  "jobId": "job-650e579ea6069d31",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "technical_failed",
+  "artifacts": {
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-650e579ea6069d31/job-650e579ea6069d31-a001/prepared.png",
+      "sha256": "9d651f834ecd727c93d13f574b405f0d56bd81aa1cff491a7e6579093d537b9e"
+    },
+    "mask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-650e579ea6069d31/job-650e579ea6069d31-a001/mask.png",
+      "sha256": "19bd26dff11d203ffc17764da6eaba0f0b717593e94e70ac323b087558a2421d"
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-b0722981c8362c9e.json",
+    "sha256": "8a0887ae186d034005a6644471f86870e1d5cabf6c0bba627beb5aa4077d7b9d"
+  },
+  "approvalId": null,
+  "feedbackId": null,
+  "assemblyId": "assembly-334755f2c50d5703",
+  "assemblyRenderId": "assembly-render-2286d81cbb9f433e",
+  "sourceMode": "derived"
+}

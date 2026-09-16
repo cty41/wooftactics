@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 2,
+  "jobId": "job-83839806868cdd1f",
+  "state": "ready",
+  "contractId": "contract-fbacbbe93e212895",
+  "contractSha256": "faff4d948e9a783094e9b8fca34cb02c160eef1057273c2ad448cd00a16eeb7f",
+  "prompt": {
+    "path": "Tools/artworks/poet_five_red_chow/tang_sword_generation_prompt_v1.md",
+    "sha256": "a7fb243a7767539be881178bd949baacb8c33cb8c6b54a0a7eab871d3243ab14"
+  },
+  "inputs": [
+    {
+      "role": "poet_identity",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+      "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753"
+    }
+  ],
+  "target": {
+    "direction": "non_directional",
+    "pose": "inventory"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": true,
+  "poseGuide": null,
+  "localReferences": []
+}

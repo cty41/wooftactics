@@ -1,0 +1,127 @@
+{
+  "packetId": "model-review-packet-fb5334b599d05f72",
+  "schemaVersion": 1,
+  "attemptId": "job-69a7e239bb73eef5-a001",
+  "contract": {
+    "contractId": "contract-8cfb066aab230727",
+    "sha256": "1833ba8cf30eb1692126d6e303e7f8d66297a3cfbf920d8ff4943d9fb189ce13"
+  },
+  "brief": {
+    "briefId": "poet-ring-pommel-tang-dao-idle-ul-v1",
+    "sha256": "90779598409ccbdafafd1ab9d20396209ae49adeb6ad6db2df4bf97d1290c74b"
+  },
+  "compiledPolicy": {
+    "compiledPolicyId": "compiled-review-policy-9300e3319ae32600",
+    "sha256": "9300e3319ae326002ecf5988696284793ae6f518ca4b6e48bd62e5426e16bc53"
+  },
+  "reviewContext": {
+    "responsibility": "REVIEW_CONTEXT_ONLY",
+    "contract": {
+      "contractId": "contract-8cfb066aab230727",
+      "sha256": "1833ba8cf30eb1692126d6e303e7f8d66297a3cfbf920d8ff4943d9fb189ce13"
+    },
+    "brief": {
+      "briefId": "poet-ring-pommel-tang-dao-idle-ul-v1",
+      "sha256": "90779598409ccbdafafd1ab9d20396209ae49adeb6ad6db2df4bf97d1290c74b"
+    },
+    "compiledPolicy": {
+      "compiledPolicyId": "compiled-review-policy-9300e3319ae32600",
+      "sha256": "9300e3319ae326002ecf5988696284793ae6f518ca4b6e48bd62e5426e16bc53"
+    },
+    "compiledPolicyRecord": {
+      "compiledPolicyId": "compiled-review-policy-record-9f25ed911f518547",
+      "sha256": "3518c128a1592fca3f20bdbbb98676cb6accc4cc929c30480a770e3bbd4cbd58"
+    }
+  },
+  "historicalProvenance": {
+    "attemptId": "job-69a7e239bb73eef5-a001",
+    "contract": {
+      "contractId": "contract-8cfb066aab230727",
+      "sha256": "1833ba8cf30eb1692126d6e303e7f8d66297a3cfbf920d8ff4943d9fb189ce13"
+    },
+    "artifact": {
+      "path": "Tools/artworks/pipeline/artifacts/job-69a7e239bb73eef5/job-69a7e239bb73eef5-a001/prepared.png",
+      "sha256": "c95884c2a5bb5bfa2de50dba944f26d2bd1e4c864b41ff098c9a1bb7055ef5d9"
+    },
+    "humanDecision": "retry",
+    "humanFeedback": {
+      "feedbackId": "feedback-2ce2bbdf35d14dcc",
+      "sha256": "4a23381f2a51992f2f4823f53921f064015d4a2fe02ae1611b0ae3959dc2aa44"
+    }
+  },
+  "reviewRound": null,
+  "requiredModel": "gpt-5.6-sol",
+  "reasoningEffort": "high",
+  "artifacts": [
+    {
+      "role": "HISTORICAL_CASE_ARTIFACT",
+      "path": "Tools/artworks/pipeline/artifacts/job-69a7e239bb73eef5/job-69a7e239bb73eef5-a001/prepared.png",
+      "sha256": "c95884c2a5bb5bfa2de50dba944f26d2bd1e4c864b41ff098c9a1bb7055ef5d9",
+      "reviewOnly": true,
+      "generationInput": false
+    }
+  ],
+  "evidence": [
+    {
+      "role": "SEMANTIC_MASK",
+      "path": "Tools/artworks/poet_five_red_chow/masks/poet_ring_pommel_tang_dao_idle_ul_raw_v01_mask.png",
+      "sha256": "d3e2e0dcb256724096d0c6ed64793254fcbb52cf82c042626cfad0cc7ba2aa28"
+    },
+    {
+      "role": "NEGATIVE_REVIEW_ONLY",
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_v01_capsule_tilemap_compare.png",
+      "sha256": "bc4fa46c0d02860caf3cbb9721c3de31ba15747fdd530ae3acc18b7523aefd13",
+      "generationInput": false,
+      "responsibility": "REVIEW_CONTEXT_ONLY"
+    }
+  ],
+  "acceptanceCases": [
+    {
+      "caseId": "CASE-POET-IDLE-UL-V01-VISIBLE-LIMBS-v1"
+    }
+  ],
+  "feedback": [
+    {
+      "feedbackId": "feedback-2ce2bbdf35d14dcc"
+    }
+  ],
+  "frozenInvariants": [
+    "Shadow-final-policy-no-state-change"
+  ],
+  "permissions": {
+    "allowedDecisions": [
+      "retry",
+      "escalate_to_human",
+      "pass_to_human"
+    ],
+    "mayApprove": false,
+    "mayMakeHumanDecision": false,
+    "mayUseAggregateAestheticScore": false
+  },
+  "qualificationMode": true,
+  "countsTowardFormalAttemptBudget": false,
+  "mayChangeAttemptState": false,
+  "caseBinding": {
+    "reviewCaseRecord": {
+      "reviewCaseRecordId": "review-case-634d000b3da27072",
+      "sha256": "9328a86ae0fff00294f5d7b15729ee477954040368f561e8bb7caa96a8c7daa9"
+    },
+    "caseId": "CASE-POET-IDLE-UL-V01-VISIBLE-LIMBS-v1",
+    "artifact": {
+      "path": "Tools/artworks/pipeline/artifacts/job-69a7e239bb73eef5/job-69a7e239bb73eef5-a001/prepared.png",
+      "sha256": "c95884c2a5bb5bfa2de50dba944f26d2bd1e4c864b41ff098c9a1bb7055ef5d9"
+    },
+    "humanDecision": "retry",
+    "humanFeedback": {
+      "feedbackId": "feedback-2ce2bbdf35d14dcc",
+      "sha256": "4a23381f2a51992f2f4823f53921f064015d4a2fe02ae1611b0ae3959dc2aa44"
+    },
+    "evidenceRegion": {
+      "x": 0.24,
+      "y": 0.34,
+      "width": 0.53,
+      "height": 0.57
+    }
+  },
+  "sha256": "eed52ea9573ecff7ec0afcb0c5394b84f9d44c9c441e83458f73a0c51b5e42ba"
+}

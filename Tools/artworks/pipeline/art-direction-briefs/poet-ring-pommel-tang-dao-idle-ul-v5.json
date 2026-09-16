@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "registryId": "asset-brief-a6a97aa0f9b8e44a",
+  "sourceId": "poet-ring-pommel-tang-dao-idle-ul-v5",
+  "sourceType": "asset",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/briefs/poet_ring_pommel_tang_dao_idle_ul_asset_brief_v5.json",
+    "sha256": "e154978403b7f0c32b7d829fd725fc77d8cc37911c0acf622933a0dc3c1d21c0"
+  }
+}

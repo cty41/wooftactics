@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-dd74e4ec85da9b04",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_3d_projection_study_v02.png",
+    "sha256": "cb29653617e5ec252bf15fc9d6734d499b43ddcf1306d359c7fb95181e796a96"
+  },
+  "role": "review-derived",
+  "note": "Revised pre-generation UL study: separates ground rotation from physical downward pitch and requires reprojected, foreshortened, behind-core equipment; not a sprite candidate"
+}

@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "attemptId": "job-823050db4231b9ae-a002",
+  "jobId": "job-823050db4231b9ae",
+  "ordinal": 2,
+  "parentAttemptId": "job-823050db4231b9ae-a001",
+  "retryFeedbackId": "feedback-5e3964fa3cf2be40",
+  "promptDelta": "严格参考批准武器和盾牌的轮廓与色块；no gradient/no soft shading/no texture",
+  "technicalRemediation": false,
+  "state": "promoted",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_wine_wineskin_raw_v02_flat.png",
+      "sha256": "208ecb79e272caade1e808d02cb66138aa06604ddea68cc60e4eda75ffb9c105"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-823050db4231b9ae/job-823050db4231b9ae-a002/raw.png",
+      "sha256": "208ecb79e272caade1e808d02cb66138aa06604ddea68cc60e4eda75ffb9c105"
+    },
+    "prepared": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_wine_wineskin_v02_flat.png",
+      "sha256": "b677fa5977ea35454bf24238bbf8a9f10833bb37c95454abe7d0b46fac1cd926"
+    },
+    "equipmentPreview": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_wine_wineskin_v02_flat_128.png",
+      "sha256": "58196dc7ff48631d68cfc50e09bb13560efa2d402d28cb97ff4908c9e8ee318e"
+    },
+    "review": {
+      "equipmentPanel": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_wine_wineskin_review_v02_flat.png",
+        "sha256": "00cbb647a6885637e970c3aa6a318cd6a0976295e94bb2cbaafd80655f854106"
+      }
+    },
+    "promoted": {
+      "master": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_wine_wineskin_v01.png",
+        "sha256": "b677fa5977ea35454bf24238bbf8a9f10833bb37c95454abe7d0b46fac1cd926"
+      },
+      "preview": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_wine_wineskin_v01_128.png",
+        "sha256": "58196dc7ff48631d68cfc50e09bb13560efa2d402d28cb97ff4908c9e8ee318e"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/style-reports/equipment-style-report-3425fcb6aa214f4b.json",
+    "sha256": "260692e3dd635536ada2689726b08f9c0f23827dc31abaa04c3b8e44c1a16e15"
+  },
+  "approvalId": "approval-db4f00a5333c3416",
+  "feedbackId": null,
+  "generationInvocationId": "generation-invocation-a3ab3496631eb224",
+  "generationDeliveryId": "generation-delivery-6538d4dee84ba5e8",
+  "equipmentStyleReportId": "equipment-style-report-3425fcb6aa214f4b",
+  "equipmentStyleVerdictId": "equipment-style-verdict-0c8407f71a718727",
+  "equipmentStyleVerdictIds": [
+    "equipment-style-verdict-0c8407f71a718727"
+  ]
+}

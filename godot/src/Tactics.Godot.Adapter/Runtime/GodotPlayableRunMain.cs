@@ -34,6 +34,8 @@ public partial class GodotPlayableRunMain : Control
             ["BattleActionPanel"] = new(new Vector2(18, 744), new Vector2(1170, 144)),
             ["BattleEndTurnPanel"] = new(new Vector2(1305, 785), new Vector2(277, 103)),
         };
+    internal static IReadOnlyList<GridPoint> StartCampCandidateCells { get; } =
+        [new(2, 4), new(5, 4), new(8, 4), new(3, 7), new(7, 7)];
     public static readonly Vector2 UnitMeterSize = new(44, 18);
     public const int UnitMeterBarHeight = 7;
     /// <summary>Possessed-form body tint: distinct crimson-violet matched to the critical corruption bar.</summary>
@@ -87,6 +89,9 @@ public partial class GodotPlayableRunMain : Control
     private bool _continueAutomaticAfterPresentation;
     private bool _pauseAfterCurrentFrame;
     private bool _presentationInputLocked;
+    private bool _initiativeInputLocked;
+    private GodotInitiativeStrip? _initiativeStrip;
+    private UnitInstanceId? _initiativeHoveredUnit;
     private StandardUnitPresentationResource? _presentationProfile;
     private StatusPresentationResource? _statusPresentationProfile;
     private readonly List<SkillPresentationResource> _skillPresentationProfiles=new();
@@ -94,6 +99,7 @@ public partial class GodotPlayableRunMain : Control
     private GodotRogueMapView? _mapView;
     private GodotAdventureBoardView? _adventureBoard;
     private GodotStartCampView? _startCampView;
+    private Control? _startCampInput;
     private readonly List<string> _partySelectionOrder = new();
     private string? _adventureLastBoardContentId;
     private Label? _mapDetail;
@@ -117,9 +123,9 @@ public partial class GodotPlayableRunMain : Control
     private enum InventoryReturnTarget { RunRoute }
     internal enum PresentationDrainAction { DequeueFrame, CompleteBattle, Pause, Refresh }
 
-    public bool IsReadyForInput => _run is not null && _page is not null && _units.Count == 14 &&
-        _skills.Count >= 22 && _ai.Count == 9 && _layouts.Count >= 2 && _encounters.Count >= 3 &&
-        _mapDefinition is not null && _treasureDefinition is not null && _catalogCount == 166;
+    public bool IsReadyForInput => _run is not null && _page is not null && _units.Count >= 14 &&
+        _skills.Count >= 22 && _ai.Count >= 9 && _layouts.Count >= 2 && _encounters.Count >= 3 &&
+        _mapDefinition is not null && _treasureDefinition is not null && _catalogCount >= 166;
     public string StartupContractSummary =>
         $"run={_run is not null}, page={_page is not null}, units={_units.Count}, skills={_skills.Count}, " +
         $"ai={_ai.Count}, layouts={_layouts.Count}, encounters={_encounters.Count}, " +
@@ -150,7 +156,7 @@ public partial class GodotPlayableRunMain : Control
         SaveStore.Load().Snapshot,
         _battle?.CaptureSnapshot(),
         _battle is not null,
-        _presentationInputLocked,
+        _presentationInputLocked || _initiativeInputLocked,
         _presentationPlayer?.IsPlaying == true,
         _battle?.HasPendingAutomaticFrames == true,
         _damageNumbers?.ActiveCount ?? 0,
@@ -167,7 +173,7 @@ public partial class GodotPlayableRunMain : Control
     private GodotAdventureRuntimeProbe? CaptureAdventureProbe()
     {
         PureRunSaveSnapshot? snapshot = SaveStore.Load().Snapshot;
-        PureRunState? run = snapshot?.ActiveRun;
+        PureRunState? run = _run?.ResumeRun().Snapshot?.ActiveRun ?? snapshot?.ActiveRun;
         RunAdventureState? adventure = run?.AdventureState;
         if (adventure is null)
         {
@@ -310,8 +316,8 @@ public partial class GodotPlayableRunMain : Control
         if (_startCampView is not null && GodotObject.IsInstanceValid(_startCampView) &&
             _startCampView.TryResolveTarget(targetKind, locator, out globalPoint))
         {
-            surface = _startCampView;
-            return true;
+            surface = _startCampInput;
+            return surface is not null && GodotObject.IsInstanceValid(surface);
         }
         surface = _adventureBoard;
         globalPoint = Vector2.Zero;
@@ -611,6 +617,7 @@ public partial class GodotPlayableRunMain : Control
             choices.AddChild(skillButton);
         }
         _status = LabelAt(root, "Starting skill choices are saved immediately. Press Esc for run controls.", new Vector2(470, 680), 18);
+        BuildPauseMenu(root, false);
     }
 
     private void ShowPartySelection()
@@ -666,6 +673,7 @@ public partial class GodotPlayableRunMain : Control
             ZIndex = StartPageUiZIndex - 1
         };
         root.AddChild(atlasInput);
+        _startCampInput = atlasInput;
         atlasInput.GuiInput += input =>
         {
             if (input is InputEventMouse mouse)
@@ -744,6 +752,7 @@ public partial class GodotPlayableRunMain : Control
         };
         root.AddChild(PlaceControl(Button("Inventory", () => ShowInventory(run)), new Vector2(1130, 720), new Vector2(360, 58)));
         _status = LabelAt(root, $"Leader: {adventure.LeaderId}", new Vector2(470, 810), 18);
+        BuildPauseMenu(root, false);
     }
 
     private static AdventureBoardDefinition CreateInitialAdventureBoard(IReadOnlyList<AdventureActorPlacement> actors)
@@ -834,7 +843,17 @@ public partial class GodotPlayableRunMain : Control
         root.AddChild(actionScroll);
         _skillPanel = new HBoxContainer { CustomMinimumSize = new Vector2(1120, 90) };
         actionScroll.AddChild(_skillPanel);
-        _turnOrder=LabelAt(root,string.Empty,new Vector2(475,32),18);_turnOrder.Size=new Vector2(650,50);_turnOrder.HorizontalAlignment=HorizontalAlignment.Center;_turnOrder.ZIndex=1201;
+        _turnOrder=LabelAt(root,string.Empty,new Vector2(475,32),18);_turnOrder.Visible=false;
+        _initiativeStrip = new GodotInitiativeStrip
+        {
+            Position = new Vector2(570, 26),
+            Size = new Vector2(565, 52),
+            ZIndex = 1201
+        };
+        _initiativeStrip.Configure(0);
+        _initiativeStrip.TransitionLockChanged += locked => _initiativeInputLocked = locked;
+        _initiativeStrip.HoverChanged += OnInitiativeHoverChanged;
+        root.AddChild(_initiativeStrip);
         _activeUnitPanel = new GodotBattleActiveUnitPanel
         {
             Name = "BattleActiveUnitPanel",
@@ -875,7 +894,11 @@ public partial class GodotPlayableRunMain : Control
         {
             if(!_actors.TryGetValue(unit.UnitId,out GodotUnitActor? actor)||!GodotObject.IsInstanceValid(actor))
             {actor=GodotUnitFactory.InstantiateActor(_unitResources[unit.DefinitionId]);actor.ConfigureInstanceIdentity(unit.UnitId.Value);actor.Scale=Vector2.One*.34f;actor.SetFacing(GodotPresentationFacingResolver.Initial(unit.PlayerNumber));actor.ConfigurePresentation(_presentationProfile??new StandardUnitPresentationResource());_board.AddChild(actor);_actors[unit.UnitId]=actor;}
-            if(!(_presentationPlayer?.IsPlaying??false))actor.Position = IsometricBattleBoardLayout.GridToScreen(unit.Cell);
+            if(!(_presentationPlayer?.IsPlaying??false))
+            {
+                actor.Position = IsometricBattleBoardLayout.GridToScreen(unit.Cell);
+                actor.SetFacing(GodotPresentationFacingResolver.ToGodot(unit.Facing));
+            }
             actor.SetDeathVisual(!unit.IsAlive);
             actor.Modulate = unit.IsPossessed ? PossessedFormTint : Colors.White;
             actor.SetSpearHeld(unit.DefinitionId.Value != "unit.pure-run.amazon" || !snapshot.DroppedSpears.ContainsKey(unit.UnitId));
@@ -890,6 +913,11 @@ public partial class GodotPlayableRunMain : Control
             }
             compact.ZIndex=400+(18-unit.Cell.X-unit.Cell.Y)*12+unit.Cell.X;
             compact.Bind(actor,unit.CurrentHealth,unit.MaxHealth,unit.CurrentMana,unit.MaxMana);
+            bool initiativeHovered = _initiativeHoveredUnit == unit.UnitId;
+            if (initiativeHovered) compact.Visible = true;
+            actor.SetHoverOutline(initiativeHovered
+                ? unit.PlayerNumber == 0 ? new Color("4bd078") : new Color("e55c64")
+                : null);
         }
         _droppedSpears?.Sync(snapshot.DroppedSpears);
         foreach (Node child in _skillPanel.GetChildren())
@@ -929,6 +957,7 @@ public partial class GodotPlayableRunMain : Control
             ? _actors.GetValueOrDefault(snapshot.ActiveUnitId)
             : null);
         if(_turnOrder is not null)_turnOrder.Text=$"Round {snapshot.Round} | Turn: "+string.Join(" → ",snapshot.TurnOrder.Select((id,index)=>$"{(index==snapshot.ActiveTurnIndex?"▶":"")}{id.Value}{(snapshot.Units.First(unit=>unit.UnitId==id).IsAlive?string.Empty:"✝")}"));
+        _initiativeStrip?.Apply(snapshot.Round, snapshot.InitiativeQueue, _unitResources);
         RefreshLog();
     }
 
@@ -1017,19 +1046,37 @@ public partial class GodotPlayableRunMain : Control
         if (hovered is UnitInstanceId unitId && _visibleSnapshot?.Units.FirstOrDefault(unit => unit.UnitId == unitId) is BattleUiUnitSnapshot unit)
             HoverCell(unit.Cell);
         foreach ((UnitInstanceId id, Control meter) in _unitMeters)
-            if (GodotObject.IsInstanceValid(meter)) meter.Visible = hovered is UnitInstanceId value && value == id;
+            if (GodotObject.IsInstanceValid(meter))
+                meter.Visible = _initiativeHoveredUnit == id || hovered is UnitInstanceId value && value == id;
     }
 
     private void HideUnitMeters()
     {
-        foreach (Control meter in _unitMeters.Values)
-            if (GodotObject.IsInstanceValid(meter)) meter.Visible = false;
+        foreach ((UnitInstanceId id, Control meter) in _unitMeters)
+            if (GodotObject.IsInstanceValid(meter)) meter.Visible = _initiativeHoveredUnit == id;
+    }
+
+    private void OnInitiativeHoverChanged(UnitInstanceId? unitId)
+    {
+        if (_initiativeHoveredUnit == unitId) return;
+        if (_initiativeHoveredUnit is UnitInstanceId previous &&
+            _actors.TryGetValue(previous, out GodotUnitActor? previousActor) && GodotObject.IsInstanceValid(previousActor))
+            previousActor.SetHoverOutline(null);
+        _initiativeHoveredUnit = unitId;
+        if (unitId is UnitInstanceId current &&
+            _actors.TryGetValue(current, out GodotUnitActor? actor) && GodotObject.IsInstanceValid(actor) &&
+            _visibleSnapshot?.Units.FirstOrDefault(unit => unit.UnitId == current) is BattleUiUnitSnapshot unit)
+        {
+            actor.SetHoverOutline(unit.PlayerNumber == 0 ? new Color("4bd078") : new Color("e55c64"));
+        }
+        HideUnitMeters();
     }
 
     private void PreviewTargetingFacing(BattleUiSnapshot snapshot, GridPoint cell)
     {
         if (!_actors.TryGetValue(snapshot.ActiveUnitId, out GodotUnitActor? actor) || !GodotObject.IsInstanceValid(actor)) return;
-        GodotUnitFacing current = actor.PresentationFacing;
+        GodotUnitFacing current = GodotPresentationFacingResolver.ToGodot(
+            snapshot.Units.Single(unit => unit.UnitId == snapshot.ActiveUnitId).Facing);
         GodotUnitFacing preview = current;
         if (snapshot.TargetingMode == BattleTargetingMode.Move && snapshot.LegalMoveCells.Contains(cell))
             preview = GodotPresentationFacingResolver.PreviewMove(snapshot.Units.Single(unit => unit.UnitId == snapshot.ActiveUnitId).Cell,
@@ -1051,7 +1098,8 @@ public partial class GodotPlayableRunMain : Control
     private void ApplyIntent(BattleUiIntent intent)
     {
         if (_battle is null) return;
-        if (ShouldBlockBattleIntent(_cheatConsole?.Visible == true, _presentationInputLocked, _pauseMenu?.Visible == true))
+        if (ShouldBlockBattleIntent(_cheatConsole?.Visible == true,
+                _presentationInputLocked || _initiativeInputLocked, _pauseMenu?.Visible == true))
         {
             string reason = _cheatConsole?.Visible == true ? "cheat_console_open" : "presentation_in_progress";
             AddLog(new BattleUiLogEntry(BattleUiLogCategory.Rejected,reason,"CommandRejectedEvent"));
@@ -2284,6 +2332,7 @@ public partial class GodotPlayableRunMain : Control
         _mapView=null;
         _adventureBoard=null;
         _startCampView=null;
+        _startCampInput=null;
         _mapDetail=null;
         _pauseMenu=null;
         _pauseMenuControlsBattlePlayback=false;

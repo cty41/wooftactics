@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-f3f13ddc3a79f4d8",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/references/ring_pommel_dao_reference_01.json",
+    "sha256": "2ff16c0fb747fd3120fd6e6a4a35faff29123d3ea411e3e454e739f7bc965cb2"
+  },
+  "role": "local-reference-descriptor",
+  "note": "用户提供环首刀出鞘与刀鞘形制照片的reference-only SHA描述，不含可发布图像内容"
+}

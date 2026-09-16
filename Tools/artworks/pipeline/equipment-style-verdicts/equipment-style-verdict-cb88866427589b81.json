@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "equipmentStyleVerdictId": "equipment-style-verdict-cb88866427589b81",
+  "attemptId": "job-cb212e931b8f5c37-a001",
+  "candidateSha256": "1abc09cbedfee504d9f3ad33fc71f44f5996cf5d0ba1eab07091b1c7b0cf7cb7",
+  "reviewSha256": {
+    "equipmentPanel": "6f592ce5b89bce8094fb78278f8f8bb7d8e768b5d2ca3a1279520ab9763e5e64"
+  },
+  "reviewer": "cty41",
+  "decision": "approved",
+  "reason": "用户明确接受紧凑旅行古琴v3的80x76px比例、七弦身份、收腰与Pure Run画风",
+  "decidedAt": "2026-08-30T09:46:46.8309123+08:00"
+}

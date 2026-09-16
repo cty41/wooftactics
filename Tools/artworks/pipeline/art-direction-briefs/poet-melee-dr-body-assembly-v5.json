@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 4,
+  "registryId": "asset-brief-fcab992a0c7a0bef",
+  "sourceId": "poet-melee-dr-body-assembly-v5",
+  "sourceType": "asset",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/briefs/poet_melee_dr_body_assembly_asset_brief_v5.json",
+    "sha256": "3bcb598d73c587c70d75311fa84378d6bd6ff6d9d3ae6d748832b97cfa573e66"
+  }
+}

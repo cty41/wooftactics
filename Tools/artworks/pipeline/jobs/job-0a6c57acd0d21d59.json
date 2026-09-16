@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 4,
+  "jobId": "job-0a6c57acd0d21d59",
+  "state": "ready",
+  "contractId": "contract-5277695f41ebb229",
+  "contractSha256": "0a2ca490743ccc06929a7fb6236f205725c68dfb534f671a622e41f8a85805ea",
+  "prompt": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/poet_melee_dr_release_impact_v3.txt",
+    "sha256": "d766fc6a5864fb8924fd60c8fb9e98315a2a373c53c264f94f22006b05dcf0bf"
+  },
+  "inputs": [
+    {
+      "role": "image-1-approved-poet-identity-volume-dr",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+      "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+    },
+    {
+      "role": "image-2-approved-unsheathed-tang-dao-form",
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v02.png",
+      "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1"
+    },
+    {
+      "role": "image-3-deterministic-release-impact-action-guide",
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_melee_dr_release_impact_pose_guide_v3.png",
+      "sha256": "8b88f44ee38e01728e9471fef2c5424bf2b34086499f99bd89f3608435d5d421"
+    }
+  ],
+  "target": {
+    "direction": "down-right",
+    "pose": "melee"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": true,
+  "poseGuide": {
+    "poseGuideId": "pose-guide-e156d4cb46ff0e9c",
+    "sha256": "b378c0c3b805d214ef1b25e7d923d39760de213e62d4196ce4b3336ebed50609"
+  },
+  "localReferences": []
+}

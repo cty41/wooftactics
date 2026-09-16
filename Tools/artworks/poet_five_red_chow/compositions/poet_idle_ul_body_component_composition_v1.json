@@ -1,0 +1,14 @@
+{
+  "canvas": [256, 256],
+  "bodyLayer": true,
+  "renderForbiddenRegions": false,
+  "coreBbox": [94, 121, 160, 231],
+  "coreAxis": {"bottom": [127, 231], "top": [127, 121], "tiltDegrees": [-2.0, 2.0]},
+  "footCenter": [128, 236],
+  "weapon": {"hiddenGrip": [168, 160], "exitWindow": [168, 160, 168, 160], "tipRegion": [168, 160, 168, 160], "maxBladeWidthPx": 0, "maxGemAreaPx": 0},
+  "forbiddenRegions": [],
+  "requiredHiddenLabels": [],
+  "visibleAreaCaps": {},
+  "equipmentState": {"scabbard": "absent", "staticEffects": "absent"},
+  "screenSpaceIntent": {"direction": "native upper-left back view", "core": "body-only core fits cyan guide", "exclusions": "no paws and no equipment"}
+}

@@ -6,6 +6,26 @@
 - **已批准 DR 动作图**：生成 UL 时只锁定冻结动作时刻、装备状态和动作轴，不迁移正面解剖。UL 必须从正式 UL 母图原生重绘，不镜像 DR。
 - **跨角色动作参考**：只迁移骨架、夸张程度、握点或惯性方向。当前已批准赤柴 Hit 运行时图 `godot/assets/units/actions/doge_hunter_hit_dr.png` 是标准胶囊角色受击夸张程度的只读参考，不是其他犬种的身份母图。
 
+## 动作预演：纯橙 Stick-Figure Gate
+
+当动作的冻结时刻、力线、重心、接触关系、负形或夸张程度仍有分歧时，必须先于正式 ImageGen 绘制 `1–4` 张纯橙单色火柴人缩略预演。按 [`pose-proof.md`](pose-proof.md) 使用 `scripts/pose_proof.py render-options` 从轻量 Draft 确定性生成 Review 看板及 128 预览。草图使用最终方向、摄像机和大致画布占位，可以包含抽象装备轴，但不得携带犬种、服装、角色配色、装备造型、材质或技术检测框。由 `cty41` 选择姿态后运行 `select-option`，再建立精确 Composition。
+
+Idle 微调、exact-chroma 等技术清理，以及同一目标 asset/pose/direction 已具有完整批准链的姿态复用可通过不可变 receipt 豁免；其他资产的 Approval 或裸图不能借用。确定性 Assembly 若目标尚未批准，仍需至少建立单方案 Action Card。未选草图和 review board 不是正式 Attempt/Series/state；Action Card 只记录所选姿态、主要否决理由和人工决定，完整未选几何及临时 PNG 不进入 Git。新 `action_pose` Composition schema v3 必须绑定该 Card 或有效豁免；历史 schema v2 记录不回写。
+
+## Pose / Identity / Equipment / Geometry 四类职责
+
+- **纯橙 Pose sketch**：只负责动作时点、力线、重心、接触、负形和剪影。
+- **Identity anchor**：只负责物种、脸、核心体量、配色和画风。
+- **Equipment anchor**：只负责精确形制、比例与装备状态。
+- **Composition / Pose Guide**：姿态选定后才负责 baseline、握点、端点、遮挡层和安全区；多色技术 Guide 不能代替纯橙姿态预演。
+- **ImageGen**：只综合已经批准的职责，不负责重新设计动作，也不拥有终审权。
+
+## ImageGen 停止与换策略信号
+
+每生成一张候选就停止并等待 `selected / retry / stop`。姿态尚未通过纯橙预演、来源职责冲突、运行时时点不匹配、连续两轮重复同一语义失败、模型持续重画冻结区域，或确定性 Assembly 已能完成时，立即停止 ImageGen 并回到对应决策层。默认 generation round `3` 是流程预算与停止信号；Reviewer 自动闭环硬限制在三轮以内。普通/equipment retry 的现行 CLI 尚未统一强制该上限，因此只有直接人工决定才应继续第 4 张及以后候选，不能把流程约束误写成已由所有命令实施的硬门禁。
+
+最小人工门禁为：G0 确认 gameplay consumer、Visual Moment 和 Sprite/Tween/VFX 分工；G1 选择纯橙姿态；G2 确认来源职责；G3 逐张判定候选；G4 检查 256、128、状态集和 Game View；G5 分别批准 promotion 与 runtime 接入。
+
 ## 3D 姿势到等距投影
 
 - 动作提示词按“世界空间角色朝向与局部动作 → 固定等距摄像机 → 屏幕空间验收”三层书写。只写“向左倾”“后仰”或“顺/逆时针”会把角色局部方向、摄像机方向和屏幕方向混在一起。

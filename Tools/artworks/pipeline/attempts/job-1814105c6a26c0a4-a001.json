@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 3,
+  "attemptId": "job-1814105c6a26c0a4-a001",
+  "jobId": "job-1814105c6a26c0a4",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "review_pending",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_ring_pommel_tang_dao_sheathed_dr_raw_v02.png",
+      "sha256": "ff471c229606afa86685a5e011335f8d2ff122e8be52ddf48f7de5db66c2d269"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-1814105c6a26c0a4/job-1814105c6a26c0a4-a001/raw.png",
+      "sha256": "ff471c229606afa86685a5e011335f8d2ff122e8be52ddf48f7de5db66c2d269"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-1814105c6a26c0a4/job-1814105c6a26c0a4-a001/prepared.png",
+      "sha256": "8ecf3de0f6859965cdc08ebae8735bfaa8d134a701e855ba422262fbf71ce0cf"
+    },
+    "maskSource": {
+      "path": "Tools/artworks/poet_five_red_chow/components/poet_ring_pommel_tang_dao_sheathed_equipment_mask_v02.png",
+      "sha256": "a06409a9af05a2b8791d546d05474f7ab5324706701d2a186e3c59232e0bad27"
+    },
+    "mask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-1814105c6a26c0a4/job-1814105c6a26c0a4-a001/mask.png",
+      "sha256": "a06409a9af05a2b8791d546d05474f7ab5324706701d2a186e3c59232e0bad27"
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-5f3bb0e1c232bd46.json",
+    "sha256": "64e6a1954913a9eb63c07adcf5231a0fe4ae59f95e68184d905869b08bff07f9"
+  },
+  "approvalId": null,
+  "feedbackId": null,
+  "componentMigrationId": "component-migration-1367648df45bd1ee",
+  "sourceMode": "pre_v3_import"
+}

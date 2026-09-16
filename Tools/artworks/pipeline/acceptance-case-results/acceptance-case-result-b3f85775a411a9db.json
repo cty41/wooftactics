@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 4,
+  "acceptanceCaseResultId": "acceptance-case-result-b3f85775a411a9db",
+  "attemptId": "job-34f6747e5a1f30d0-a001",
+  "caseId": "POET-EXCLUSION-001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-34f6747e5a1f30d0/job-34f6747e5a1f30d0-a001/prepared.png",
+    "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+  },
+  "contractId": "contract-57bf5c0526078c9d",
+  "contractSha256": "0af903e867b06faffc66bfa9456a31396051bc3ce1746f17d2fd2227d4593df1",
+  "evidence": {
+    "candidate-master": {
+      "path": "Tools/artworks/pipeline/artifacts/job-34f6747e5a1f30d0/job-34f6747e5a1f30d0-a001/prepared.png",
+      "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+    },
+    "assembly-layers": {
+      "path": "Tools/artworks/pipeline/reviews/job-34f6747e5a1f30d0-a001/assemblyLayerReview.png",
+      "sha256": "17108898be23a65a03f9dc915c336529b69da59c052dac25d24f1a92938256b2"
+    }
+  },
+  "automatedFacts": [
+    "assembly contains no guqin wineskin exposed blade or second equipment"
+  ],
+  "automatedResult": "passed",
+  "humanChecks": [
+    "cty41 must confirm excluded objects are absent"
+  ],
+  "humanDecision": "pending",
+  "reviewer": "agent",
+  "reason": "Input exclusion passed; visual decision pending",
+  "decidedAt": "2026-09-03T16:00:00+08:00"
+}

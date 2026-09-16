@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "compiledPromptId": "compiled-prompt-4df98e3c8cdcf3fc",
+  "jobId": "job-15a2cb63c7062bee",
+  "poseGuideId": "pose-guide-3900f9362da0239a",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/compiled/poet_death_hunter_close_dao_v2_a001.md",
+    "sha256": "37f2f9070334e069cdd17d22f70209aa1a098cb6ec696c1c7f1bdbfd38c402a1"
+  }
+}

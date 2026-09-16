@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "manifestKind": "art-direction-manifest",
+  "manifestId": "pure-run-art-direction-manifest-v1",
+  "status": "active",
+  "projectProfile": {
+    "profileId": "pure-run-project-art-direction-v1",
+    "path": "Tools/artworks/pure_run/art_direction/project_art_direction_v1.json",
+    "sha256": "4820888ee25ac6865705ef130abdbec64ed597c6b126d96e6361a01960ec13fb"
+  },
+  "materialLanguage": {
+    "profileId": "pure-run-material-language-v1",
+    "path": "Tools/artworks/pure_run/art_direction/material_language_v1.json",
+    "sha256": "3efa1e523c20c41f407ff142759a0bc18bb874392266006c704c314fd13dfd83"
+  },
+  "familyProfiles": [
+    {"profileId": "pure-run-actor-family-v1", "family": "actor", "path": "Tools/artworks/pure_run/art_direction/families/actor_v1.json", "sha256": "a5214ad32ea193569198cac822ddac860adcdf8f4e03f24d455d9aee3099f95d"},
+    {"profileId": "pure-run-equipment-family-v1", "family": "equipment", "path": "Tools/artworks/pure_run/art_direction/families/equipment_v1.json", "sha256": "c1462b6cc71959a3f3ba0685cb022fb1bb08e7c55a1c775ca709ab1e9834a75e"},
+    {"profileId": "pure-run-interactable-family-v1", "family": "interactable", "path": "Tools/artworks/pure_run/art_direction/families/interactable_v1.json", "sha256": "847633b8dc53601d828cc7a5a2c42b32c30f42b08f07328e9f774939dfbbb38b"},
+    {"profileId": "pure-run-prop-family-v1", "family": "prop", "path": "Tools/artworks/pure_run/art_direction/families/prop_v1.json", "sha256": "067905f518fb3d862bb980615161dddd67162ae287189f1fc7faaa3c01f15324"},
+    {"profileId": "pure-run-vfx-readability-family-v1", "family": "vfx_readability", "path": "Tools/artworks/pure_run/art_direction/families/vfx_readability_v1.json", "sha256": "6b5dcd62deb456b0749387615ba7adcb858171593c88b5dc9466e3bc697aebf6"},
+    {"profileId": "pure-run-world-environment-family-v1", "family": "world_environment", "path": "Tools/artworks/pure_run/art_direction/families/world_environment_v1.json", "sha256": "582accb62fcb2d1086353cd98ccc848ad05318db74905758e9f725df4e7045b9"}
+  ],
+  "briefTemplates": [
+    {"templateId": "pure-run-asset-brief-v1", "path": "Tools/artworks/pure_run/art_direction/templates/asset_brief_v1.json", "sha256": "55992481a35efe30d93a18f64fbd02c9a7618b466697de92c29334a6817d4b6b"},
+    {"templateId": "pure-run-scene-brief-v1", "path": "Tools/artworks/pure_run/art_direction/templates/scene_brief_v1.json", "sha256": "6c158fb8106c3024ef48ae68c9966d7e15bfd5e2a0cd4a72d1d41c1e28747933"}
+  ],
+  "themeProfiles": [],
+  "activatedBy": "cty41",
+  "activationReason": "User confirmed the layered Pure Run art-direction design and requested execution; theme profiles remain deferred until repeated production evidence.",
+  "activatedAt": "2026-09-03T13:30:00+08:00"
+}

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 4,
+  "caseFitnessAuditId": "case-fitness-audit-2bb38f55c7bde773",
+  "source": {
+    "path": "Tools/artworks/pure_run/art_direction/review/case_demonbound_melee_ul_occluded_paws_boundary_v1.json",
+    "sha256": "767d9c9c2c054fa3033b7c03cd9d7f83bcbe1baa2a2a25d66533916883a985ed"
+  },
+  "caseId": "CASE-DEMONBOUND-MELEE-UL-OCCLUDED-PAWS-BOUNDARY-v1",
+  "audit": {
+    "status": "shadow-only",
+    "eligibleForActivePolicy": false,
+    "reasons": []
+  }
+}

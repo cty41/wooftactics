@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 4,
+  "jobId": "job-1f834522a953c67a",
+  "state": "ready",
+  "contractId": "contract-84535043d1100dc0",
+  "contractSha256": "fabfe180310cefd94e35f3806e10dcf8d40bc5570d6978dd4718fb2a5d2ca1f6",
+  "prompt": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/poet_cast_ul_vertical_guard_grip_prompt_v1.md",
+    "sha256": "f46c9933b8f4b52abb24ab9ac03f66fa7a5c27b2f281da883e4ce776fd3a06b2"
+  },
+  "inputs": [
+    {
+      "role": "image-1-approved-idle-ul-identity-volume",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_ul_v07.png",
+      "sha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512"
+    },
+    {
+      "role": "image-2-approved-cast-dr-action-moment-only",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_cast_dr_vertical_guard_grip_v01.png",
+      "sha256": "7cd072d554222d24c1cc4b357f3220260c01016c47be51d21c34e045d4139883"
+    },
+    {
+      "role": "image-3-approved-sheathed-dao-form",
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_dr_v02.png",
+      "sha256": "eb4acedf50fe56d2c216e932a7364686de603a4df40c9bc5f1fe10c22ab55999"
+    },
+    {
+      "role": "image-4-deterministic-cast-ul-guide",
+      "path": "Tools/artworks/poet_five_red_chow/guides/poet_cast_ul_vertical_guard_grip_pose_guide_v1.png",
+      "sha256": "c633fd8742ecf2b3db7d7d046ded8d64185009d3f0633cc77c76a1e08b58f8c1"
+    }
+  ],
+  "target": {
+    "direction": "up-left",
+    "pose": "cast"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": {
+    "occlusion": {
+      "layerRules": {
+        "near_hand": "behind-core",
+        "far_hand": "behind-core",
+        "equipment": "behind-core"
+      },
+      "visibilityCaps": {
+        "near_hand": 0.22,
+        "far_hand": 0.08,
+        "equipment": 0.35
+      }
+    },
+    "imageGenDirective": "Draw behind-core equipment and both hand paws first, then draw the capsule body over their inner portions; only outer arcs may remain visible."
+  },
+  "requiresInvocation": true,
+  "poseGuide": {
+    "poseGuideId": "pose-guide-216d7ee7517589dc",
+    "sha256": "84a3c342f6b13eaaf589c4450c3bba441d059fd8e06bdf6b7d516c76d73964b2"
+  },
+  "localReferences": []
+}

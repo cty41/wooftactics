@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Tactics Project Overview
 description: Tactics 的 Godot 产品主线、纯 .NET 分层、运行时和主要游戏系统总入口。
 tags: [architecture, godot, agent-first]
-timestamp: "2026-08-22T15:35:49+08:00"
+timestamp: "2026-09-17T00:07:59+08:00"
 status: active
 catalog_scope: project-architecture
 repo_paths:
@@ -17,7 +17,7 @@ repo_paths:
   - godot/src/Tactics.Godot.Adapter
   - godot/project.godot
 verified_revision: c56d71ad4ebd
-source_fingerprint: sha256:660513ac25eacff995f27ed9a9933dafe9a1a6ac1c8da80effc5e43544a43a38
+source_fingerprint: sha256:068bccc6c1e4e4a98f059c2c106e6837c91673b01319107fb2aacf4eb5755c83
 ---
 
 # Summary
@@ -30,11 +30,10 @@ Tactics 是 Agent 优先维护并准备公开发布的 Godot 4.7 C# 战棋项目
 
 - `Tactics.Core` 与 `Tactics.Application` 是纯 .NET 9；Godot Node、Resource、Scene、文件系统和 UI 只进入 Adapter/Editor 层。
 - 最终内容由 Godot Resource/PackedScene 与轻量 Catalog 驱动；迁移 DTO、Unity GUID 和历史 receipt 不进入运行时。公开仓库中的已提交 Unit Resource 可由独立 ResourceSaver 升级入口刷新到当前属性派生合同，无需恢复 Unity DTO。
-- 四候选选三人的 Pure Run 使用 Save V7、确定性 Battle/Run 状态、Catalog 160 与单一 `Main.tscn`；新增的魔剑士非大师内容使用魅力主属性、腐化/冥想与附身控制合同；
-  `battle-layout.pure-run.split-flank` 将原本只在运行时代码中补建的布局闭合为正式 Resource。
-- Battle HUD 由 Godot Adapter 将 Application Snapshot 投影为当前行动者状态卡和鼠标 Hover 浮层；头像来自 typed Unit Resource，HP/MP/腐化只读展示，不参与战斗裁决或输入合法性。
+- 五候选选三人的 Pure Run 使用 Save V10、确定性 Battle/Run 状态、Catalog 185 与单一 `Main.tscn`；魔剑士使用魅力主属性、腐化/冥想与附身控制合同，诗人使用力量主属性、提供剑仙/诗仙/酒仙 15 个技能等级，并以获批五红土松 Idle DR/UL 作为当前方向视觉；`battle-layout.pure-run.split-flank` 是正式 Resource。
+- Battle HUD 由 Godot Adapter 将 Application Snapshot 投影为当前行动者状态卡、鼠标 Hover 浮层和右上动态行动条；行动条读取 Core 已提交的 current/remaining，使用圆形脸部头像、阵营背景、current/hover 框、九头像上限与省略号，不拥有玩法顺序。
 - 自动 gameplay runner 的指针目标先从 Control 本地空间转换到 Canvas 全局空间，再通过 Viewport 进入生产 `_gui_input` 链，避免把全屏 Control 的 Hover 误当作格坐标命中。
-- `Tools/godot/Verify-GodotProject.ps1` 是本地主线统一门禁；Windows RC 使用只读 staging、包审计和双 renderer EXE smoke。
+- 本地验证默认从最小相关测试逐级升级；产品代码收口时至多运行一次 `Tools/godot/Verify-GodotProject.ps1` 统一门禁。Windows RC 使用只读 staging、包审计和双 renderer EXE smoke，但未经用户明确授权，Agent 不主动触发 GitHub Actions、远程导出或同类高耗时任务。
 - `Tools/public-release` 固定公开文件策略、资产来源哈希、依赖清单与单 root 候选重建；运行时不依赖这些审计工具。
 - 固定的 godot-ai v3.1.2 源码是公开可审计的 MIT Editor-only 依赖，由统一入口按 worktree 隔离；导出与 Windows 运行时包继续排除该插件。
 - Agent 默认在用户指定的 worktree 中完成审计和修复；新建、删除或切换 worktree 必须有活跃计划或用户明确授权。

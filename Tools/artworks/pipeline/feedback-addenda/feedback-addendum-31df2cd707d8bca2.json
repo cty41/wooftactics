@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "feedbackAddendumId": "feedback-addendum-31df2cd707d8bca2",
+  "attemptId": "job-6a95f820a37e8586-a001",
+  "parentFeedbackId": "feedback-da1e6e7295771c76",
+  "reviewer": "cty41",
+  "defects": [
+    "The two-front-paw grip is still incorrect, and both paws have not been pulled far enough back into the torso silhouette."
+  ],
+  "recordedAt": "2026-09-13T00:34:57+08:00",
+  "authorType": "human",
+  "disposition": "retry"
+}

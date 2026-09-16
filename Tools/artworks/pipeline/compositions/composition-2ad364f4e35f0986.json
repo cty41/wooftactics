@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 2,
+  "compositionId": "composition-2ad364f4e35f0986",
+  "assetId": "poet-five-red-chow-ring-pommel-tang-dao-idle-ul-v1",
+  "spec": {
+    "canvas": [
+      256,
+      256
+    ],
+    "bodyLayer": false,
+    "coreAxis": {
+      "bottom": [
+        128,
+        231
+      ],
+      "top": [
+        128,
+        121
+      ],
+      "tiltDegrees": [
+        -2.0,
+        2.0
+      ]
+    },
+    "footCenter": [
+      128,
+      236
+    ],
+    "weapon": {
+      "hiddenGrip": [
+        161,
+        164
+      ],
+      "exitWindow": [
+        151,
+        143,
+        180,
+        180
+      ],
+      "tipRegion": [
+        141,
+        207,
+        164,
+        235
+      ],
+      "guardWindow": [
+        149,
+        158,
+        172,
+        185
+      ],
+      "bladeCenterline": [
+        161,
+        154,
+        149,
+        226
+      ],
+      "maxBladeWidthPx": 16,
+      "maxGemAreaPx": 0
+    },
+    "forbiddenRegions": [
+      {
+        "name": "face-on-back",
+        "rect": [
+          100,
+          120,
+          158,
+          175
+        ]
+      },
+      {
+        "name": "front-layer-left-free-paw",
+        "rect": [
+          80,
+          150,
+          110,
+          210
+        ]
+      }
+    ],
+    "requiredHiddenLabels": [
+      "near_hand",
+      "far_hand",
+      "equipment"
+    ],
+    "visibleAreaCaps": {
+      "near_hand": 0.35,
+      "far_hand": 0.35,
+      "equipment": 0.45
+    },
+    "equipmentState": {
+      "scabbard": "present",
+      "staticEffects": "absent"
+    },
+    "screenSpaceIntent": {
+      "direction": "upper-left back view",
+      "ringPommel": "upper-right outside or touching the shoulder silhouette",
+      "scabbard": "steep behind-body axis descending slightly toward lower-left",
+      "holdingPaw": "screen-right far paw behind core; only outer arc may remain visible",
+      "freePaw": "screen-left near paw behind core; no equipment contact",
+      "feet": "two rear paws visible at baseline"
+    }
+  },
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/compositions/poet_ring_pommel_tang_dao_idle_ul_composition_v1.json",
+    "sha256": "e10f5a6d2e4140def65a5ed47ed109d630cba01044f30b2d00e33c38fae3ac4b"
+  },
+  "anchor": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+    "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753"
+  }
+}

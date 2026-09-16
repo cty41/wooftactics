@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-aa24728a6aff644e",
+  "attemptId": "job-43b34a4685f71ca2-a008",
+  "candidateSha256": "17fe59933be94e79c1023d463943dae992c020acdbfa82469c9b32104cc2db3f",
+  "reviewer": "agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "真实视觉 core 校准后完整 alpha 高127px，已与122px正式角色范围接近，解决旧候选过度放大问题"
+  ],
+  "defects": [
+    "core 语义区垂直中心偏低5px；少数色幕孔洞造成14个断行；下段最大宽度比中段多1px"
+  ],
+  "nextPromptDelta": "保持同一 raw；core 上移36源像素，逐行只保留最大连续主体段，并使下三分之一右缘内收1源像素",
+  "recordedAt": "2026-08-29T22:06:17.0730563+08:00",
+  "authorType": "agent",
+  "categories": [
+    "core_geometry",
+    "chroma"
+  ],
+  "disposition": "technical_failed",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "core 语义区垂直中心偏低5px；少数色幕孔洞造成14个断行；下段最大宽度比中段多1px"
+  ]
+}

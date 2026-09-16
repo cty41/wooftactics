@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-bc95184e3d5d37c5",
+  "attemptId": "job-653a716d2dd626fd-a001",
+  "candidateSha256": "e84283eb59207c1335981f2072748b4ef89062cdac6da91e94a1078485121923",
+  "reviewer": "agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "Generated weapon has the correct continuous upper-left-tip to lower-right-ring diagonal and one fully sheathed Tang dao."
+  ],
+  "defects": [
+    "Sparse alpha islands expanded the crop, causing visible height and baseline preparation failures."
+  ],
+  "nextPromptDelta": "No regeneration; retain only the largest connected alpha component before equipment preparation.",
+  "recordedAt": "2026-09-05T11:56:04+08:00",
+  "authorType": "agent",
+  "categories": [
+    "processing"
+  ],
+  "disposition": "technical_failed",
+  "frozenInvariants": [
+    "raw weapon pixels and diagonal axis"
+  ],
+  "pendingFixes": [
+    "Sparse alpha islands expanded the crop, causing visible height and baseline preparation failures."
+  ]
+}

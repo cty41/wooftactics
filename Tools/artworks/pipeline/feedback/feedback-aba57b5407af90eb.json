@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-aba57b5407af90eb",
+  "attemptId": "job-43b34a4685f71ca2-a009",
+  "candidateSha256": "17fe59933be94e79c1023d463943dae992c020acdbfa82469c9b32104cc2db3f",
+  "reviewer": "agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "完整 alpha 高127px，core bbox 与中心完全匹配 anchor；无放大或尾巴参与缩放"
+  ],
+  "defects": [
+    "逐行最大段随松狮三分之四头脸偏移，产生8.24度伪 core 倾角；下段仍多1px"
+  ],
+  "nextPromptDelta": "保持同一 raw；以固定 x630 为中心取逐行最大对称连续主体段，lower band 半径上限小于 middle，并将手爪只标 core 外弧",
+  "recordedAt": "2026-08-29T22:07:11.0772135+08:00",
+  "authorType": "agent",
+  "categories": [
+    "core_geometry"
+  ],
+  "disposition": "technical_failed",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "逐行最大段随松狮三分之四头脸偏移，产生8.24度伪 core 倾角；下段仍多1px"
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "packetId": "model-review-packet-f56486635b978b9c",
+  "schemaVersion": 1,
+  "attemptId": "job-4affd0d3e702d0d0-a001",
+  "contract": {
+    "contractId": "contract-ba466365ddf2fc89",
+    "sha256": "3878db536635c4afcc28a1ca099ffe56e847ce9451d3e3d12921ebd7486bb7c4"
+  },
+  "brief": {
+    "briefId": "poet-ring-pommel-tang-dao-idle-ul-v7",
+    "sha256": "4168eb2040b024fa645521f1e36a234c7cf4e9c90c0739d9d1e3879954c5abdb"
+  },
+  "compiledPolicy": {
+    "compiledPolicyId": "compiled-review-policy-9300e3319ae32600",
+    "sha256": "9300e3319ae326002ecf5988696284793ae6f518ca4b6e48bd62e5426e16bc53"
+  },
+  "reviewRound": 1,
+  "requiredModel": "gpt-5.6-sol",
+  "reasoningEffort": "medium",
+  "artifacts": [
+    {
+      "role": "CALIBRATED_256",
+      "path": "Tools/artworks/pipeline/artifacts/job-4affd0d3e702d0d0/job-4affd0d3e702d0d0-a001/calibrated.png",
+      "sha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512"
+    },
+    {
+      "role": "CANDIDATE_CALIBRATED",
+      "path": "Tools/artworks/pipeline/artifacts/job-4affd0d3e702d0d0/job-4affd0d3e702d0d0-a001/calibrated.png",
+      "sha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512"
+    },
+    {
+      "role": "CANDIDATE_CALIBRATEDMASK",
+      "path": "Tools/artworks/pipeline/artifacts/job-4affd0d3e702d0d0/job-4affd0d3e702d0d0-a001/calibrated-mask.png",
+      "sha256": "edae09310bdfc2d9738685f542f5797b59782824adc2c67bde2c73bc4f0cf6b2"
+    },
+    {
+      "role": "CANDIDATE_MASK",
+      "path": "Tools/artworks/pipeline/artifacts/job-4affd0d3e702d0d0/job-4affd0d3e702d0d0-a001/mask.png",
+      "sha256": "8b536070f254e83bcc3837bce1497159cc05b99ce0229df77255b704d1d45e1e"
+    },
+    {
+      "role": "CANDIDATE_MASKSOURCE",
+      "path": "Tools/artworks/poet_five_red_chow/masks/poet_ring_pommel_tang_dao_idle_ul_v7_a010_chroma_clean_mask.png",
+      "sha256": "8b536070f254e83bcc3837bce1497159cc05b99ce0229df77255b704d1d45e1e"
+    },
+    {
+      "role": "CANDIDATE_PREPARED",
+      "path": "Tools/artworks/poet_five_red_chow/candidates/poet_ring_pommel_tang_dao_idle_ul_v6_a010_chroma_clean.png",
+      "sha256": "58f623c413a010b66e14c2a2c3d9503a18d4d0b2326540c21969c55eed40aa36"
+    },
+    {
+      "role": "CANDIDATE_RAW",
+      "path": "Tools/artworks/pipeline/artifacts/job-16985014758beabb/job-16985014758beabb-a010/raw.png",
+      "sha256": "1d605908bf402bcde38a66e7b23dbde84ab1cdb3e98a77f369acfc8e1a94d29d"
+    },
+    {
+      "role": "CANDIDATE_SOURCE",
+      "path": "Tools/artworks/poet_five_red_chow/concepts/poet_ring_pommel_tang_dao_idle_ul_v5_raw_a010.png",
+      "sha256": "1d605908bf402bcde38a66e7b23dbde84ab1cdb3e98a77f369acfc8e1a94d29d"
+    },
+    {
+      "role": "CURRENT_CANDIDATE",
+      "path": "Tools/artworks/pipeline/artifacts/job-4affd0d3e702d0d0/job-4affd0d3e702d0d0-a001/calibrated.png",
+      "sha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512"
+    },
+    {
+      "role": "EQUIPMENT_VISIBILITY",
+      "path": "Tools/artworks/pipeline/reviews/job-4affd0d3e702d0d0-a001/depthReview.png",
+      "sha256": "bff7bdd11732dc507707edc3b421ec80643d5b4a3726a937d3ee69a3e503a6af"
+    },
+    {
+      "role": "SEMANTIC_MASK",
+      "path": "Tools/artworks/pipeline/artifacts/job-4affd0d3e702d0d0/job-4affd0d3e702d0d0-a001/calibrated-mask.png",
+      "sha256": "edae09310bdfc2d9738685f542f5797b59782824adc2c67bde2c73bc4f0cf6b2"
+    },
+    {
+      "role": "SEMANTIC_MASK_OVERLAY",
+      "path": "Tools/artworks/pipeline/reviews/job-4affd0d3e702d0d0-a001/overlay.png",
+      "sha256": "8a980d018673926280746a4acc0e83391d593ea119f2aee75c146c7971e42d17"
+    }
+  ],
+  "evidence": [
+    {
+      "role": "POSITIVE_IDENTITY_ANCHOR",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+      "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+    },
+    {
+      "role": "DIRECTION_EVIDENCE",
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_a003_a005_layer_compare_v02.png",
+      "sha256": "ba4b57d2108caa85cebef28f1407800348b0a79359877af81faf235b116bc487"
+    }
+  ],
+  "acceptanceCases": [
+    {
+      "caseId": "POET-UL-V3-CORE-001"
+    },
+    {
+      "caseId": "POET-UL-V3-PAWS-001"
+    },
+    {
+      "caseId": "POET-UL-V3-DIRECTION-001"
+    },
+    {
+      "caseId": "POET-UL-V3-DAO-001"
+    },
+    {
+      "caseId": "POET-UL-V3-EXCLUSION-001"
+    },
+    {
+      "caseId": "POET-UL-V3-SCALE-001"
+    }
+  ],
+  "feedback": [],
+  "frozenInvariants": [
+    "cty41-locked a010: foreground tail; screen-right side paw and foot behind body; current mostly occluded sheathed Tang dao presentation"
+  ],
+  "permissions": {
+    "allowedDecisions": [
+      "retry",
+      "escalate_to_human",
+      "pass_to_human"
+    ],
+    "mayApprove": false,
+    "mayMakeHumanDecision": false,
+    "mayUseAggregateAestheticScore": false
+  },
+  "sha256": "95cf541a0ca3e2f440ea3e2272acd5a2ab1b0dc9874da5e98b3beaa28f9407b8"
+}

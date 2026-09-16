@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-68cfdfe2da91acd7",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/candidates/poet_hit_ul_hunter_recoil_v01_reviewed_clean_128.png",
+    "sha256": "2495c504bc2ab04c8a35d5842ac8657640bb80a79392b4e4958ceb0b3f4c9125"
+  },
+  "role": "supporting-derived",
+  "note": "cty41-authorized Poet production evidence included in the CC-BY-4.0 public artwork set.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

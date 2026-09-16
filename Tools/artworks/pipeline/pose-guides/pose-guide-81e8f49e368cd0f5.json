@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 2,
+  "poseGuideId": "pose-guide-81e8f49e368cd0f5",
+  "compositionId": "composition-e320b581674a6562",
+  "compositionSha256": "09f5cd525f9c6128cab5295109962e4bbca6df6de2dce730265324d65078c078",
+  "anchorSha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/guides/poet_cast_dr_vertical_guard_grip_pose_guide_v2.png",
+    "sha256": "ae4f96af30ace1e6654f65c039f3ad3f0b8e2fca5cfb2faf175437d6f44cd5aa"
+  },
+  "role": "supporting-derived"
+}

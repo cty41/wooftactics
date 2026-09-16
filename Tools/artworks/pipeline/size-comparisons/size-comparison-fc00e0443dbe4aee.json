@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "sizeComparisonId": "size-comparison-fc00e0443dbe4aee",
+  "inputs": [
+    {
+      "label": "Identity",
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+        "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+      }
+    },
+    {
+      "label": "Previous",
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/reviews/poet_death_hunter_horizontal_v1_a001_quick_scale_review.png",
+        "sha256": "5d306117ecbaa357de2f0a612f5aad9c80b49fc39d4170e3b351e91dc58b33c9"
+      }
+    },
+    {
+      "label": "Pose reference",
+      "artifact": {
+        "path": "Tools/artworks/doge/calibrated/doge_capsule_demonbound_death_v01.png",
+        "sha256": "90218c756be1a4e3a40d8221667536f53d665447c24cca597f5f01eef0b462a0"
+      }
+    },
+    {
+      "label": "Candidate",
+      "artifact": {
+        "path": "Tools/artworks/poet_five_red_chow/candidates/poet_death_hunter_close_dao_v02_reviewed_clean.png",
+        "sha256": "235922e278fd3946e74763084e7576a0b1eed8128195b03361939f13c0a8940e"
+      }
+    }
+  ],
+  "measurements": [
+    {
+      "label": "Identity",
+      "bbox": [
+        40,
+        57,
+        82,
+        121
+      ],
+      "bboxSize": [
+        42,
+        64
+      ]
+    },
+    {
+      "label": "Previous",
+      "bbox": [
+        33,
+        32,
+        95,
+        96
+      ],
+      "bboxSize": [
+        62,
+        64
+      ]
+    },
+    {
+      "label": "Pose reference",
+      "bbox": [
+        36,
+        40,
+        92,
+        88
+      ],
+      "bboxSize": [
+        56,
+        48
+      ]
+    },
+    {
+      "label": "Candidate",
+      "bbox": [
+        31,
+        35,
+        97,
+        93
+      ],
+      "bboxSize": [
+        66,
+        58
+      ]
+    }
+  ],
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_death_hunter_close_dao_v02_size_comparison.png",
+    "sha256": "474ab9ea31f6faea9b960c0f7b0a678c88d58d854c7c4dd23f3378d0096f94fe"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 3,
+  "componentMigrationId": "component-migration-e0a61c7780f768e0",
+  "contractId": "contract-2c385915928621cf",
+  "contractSha256": "d2ce51c1f8842b1a18ce1a2ff294ff52f328d1d57b180d0244e8cb9c7fd63ad9",
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_guqin_back_carried_dr_raw_v03.png",
+    "sha256": "c924ad7ae9578bbb378a80a25c7447c55dc236d98c92b3805105bbd54d2ecf30"
+  },
+  "prepared": {
+    "path": "Tools/artworks/poet_five_red_chow/components/poet_guqin_back_carried_dr_component_clean_v01.png",
+    "sha256": "536104fe2659c3694c448c02d2a4b981b781964fc9a27d543d5e942b4f54715f"
+  },
+  "processing": {
+    "operation": "approved-v2-equipment-copy-and-chroma-normalization",
+    "sourceAttemptId": "job-93dbc1ce4eeb846d-a003",
+    "sourceApprovalId": "approval-ff85c4a4e8d89e45",
+    "pixelTransform": "clean_resampled_chroma(#00ff00,tolerance=12)",
+    "geometryTransform": "none",
+    "semanticLabel": "equipment",
+    "note": "仅清除已批准组件缩放边缘的色幕残留，不改变几何、朝向或可见形状。"
+  },
+  "reviewer": "cty41",
+  "reason": "迁入用户批准的背负古琴，并仅做确定性色幕边缘规范化；几何、琴背朝向和体量不变",
+  "acceptedAt": "2026-08-31T15:02:44.9712111+08:00",
+  "invocationStatus": "missing-pre-v3"
+}

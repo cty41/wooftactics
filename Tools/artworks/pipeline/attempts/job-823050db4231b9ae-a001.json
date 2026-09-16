@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 2,
+  "attemptId": "job-823050db4231b9ae-a001",
+  "jobId": "job-823050db4231b9ae",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "review_pending",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_wine_wineskin_raw_v01.png",
+      "sha256": "84683c8dd1c78ebad95aff317691afc80f380b704efb7ac1d3e287a44da36797"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-823050db4231b9ae/job-823050db4231b9ae-a001/raw.png",
+      "sha256": "84683c8dd1c78ebad95aff317691afc80f380b704efb7ac1d3e287a44da36797"
+    },
+    "prepared": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_wine_wineskin_v01.png",
+      "sha256": "940f604b9841c9d0b1cbcdc011c6869d6c7e9f6e70739074d706df3464ac884b"
+    },
+    "equipmentPreview": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_wine_wineskin_v01_128.png",
+      "sha256": "0737c73004ac23ffab1fa63276c7cd7a87871e936b8187cbd7071019a2c58ac6"
+    },
+    "review": {
+      "equipmentPanel": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_wine_wineskin_review_v01.png",
+        "sha256": "b533dcb7466945764f4d3e427c8f213b067d719066e93dc339e06d66992a1451"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/style-reports/equipment-style-report-7f8a1d4631bc3309.json",
+    "sha256": "c0cb99acf49a7030366bc82f1e2093b8d65423ac5289ad3184f428a551dc1241"
+  },
+  "approvalId": null,
+  "feedbackId": "feedback-5e3964fa3cf2be40",
+  "generationInvocationId": "generation-invocation-4bcc17d6c6c212ec",
+  "generationDeliveryId": "generation-delivery-c108cf6cd6da0403",
+  "equipmentStyleReportId": "equipment-style-report-7f8a1d4631bc3309",
+  "equipmentStyleVerdictId": "equipment-style-verdict-d04c1246895a0855",
+  "equipmentStyleVerdictIds": [
+    "equipment-style-verdict-d04c1246895a0855"
+  ]
+}

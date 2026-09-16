@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-b1f71f20fc936371",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v8_visible_two_paw_grip.png",
+    "sha256": "d57a60aa82f7cd1d0dc93b0ad1d9db45cc456481393967629827ef4e2ed54b1f"
+  },
+  "role": "supporting-derived",
+  "note": "Superseded deterministic UL hand patch; source far-hand semantic pixels exposed unwanted fragments when placed above body.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

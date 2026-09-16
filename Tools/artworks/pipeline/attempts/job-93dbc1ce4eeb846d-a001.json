@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 2,
+  "attemptId": "job-93dbc1ce4eeb846d-a001",
+  "jobId": "job-93dbc1ce4eeb846d",
+  "ordinal": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "review_pending",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_guqin_back_carried_dr_raw_v01.png",
+      "sha256": "ec1c87274f2690ec9bc8c106e6ef5626b0912b32bf2fb6cf0c9a79ebbf37c20e"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-93dbc1ce4eeb846d/job-93dbc1ce4eeb846d-a001/raw.png",
+      "sha256": "ec1c87274f2690ec9bc8c106e6ef5626b0912b32bf2fb6cf0c9a79ebbf37c20e"
+    },
+    "prepared": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_guqin_back_carried_dr_v01.png",
+      "sha256": "34165d6fccb39857c3153221c2da3be6f24902ca8df8ebc70dfa0da3b3e21faa"
+    },
+    "equipmentPreview": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_guqin_back_carried_dr_v01_128.png",
+      "sha256": "1ed0923683bc80c1928ed387e50b2bc18db00d68bf53aa048c8b978d2c0b0da7"
+    },
+    "review": {
+      "equipmentPanel": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_guqin_back_carried_review_v01.png",
+        "sha256": "826aa48f4f975b20331e2126cb44f5f85f69bfb126674166bd9c582b954d8935"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/style-reports/equipment-style-report-232c91a1a8d2994d.json",
+    "sha256": "23b8b1b77edab36ff02813a4605ac1fa335a60d084ae35786752ed12020a3da8"
+  },
+  "approvalId": null,
+  "feedbackId": "feedback-1eb33304288f9204",
+  "generationInvocationId": "generation-invocation-fdb8e3be882ded23",
+  "generationDeliveryId": "generation-delivery-960be4ad51b806bb",
+  "equipmentStyleReportId": "equipment-style-report-232c91a1a8d2994d",
+  "equipmentStyleVerdictId": "equipment-style-verdict-5e21991b1e9c91a1",
+  "equipmentStyleVerdictIds": [
+    "equipment-style-verdict-5e21991b1e9c91a1"
+  ]
+}

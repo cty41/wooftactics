@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "briefKind": "asset",
+  "briefId": "poet-ring-pommel-tang-dao-sheathed-ul-projection-v1",
+  "assetId": "poet-ring-pommel-tang-dao-sheathed-ul-projection",
+  "family": "equipment",
+  "purpose": "Create an isolated upper-left-view projection of the approved completely sheathed ring-pommel Tang dao before any poet body, paw, or occlusion work.",
+  "firstRead": ["same_approved_ring_pommel_tang_dao", "upper_left_3d_projection", "fully_sheathed", "foreshortened_low_carry_axis"],
+  "targetContexts": ["isolated-master-256", "actual-size-review", "future-poet-idle-ul-assembly"],
+  "identityInvariants": ["thick empty ring pommel", "short wrapped grip", "guard and scabbard throat remain distinct", "straight fully enclosed scabbard", "same dark red-brown cartoon material"],
+  "shapeStrategy": "Rotate the approved physical Tang dao through the character turn in 3D and reproject it under the fixed isometric camera; do not horizontally mirror, rotate, skew, or non-uniformly compress the approved DR pixels.",
+  "colorStrategy": "Preserve the approved v2 palette and restrained contrast without adding realistic highlights, engraving, gradients, or metallic rendering.",
+  "materialStrategy": "Use the approved bold-outline, low-detail, flat-value equipment language.",
+  "attentionRole": "secondary",
+  "allowedVariation": ["native redraw required by the new 3D view", "screen-space foreshortening caused by reprojection", "occlusion-free isolated presentation"],
+  "forbidden": ["2D mirror", "2D rotation of source pixels", "non-uniform scaling", "exposed blade", "curved dao", "second weapon", "poet body", "paw", "guqin", "wineskin", "realistic rendering", "new ornamentation"],
+  "referenceResponsibilities": [
+    {
+      "role": "approved-equipment-identity-anchor",
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_sheathed_dr_v02.png",
+      "sha256": "eb4acedf50fe56d2c216e932a7364686de603a4df40c9bc5f1fe10c22ab55999",
+      "responsibility": "The only equipment identity, shape, palette, ring, grip, guard, throat, scabbard and detail-budget source; it does not prescribe the UL screen projection."
+    },
+    {
+      "role": "approved-mounted-abstraction-anchor",
+      "path": "Tools/artworks/doge/calibrated/doge_capsule_demonbound_idle_dr_v01.png",
+      "sha256": "21559ca7aedd3e146feb2b93c5a6633affc6ce544122628c960972a982b0b5e7",
+      "responsibility": "Cartoon mounted-equipment abstraction and outline weight only; never weapon shape or projection."
+    }
+  ],
+  "requiredReviewPanels": ["candidate-master", "actual-size", "dr-ul-side-by-side", "ring-grip-inspection", "scabbard-inspection", "projection-axis", "negative-mirror-regression"],
+  "acceptanceCases": [
+    {
+      "caseId": "POET-DAO-UL-IDENTITY-001",
+      "evidence": ["dr-ul-side-by-side", "ring-grip-inspection", "scabbard-inspection"],
+      "automatedFacts": ["candidate and approved source hashes are bound", "RGBA and transparent-corner checks pass"],
+      "humanChecks": ["same ring pommel grip guard throat scabbard and palette", "no new ornamentation or realism"],
+      "passCriteria": "Immediately reads as the same approved Tang dao from another 3D view."
+    },
+    {
+      "caseId": "POET-DAO-UL-PROJECTION-001",
+      "evidence": ["projection-axis", "dr-ul-side-by-side"],
+      "automatedFacts": ["UL visible axis and AABB are reported without aesthetic scoring"],
+      "humanChecks": ["view is a plausible isometric 3D reprojection", "not a 2D mirror or flat rotation", "foreshortening is believable"],
+      "passCriteria": "The isolated dao establishes the approved UL spatial mapping for later actor work."
+    },
+    {
+      "caseId": "POET-DAO-UL-SHEATHED-001",
+      "evidence": ["candidate-master", "scabbard-inspection"],
+      "automatedFacts": ["one equipment silhouette exists"],
+      "humanChecks": ["blade remains completely sheathed", "scabbard is straight and complete"],
+      "passCriteria": "No exposed blade, missing sheath segment, or category drift."
+    },
+    {
+      "caseId": "POET-DAO-UL-SCALE-001",
+      "evidence": ["actual-size", "dr-ul-side-by-side"],
+      "automatedFacts": ["visible length and bbox are reported as advisory facts"],
+      "humanChecks": ["apparent shortening comes from the view rather than arbitrary resizing", "detail remains readable at intended 75 percent actor mounting scale"],
+      "passCriteria": "Projection scale is suitable for later actor context without pre-authorizing actor placement."
+    },
+    {
+      "caseId": "POET-DAO-UL-EXCLUSION-001",
+      "evidence": ["candidate-master", "negative-mirror-regression"],
+      "automatedFacts": ["prompt contains no actor body paw guqin wineskin or second weapon input"],
+      "humanChecks": ["isolated equipment only", "no residue from forbidden objects or rejected projection studies"],
+      "passCriteria": "Only the approved dao's new projection is present."
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-7603439437c554d0-a002",
+  "jobId": "job-7603439437c554d0",
+  "ordinal": 2,
+  "parentAttemptId": "job-7603439437c554d0-a001",
+  "retryFeedbackId": "feedback-28ddbdb118396f52",
+  "promptDelta": "Redraw as a genuinely carried UL-view object: rotate the weapon farther around its vertical/world relationship so the screen axis is substantially steeper and more upright, not laid along the ground plane. Show the ring pommel nearly edge-on as a narrow thick oval/side profile with only a slim opening, never its full circular face. Reproject grip, guard, throat, fittings and scabbard consistently with that side-on ring view. Keep one isolated fully sheathed straight Tang dao and preserve approved palette and cartoon abstraction.",
+  "technicalRemediation": false,
+  "state": "prepared",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_ring_pommel_tang_dao_sheathed_ul_projection_raw_v02.png",
+      "sha256": "94cf452329b1b836a08addf0ceabb57fe52fc3b10b11e2b3615b0e76363aa504"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-7603439437c554d0/job-7603439437c554d0-a002/raw.png",
+      "sha256": "94cf452329b1b836a08addf0ceabb57fe52fc3b10b11e2b3615b0e76363aa504"
+    },
+    "prepared": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_sheathed_ul_projection_v02.png",
+      "sha256": "5362880fe6f4cd931ef4518ce295cdb93ddb5b0f3151158bdbabcbc80b64e26c"
+    },
+    "equipmentPreview": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_sheathed_ul_projection_v02_128.png",
+      "sha256": "d5f4305dc78391ba31ffc8d02e49248a8c502ff8a26fbefa6e95415c80445630"
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/style-reports/equipment-style-report-ef24b84a2ed9c58c.json",
+    "sha256": "61afa8da89a80825099f2b4105dcb523e4f32e5b1cd7526d5e9842c25494bea0"
+  },
+  "approvalId": null,
+  "feedbackId": "feedback-00f6b79c5fbc2a0f",
+  "generationInvocationId": "generation-invocation-77512c43daabc6a7",
+  "generationDeliveryId": "generation-delivery-a445d791d74a3362",
+  "equipmentStyleReportId": "equipment-style-report-ef24b84a2ed9c58c"
+}

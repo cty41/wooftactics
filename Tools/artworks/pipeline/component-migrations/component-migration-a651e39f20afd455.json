@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 3,
+  "componentMigrationId": "component-migration-a651e39f20afd455",
+  "contractId": "contract-9401e215fb323eb1",
+  "contractSha256": "05b710f33e0346ba8c273c47d2c4b643a0de187aac97ebc423a9508c3f964a51",
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/components/poet_idle_body_full_silhouette_grip_reposition_v06.png",
+    "sha256": "5c81c673aeb0ba009f55a9f9dd6e2179a0619a4af4e97a2d27f90a64a664525d"
+  },
+  "prepared": {
+    "path": "Tools/artworks/poet_five_red_chow/components/poet_idle_body_full_silhouette_grip_reposition_v06.png",
+    "sha256": "5c81c673aeb0ba009f55a9f9dd6e2179a0619a4af4e97a2d27f90a64a664525d"
+  },
+  "processing": {
+    "schemaVersion": 1,
+    "operation": "deterministic-full-silhouette-preservation",
+    "source": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+    "trigger": "cty41 rejected formal v3 candidate because tail and foot paws were cut",
+    "steps": [
+      "start again from the complete approved poet v03 mother rather than the lossy historical body partition",
+      "preserve the complete approved tail and both rear foot-paw silhouettes byte-for-byte",
+      "remove only the old screen-left circular front-paw outline that conflicts with the selected low grip",
+      "keep the new far-paw grip and approved Tang dao outside this body component",
+      "assign restored non-core silhouette pixels to the body-supporting semantic region; foot overlays retain their explicit final role labels"
+    ],
+    "runtimeEligible": false
+  },
+  "reviewer": "cty41",
+  "reason": "按用户反馈从批准母图重新保留完整尾巴与脚爪，停止复用会切坏轮廓的旧body分区",
+  "acceptedAt": "2026-09-03T15:05:00+08:00",
+  "invocationStatus": "missing-pre-v3"
+}

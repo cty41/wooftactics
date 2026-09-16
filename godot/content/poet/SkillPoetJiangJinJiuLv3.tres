@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="SkillDefinitionResource" format=3 uid="uid://rtokm3d4kfsl"]
+
+[ext_resource type="Script" path="res://src/Tactics.Godot.Adapter/Runtime/SkillDefinitionResource.cs" id="1_j6p7l"]
+
+[resource]
+script = ExtResource("1_j6p7l")
+ContentIdValue = "skill.poet.jiang-jin-jiu.lv3"
+SourceId = "godot.skill.poet.jiang-jin-jiu.lv3"
+DisplayName = "将进酒"
+Description = "将进酒"
+RoleValue = "Poet"
+KindValue = "Active"
+Level = 3
+ManaCost = 5
+ExecutionKindValue = "PoetWineHeal"
+DamageKindValue = "None"
+StatusContentIdValue = "status.poet.wine-heal"
+StatusDuration = 3
+CanCrit = false
+BranchId = "poet.poetry-immortal"
+PrerequisiteContentIdValue = "skill.poet.jiang-jin-jiu.lv2"
+PrerequisiteBranchId = "poet.poetry-immortal"
+RequiredAttribute = "Strength"
+MinimumAttribute = 7
+AreaRadius = 2
+HealingTickCount = 3
+HealingBase = 6
+AuthoringSourceKindValue = "GodotAuthored"

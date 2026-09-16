@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 2,
+  "compositionId": "composition-c6fe6aea8369c3c8",
+  "assetId": "poet-five-red-chow-equipped-idle-dr-v1",
+  "spec": {
+    "canvas": [
+      256,
+      256
+    ],
+    "coreAxis": {
+      "bottom": [
+        128,
+        231
+      ],
+      "top": [
+        128,
+        121
+      ],
+      "tiltDegrees": [
+        -2.0,
+        2.0
+      ]
+    },
+    "footCenter": [
+      128,
+      236
+    ],
+    "weapon": {
+      "hiddenGrip": [
+        155,
+        190
+      ],
+      "exitWindow": [
+        146,
+        178,
+        164,
+        198
+      ],
+      "tipRegion": [
+        92,
+        112,
+        114,
+        140
+      ],
+      "guardWindow": [
+        142,
+        174,
+        162,
+        194
+      ],
+      "bladeCenterline": [
+        101,
+        126,
+        154,
+        186
+      ],
+      "maxBladeWidthPx": 9,
+      "maxGemAreaPx": 1
+    },
+    "forbiddenRegions": [
+      [
+        112,
+        138,
+        146,
+        158
+      ]
+    ],
+    "equipmentState": {
+      "scabbard": "absent",
+      "sword": "near-hand-front",
+      "guqin": "back-layer-diagonal",
+      "wineVessel": "far-left-waist-wineskin",
+      "staticEffects": "absent"
+    }
+  },
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/equipped_idle_dr_composition_v1.json",
+    "sha256": "4d8af6d5e7ab7084d9ae5868cebf4c3f7f8651a662ee3c5d1e4cbec1b07afc40"
+  },
+  "anchor": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+    "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753"
+  }
+}

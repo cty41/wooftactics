@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-ba9cece91e3072f0",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/components/poet_guqin_back_carried_dr_equipment_mask_v01.png",
+    "sha256": "308e9a58d2ad8d0189f420f37ab3a355435a816dd9417bcfd376b460e264de37"
+  },
+  "role": "semantic-mask",
+  "note": "已批准背负古琴组件的纯equipment语义蒙版，供schema v3迁入和Assembly使用"
+}

@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 4,
+  "contractId": "contract-cf003ff22e5db1e2",
+  "assetId": "poet-five-red-chow-ring-pommel-tang-dao-idle-ul-v4",
+  "approvedAssetId": "poet-five-red-chow-ring-pommel-tang-dao-idle-ul-v4",
+  "kind": "ground_character",
+  "direction": "up-left",
+  "pose": "idle",
+  "anchor": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+    "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753",
+    "maskPath": "Tools/artworks/pipeline/artifacts/job-43b34a4685f71ca2/job-43b34a4685f71ca2-a010/calibrated-mask.png",
+    "maskSha256": "3e0db7ae51d77d8578a926e1f2db6224124381f15a16a4c215ea872ddbdd50fa"
+  },
+  "maskRequired": true,
+  "noArms": true,
+  "handSides": {
+    "near_hand": "left",
+    "far_hand": "right"
+  },
+  "occlusion": {
+    "layerRules": {
+      "near_hand": "behind-core",
+      "far_hand": "behind-core",
+      "equipment": "behind-core"
+    },
+    "visibilityCaps": {
+      "near_hand": 0.18,
+      "far_hand": 0.18,
+      "equipment": 0.22
+    }
+  },
+  "compositionSpec": {
+    "compositionId": "composition-cc82635f28f6a928",
+    "sha256": "d05f1254d9492ea947eceea029fa6e6e25afead441c98e1b9e719583542f7017"
+  },
+  "identitySpec": null,
+  "requiresInvocation": true,
+  "canvasSpec": {
+    "masterSize": [
+      256,
+      256
+    ]
+  },
+  "tilePlacementSpec": null,
+  "styleSpec": null,
+  "equipmentProductionSpec": null,
+  "tolerances": {
+    "sizePx": 3,
+    "centerPx": 2
+  },
+  "outputs": {
+    "master": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_ul_v04.png",
+    "preview": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_ul_v04_128.png"
+  },
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "gpt-generated-native-ul"
+  },
+  "artDirectionSpec": {
+    "profileId": "pure-run-project-art-direction-v1",
+    "path": "Tools/artworks/pure_run/art_direction/project_art_direction_v1.json",
+    "sha256": "4820888ee25ac6865705ef130abdbec64ed597c6b126d96e6361a01960ec13fb"
+  },
+  "materialLanguageSpec": {
+    "profileId": "pure-run-material-language-v1",
+    "path": "Tools/artworks/pure_run/art_direction/material_language_v1.json",
+    "sha256": "3efa1e523c20c41f407ff142759a0bc18bb874392266006c704c314fd13dfd83"
+  },
+  "familyProfileSpec": {
+    "profileId": "pure-run-actor-family-v1",
+    "family": "actor",
+    "path": "Tools/artworks/pure_run/art_direction/families/actor_v1.json",
+    "sha256": "a5214ad32ea193569198cac822ddac860adcdf8f4e03f24d455d9aee3099f95d"
+  },
+  "briefSpec": {
+    "briefId": "poet-ring-pommel-tang-dao-idle-ul-v4",
+    "kind": "asset",
+    "path": "Tools/artworks/poet_five_red_chow/briefs/poet_ring_pommel_tang_dao_idle_ul_asset_brief_v4.json",
+    "sha256": "a8837492d526b5e583a2f33521b9e5bcd9ce2d2e98bfd2b0c2e05b1c9a417980"
+  },
+  "themeProfileSpec": null,
+  "artDirectionManifestSpec": {
+    "manifestId": "pure-run-art-direction-manifest-v1",
+    "path": "Tools/artworks/pure_run/art_direction/art_direction_manifest_v1.json",
+    "sha256": "dfc6e9a0cd517287f5cfa10d7ad36393908eed4c7cb92c2c03ede403f95d71f9"
+  },
+  "anchorVerdictIds": [
+    "anchor-verdict-b451919e0d61b117",
+    "anchor-verdict-fdc45e816313b302",
+    "anchor-verdict-28c06549dfa88ddd"
+  ],
+  "requiredReviewPanels": [
+    "candidate-master",
+    "preview-128",
+    "identity-context",
+    "core-anchor-overlay",
+    "back-view-inspection",
+    "equipment-inspection",
+    "pose-axis",
+    "paw-depth",
+    "occlusion-depth",
+    "semantic-overlay",
+    "tile-review",
+    "amazon-tile-compare",
+    "style-context",
+    "rejected-regression"
+  ],
+  "acceptanceCaseIds": [
+    "POET-UL-V3-CORE-001",
+    "POET-UL-V3-PAWS-001",
+    "POET-UL-V3-DIRECTION-001",
+    "POET-UL-V3-DAO-001",
+    "POET-UL-V3-EXCLUSION-001",
+    "POET-UL-V3-SCALE-001"
+  ]
+}

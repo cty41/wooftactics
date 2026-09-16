@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 4,
+  "reviewerQualificationSupersessionId": "reviewer-qualification-supersession-bd3b4ecb8e98d830",
+  "oldQualificationId": "reviewer-qualification-00e7ff77ea63704d",
+  "oldQualification": {
+    "path": "Tools/artworks/pipeline/reviewer-qualifications/reviewer-qualification-00e7ff77ea63704d.json",
+    "sha256": "1d524956ef29a87fca5fb22217c36c53ddd554702d91274ab060d436b63fff1d"
+  },
+  "newQualificationId": "reviewer-qualification-9125337e8c208351",
+  "newQualification": {
+    "path": "Tools/artworks/pipeline/reviewer-qualifications/reviewer-qualification-9125337e8c208351.json",
+    "sha256": "7c9f406bf37add327c4134afe13d29a25daa8b19ace3d4933d7438c1defffe53"
+  },
+  "reviewer": "cty41",
+  "reason": "Replacement qualification adds the mandatory prompt-only comparison and audited negative, positive, and boundary Shadow cases without changing rule, model, effort, prompt, policy, or case set.",
+  "supersededAt": "2026-09-08T20:18:18+08:00"
+}

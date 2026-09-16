@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 4,
+  "artDirectionVerdictId": "art-direction-verdict-c8b0bb8b865016f0",
+  "attemptId": "job-dfbdae10245d7d6c-a003",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-dfbdae10245d7d6c/job-dfbdae10245d7d6c-a003/calibrated.png",
+    "sha256": "30f90904a35ad3b23e25c029bfb0c07fb72c420bfafce2c945a6901e284d3516"
+  },
+  "artDirectionReviewId": "art-direction-review-a6fd9feb397a8a9a",
+  "reviewSha256": "cc471fd88a75bdf636ac8bc7daad25066bfd745e48bba250e30e35c144df5c4f",
+  "decision": "approved",
+  "acceptedWarnings": [
+    "core width is 57 px rather than 66 px; narrow body is explicitly preferred for this assembly component"
+  ],
+  "reviewer": "cty41",
+  "reason": "cty41 selected the narrow clean body component after side-by-side review.",
+  "decidedAt": "2026-09-05T01:08:19+08:00"
+}

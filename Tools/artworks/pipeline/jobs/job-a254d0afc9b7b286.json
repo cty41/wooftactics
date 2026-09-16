@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 4,
+  "jobId": "job-a254d0afc9b7b286",
+  "state": "ready",
+  "contractId": "contract-a6b9130f239467e7",
+  "contractSha256": "0383c9e2ca93f829b8c739162b55fa9f0b5d3f8232055ffcff884add13dcd928",
+  "prompt": null,
+  "inputs": [
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/processing/unsheathed_exact_green_v2/candidate.png",
+      "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1"
+    }
+  ],
+  "target": {
+    "direction": "non_directional",
+    "pose": "inventory"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": false,
+  "sourceMode": "reviewed_recontract",
+  "reviewedRecontractId": "reviewed-recontract-e6a91dc49320f564"
+}

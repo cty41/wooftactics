@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "reviewOnly": true,
+  "assetId": "poet-melee-dr-high-guard-mockup-v8-near-upright",
+  "parentReviewedMockup": "poet-melee-dr-high-guard-mockup-v7-reduced-lean-calibrated",
+  "humanFeedback": "The reduced-lean direction is correct, but the DR body should be more upright.",
+  "sourceReview": {"path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_dr_selected_body_sword_mockup_v5_high_guard.png", "sha256": "c53dcf020fbce4481a140af7e58034ad6735fcf1f2a81d6360d93e8acbe0f887"},
+  "transform": {"wholeCompositeRotationDegreesCounterClockwise": 8, "rotationCenterFootAnchor": [128, 236], "purpose": "reduce most of the original screen-right whole-body lean while retaining a small readable attack commitment"},
+  "equipmentState": {"blade": "visible", "scabbard": "absent", "staticEffects": "absent"},
+  "notes": "Deterministic review-only transform from accepted v5. Increase total lean correction from 5 to 8 degrees; preserve all internal sword/body/paw relationships."
+}

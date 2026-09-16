@@ -333,10 +333,9 @@ public class PlayableRunUiGodotTests
 
     [TestCase]
     [RequireGodotRuntime]
-    public void PauseMenuRendersAboveActorsAndDoesNotOfferSaveAndQuit()
+    public void PauseMenuRendersAboveActorsAndOffersRunLifecycleActions()
     {
-        var ui = new GodotPlayableRunMain();
-        ui._Ready();
+        GodotPlayableRunMain ui = ReadyUi();
         var root = new Control();
         ui.AddChild(root);
         typeof(GodotPlayableRunMain).GetMethod("BuildPauseMenu",
@@ -348,11 +347,19 @@ public class PlayableRunUiGodotTests
 
         AssertThat(buttons).Contains("CONTINUE");
         AssertThat(buttons).Contains("OPTIONS");
-        AssertThat(buttons).Contains("MAIN MENU");
-        AssertThat(buttons).NotContains("SAVE AND QUIT");
+        AssertThat(buttons).Contains("ABANDON RUN");
+        AssertThat(buttons).Contains("SAVE AND QUIT");
+        AssertThat(buttons).NotContains("MAIN MENU");
         AssertThat(overlay).IsNotNull();
         AssertThat(overlay!.ZIndex).IsGreater(1000);
         ui.Free();
+    }
+
+    [TestCase]
+    public void StartCampProvidesDistinctCellsForAllFiveCandidates()
+    {
+        AssertThat(GodotPlayableRunMain.StartCampCandidateCells.Count).IsEqual(5);
+        AssertThat(GodotPlayableRunMain.StartCampCandidateCells.Distinct().Count()).IsEqual(5);
     }
 
     [TestCase]
@@ -379,7 +386,29 @@ public class PlayableRunUiGodotTests
 
     [TestCase]
     [RequireGodotRuntime]
-    public void RunDefinitionV2SerializesAllFourCandidateAttributes()
+    public void FiveCandidateRunDefinitionUsesCanonicalPoetFallbackStartingChoices()
+    {
+        var resource = new PureRunDefinitionResource
+        {
+            ContentIdValue = "run.pure-run.five-candidate-test",
+            EncounterContentIds = ["encounter.pure-run.n1", "encounter.pure-run.n2", "encounter.pure-run.n3"],
+            CharacterIds = ["mage", "necromancer", "amazon", "demonbound", "poet"],
+            UnitContentIds = ["unit.mage", "unit.necromancer", "unit.amazon", "unit.demonbound", "unit.poet"],
+            StartingSkillContentIds = ["skill.mage.fireball.lv1", "skill.necromancer.bone-spear.lv1",
+                "skill.amazon.thrust.lv1", "skill.demonbound.bane.lv1", "skill.poet.xiake-xing.lv1"]
+        };
+
+        PureRunPartyTemplate poet = resource.ToCoreDefinition().Party.Single(value => value.CharacterId == "poet");
+
+        AssertThat(poet.EffectiveStartingSkillChoices).ContainsExactly(
+            new ContentId("skill.poet.xiake-xing.lv1"),
+            new ContentId("skill.poet.jiang-jin-jiu.lv1"),
+            new ContentId("skill.poet.moon-drink.lv1"));
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public void RunDefinitionV2SerializesAllFiveCandidateAttributes()
     {
         var resource = ResourceLoader.Load<PureRunDefinitionResource>(
             "res://content/runs/PureRunThreeEncounterV1.tres", string.Empty, ResourceLoader.CacheMode.Ignore);
@@ -389,10 +418,16 @@ public class PlayableRunUiGodotTests
         PureRunDefinition definition = resource.ToCoreDefinition();
         PureRunPartyTemplate demonbound = definition.Party.Single(value =>
             value.CharacterId == "pure_run_demonbound");
+        PureRunPartyTemplate poet = definition.Party.Single(value =>
+            value.CharacterId == "pure_run_poet");
 
         AssertThat(resource.SchemaVersion).IsEqual(2);
-        AssertThat(resource.Charismas.Length).IsEqual(4);
-        AssertThat(demonbound.Attributes).IsEqual(new UnitAttributes(5, 5, 5, 5, 6, 5));
+        AssertThat(resource.Charismas.Length).IsEqual(5);
+        AssertThat(demonbound.Attributes).IsEqual(new UnitAttributes(6, 4, 6, 6, 6, 2));
+        AssertThat(poet.Attributes).IsEqual(new UnitAttributes(6, 5, 5, 4, 6, 4));
+        AssertThat(poet.EffectiveStartingSkillChoices).Contains(new ContentId("skill.poet.xiake-xing.lv1"));
+        AssertThat(poet.EffectiveStartingSkillChoices).Contains(new ContentId("skill.poet.jiang-jin-jiu.lv1"));
+        AssertThat(poet.EffectiveStartingSkillChoices).Contains(new ContentId("skill.poet.moon-drink.lv1"));
         AssertThat(demonbound.EffectiveInherentSkills)
             .Contains(new ContentId("skill.demonbound.meditation"));
     }
@@ -489,15 +524,14 @@ public class PlayableRunUiGodotTests
 
     [TestCase]
     [RequireGodotRuntime]
-    public void HomeLoadsCanonical101CatalogWithoutWritingSave()
+    public void EmptySaveLoadsCanonicalCatalogAndStartsAtCamp()
     {
-        var ui = new GodotPlayableRunMain();
-        ui._Ready();
+        GodotPlayableRunMain ui = ReadyUi();
         AssertThat(ui.IsReadyForInput).IsTrue();
         AssertThat(Descendants<PanelContainer>(ui).Any(panel =>
             panel.ThemeTypeVariation == GodotTacticsTheme.Panel)).IsTrue();
-        AssertThat(Descendants<Button>(ui).Select(button => button.Text)).Contains("Options");
-        AssertThat(Descendants<Label>(ui).Select(label => label.Text)).Contains("TACTICS");
+        AssertThat(ui.CaptureTestProbe().PageTitle).IsEqual("NEW RUN — START CAMP");
+        AssertThat(Descendants<GodotStartCampView>(ui).Count()).IsEqual(1);
         ui.Free();
     }
 
@@ -505,7 +539,7 @@ public class PlayableRunUiGodotTests
     [RequireGodotRuntime]
     public void ProgressionFirstRendersIndependentAttributeChoices()
     {
-        var ui = new GodotPlayableRunMain(); ui._Ready();
+        GodotPlayableRunMain ui = ReadyUi();
         var attributes = new UnitAttributes(5, 5, 5, 6, 5, 5);
         var mage = new RunCharacterState("pure_run_mage", new ContentId("unit.pure-run.mage"), 1, attributes,
             20, 20, 12, 12, false, new[] { new ContentId("skill.mage.fireball.lv1") },
@@ -530,7 +564,7 @@ public class PlayableRunUiGodotTests
     [RequireGodotRuntime]
     public void RunMapPageConsumesTheApplicationSnapshotWithoutStartingBattle()
     {
-        var ui = new GodotPlayableRunMain(); ui._Ready();
+        GodotPlayableRunMain ui = ReadyUi();
         UnitAttributes attributes = new(5, 5, 5, 6, 5, 5);
         RunCharacterState Character(string id, string unit, string skill) => new(id, new ContentId(unit), 1,
             attributes, 20, 20, 10, 10, false, [new ContentId(skill)]);
@@ -557,7 +591,7 @@ public class PlayableRunUiGodotTests
     [RequireGodotRuntime]
     public void ProgressionAfterAttributeAllocationRendersSkillChoices()
     {
-        var ui = new GodotPlayableRunMain(); ui._Ready();
+        GodotPlayableRunMain ui = ReadyUi();
         var attributes = new UnitAttributes(5, 5, 5, 6, 5, 5);
         var proposed = new UnitAttributes(5, 5, 5, 7, 5, 5);
         var mage = new RunCharacterState("pure_run_mage", new ContentId("unit.pure-run.mage"), 1, attributes,
@@ -717,7 +751,7 @@ public class PlayableRunUiGodotTests
     [RequireGodotRuntime]
     public void InventoryRendersSingleBackpackAndActionableLoadoutColumns()
     {
-        var ui = new GodotPlayableRunMain(); ui._Ready();
+        GodotPlayableRunMain ui = ReadyUi();
         UnitAttributes attributes = new(5, 5, 5, 6, 5, 5);
         RunCharacterState Character(string id, string unit) => new(id, new ContentId(unit), 1, attributes,
             20, 20, 5, 15, false, Array.Empty<ContentId>());
@@ -754,8 +788,7 @@ public class PlayableRunUiGodotTests
     [RequireGodotRuntime]
     public void InventoryEntryExistsOnlyOnRogueMap()
     {
-        var ui = new GodotPlayableRunMain();
-        ui._Ready();
+        GodotPlayableRunMain ui = ReadyUi();
         string[] homeButtons = Descendants<Button>(ui).Select(value => value.Text).ToArray();
         AssertThat(homeButtons).NotContains("Inventory");
 
@@ -783,7 +816,7 @@ public class PlayableRunUiGodotTests
             "res://content/ContentCatalog.tres", string.Empty, ResourceLoader.CacheMode.Ignore)!;
         Dictionary<string, GodotResourceEntry> entries = catalog.Entries.ToDictionary(value => value.ContentIdValue);
 
-        AssertThat(entries.Count).IsEqual(166);
+        AssertThat(entries.Count).IsEqual(185);
         foreach (string id in new[]
         {
             "skill.summon.skeleton-attack.lv1", "skill.summon.skeleton-attack.lv2",
@@ -874,6 +907,17 @@ public class PlayableRunUiGodotTests
         AssertThat(GodotPlayableRunMain.SettlementDropLabel(run)).IsEqual("No item drop");
     }
 
+    private static GodotPlayableRunMain ReadyUi()
+    {
+        var ui = new GodotPlayableRunMain();
+        ui.ConfigureTestContext(new GodotPlayableRunTestContext(
+            new GodotRunSaveStore(new MemoryRunSaveFileSystem(), "user://playable-run-ui-tests/save-v1.json"),
+            7,
+            "playable-run-ui-tests"));
+        ui._Ready();
+        return ui;
+    }
+
     private static IEnumerable<T> Descendants<T>(Node node) where T : Node
     {
         foreach (Node child in node.GetChildren())
@@ -887,8 +931,7 @@ public class PlayableRunUiGodotTests
     [RequireGodotRuntime]
     public void MeditateActionButton_IsEnabledWhileSaneAndDisabledWhilePossessed()
     {
-        var ui = new GodotPlayableRunMain();
-        ui._Ready();
+        GodotPlayableRunMain ui = ReadyUi();
         var board = new GodotIsometricBattleBoard { Size = new Vector2(1200, 650) };
         var panel = new HBoxContainer { CustomMinimumSize = new Vector2(1120, 90) };
         ui.AddChild(board);
@@ -968,8 +1011,7 @@ public class PlayableRunUiGodotTests
     [RequireGodotRuntime]
     public void ReplacingAPageDoesNotRetainDisposedUnitMeters()
     {
-        var ui = new GodotPlayableRunMain();
-        ui._Ready();
+        GodotPlayableRunMain ui = ReadyUi();
         FieldInfo? metersField = typeof(GodotPlayableRunMain).GetField("_unitMeters", BindingFlags.Instance | BindingFlags.NonPublic);
         MethodInfo? newPage = typeof(GodotPlayableRunMain).GetMethod("NewPage", BindingFlags.Instance | BindingFlags.NonPublic);
         var meters = (Dictionary<UnitInstanceId, Control>?)metersField?.GetValue(ui);

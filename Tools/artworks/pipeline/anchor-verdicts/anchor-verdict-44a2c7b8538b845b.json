@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 4,
+  "anchorVerdictId": "anchor-verdict-44a2c7b8538b845b",
+  "candidate": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_dr_v03.png",
+    "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+  },
+  "family": "actor",
+  "responsibilities": [
+    "Sole Poet identity, compact core volume, cinnamon-red palette, native DR anatomy, exactly-four-attached-paw topology, curled-tail silhouette and restrained facial style for unified Cast DR v1."
+  ],
+  "excludedUses": [
+    "Do not copy Idle paw placement or Idle weapon placement; the selected B pose and deterministic guide own the Cast grip and lower-left to upper-right sheathed-dao axis."
+  ],
+  "review": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_cast_dr_source_responsibility_review_v01.png",
+    "sha256": "51b78ae5016dc766ed1f027ddb932ce265e60cdc3a0300d0fc06493314702aab"
+  },
+  "decision": "approved-anchor",
+  "reviewer": "cty41",
+  "reason": "cty41 selected Cast option B, then explicitly chose the completely sheathed dao held at its middle like a staff with the axis from lower-left to upper-right; the displayed source split keeps this approved Idle DR solely responsible for Poet identity and volume.",
+  "decidedAt": "2026-09-13T19:36:10.9337616+08:00"
+}

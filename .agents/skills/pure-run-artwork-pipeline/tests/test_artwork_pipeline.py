@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
+from concurrent.futures import ThreadPoolExecutor
 import json
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from PIL import Image, ImageDraw
 
@@ -37,6 +39,399 @@ class ArtworkPipelineTests(unittest.TestCase):
     def tearDown(self):
         self.temp.cleanup()
 
+    def test_retired_humanoid_amazon_family_is_hard_rejected(self):
+        retired = self.root / "Tools/artworks/amazon/imgs/idle/dr/idle_f01.png"
+        retired.parent.mkdir(parents=True)
+        retired.write_bytes(b"historical")
+        with self.assertRaisesRegex(pipeline.PipelineError, "retired asset family is forbidden"):
+            self.store.relative(retired, must_exist=True)
+
+    def test_index_review_history_is_immutable_and_does_not_rewrite_feedback(self):
+        artifact = self.png("Tools/artworks/candidate.png")
+        attempt = {"schemaVersion": 4, "attemptId": "job-review-a001", "jobId": "job-review", "state": "prepared",
+                   "artifacts": {"prepared": {"path": self.store.relative(artifact), "sha256": pipeline.sha256_file(artifact)}}}
+        pipeline.write_json_idempotent(self.store.record("attempts", attempt["attemptId"]), attempt, immutable=True)
+        feedback = {"schemaVersion": 2, "feedbackId": "feedback-review", "attemptId": attempt["attemptId"],
+                    "reviewer": "cty41", "authorType": "human", "verdict": "retry", "categories": ["topology"]}
+        feedback_path = self.store.record("feedback", feedback["feedbackId"])
+        pipeline.write_json_idempotent(feedback_path, feedback, immutable=True)
+        original = feedback_path.read_bytes()
+
+        index = pipeline.index_review_history(self.store, self.ns())
+
+        self.assertEqual(1, index["sourceCount"])
+        self.assertEqual(original, feedback_path.read_bytes())
+        self.assertTrue(self.store.record("review-history-indexes", index["reviewHistoryIndexId"]).is_file())
+        self.assertEqual("feedback-review", index["entries"][0]["feedbackId"])
+
+    def _model_review_fixture(self, suffix="ok"):
+        candidate = self.png(f"Tools/artworks/{suffix}-candidate.png")
+        brief_path = self.root / f"Tools/artworks/{suffix}-brief.json"
+        brief_path.parent.mkdir(parents=True, exist_ok=True)
+        brief_path.write_text(json.dumps({"schemaVersion": 1, "briefId": f"brief-{suffix}"}), encoding="utf-8")
+        contract = {
+            "schemaVersion": 4, "contractId": f"contract-{suffix}",
+            "briefSpec": {"briefId": f"brief-{suffix}", "path": self.store.relative(brief_path), "sha256": pipeline.sha256_file(brief_path)},
+            "artDirectionSpec": {"profileId": "project"}, "acceptanceCaseIds": ["CASE-FAIL"],
+        }
+        pipeline.write_json_idempotent(self.store.record("contracts", contract["contractId"]), contract, immutable=True)
+        job = {"schemaVersion": 4, "jobId": f"job-{suffix}", "contractId": contract["contractId"]}
+        pipeline.write_json_idempotent(self.store.record("jobs", job["jobId"]), job, immutable=True)
+        artifact = {"path": self.store.relative(candidate), "sha256": pipeline.sha256_file(candidate)}
+        report = {"schemaVersion": 1, "attemptId": f"job-{suffix}-a001", "inputSha256": artifact["sha256"], "passed": True}
+        report_path = self.store.record("reports", f"report-{suffix}")
+        pipeline.write_json_idempotent(report_path, report, immutable=True)
+        attempt = {"schemaVersion": 4, "attemptId": f"job-{suffix}-a001", "jobId": job["jobId"], "state": "review_pending",
+                   "artifacts": {"calibrated": artifact}, "report": {"path": self.store.relative(report_path), "sha256": pipeline.sha256_file(report_path)}}
+        pipeline.write_json_idempotent(self.store.record("attempts", attempt["attemptId"]), attempt, immutable=True)
+        rule = {"schemaVersion": 1, "ruleId": "CAPSULE-NO-LIMBS", "version": 1,
+                "scope": {"project": "pure-run"}, "authority": "hard", "autoRetryEligible": True,
+                "requiredEvidenceRoles": ["CALIBRATED_256"], "sources": [{"type": "document", "id": "design"}],
+                "positiveCaseIds": ["CASE-PASS"], "negativeCaseIds": ["CASE-FAIL"], "lifecycle": "active", "statement": "No limbs."}
+        feedback = {"schemaVersion": 1, "feedbackId": f"feedback-{suffix}", "attemptId": attempt["attemptId"], "reviewer": "cty41", "verdict": "rejected"}
+        pipeline.write_json_idempotent(self.store.record("feedback", feedback["feedbackId"]), feedback, immutable=True)
+        case = {"schemaVersion": 1, "caseId": "CASE-FAIL", "version": 1, "ruleIds": ["CAPSULE-NO-LIMBS"],
+                "polarity": "negative", "status": "active", "scope": {"project": "pure-run"},
+                "artifact": artifact, "source": {"attemptId": attempt["attemptId"], "humanDecision": "rejected", "reviewer": "cty41"},
+                "reviewOnly": True, "generationInputAllowed": False, "evidenceRegion": {"x": 0, "y": 0, "width": 1, "height": 1}}
+        positive_case = {**case, "caseId": "CASE-PASS", "polarity": "positive",
+                         "source": {**case["source"], "humanDecision": "approved"},
+                         "reviewOnly": False, "generationInputAllowed": False}
+        boundary_case = {**case, "caseId": "CASE-BOUNDARY", "polarity": "boundary"}
+        compiled = pipeline.artwork_review.compile_review_policy(
+            {"policyId": "policy", "version": 1}, [rule], [case, positive_case, boundary_case],
+            {"project": "pure-run"}, acceptance_case_ids=["CASE-FAIL"])
+        rule_record_id = f"rule-{suffix}"
+        pipeline.write_json_idempotent(self.store.record("review-rules", rule_record_id),
+                                       {"schemaVersion": 4, "reviewRuleRecordId": rule_record_id, "rule": rule}, immutable=True)
+        case_record_id = f"case-{suffix}"
+        pipeline.write_json_idempotent(self.store.record("review-cases", case_record_id),
+                                       {"schemaVersion": 4, "reviewCaseRecordId": case_record_id, "case": case}, immutable=True)
+        for label, extra_case, decision in (("positive", positive_case, "approved"), ("boundary", boundary_case, "rejected")):
+            extra_id = f"case-{suffix}-{label}"
+            pipeline.write_json_idempotent(self.store.record("review-cases", extra_id),
+                {"schemaVersion": 4, "reviewCaseRecordId": extra_id, "case": extra_case}, immutable=True)
+            extra_feedback = {"schemaVersion": 1, "feedbackId": f"feedback-{suffix}-{label}",
+                              "attemptId": attempt["attemptId"], "reviewer": "cty41", "verdict": decision}
+            pipeline.write_json_idempotent(self.store.record("feedback", extra_feedback["feedbackId"]), extra_feedback, immutable=True)
+        policy_id = f"compiled-{suffix}"
+        pipeline.write_json_idempotent(self.store.record("compiled-review-policies", policy_id),
+                                       {"schemaVersion": 4, "compiledReviewPolicyRecordId": policy_id, "compiled": compiled}, immutable=True)
+        packet = pipeline.create_model_review_packet(self.store, self.ns(
+            attempt_id=attempt["attemptId"], compiled_review_policy_id=policy_id, required_model="reviewer-v1",
+            frozen_invariant=["identity"], artifact=[], evidence=[f"CALIBRATED_256={candidate}"]))
+        prompt = self.root / f"Tools/artworks/{suffix}-reviewer-prompt.txt"; prompt.write_text("review", encoding="utf-8")
+        invocation = pipeline.begin_model_review(self.store, self.ns(
+            attempt_id=attempt["attemptId"], packet_id=packet["packetId"], provider="test-provider", model="reviewer-v1",
+            effort="medium", fresh_session_id=f"fresh-{suffix}", prompt_source=str(prompt), started_at="2026-09-04T10:00:00+00:00"))
+        return attempt, packet, invocation, policy_id
+
+    def test_prompt_only_comparison_cli_is_immutable_and_strictly_bound(self):
+        anchor = self.root / "inputs/anchor.bin"; anchor.parent.mkdir(); anchor.write_bytes(b"anchor")
+        contract = {"schemaVersion": 1, "contractId": "contract-comparison"}
+        contract_path = self.store.record("contracts", contract["contractId"])
+        pipeline.write_json_idempotent(contract_path, contract, immutable=True)
+        base = {"schemaVersion": 1, "arm": "prompt-only", "contract": {"contractId": contract["contractId"], "sha256": pipeline.sha256_file(contract_path)},
+                "anchors": [{"path": self.store.relative(anchor), "sha256": pipeline.sha256_file(anchor)}], "context": {"family": "poet"}, "imageGenBudget": 3,
+                "rawCounts": [{"ruleId": "CAPSULE-NO-LIMBS", "context": {"pose": "idle"}, "knownHardErrorsReachedHuman": 1,
+                "repeatedHardErrors": 1, "reviewerMisses": 0, "falsePositives": 0, "repeatedHumanFeedback": 1, "imageGenRounds": 3, "escalations": 0}]}
+        reviewer = dict(base); reviewer["arm"] = "reviewer-closed-loop"; reviewer["rawCounts"] = [dict(base["rawCounts"][0], imageGenRounds=2)]
+        source_dir = self.root / "inputs"; prompt_source = source_dir / "prompt-arm.json"; reviewer_source = source_dir / "reviewer-arm.json"
+        prompt_source.write_text(json.dumps(base), encoding="utf-8"); reviewer_source.write_text(json.dumps(reviewer), encoding="utf-8")
+        record = pipeline.record_prompt_only_comparison(self.store, self.ns(prompt_only_arm_source=str(prompt_source), reviewer_closed_loop_arm_source=str(reviewer_source)))
+        self.assertTrue(self.store.record("prompt-only-comparisons", record["promptComparisonId"]).is_file())
+        self.assertTrue(pipeline.strict_check(self.store, True)["ok"])
+        record_path = self.store.record("prompt-only-comparisons", record["promptComparisonId"])
+        tampered = pipeline.load_json(record_path); tampered["reviewerClosedLoop"]["imageGenBudget"] = 4
+        record_path.write_text(json.dumps(tampered), encoding="utf-8")
+        self.assertIn(f"prompt_only_comparison_invalid:{record['promptComparisonId']}", pipeline.strict_check(self.store, False)["issues"])
+
+    def test_model_review_records_packet_invocation_and_valid_result(self):
+        attempt, packet, invocation, policy_id = self._model_review_fixture()
+        self.assertTrue(self.store.record("model-review-packets", packet["packetId"]).is_file())
+        self.assertTrue(self.store.record("model-review-invocations", invocation["modelReviewInvocationId"]).is_file())
+        raw = self.root / "Tools/artworks/ok-result.json"
+        raw.write_text(json.dumps({"schemaVersion": 1, "packetId": packet["packetId"], "packetSha256": packet["sha256"],
+                                   "decision": "pass_to_human", "summary": "Candidate is ready for human review.", "strengths": ["identity"],
+                                   "defects": [], "frozenInvariants": ["identity"], "operations": []}), encoding="utf-8")
+        result = pipeline.record_model_review(self.store, self.ns(invocation_id=invocation["modelReviewInvocationId"], compiled_review_policy_id=policy_id, raw_result=str(raw), unavailable_reason=None))
+        self.assertEqual("model_reviewed", result["outcome"])
+        self.assertEqual("model_reviewed", pipeline.load_json(self.store.record("attempts", attempt["attemptId"]))["state"])
+        self.assertEqual(pipeline.sha256_file(raw), result["rawResult"]["sha256"])
+
+    def test_model_review_forbidden_authority_and_outside_evidence_require_human_review(self):
+        for suffix, extra in (("approved", {"approved": True}), ("human", {"humanDecision": "passed"}),
+                              ("score", {"aestheticScore": 10}), ("outside", None)):
+            attempt, packet, invocation, policy_id = self._model_review_fixture(suffix)
+            raw_payload = {"schemaVersion": 1, "packetId": packet["packetId"], "packetSha256": packet["sha256"],
+                           "decision": "retry", "summary": "Needs correction.", "strengths": [],
+                           "defects": [{"defectId": "D1", "ruleId": "CAPSULE-NO-LIMBS", "acceptanceCaseId": "CASE-FAIL", "severity": "hard", "certainty": "certain", "observed": "arm", "expected": "none", "evidenceRoles": ["CALIBRATED_256" if extra is not None else "RAW_CANDIDATE"], "region": {"x": 0, "y": 0, "width": 1, "height": 1}}],
+                           "frozenInvariants": ["identity"], "operations": []}
+            if extra:
+                raw_payload.update(extra)
+            raw = self.root / f"Tools/artworks/{suffix}-bad-result.json"; raw.write_text(json.dumps(raw_payload), encoding="utf-8")
+            result = pipeline.record_model_review(self.store, self.ns(invocation_id=invocation["modelReviewInvocationId"], compiled_review_policy_id=policy_id, raw_result=str(raw), unavailable_reason=None))
+            self.assertEqual("human_review_required", result["outcome"])
+            self.assertIsNone(result["result"])
+            self.assertEqual("human_review_required", pipeline.load_json(self.store.record("attempts", attempt["attemptId"]))["state"])
+
+    def test_historical_shadow_review_preserves_attempt_and_non_authoritative_failures(self):
+        attempt, _packet, _invocation, policy_id = self._model_review_fixture("shadow")
+        attempt_path = self.store.record("attempts", attempt["attemptId"])
+        attempt["state"] = "promoted"; pipeline.write_json_idempotent(attempt_path, attempt)
+        before = attempt_path.read_bytes()
+        packet = pipeline.create_shadow_model_review_packet(self.store, self.ns(
+            review_case_record_id="case-shadow", human_feedback_id="feedback-shadow", compiled_review_policy_id=policy_id,
+            required_model="reviewer-v1", requested_effort="xhigh", frozen_invariant=["identity"], evidence=[f"CALIBRATED_256={self.root / 'Tools/artworks/shadow-candidate.png'}"]))
+        self.assertTrue(packet["qualificationMode"])
+        self.assertFalse(packet["countsTowardFormalAttemptBudget"]); self.assertFalse(packet["mayChangeAttemptState"])
+        (self.root / "Tools/artworks/shadow-reviewer-prompt.txt").write_text("review", encoding="utf-8")
+        invocation = pipeline.begin_model_review(self.store, self.ns(attempt_id=attempt["attemptId"], packet_id=packet["packetId"], provider="test-provider", model="reviewer-v1", effort="xhigh", fresh_session_id="shadow", prompt_source=str(self.root / "Tools/artworks/shadow-reviewer-prompt.txt"), started_at="2026-09-04T10:00:00+00:00"))
+        result = pipeline.record_model_review(self.store, self.ns(invocation_id=invocation["modelReviewInvocationId"], compiled_review_policy_id=policy_id, raw_result=None, unavailable_reason="unavailable"))
+        self.assertEqual("human_review_required", result["outcome"]); self.assertIsNone(result["result"])
+        malformed = self.root / "Tools/artworks/shadow-malformed.json"; malformed.write_text("not-json", encoding="utf-8")
+        second = pipeline.begin_model_review(self.store, self.ns(attempt_id=attempt["attemptId"], packet_id=packet["packetId"], provider="test-provider", model="reviewer-v1", effort="xhigh", fresh_session_id="shadow-malformed", prompt_source=str(self.root / "Tools/artworks/shadow-reviewer-prompt.txt"), started_at="2026-09-04T10:01:00+00:00"))
+        malformed_result = pipeline.record_model_review(self.store, self.ns(invocation_id=second["modelReviewInvocationId"], compiled_review_policy_id=policy_id, raw_result=str(malformed), unavailable_reason=None))
+        self.assertIsNone(malformed_result["result"]); self.assertIsNotNone(malformed_result["validationError"])
+        self.assertEqual(before, attempt_path.read_bytes())
+        with self.assertRaisesRegex(pipeline.PipelineError, "cannot be applied"):
+            pipeline.apply_model_review(self.store, self.ns(model_review_result_record_id=result["modelReviewResultRecordId"], compiled_review_policy_id=policy_id, reviewer_prompt_id="reviewer-v1", case_set_version="cases-v1"))
+
+    def _legacy_shadow_context(self, suffix, *, positive=False, schema_version=3):
+        attempt, _packet, _invocation, policy_id = self._model_review_fixture(suffix)
+        source_contract_path = self.store.record("contracts", f"contract-{suffix}")
+        source_contract = pipeline.load_json(source_contract_path)
+        context_contract = dict(source_contract, contractId=f"contract-{suffix}-review-context")
+        pipeline.write_json_idempotent(self.store.record("contracts", context_contract["contractId"]), context_contract, immutable=True)
+        legacy_contract = {"schemaVersion": schema_version, "contractId": source_contract["contractId"]}
+        if schema_version == 3:
+            legacy_contract["assetRole"] = "assembled_sprite"
+        pipeline.write_json_idempotent(source_contract_path, legacy_contract)
+        if positive:
+            case_path = self.store.record("review-cases", f"case-{suffix}")
+            case_record = pipeline.load_json(case_path)
+            case_record["case"]["polarity"] = "positive"
+            case_record["case"]["source"]["humanDecision"] = "approved"
+            pipeline.write_json_idempotent(case_path, case_record)
+            feedback_path = self.store.record("feedback", f"feedback-{suffix}")
+            feedback = pipeline.load_json(feedback_path); feedback["verdict"] = "approved"
+            pipeline.write_json_idempotent(feedback_path, feedback)
+        args = self.ns(review_case_record_id=f"case-{suffix}", human_feedback_id=f"feedback-{suffix}",
+                       compiled_review_policy_id=policy_id, required_model="reviewer-v1", requested_effort="high",
+                       frozen_invariant=["identity"], evidence=[f"NEGATIVE_REVIEW_ONLY={self.root / f'Tools/artworks/{suffix}-candidate.png'}"],
+                       review_context_contract_id=context_contract["contractId"], review_context_brief_source=None)
+        return attempt, policy_id, args
+
+    def test_legacy_positive_shadow_case_succeeds_with_explicit_review_context(self):
+        for schema_version in (1, 2, 3):
+            with self.subTest(schema_version=schema_version):
+                suffix = f"legacy-positive-v{schema_version}"
+                attempt, _policy_id, args = self._legacy_shadow_context(suffix, positive=True, schema_version=schema_version)
+                before = self.store.record("attempts", attempt["attemptId"]).read_bytes()
+                packet = pipeline.create_shadow_model_review_packet(self.store, args)
+                self.assertEqual("REVIEW_CONTEXT_ONLY", packet["reviewContext"]["responsibility"])
+                self.assertEqual("approved", packet["historicalProvenance"]["humanDecision"])
+                self.assertEqual(before, self.store.record("attempts", attempt["attemptId"]).read_bytes())
+
+    def test_legacy_shadow_case_without_explicit_override_fails(self):
+        _attempt, _policy_id, args = self._legacy_shadow_context("legacy-missing")
+        args.review_context_contract_id = None
+        with self.assertRaisesRegex(pipeline.PipelineError, "explicit --review-context-contract-id"):
+            pipeline.create_shadow_model_review_packet(self.store, args)
+
+    def test_legacy_shadow_packet_separates_provenance_from_review_context(self):
+        _attempt, _policy_id, args = self._legacy_shadow_context("legacy-separation")
+        packet = pipeline.create_shadow_model_review_packet(self.store, args)
+        self.assertEqual("contract-legacy-separation", packet["historicalProvenance"]["contract"]["contractId"])
+        self.assertEqual("contract-legacy-separation-review-context", packet["reviewContext"]["contract"]["contractId"])
+        self.assertNotEqual(packet["historicalProvenance"]["contract"], packet["reviewContext"]["contract"])
+        self.assertIn("compiledPolicyRecord", packet["reviewContext"])
+
+    def test_legacy_negative_case_artifact_and_evidence_remain_generation_isolated(self):
+        _attempt, _policy_id, args = self._legacy_shadow_context("legacy-negative")
+        packet = pipeline.create_shadow_model_review_packet(self.store, args)
+        historical = packet["artifacts"][0]
+        self.assertTrue(historical["reviewOnly"]); self.assertFalse(historical["generationInput"])
+        self.assertFalse(packet["evidence"][0]["generationInput"])
+        bad = dict(packet); bad["artifacts"] = [dict(historical, generationInput=True)]
+        bad["packetId"] = pipeline.artwork_review.stable_id("model-review-packet", {k: v for k, v in bad.items() if k not in {"packetId", "sha256"}})
+        bad["sha256"] = pipeline.hashlib.sha256(pipeline.artwork_review.canonical_bytes({k: v for k, v in bad.items() if k != "sha256"})).hexdigest()
+        with self.assertRaisesRegex(pipeline.artwork_review.ReviewValidationError, "forbidden generation input"):
+            pipeline.artwork_review.validate_model_review_packet(bad)
+
+    def test_model_review_unavailable_result_is_preserved_for_human_review(self):
+        attempt, _packet, invocation, policy_id = self._model_review_fixture("unavailable")
+        result = pipeline.record_model_review(self.store, self.ns(
+            invocation_id=invocation["modelReviewInvocationId"], compiled_review_policy_id=policy_id,
+            raw_result=None, unavailable_reason="reviewer transport unavailable"))
+        self.assertEqual("human_review_required", result["outcome"])
+        self.assertIsNone(result["rawResult"])
+        self.assertIsNone(result["result"])
+        self.assertEqual("human_review_required", pipeline.load_json(self.store.record("attempts", attempt["attemptId"]))["state"])
+
+    def _record_retry_result(self, packet, invocation, policy_id, suffix):
+        raw = self.root / f"Tools/artworks/{suffix}-retry-result.json"
+        raw.write_text(json.dumps({"schemaVersion": 1, "packetId": packet["packetId"], "packetSha256": packet["sha256"],
+            "decision": "retry", "summary": "Visible limb.", "strengths": [],
+            "defects": [{"defectId": "D1", "ruleId": "CAPSULE-NO-LIMBS", "acceptanceCaseId": "CASE-FAIL", "severity": "hard", "certainty": "certain", "observed": "arm", "expected": "none", "evidenceRoles": ["CALIBRATED_256"], "region": {"x": 0, "y": 0, "width": 1, "height": 1}}],
+            "frozenInvariants": ["identity"], "operations": [{"operation": "remove", "target": "limb", "instruction": "Remove limb.", "defectId": "D1"}]}), encoding="utf-8")
+        return pipeline.record_model_review(self.store, self.ns(invocation_id=invocation["modelReviewInvocationId"], compiled_review_policy_id=policy_id, raw_result=str(raw), unavailable_reason=None))
+
+    def _write_test_qualification(self, review_rule_record_id, policy_id, prompt):
+        suffix = review_rule_record_id.removeprefix("rule-")
+        rule = pipeline.load_json(self.store.record("review-rules", review_rule_record_id))["rule"]
+        compiled = pipeline.load_json(self.store.record("compiled-review-policies", policy_id))["compiled"]
+        contract_path = self.store.record("contracts", f"contract-{suffix}")
+        candidate = self.root / f"Tools/artworks/{suffix}-candidate.png"
+        anchor = {"path": self.store.relative(candidate), "sha256": pipeline.sha256_file(candidate)}
+        context = {"compiledPolicyId": compiled["compiledPolicyId"], "caseSetVersion": "cases-v1"}
+        counts = {"ruleId": rule["ruleId"], "context": {"pose": "idle"}, "knownHardErrorsReachedHuman": 1,
+                  "repeatedHardErrors": 1, "reviewerMisses": 0, "falsePositives": 0,
+                  "repeatedHumanFeedback": 1, "imageGenRounds": 1, "escalations": 0}
+        base = {"schemaVersion": 1, "arm": "prompt-only",
+                "contract": {"contractId": f"contract-{suffix}", "sha256": pipeline.sha256_file(contract_path)},
+                "anchors": [anchor], "context": context, "imageGenBudget": 3, "rawCounts": [counts]}
+        closed = {**base, "arm": "reviewer-closed-loop", "rawCounts": [{**counts, "knownHardErrorsReachedHuman": 0}]}
+        proof_dir = self.root / "Tools/artworks/qualification-proof"; proof_dir.mkdir(parents=True, exist_ok=True)
+        prompt_arm = proof_dir / f"{suffix}-prompt.json"; closed_arm = proof_dir / f"{suffix}-closed.json"
+        prompt_arm.write_text(json.dumps(base), encoding="utf-8"); closed_arm.write_text(json.dumps(closed), encoding="utf-8")
+        comparison = pipeline.record_prompt_only_comparison(self.store, self.ns(
+            prompt_only_arm_source=str(prompt_arm), reviewer_closed_loop_arm_source=str(closed_arm)))
+        audit_ids = []
+        for label, case_id, feedback_id, decision in (
+                ("negative", f"case-{suffix}", f"feedback-{suffix}", "retry"),
+                ("positive", f"case-{suffix}-positive", f"feedback-{suffix}-positive", "pass_to_human"),
+                ("boundary", f"case-{suffix}-boundary", f"feedback-{suffix}-boundary", "escalate_to_human")):
+            packet = pipeline.create_shadow_model_review_packet(self.store, self.ns(
+                review_case_record_id=case_id, human_feedback_id=feedback_id,
+                compiled_review_policy_id=policy_id, required_model="reviewer-v1", requested_effort="medium",
+                frozen_invariant=["identity"], evidence=[f"NEGATIVE_REVIEW_ONLY={candidate}"],
+                review_context_contract_id=None, review_context_brief_source=None))
+            invocation = pipeline.begin_model_review(self.store, self.ns(
+                attempt_id=f"job-{suffix}-a001", packet_id=packet["packetId"], provider="test-provider",
+                model="reviewer-v1", effort="medium", fresh_session_id=f"fresh-{suffix}-{label}",
+                prompt_source=str(prompt), started_at="2026-09-04T10:00:00+00:00"))
+            raw = proof_dir / f"{suffix}-{label}-result.json"
+            defects = [{"defectId": "D1", "ruleId": rule["ruleId"], "acceptanceCaseId": "CASE-FAIL",
+                        "severity": "hard", "certainty": "certain", "observed": "arm", "expected": "none",
+                        "evidenceRoles": ["HISTORICAL_CASE_ARTIFACT"], "region": {"x": 0, "y": 0, "width": 1, "height": 1}}] if decision == "retry" else []
+            operations = [{"operation": "remove", "target": "limb", "instruction": "Remove limb.", "defectId": "D1"}] if decision == "retry" else []
+            raw.write_text(json.dumps({"schemaVersion": 1, "packetId": packet["packetId"], "packetSha256": packet["sha256"],
+                "decision": decision, "summary": label, "strengths": [], "defects": defects,
+                "frozenInvariants": ["identity"], "operations": operations}), encoding="utf-8")
+            result = pipeline.record_model_review(self.store, self.ns(invocation_id=invocation["modelReviewInvocationId"],
+                compiled_review_policy_id=policy_id, raw_result=str(raw), unavailable_reason=None))
+            audit = pipeline.record_model_review_audit(self.store, self.ns(
+                model_review_result_record_id=result["modelReviewResultRecordId"], reviewer="cty41",
+                verdict="confirmed", finding=f"confirmed-{label}", audited_at="2026-09-04T10:30:00+00:00"))
+            audit_ids.append(audit["modelReviewAuditId"])
+        return pipeline.record_reviewer_qualification(self.store, self.ns(
+            review_rule_record_id=review_rule_record_id, compiled_review_policy_id=policy_id,
+            model="reviewer-v1", effort="medium", reviewer_prompt_id="reviewer-v1",
+            reviewer_prompt_source=str(prompt), case_set_version="cases-v1", reviewer="cty41",
+            prompt_only_comparison_id=comparison["promptComparisonId"], model_review_audit_id=audit_ids,
+            qualified_at="2026-09-04T11:00:00+00:00"))
+
+    def test_reviewer_qualification_requires_prompt_only_comparison(self):
+        _attempt, _packet, _invocation, policy_id = self._model_review_fixture("qualification-audits")
+        with self.assertRaisesRegex(pipeline.PipelineError, "prompt-only comparison"):
+            pipeline.record_reviewer_qualification(self.store, self.ns(review_rule_record_id="rule-qualification-audits", compiled_review_policy_id=policy_id, model="reviewer-v1", effort="medium", reviewer_prompt_id="reviewer-v1", reviewer_prompt_source=str(self.root / "Tools/artworks/qualification-audits-reviewer-prompt.txt"), case_set_version="cases-v1", reviewer="cty41", qualified_at="2026-09-04T11:00:00+00:00"))
+
+    def test_apply_model_review_pass_and_escalation_set_human_states(self):
+        for suffix, model_decision, expected in (("apply-pass", "pass_to_human", "review_pending"), ("apply-escalate", "escalate_to_human", "human_review_required")):
+            attempt, packet, invocation, policy_id = self._model_review_fixture(suffix)
+            raw = self.root / f"Tools/artworks/{suffix}.json"
+            raw.write_text(json.dumps({"schemaVersion": 1, "packetId": packet["packetId"], "packetSha256": packet["sha256"], "decision": model_decision, "summary": "handoff", "strengths": [], "defects": [], "frozenInvariants": ["identity"], "operations": []}), encoding="utf-8")
+            result = pipeline.record_model_review(self.store, self.ns(invocation_id=invocation["modelReviewInvocationId"], compiled_review_policy_id=policy_id, raw_result=str(raw), unavailable_reason=None))
+            applied = pipeline.apply_model_review(self.store, self.ns(model_review_result_record_id=result["modelReviewResultRecordId"], compiled_review_policy_id=policy_id, reviewer_prompt_id="reviewer-v1", case_set_version="cases-v1"))
+            self.assertEqual(expected, applied["decision"]["action"])
+            self.assertEqual(expected, pipeline.load_json(self.store.record("attempts", attempt["attemptId"]))["state"])
+
+    def test_apply_model_review_requires_exact_qualification_and_honors_suspension(self):
+        attempt, packet, invocation, policy_id = self._model_review_fixture("qualified")
+        result = self._record_retry_result(packet, invocation, policy_id, "qualified")
+        unqualified = pipeline.apply_model_review(self.store, self.ns(model_review_result_record_id=result["modelReviewResultRecordId"], compiled_review_policy_id=policy_id, reviewer_prompt_id="reviewer-v1", case_set_version="cases-v1"))
+        self.assertEqual("human_review_required", unqualified["decision"]["action"])
+        attempt, packet, invocation, policy_id = self._model_review_fixture("suspended")
+        result = self._record_retry_result(packet, invocation, policy_id, "suspended")
+        qualification = self._write_test_qualification("rule-suspended", policy_id, self.root / "Tools/artworks/suspended-reviewer-prompt.txt")
+        pipeline.suspend_reviewer_rule(self.store, self.ns(reviewer_qualification_id=qualification["reviewerQualificationId"], reviewer="cty41", reason="false positive", suspended_at="2026-09-04T12:00:00+00:00"))
+        applied = pipeline.apply_model_review(self.store, self.ns(model_review_result_record_id=result["modelReviewResultRecordId"], compiled_review_policy_id=policy_id, reviewer_prompt_id="reviewer-v1", case_set_version="cases-v1"))
+        self.assertEqual("human_review_required", applied["decision"]["action"])
+        self.assertEqual("human_review_required", pipeline.load_json(self.store.record("attempts", attempt["attemptId"]))["state"])
+
+    def test_qualified_a001_creates_a002_with_next_generation_round(self):
+        attempt, packet, invocation, policy_id = self._model_review_fixture("retry-child")
+        result = self._record_retry_result(packet, invocation, policy_id, "retry-child")
+        prompt = self.root / "Tools/artworks/retry-child-reviewer-prompt.txt"
+        qualification = self._write_test_qualification("rule-retry-child", policy_id, prompt)
+        self.assertEqual("cty41", qualification["reviewer"])
+        applied = pipeline.apply_model_review(self.store, self.ns(model_review_result_record_id=result["modelReviewResultRecordId"], compiled_review_policy_id=policy_id, reviewer_prompt_id="reviewer-v1", case_set_version="cases-v1"))
+        child = pipeline.load_json(self.store.record("attempts", applied["childAttemptId"]))
+        self.assertEqual((2, 2, attempt["attemptId"]), (child["ordinal"], child["generationRound"], child["parentAttemptId"]))
+        self.assertEqual("model_reviewed", pipeline.load_json(self.store.record("attempts", attempt["attemptId"]))["state"])
+
+    def test_review_experience_promotion_requires_cty41_and_never_mutates_rules(self):
+        source = self.root / "Tools/artworks/experience.json"; source.parent.mkdir(parents=True, exist_ok=True)
+        source.write_text(json.dumps({"schemaVersion": 1, "feedbackId": "feedback-1", "attemptId": "job-a001", "action": "draft-rule", "rationale": "recurring", "status": "proposed", "createdBy": "policy-curator", "ruleDraft": {"lifecycle": "draft", "autoRetryEligible": False}}), encoding="utf-8")
+        candidate = pipeline.create_review_experience_candidate(self.store, self.ns(source=str(source)))
+        with self.assertRaisesRegex(pipeline.PipelineError, "cty41"):
+            pipeline.promote_review_experience(self.store, self.ns(review_experience_candidate_record_id=candidate["reviewExperienceCandidateRecordId"], reviewer="agent", reason="no", promoted_at="2026-09-04T12:00:00+00:00"))
+        promotion = pipeline.promote_review_experience(self.store, self.ns(review_experience_candidate_record_id=candidate["reviewExperienceCandidateRecordId"], reviewer="cty41", reason="approved lesson", promoted_at="2026-09-04T12:00:00+00:00"))
+        self.assertFalse(promotion["activeRulesModified"])
+        self.assertFalse(any((self.store.pipeline / "review-rules").glob("*.json")))
+
+    def test_technical_remediation_inherits_parent_generation_round(self):
+        attempt, _packet, _invocation, _policy_id = self._model_review_fixture("technical-round")
+        child = pipeline.retry(self.store, self.ns(job_id=attempt["jobId"], parent_attempt=attempt["attemptId"], feedback_id=None, technical_remediation=True))
+        self.assertEqual(1, child["generationRound"])
+        self.assertTrue(child["technicalRemediation"])
+
+    def test_bound_input_hash_accepts_only_text_line_ending_normalization(self):
+        prompt = self.root / "prompt.md"
+        prompt.write_bytes(b"line one\nline two\n")
+        expected_crlf = pipeline.hashlib.sha256(b"line one\r\nline two\r\n").hexdigest()
+        self.assertTrue(pipeline.bound_input_hash_matches(prompt, expected_crlf))
+
+        binary = self.root / "sprite.png"
+        binary.write_bytes(b"line one\nline two\n")
+        self.assertFalse(pipeline.bound_input_hash_matches(binary, expected_crlf))
+
+    def test_migrate_ready_job_bindings_preserves_old_record_and_writes_receipt(self):
+        prompt = self.root / "prompt.md"
+        prompt.write_text("new prompt\n", encoding="utf-8")
+        old_job = {
+            "schemaVersion": 2,
+            "jobId": "job-old",
+            "state": "ready",
+            "contractId": "contract-test",
+            "contractSha256": "contract-sha",
+            "prompt": {"path": "prompt.md", "sha256": pipeline.hashlib.sha256(b"old prompt\n").hexdigest()},
+            "inputs": [],
+            "target": {"direction": "down-right", "pose": "display"},
+            "series": None,
+            "conceptOnly": False,
+            "contractRequirements": None,
+            "requiresInvocation": False,
+            "poseGuide": None,
+            "localReferences": [],
+        }
+        old_path = self.store.record("jobs", "job-old")
+        pipeline.write_json_idempotent(old_path, old_job, immutable=True)
+        old_bytes = old_path.read_bytes()
+        attempt = {"schemaVersion": 2, "attemptId": "job-old-a001", "jobId": "job-old", "state": "prepared"}
+        pipeline.write_json_idempotent(self.store.record("attempts", attempt["attemptId"]), attempt, immutable=True)
+
+        receipt = pipeline.migrate_ready_job_bindings(self.store, self.ns(
+            job_id="job-old", reason="authorized prompt rebinding", authorized_by="direct-user-confirmation"))
+
+        self.assertEqual(old_path.read_bytes(), old_bytes)
+        self.assertNotEqual(receipt["newJobId"], "job-old")
+        replacement = pipeline.load_json(self.store.record("jobs", receipt["newJobId"]))
+        self.assertEqual(replacement["prompt"]["sha256"], pipeline.sha256_file(prompt))
+        self.assertTrue(self.store.record("job-migrations", receipt["migrationId"]).is_file())
+        self.assertEqual(receipt["historicalAttempts"][0]["attemptId"], "job-old-a001")
+
     def test_relicense_public_artifacts_records_cty41_decision_and_updates_manifest(self):
         asset = self.png("Tools/artworks/approved/relicensed.png")
         digest = pipeline.sha256_file(asset)
@@ -58,29 +453,201 @@ class ArtworkPipelineTests(unittest.TestCase):
         self.assertEqual("CC-BY-4.0", updated["entries"][0]["license"])
         self.assertEqual(digest, receipt["artifacts"][0]["sha256"])
         self.assertTrue(self.store.record("license-receipts", receipt["licenseReceiptId"]).is_file())
+        issues = []
+        self.assertEqual({self.store.relative(asset)}, pipeline._validated_relicensed_paths(self.store, issues, {}))
+        self.assertEqual([], issues)
+        with self.assertRaisesRegex(pipeline.PipelineError, "not currently licensed"):
+            pipeline.relicense_public_artifacts(self.store, self.ns(
+                path=[str(asset)], from_license="project-owned", to_license="CC-BY-4.0",
+                reviewer="cty41", reason="duplicate receipt", decided_at="2026-08-21T22:01:00+08:00"))
         with self.assertRaisesRegex(pipeline.PipelineError, "reviewer cty41"):
             pipeline.relicense_public_artifacts(self.store, self.ns(
                 path=[str(asset)], from_license="project-owned", to_license="CC-BY-4.0",
                 reviewer="codex", reason="not authorized", decided_at="2026-08-21T22:00:00+08:00"))
+        receipt_path = self.store.record("license-receipts", receipt["licenseReceiptId"])
+        malformed = dict(receipt)
+        malformed["artifacts"] = ["bad"]
+        receipt_path.write_text(json.dumps(malformed), encoding="utf-8")
+        malformed_issues = []
+        pipeline._validated_relicensed_paths(self.store, malformed_issues, {})
+        self.assertEqual([f"license_receipt_invalid:{receipt_path.stem}"], malformed_issues)
 
-    def test_register_supporting_svg_records_public_provenance(self):
+    def test_relicense_reconciles_only_declared_existing_projection(self):
+        asset = self.png("Tools/artworks/reviews/already-public.png")
+        digest = pipeline.sha256_file(asset)
+        manifest_path = self.root / "Tools/public-release/asset-provenance.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest["entries"].append({
+            "path": self.store.relative(asset), "sha256": digest, "status": "approved",
+            "rightsHolder": "cty41", "license": "CC-BY-4.0", "provenance": "project-owned-supporting-derived",
+        })
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+        declaration_payload = {
+            "artifact": {"path": self.store.relative(asset), "sha256": digest},
+            "role": "historical-review-only", "note": "cty41 declaration", "reviewer": "cty41",
+            "rights": {"rightsHolder": "cty41", "license": "project-owned",
+                       "provenance": "cty41-direct-supporting-artifact-declaration"},
+        }
+        declaration_id = pipeline.stable_id("supporting-artifact", declaration_payload)
+        pipeline.write_json_idempotent(self.store.record("supporting-artifacts", declaration_id),
+            {"schemaVersion": 3, "supportingArtifactId": declaration_id, **declaration_payload}, immutable=True)
+        args = self.ns(path=[str(asset)], from_license="project-owned", to_license="CC-BY-4.0",
+                       reconcile_existing_projection=True, reviewer="cty41",
+                       reason="reconcile explicitly authorized historical projection",
+                       decided_at="2026-09-16T16:00:00+08:00")
+
+        receipt = pipeline.relicense_public_artifacts(self.store, args)
+
+        self.assertTrue(receipt["reconcilesExistingProjection"])
+        issues = []
+        self.assertEqual({self.store.relative(asset)}, pipeline._validated_relicensed_paths(self.store, issues, {}))
+        self.assertEqual([], issues)
+        with self.assertRaisesRegex(pipeline.PipelineError, "already covered"):
+            pipeline.relicense_public_artifacts(self.store, args)
+
+    def test_prune_missing_public_provenance_records_cty41_decision(self):
+        existing = self.png("Tools/artworks/approved/existing.png")
+        manifest_path = self.root / "Tools/public-release/asset-provenance.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest["entries"].extend([
+            {"path": "Tools/artworks/tmp/missing.png", "sha256": "1" * 64,
+             "status": "approved", "rightsHolder": "cty41", "license": "CC-BY-4.0", "provenance": "test"},
+            {"path": self.store.relative(existing), "sha256": pipeline.sha256_file(existing),
+             "status": "approved", "rightsHolder": "cty41", "license": "CC-BY-4.0", "provenance": "test"},
+        ])
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+        args = self.ns(path=["Tools/artworks/tmp/missing.png"], reviewer="cty41",
+                       reason="remove stale public manifest projection", decided_at="2026-09-16T14:52:37+08:00")
+
+        receipt = pipeline.prune_missing_public_provenance(self.store, args)
+
+        updated = json.loads(manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual([self.store.relative(existing)], [entry["path"] for entry in updated["entries"]])
+        self.assertEqual("Tools/artworks/tmp/missing.png", receipt["removedEntries"][0]["path"])
+        self.assertTrue(self.store.record("provenance-prunes", receipt["provenancePruneId"]).is_file())
+        with self.assertRaisesRegex(pipeline.PipelineError, "requires reviewer cty41"):
+            pipeline.prune_missing_public_provenance(self.store, self.ns(
+                path=["Tools/artworks/tmp/other.png"], reviewer="agent", reason="unauthorized",
+                decided_at="2026-09-16T14:52:37+08:00"))
+        with self.assertRaisesRegex(pipeline.PipelineError, "existing artifact"):
+            pipeline.prune_missing_public_provenance(self.store, self.ns(
+                path=[str(existing)], reviewer="cty41", reason="must not remove existing",
+                decided_at="2026-09-16T14:52:37+08:00"))
+
+    def test_replace_with_retry_tolerates_transient_windows_file_lock(self):
+        with mock.patch.object(pipeline.os, "replace", side_effect=[PermissionError("locked"), None]) as replace:
+            with mock.patch.object(pipeline.time, "sleep") as sleep:
+                pipeline._replace_with_retry(Path("source"), Path("destination"))
+        self.assertEqual(2, replace.call_count)
+        sleep.assert_called_once_with(0.025)
+
+    def test_remediate_exact_chroma_artifacts_records_low_alpha_changes(self):
+        candidate = self.png("Tools/artworks/equipment/candidates/item.png")
+        with Image.open(candidate) as opened:
+            image = opened.convert("RGBA")
+        image.putpixel((12, 34), (0, 255, 0, 2))
+        image.putpixel((56, 78), (255, 0, 255, 4))
+        image.save(candidate, format="PNG", optimize=False, compress_level=9)
+        master = self.root / "Tools/artworks/equipment/calibrated/item.png"
+        master.parent.mkdir(parents=True)
+        image.save(master, format="PNG", optimize=False, compress_level=9)
+        before = pipeline.sha256_file(candidate)
+        approval = {"schemaVersion": 2, "approvalId": "approval-chroma", "decision": "approved", "reviewer": "cty41"}
+        pipeline.write_json_idempotent(self.store.record("approvals", "approval-chroma"), approval, immutable=True)
+        attempt = {
+            "schemaVersion": 2, "attemptId": "job-chroma-a001", "jobId": "job-chroma", "state": "promoted",
+            "approvalId": "approval-chroma", "artifacts": {
+                "prepared": {"path": self.store.relative(candidate), "sha256": before},
+                "promoted": {"master": {"path": self.store.relative(master), "sha256": before}},
+            },
+        }
+        pipeline.write_json_idempotent(self.store.record("attempts", "job-chroma-a001"), attempt, immutable=True)
+        manifest_path = self.root / "Tools/public-release/asset-provenance.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        for path in (candidate, master):
+            manifest["entries"].append({"path": self.store.relative(path), "sha256": before, "status": "approved",
+                "rightsHolder": "cty41", "license": "project-owned", "provenance": "test"})
+        missing_manifest = dict(manifest)
+        missing_manifest["entries"] = manifest["entries"][:-1]
+        manifest_path.write_text(json.dumps(missing_manifest), encoding="utf-8")
+        args = self.ns(attempt_id="job-chroma-a001", path=[str(candidate), str(master)], reviewer="cty41",
+                       reason="authorized exact chroma cleanup", authorized_at="2026-09-14T15:00:00+08:00")
+        with self.assertRaisesRegex(pipeline.PipelineError, "provenance entry is missing"):
+            pipeline.remediate_exact_chroma_artifacts(self.store, args)
+        self.assertEqual(before, pipeline.sha256_file(candidate))
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+        args = self.ns(attempt_id="job-chroma-a001", path=[str(candidate), str(master)], reviewer="cty41",
+                       reason="authorized exact chroma cleanup", authorized_at="2026-09-14T15:00:00+08:00")
+        real_write = pipeline.write_json_idempotent
+
+        def fail_manifest(path, value, immutable=False):
+            if path == manifest_path:
+                raise OSError("simulated manifest failure")
+            return real_write(path, value, immutable=immutable)
+
+        with mock.patch.object(pipeline, "write_json_idempotent", side_effect=fail_manifest):
+            with self.assertRaisesRegex(pipeline.PipelineError, "transaction rolled back"):
+                pipeline.remediate_exact_chroma_artifacts(self.store, args)
+        self.assertEqual(before, pipeline.sha256_file(candidate))
+        self.assertEqual(before, pipeline.sha256_file(master))
+        self.assertEqual([], list((self.store.pipeline / "exact-chroma-remediations").glob("*.json")))
+
+        receipt = pipeline.remediate_exact_chroma_artifacts(self.store, args)
+
+        self.assertEqual(2, len(receipt["artifacts"]))
+        for path in (candidate, master):
+            with Image.open(path) as cleaned:
+                self.assertEqual((0, 0, 0, 0), cleaned.getpixel((12, 34)))
+                self.assertEqual((0, 0, 0, 0), cleaned.getpixel((56, 78)))
+        updated = json.loads(manifest_path.read_text(encoding="utf-8"))
+        self.assertTrue(all(entry["sha256"] != before for entry in updated["entries"]))
+        self.assertTrue(self.store.record("exact-chroma-remediations", receipt["exactChromaRemediationId"]).is_file())
+        issues = []
+        remediations = pipeline._validated_exact_chroma_remediations(self.store, issues)
+        self.assertEqual([], issues)
+        self.assertTrue(pipeline._effective_artifact_binding_matches(
+            self.store, attempt["artifacts"]["prepared"], remediations))
+        receipt_path = self.store.record("exact-chroma-remediations", receipt["exactChromaRemediationId"])
+        forged = json.loads(json.dumps(receipt))
+        with Image.open(candidate) as opened:
+            tampered = opened.copy()
+        tampered.putpixel((1, 1), (1, 2, 3, 255))
+        tampered.save(candidate, format="PNG", optimize=False, compress_level=9)
+        next(item for item in forged["artifacts"] if item["path"] == self.store.relative(candidate))["afterSha256"] = pipeline.sha256_file(candidate)
+        forged_payload = {key: value for key, value in forged.items()
+                          if key not in {"schemaVersion", "exactChromaRemediationId"}}
+        forged["exactChromaRemediationId"] = pipeline.stable_id("exact-chroma-remediation", forged_payload)
+        receipt_path.unlink()
+        receipt_path = self.store.record("exact-chroma-remediations", forged["exactChromaRemediationId"])
+        pipeline.write_json_idempotent(receipt_path, forged, immutable=True)
+        forged_issues = []
+        pipeline._validated_exact_chroma_remediations(self.store, forged_issues)
+        self.assertEqual([f"exact_chroma_remediation_invalid:{receipt_path.stem}"], forged_issues)
+        malformed = dict(forged)
+        malformed["artifacts"] = ["bad"]
+        receipt_path.write_text(json.dumps(malformed), encoding="utf-8")
+        malformed_issues = []
+        pipeline._validated_exact_chroma_remediations(self.store, malformed_issues)
+        self.assertEqual([f"exact_chroma_remediation_invalid:{receipt_path.stem}"], malformed_issues)
+
+    def test_register_supporting_artifact_cannot_grant_rights_without_cty41_approval(self):
         guide = self.root / "Tools/artworks/doge/demonbound/pose-guide.svg"
         guide.parent.mkdir(parents=True)
         guide.write_text('<svg xmlns="http://www.w3.org/2000/svg"/>', encoding="utf-8")
-
-        record = pipeline.register_supporting_artifact(self.store, self.ns(
-            path=str(guide), role="pose-guide-source", note="offline artwork support only"))
-
-        digest = pipeline.sha256_file(guide)
-        self.assertEqual({"path": "Tools/artworks/doge/demonbound/pose-guide.svg", "sha256": digest},
-                         record["artifact"])
-        self.assertTrue(self.store.record("supporting-artifacts", record["supportingArtifactId"]).is_file())
+        with self.assertRaisesRegex(pipeline.PipelineError, "requires reviewer cty41"):
+            pipeline.register_supporting_artifact(self.store, self.ns(
+                path=str(guide), role="pose-guide", note="offline artwork support only",
+                reviewer="agent", rights_approval_id="missing"))
         manifest = json.loads((self.root / "Tools/public-release/asset-provenance.json").read_text(encoding="utf-8"))
-        self.assertEqual({
-            "path": "Tools/artworks/doge/demonbound/pose-guide.svg", "sha256": digest,
-            "status": "approved", "rightsHolder": "cty41", "license": "CC-BY-4.0",
-            "provenance": "project-owned-supporting-derived",
-        }, manifest["entries"][0])
+        self.assertEqual([], manifest["entries"])
+        tutorial = self.root / "Tools/artworks/doge/demonbound/tutorial-card.json"
+        tutorial.write_text('{"schemaVersion":1}\n', encoding="utf-8")
+        pipeline.register_supporting_artifact(self.store, self.ns(
+            path=str(tutorial), role="supporting-derived", note="public tutorial data",
+            reviewer="cty41", rights_approval_id=None))
+        manifest = json.loads((self.root / "Tools/public-release/asset-provenance.json").read_text(encoding="utf-8"))
+        self.assertEqual("project-owned", manifest["entries"][0]["license"])
+        self.assertEqual("Tools/artworks/doge/demonbound/tutorial-card.json", manifest["entries"][0]["path"])
 
     def png(self, rel: str, pear: bool = False, variant: int = 0) -> Path:
         path = self.root / rel
@@ -131,6 +698,40 @@ class ArtworkPipelineTests(unittest.TestCase):
 
     def ns(self, **values):
         return argparse.Namespace(**values)
+
+    def art_direction_fixture(self):
+        authored = self.root / "Tools/artworks/pure_run/art_direction"
+        authored.mkdir(parents=True, exist_ok=True)
+        sources = {
+            "project.json": {"schemaVersion": 1, "profileKind": "project-art-direction", "profileId": "project-v1", "rules": []},
+            "material.json": {"schemaVersion": 1, "profileKind": "material-language", "profileId": "material-v1", "materials": []},
+            "actor.json": {"schemaVersion": 1, "profileKind": "family", "profileId": "actor-v1", "family": "actor", "rules": []},
+            "brief.json": {"schemaVersion": 1, "briefKind": "asset", "briefId": "brief-v1", "family": "actor",
+                           "requiredReviewPanels": ["candidate-master"], "acceptanceCases": [{"caseId": "CASE-001"}]},
+        }
+        paths = {}
+        for name, value in sources.items():
+            path = authored / name
+            path.write_text(json.dumps(value), encoding="utf-8")
+            paths[name] = path
+        manifest = {
+            "schemaVersion": 1, "manifestKind": "art-direction-manifest", "manifestId": "manifest-v1",
+            "projectProfile": {"profileId": "project-v1", "path": self.store.relative(paths["project.json"]),
+                               "sha256": pipeline.sha256_file(paths["project.json"])},
+            "materialLanguage": {"profileId": "material-v1", "path": self.store.relative(paths["material.json"]),
+                                 "sha256": pipeline.sha256_file(paths["material.json"])},
+            "familyProfiles": [{"profileId": "actor-v1", "family": "actor", "path": self.store.relative(paths["actor.json"]),
+                                "sha256": pipeline.sha256_file(paths["actor.json"])}],
+            "briefTemplates": [],
+        }
+        manifest_path = authored / "manifest.json"
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+        pipeline.register_art_direction_profile(self.store, self.ns(source=str(paths["project.json"])))
+        pipeline.register_material_language(self.store, self.ns(source=str(paths["material.json"])))
+        pipeline.register_family_profile(self.store, self.ns(source=str(paths["actor.json"])))
+        pipeline.create_asset_brief(self.store, self.ns(source=str(paths["brief.json"])))
+        pipeline.register_art_direction_manifest(self.store, self.ns(source=str(manifest_path)))
+        return paths
 
     def contract_and_job(self):
         anchor = self.png("Tools/artworks/approved/anchor.png")
@@ -259,7 +860,7 @@ class ArtworkPipelineTests(unittest.TestCase):
         anchor = self.png("Tools/artworks/approved/v2-anchor.png")
         spec_path = self.root / "Tools/artworks/specs/action.json"
         spec_path.parent.mkdir(parents=True, exist_ok=True)
-        spec_path.write_text(json.dumps({
+        spec = {
             "canvas": [256, 256],
             "coreAxis": {"bottom": [127, 236], "top": [127, 116], "tiltDegrees": [-3, 3]},
             "footCenter": [127, 236],
@@ -267,9 +868,87 @@ class ArtworkPipelineTests(unittest.TestCase):
                        "tipRegion": [175, 90, 230, 160], "maxGemAreaPx": 36},
             "forbiddenRegions": [{"name": "eyes", "rect": [105, 125, 150, 155]}],
             "equipmentState": {"scabbard": "absent"}
-        }), encoding="utf-8")
+        }
+        spec_path.write_text(json.dumps(spec), encoding="utf-8")
         return pipeline.create_composition(self.store, self.ns(
             asset_id="hero-action", spec=str(spec_path), anchor=str(anchor)))
+
+    def v3_pose_proof_composition(self, gate="decision"):
+        anchor = self.png("Tools/artworks/approved/v3-pose-anchor.png")
+        example = Path(pipeline.pose_proof.__file__).resolve().parents[1] / "examples" / "pose-proof-cast-dr-v1.json"
+        draft = json.loads(example.read_text(encoding="utf-8")); draft.pop("historicalEvidence", None)
+        draft["assetId"] = f"hero-{gate}"
+        card = pipeline.pose_proof.select_option(
+            draft, "B", "cty41", "compact cast silhouette", {"A": "too open", "C": "too tall"},
+            "2026-09-15T10:00:00+08:00")
+        card_path = self.root / f"Tools/artworks/hero/pose-proofs/cast-{gate}.json"
+        pipeline.pose_proof.write_card(card, card_path)
+        spec = {
+            "schemaVersion": 3, "poseProofContext": draft["visualMoment"], "canvas": [256, 256],
+            "coreAxis": {"bottom": [127, 236], "top": [127, 116], "tiltDegrees": [-3, 3]},
+            "footCenter": [127, 236],
+            "weapon": {"hiddenGrip": [127, 175], "exitWindow": [150, 140, 175, 190],
+                       "tipRegion": [175, 90, 230, 160], "maxGemAreaPx": 36},
+            "forbiddenRegions": [], "equipmentState": {"scabbard": "present"},
+        }
+        if gate in {"decision", "both"}:
+            spec["poseProofDecision"] = {"path": self.store.relative(card_path), "sha256": pipeline.sha256_file(card_path),
+                                         "poseProofId": card["poseProofId"]}
+        if gate in {"exemption", "both"}:
+            contract_payload = {"assetId": f"hero-{gate}", "pose": "cast", "direction": "down-right"}
+            source_contract_id = pipeline.stable_id("contract", contract_payload)
+            source_contract_path = self.store.record("contracts", source_contract_id)
+            pipeline.write_json_idempotent(source_contract_path, {"schemaVersion": 1, "contractId": source_contract_id,
+                                                                   **contract_payload})
+            job_payload = {"contractId": source_contract_id, "contractSha256": pipeline.sha256_file(source_contract_path),
+                           "prompt": None, "inputs": [],
+                           "target": {"direction": "down-right", "pose": "cast"}, "series": None,
+                           "conceptOnly": False, "contractRequirements": None, "requiresInvocation": False,
+                           "poseGuide": None, "localReferences": []}
+            job_id = pipeline.stable_id("job", job_payload)
+            pipeline.write_json_idempotent(self.store.record("jobs", job_id), {
+                "schemaVersion": 1, "jobId": job_id, "state": "ready", **job_payload})
+            attempt_id = f"fixture-{gate}"
+            candidate = {"path": self.store.relative(anchor), "sha256": pipeline.sha256_file(anchor)}
+            approval_payload = {"attemptId": attempt_id, "candidateSha256": candidate["sha256"], "maskSha256": None,
+                                "reviewer": "cty41", "decision": "approved", "reason": "fixture approved pose",
+                                "decidedAt": "2026-09-15T09:00:00+08:00"}
+            approval_id = pipeline.stable_id("approval", approval_payload)
+            approval_path = self.store.record("approvals", approval_id)
+            approval = {"schemaVersion": 1, "approvalId": approval_id, **approval_payload}
+            pipeline.write_json_idempotent(approval_path, approval)
+            pipeline.write_json_idempotent(self.store.record("attempts", attempt_id), {
+                "schemaVersion": 3, "attemptId": attempt_id, "state": "promoted", "approvalId": approval_id,
+                "jobId": job_id, "artifacts": {"prepared": candidate}})
+            exemption = pipeline.create_pose_proof_exemption(self.store, self.ns(
+                asset_id=f"hero-{gate}", pose="cast", direction="down-right",
+                consumer=draft["visualMoment"]["consumer"], phase=draft["visualMoment"]["phase"],
+                sprite_role=draft["visualMoment"]["spriteRole"], category="existing-approved-pose",
+                approval_id=[approval["approvalId"]], reviewer="cty41", reason="assembly retains an approved pose",
+                decided_at="2026-09-15T10:00:00+08:00"))
+            exemption_path = self.store.record("pose-proof-exemptions", exemption["exemptionId"])
+            spec["poseProofExemption"] = {"path": self.store.relative(exemption_path),
+                                           "sha256": pipeline.sha256_file(exemption_path),
+                                           "exemptionId": exemption["exemptionId"]}
+        spec_path = self.root / f"Tools/artworks/specs/v3-{gate}.json"
+        spec_path.parent.mkdir(parents=True, exist_ok=True); spec_path.write_text(json.dumps(spec), encoding="utf-8")
+        return pipeline.create_composition(self.store, self.ns(asset_id=f"hero-{gate}", spec=str(spec_path), anchor=str(anchor)))
+
+    def action_contract_for_composition(self, composition):
+        anchor = self.store.absolute(composition["anchor"]["path"])
+        inventory_path = self.store.pipeline / "legacy-assets.json"
+        inventory_path.write_text(json.dumps({"schemaVersion": 1, "assets": [{
+            "path": composition["anchor"]["path"], "sha256": pipeline.sha256_file(anchor),
+            "state": "legacy-approved", "lineage": None}]}), encoding="utf-8")
+        return pipeline.create_contract(self.store, self.ns(
+            asset_id=composition["assetId"], approved_asset_id=None, kind="action_pose", direction="down-right", pose="cast",
+            anchor=str(anchor), anchor_mask=None, mask_required=False, no_arms=True,
+            near_hand_side="left", far_hand_side="right", size_tolerance=6, center_tolerance=4,
+            layer_rule=[], visibility_cap=[], composition_id=composition["compositionId"], identity_anchor_mask=None,
+            forehead_blaze_min_iou=0.45, pose_reference=True,
+            output_master="Tools/artworks/approved/hero-cast.png", output_preview="Tools/artworks/approved/hero-cast-128.png",
+            rights_holder="cty41", license="project-owned", provenance="project-owned-gpt-generated",
+            asset_role=None, component_kind=None, source_mode=None))
 
     def test_v1_and_v2_records_load_without_rewriting_v1(self):
         v1_path = self.store.record("contracts", "legacy")
@@ -280,6 +959,103 @@ class ArtworkPipelineTests(unittest.TestCase):
         self.assertEqual(2, composition["schemaVersion"])
         self.assertEqual(before, v1_path.read_bytes())
 
+    def test_v3_pose_proof_decision_and_exemption_gate_action_contracts(self):
+        decision = self.v3_pose_proof_composition("decision")
+        self.assertEqual(3, decision["schemaVersion"])
+        self.assertEqual("action_pose", self.action_contract_for_composition(decision)["kind"])
+        exemption = self.v3_pose_proof_composition("exemption")
+        self.assertEqual("action_pose", self.action_contract_for_composition(exemption)["kind"])
+        with self.assertRaisesRegex(pipeline.PipelineError, "exactly one"):
+            self.v3_pose_proof_composition("both")
+        with self.assertRaisesRegex(pipeline.PipelineError, "exactly one"):
+            self.v3_pose_proof_composition("missing")
+        decision_spec = json.loads(self.store.absolute(decision["source"]["path"]).read_text(encoding="utf-8"))
+        with self.assertRaisesRegex(pipeline.PipelineError, "asset"):
+            pipeline.create_composition(self.store, self.ns(asset_id="other-asset", spec=decision["source"]["path"],
+                                                            anchor=str(self.store.absolute(decision["anchor"]["path"]))))
+        example = Path(pipeline.pose_proof.__file__).resolve().parents[1] / "examples" / "pose-proof-cast-dr-v1.json"
+        draft = json.loads(example.read_text(encoding="utf-8")); draft.pop("historicalEvidence", None)
+        draft["assetId"] = decision["assetId"]
+        unauthorized = pipeline.pose_proof._core.select_option(
+            draft, "B", "agent", "selected", {"A": "no", "C": "no"}, "2026-09-15T10:00:00+08:00")
+        unauthorized_path = self.root / "Tools/artworks/hero/pose-proofs/cast-unauthorized.json"
+        unauthorized_path.write_text(json.dumps(unauthorized), encoding="utf-8")
+        unauthorized_spec = json.loads(json.dumps(decision_spec))
+        unauthorized_spec["poseProofDecision"] = {
+            "path": self.store.relative(unauthorized_path), "sha256": pipeline.sha256_file(unauthorized_path),
+            "poseProofId": unauthorized["poseProofId"],
+        }
+        unauthorized_spec_path = self.root / "Tools/artworks/specs/v3-unauthorized-reviewer.json"
+        unauthorized_spec_path.write_text(json.dumps(unauthorized_spec), encoding="utf-8")
+        with self.assertRaisesRegex(pipeline.PipelineError, "reviewer cty41"):
+            pipeline.create_composition(self.store, self.ns(
+                asset_id=decision["assetId"], spec=str(unauthorized_spec_path),
+                anchor=str(self.store.absolute(decision["anchor"]["path"]))))
+        bare_exemption = json.loads(self.store.absolute(decision["source"]["path"]).read_text(encoding="utf-8"))
+        bare_exemption.pop("poseProofDecision")
+        bare_exemption["poseProofExemption"] = {"category": "existing-approved-pose", "reviewer": "cty41",
+                                                  "reason": "bare image bypass", "decidedAt": "2026-09-15T10:00:00+08:00",
+                                                  "evidence": [decision["anchor"]]}
+        bare_path = self.root / "Tools/artworks/specs/v3-bare-exemption.json"
+        bare_path.write_text(json.dumps(bare_exemption), encoding="utf-8")
+        with self.assertRaisesRegex(pipeline.PipelineError, "binding is invalid"):
+            pipeline.create_composition(self.store, self.ns(asset_id=decision["assetId"], spec=str(bare_path),
+                                                            anchor=str(self.store.absolute(decision["anchor"]["path"]))))
+        decision_spec["poseProofContext"]["phase"] = "wrong-phase"
+        mismatch_path = self.root / "Tools/artworks/specs/v3-context-mismatch.json"
+        mismatch_path.write_text(json.dumps(decision_spec), encoding="utf-8")
+        with self.assertRaisesRegex(pipeline.PipelineError, "Visual Moment"):
+            pipeline.create_composition(self.store, self.ns(asset_id=decision["assetId"], spec=str(mismatch_path),
+                                                            anchor=str(self.store.absolute(decision["anchor"]["path"]))))
+        card_path = self.root / decision["spec"]["poseProofDecision"]["path"]
+        broken = json.loads(card_path.read_text(encoding="utf-8")); broken["selection"]["reason"] = "tampered"
+        card_path.write_text(json.dumps(broken), encoding="utf-8")
+        for fixture_attempt in (self.store.pipeline / "attempts").glob("fixture-*.json"):
+            fixture_attempt.unlink()
+        issues = pipeline.strict_check(self.store, False)["issues"]
+        self.assertIn(f"composition_pose_proof_invalid:{decision['compositionId']}", issues)
+        self.assertIn("pose_proof_card_invalid:Tools/artworks/hero/pose-proofs/cast-decision.json", issues)
+
+    def test_new_v2_action_composition_cannot_bypass_pose_proof(self):
+        composition = self.v2_composition()
+        with self.assertRaisesRegex(pipeline.PipelineError, "schema v3 Pose Proof"):
+            self.action_contract_for_composition(composition)
+        grandfather = {"schemaVersion": 1, "cutoffRevision": "d48b70ba969386620c0671f5c8ff19ab59d2ab79",
+                       "authorizedBy": "cty41", "decidedAt": "2026-09-15T10:00:00+08:00",
+                       "reason": "fixture freezes a pre-gate composition", "entries": [{
+                           "compositionId": composition["compositionId"],
+                           "sha256": pipeline.sha256_file(self.store.record("compositions", composition["compositionId"]))}]}
+        (self.store.pipeline / "pose-proof-grandfathers.json").write_text(json.dumps(grandfather), encoding="utf-8")
+        with self.assertRaisesRegex(pipeline.PipelineError, "schema v3 Pose Proof"):
+            self.action_contract_for_composition(composition)
+        self.assertIn("pose_proof_grandfather_registry_invalid", pipeline.strict_check(self.store, False)["issues"])
+
+    def test_immutable_json_publish_is_collision_safe_under_concurrency(self):
+        path = self.root / "Tools/artworks/pipeline/pose-proof-exemptions/race.json"
+        values = ({"schemaVersion": 1, "value": "A"}, {"schemaVersion": 1, "value": "B"})
+        def publish(value):
+            try:
+                pipeline.write_json_idempotent(path, value, immutable=True); return "ok"
+            except pipeline.PipelineError:
+                return "collision"
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            outcomes = list(pool.map(publish, values))
+        self.assertEqual(["collision", "ok"], sorted(outcomes))
+        self.assertIn(json.loads(path.read_text(encoding="utf-8")), values)
+
+    def test_strict_reports_malformed_composition_without_traceback(self):
+        malformed = self.store.record("compositions", "composition-malformed")
+        malformed.parent.mkdir(parents=True, exist_ok=True); malformed.write_text("{", encoding="utf-8")
+        contract_id = "contract-malformed-composition"
+        pipeline.write_json_idempotent(self.store.record("contracts", contract_id), {
+            "schemaVersion": 3, "contractId": contract_id, "kind": "action_pose", "assetId": "broken",
+            "compositionSpec": {"compositionId": "composition-malformed", "sha256": pipeline.sha256_file(malformed)}})
+        issues = pipeline.strict_check(self.store, False)["issues"]
+        self.assertIn("composition_record_invalid:composition-malformed", issues)
+        self.assertIn("contract_composition_invalid:contract-malformed-composition", issues)
+        with self.assertRaisesRegex(pipeline.PipelineError, "composition_record_invalid:composition-malformed"):
+            pipeline.strict_check(self.store, True)
+
     def test_pose_guide_is_deterministic_and_bound_to_composition(self):
         composition = self.v2_composition()
         args = self.ns(composition_id=composition["compositionId"], output="Tools/artworks/guides/action.png")
@@ -287,6 +1063,54 @@ class ArtworkPipelineTests(unittest.TestCase):
         second = pipeline.render_pose_guide(self.store, args)
         self.assertEqual(first, second)
         self.assertEqual("supporting-derived", first["role"])
+
+    def test_pose_guide_renders_validated_action_design(self):
+        anchor = self.png("Tools/artworks/approved/action-anchor.png")
+        spec_path = self.root / "Tools/artworks/specs/action-design.json"
+        spec_path.parent.mkdir(parents=True, exist_ok=True)
+        spec_path.write_text(json.dumps({
+            "canvas": [256, 256],
+            "coreAxis": {"bottom": [122, 232], "top": [148, 116], "tiltDegrees": [10, 18]},
+            "footCenter": [128, 236],
+            "weapon": {"hiddenGrip": [150, 158], "exitWindow": [140, 145, 165, 175], "tipRegion": [198, 202, 242, 238]},
+            "forbiddenRegions": [],
+            "equipmentState": {"scabbard": "present"},
+            "actionDesign": {
+                "silhouette": [[95, 216], [102, 145], [132, 112], [166, 145], [171, 205], [145, 229]],
+                "lineOfAction": [[112, 224], [151, 119]],
+                "centerOfMass": [137, 177],
+                "pawContactZones": {
+                    "nearHand": [[153, 154], [166, 158], [164, 171], [151, 168]],
+                    "farHand": [[142, 158], [153, 160], [151, 172], [140, 169]],
+                    "nearFoot": [[108, 225], [122, 224], [124, 236], [108, 236]],
+                    "farFoot": [[137, 222], [151, 224], [153, 236], [138, 236]]
+                },
+                "compressionLine": [[105, 190], [137, 177], [164, 161]],
+                "counterbalanceLine": [[120, 166], [91, 143], [72, 126]]
+            }
+        }), encoding="utf-8")
+        composition = pipeline.create_composition(self.store, self.ns(
+            asset_id="hero-action-design", spec=str(spec_path), anchor=str(anchor)))
+        guide = pipeline.render_pose_guide(self.store, self.ns(
+            composition_id=composition["compositionId"], output="Tools/artworks/guides/action-design.png"))
+        rendered = Image.open(self.store.absolute(guide["artifact"]["path"])).convert("RGBA")
+        self.assertGreater(rendered.getpixel((137, 177))[3], 0)
+        self.assertGreater(rendered.getpixel((116, 233))[2], 150)
+        detached = json.loads(spec_path.read_text(encoding="utf-8"))
+        detached["weapon"]["hiddenGrip"] = None
+        detached["forbiddenRegions"] = [[0, 0, 10, 10]]
+        spec_path.write_text(json.dumps(detached), encoding="utf-8")
+        detached_composition = pipeline.create_composition(self.store, self.ns(
+            asset_id="detached-weapon-action-design", spec=str(spec_path), anchor=str(anchor)))
+        detached_guide = pipeline.render_pose_guide(self.store, self.ns(
+            composition_id=detached_composition["compositionId"], output="Tools/artworks/guides/detached-action-design.png"))
+        self.assertTrue(self.store.absolute(detached_guide["artifact"]["path"]).exists())
+        broken = json.loads(spec_path.read_text(encoding="utf-8"))
+        broken["actionDesign"]["centerOfMass"] = [300, 177]
+        spec_path.write_text(json.dumps(broken), encoding="utf-8")
+        with self.assertRaisesRegex(pipeline.PipelineError, "invalid point"):
+            pipeline.create_composition(self.store, self.ns(
+                asset_id="broken-action-design", spec=str(spec_path), anchor=str(anchor)))
 
     def test_guard_gem_window_rejects_tip_pommel_missing_extra_and_oversized_gems(self):
         weapon = {
@@ -391,7 +1215,17 @@ class ArtworkPipelineTests(unittest.TestCase):
         anchor = self.root / "Tools/artworks/approved/anchor.png"
         spec_path = self.root / "Tools/artworks/specs/bat-action.json"
         spec_path.parent.mkdir(parents=True)
+        example = Path(pipeline.pose_proof.__file__).resolve().parents[1] / "examples" / "pose-proof-cast-dr-v1.json"
+        draft = json.loads(example.read_text(encoding="utf-8")); draft.pop("historicalEvidence", None)
+        draft.update({"assetId": "tomb-maw-bat-melee", "characterId": "tomb-maw-bat", "poseId": "melee"})
+        card = pipeline.pose_proof.select_option(draft, "B", "cty41", "fixture pose", {"A": "no", "C": "no"},
+                                                 "2026-09-15T10:00:00+08:00")
+        card_path = self.root / "Tools/artworks/tomb-maw-bat/pose-proofs/melee.json"
+        pipeline.pose_proof.write_card(card, card_path)
         spec_path.write_text(json.dumps({
+            "schemaVersion": 3, "poseProofContext": draft["visualMoment"],
+            "poseProofDecision": {"path": self.store.relative(card_path), "sha256": pipeline.sha256_file(card_path),
+                                  "poseProofId": card["poseProofId"]},
             "canvas": [256, 256],
             "coreAxis": {"top": [128, 90], "bottom": [128, 180], "tiltDegrees": [-8, 8]},
             "footCenter": [128, 236],
@@ -424,6 +1258,47 @@ class ArtworkPipelineTests(unittest.TestCase):
         text = self.store.absolute(compiled["artifact"]["path"]).read_text(encoding="utf-8")
         self.assertIn("near-round spherical flying core", text)
         self.assertNotIn("exactly four paws", text)
+
+    def test_v4_compile_prompt_uses_brief_invariants_and_role_bindings(self):
+        composition = self.v2_composition()
+        guide = pipeline.render_pose_guide(self.store, self.ns(
+            composition_id=composition["compositionId"], output="Tools/artworks/reviews/v4-guide.png"))
+        anchor = self.root / "Tools/artworks/approved/v2-anchor.png"
+        prompt = self.root / "Tools/artworks/prompts/poet-v4.md"
+        prompt.parent.mkdir(parents=True, exist_ok=True)
+        prompt.write_text("one coherent poet action sprite", encoding="utf-8")
+        brief_path = self.root / "Tools/artworks/briefs/poet-v4.json"
+        brief_path.parent.mkdir(parents=True, exist_ok=True)
+        role = "image-1-poet-identity-only"
+        brief = {
+            "schemaVersion": 1, "briefKind": "asset", "briefId": "poet-v4", "family": "actor",
+            "purpose": "Show the poet committing to a melee impact.",
+            "firstRead": ["poet", "impact"],
+            "identityInvariants": ["approved five-red chow face", "exactly four attached paws", "no clothing or drinking vessel"],
+            "forbidden": ["generic gray-white forehead blaze", "heterochromic ear"],
+            "referenceResponsibilities": [{"role": role, "path": self.store.relative(anchor),
+                "sha256": pipeline.sha256_file(anchor), "responsibility": "identity and volume only"}],
+        }
+        brief_path.write_text(json.dumps(brief), encoding="utf-8")
+        contract_id = "contract-v4-prompt"
+        pipeline.write_json_idempotent(self.store.record("contracts", contract_id), {
+            "schemaVersion": 4, "contractId": contract_id,
+            "compositionSpec": {"compositionId": composition["compositionId"]},
+            "briefSpec": {"briefId": "poet-v4", "path": self.store.relative(brief_path), "sha256": pipeline.sha256_file(brief_path)},
+        })
+        job_id = "job-v4-prompt"
+        pipeline.write_json_idempotent(self.store.record("jobs", job_id), {
+            "schemaVersion": 4, "jobId": job_id, "contractId": contract_id,
+            "prompt": {"path": self.store.relative(prompt), "sha256": pipeline.sha256_file(prompt)},
+            "inputs": [{"role": role, "path": self.store.relative(anchor), "sha256": pipeline.sha256_file(anchor)}],
+        })
+        compiled = pipeline.compile_prompt(self.store, self.ns(
+            job_id=job_id, pose_guide_id=guide["poseGuideId"], output="Tools/artworks/reviews/poet-v4-prompt.md"))
+        text = self.store.absolute(compiled["artifact"]["path"]).read_text(encoding="utf-8")
+        self.assertIn("approved five-red chow face", text)
+        self.assertIn("identity and volume only", text)
+        self.assertIn("generic gray-white forehead blaze", text)
+        self.assertNotIn("half-body alternate coat color", text)
 
     def test_end_to_end_is_idempotent_and_promotes(self):
         _, job, _ = self.contract_and_job()
@@ -1201,7 +2076,7 @@ class ArtworkPipelineTests(unittest.TestCase):
     def test_death_recipe_cli_is_retired_but_reviewed_import_promotes_exact_bytes(self):
         parser = pipeline.build_parser()
         self.assertNotIn("render-death-recipe", parser._subparsers._group_actions[0].choices)
-        contract, _job, _job_args = self.contract_and_job()
+        contract, _job = self.occlusion_contract_and_job()
         source = self.png("Tools/artworks/concepts/death-source.png")
         candidate_path = self.root / "Tools/artworks/candidates/death.png"; candidate_path.parent.mkdir(parents=True)
         candidate = Image.new("RGBA", (256, 256), (0, 0, 0, 0)); ImageDraw.Draw(candidate).ellipse((73, 81, 182, 174), fill=(80, 70, 65, 255)); candidate.save(candidate_path)
@@ -1215,13 +2090,12 @@ class ArtworkPipelineTests(unittest.TestCase):
             size_comparison=comparison["artifact"]["path"], reviewer="cty41", reason="visual size accepted",
             accepted_at="2026-08-21T00:00:00+08:00"))
         attempt_id = adopted["attempt"]["attemptId"]
+        self.assertIsNone(adopted["job"]["contractRequirements"])
         pipeline.decide(self.store, self.ns(attempt_id=attempt_id, reviewer="cty41", reason="visual size accepted",
                                              decided_at="2026-08-21T00:00:00+08:00"), "approved")
         master_output = self.store.absolute(contract["outputs"]["master"]); master_output.parent.mkdir(parents=True, exist_ok=True)
         preview_output = self.store.absolute(contract["outputs"]["preview"]); preview_output.parent.mkdir(parents=True, exist_ok=True)
         master_output.write_bytes(candidate_path.read_bytes()); preview_output.write_bytes(preview_path.read_bytes())
-        pipeline.register_supporting_artifact(self.store, self.ns(path=str(master_output), role="pre-promotion-copy", note="upgrade regression"))
-        pipeline.register_supporting_artifact(self.store, self.ns(path=str(preview_output), role="pre-promotion-copy", note="upgrade regression"))
         promoted = pipeline.promote(self.store, self.ns(attempt_id=attempt_id))
         self.assertEqual(pipeline.sha256_file(candidate_path), promoted["artifacts"]["promoted"]["master"]["sha256"])
         self.assertEqual(pipeline.sha256_file(preview_path), promoted["artifacts"]["promoted"]["preview"]["sha256"])
@@ -1351,9 +2225,25 @@ class ArtworkPipelineTests(unittest.TestCase):
         contract, _job, _job_args = self.contract_and_job()
         source = self.store.absolute(contract["anchor"]["path"])
         pipeline.register_public_artifacts(self.store, [contract["anchor"]], "project-owned-gpt-generated")
+        manifest_path = self.root / "Tools/public-release/asset-provenance.json"
+        manifest = pipeline.load_json(manifest_path)
+        source_entry = next(entry for entry in manifest["entries"] if entry["path"] == contract["anchor"]["path"])
+        source_entry["license"] = "project-owned"
+        pipeline.write_json_idempotent(manifest_path, manifest)
         target = self.root / "godot/assets/units/hero.png"; target.parent.mkdir(parents=True); target.write_bytes(source.read_bytes())
         result = pipeline.register_runtime_copy(self.store, self.ns(source=str(source), target=str(target)))
         self.assertEqual(result["source"]["sha256"], result["target"]["sha256"])
+        target_entry = next(entry for entry in pipeline.load_json(manifest_path)["entries"]
+                            if entry["path"] == "godot/assets/units/hero.png")
+        self.assertEqual(target_entry["license"], "project-owned")
+        target_entry["license"] = "CC-BY-4.0"
+        manifest = pipeline.load_json(manifest_path)
+        next(entry for entry in manifest["entries"] if entry["path"] == target_entry["path"])["license"] = "CC-BY-4.0"
+        pipeline.write_json_idempotent(manifest_path, manifest)
+        pipeline.register_runtime_copy(self.store, self.ns(source=str(source), target=str(target)))
+        normalized = next(entry for entry in pipeline.load_json(manifest_path)["entries"]
+                          if entry["path"] == target_entry["path"])
+        self.assertEqual(normalized["license"], "project-owned")
         Image.new("RGBA", (256, 256), (1, 2, 3, 255)).save(target)
         with self.assertRaisesRegex(pipeline.PipelineError, "byte-identical"):
             pipeline.register_runtime_copy(self.store, self.ns(source=str(source), target=str(target)))
@@ -1404,6 +2294,88 @@ class ArtworkPipelineTests(unittest.TestCase):
             output_preview="Tools/artworks/approved/new-armor_128.png", rights_holder="cty41",
             license="CC-BY-4.0", provenance="project-owned-gpt-generated"))
         return contract, profile
+
+    def test_recontract_equipment_report_preserves_master_and_supports_review(self):
+        contract, _profile = self.equipment_contract_fixture()
+        candidate_path = self.root / "Tools/artworks/candidates/exact-clean.png"
+        candidate_path.parent.mkdir(parents=True, exist_ok=True)
+        image = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
+        ImageDraw.Draw(image).rectangle((110, 129, 140, 236), fill=(120, 80, 60, 255))
+        image.save(candidate_path)
+        before = candidate_path.read_bytes()
+        attempt = {"schemaVersion": 4, "attemptId": "job-exact-a001", "jobId": "job-exact", "state": "prepared",
+                   "reviewedRecontractId": "recontract-test", "artifacts": {"prepared": {
+                       "path": self.store.relative(candidate_path), "sha256": pipeline.sha256_file(candidate_path)}}}
+        pipeline._bind_recontract_equipment_report(self.store, attempt, contract)
+        self.assertEqual(before, candidate_path.read_bytes())
+        self.assertTrue(pipeline.load_json(self.store.absolute(attempt["report"]["path"]))["passed"])
+        with Image.open(self.store.absolute(attempt["artifacts"]["equipmentPreview"]["path"])) as preview:
+            self.assertEqual(pipeline.clean_exact_chroma(pipeline.make_preview(image)).tobytes(), preview.tobytes())
+        pipeline.write_json_idempotent(self.store.record("jobs", "job-exact"), {
+            "schemaVersion": 4, "jobId": "job-exact", "contractId": contract["contractId"]})
+        pipeline.write_json_idempotent(self.store.record("attempts", attempt["attemptId"]), attempt)
+        review = pipeline.render_equipment_review(self.store, self.ns(
+            attempt_id=attempt["attemptId"], output="Tools/artworks/reviews/exact.png"))
+        self.assertIn("equipmentPanel", review["outputs"])
+        image.putpixel((110, 129), (0, 255, 0, 2)); image.save(candidate_path)
+        with self.assertRaisesRegex(pipeline.PipelineError, "technical gate failed"):
+            pipeline._bind_recontract_equipment_report(self.store, attempt, contract)
+
+    def test_exact_chroma_cleanup_preserves_non_key_colors_and_alpha(self):
+        pixels = [(0, 255, 0, 2), (0, 255, 0, 3), (255, 0, 255, 1),
+                  (255, 0, 255, 255), (12, 34, 56, 0), (0, 254, 0, 2),
+                  (254, 0, 255, 3), (100, 139, 100, 255), (10, 20, 30, 1)]
+        image = Image.new("RGBA", (len(pixels), 1)); image.putdata(pixels)
+        cleaned = pipeline.clean_exact_chroma(image)
+        self.assertEqual([(0, 0, 0, 0)] * 5 + pixels[5:], pipeline.pixel_data(cleaned))
+        self.assertEqual(pixels, pipeline.pixel_data(image))
+
+    def test_equipment_lanczos_cleanup_removes_real_resampled_key_pixels(self):
+        contract, _profile = self.equipment_contract_fixture()
+        source = self.root / "Tools/artworks/concepts/resampled.png"
+        source.parent.mkdir(parents=True)
+        image = Image.new("RGBA", (160, 160))
+        ImageDraw.Draw(image).ellipse((0, 0, 159, 159), fill=(100, 139, 100, 255))
+        image.save(source)
+        # This legal muted green survives the source keyer; Lanczos creates exact green at alpha=1.
+        resized = image.resize((108, 108), Image.Resampling.LANCZOS)
+        self.assertTrue(any(p[:3] == (0, 255, 0) and p[3] for p in pipeline.pixel_data(resized)))
+        report = pipeline.prepare_equipment_candidate(self.store, self.ns(
+            contract_id=contract["contractId"], source=str(source),
+            output="Tools/artworks/candidates/resampled.png",
+            preview="Tools/artworks/candidates/resampled_128.png", attempt_id=None))
+        self.assertTrue(report["passed"], report["issues"])
+        for key in ("candidate", "preview"):
+            with Image.open(self.store.absolute(report[key]["path"])) as output:
+                pixels = pipeline.pixel_data(output)
+            self.assertFalse(any(p[3] and p[:3] in {(0, 255, 0), (255, 0, 255)} for p in pixels))
+            self.assertFalse(any(not p[3] and any(p[:3]) for p in pixels))
+            self.assertIn((100, 139, 100, 255), pixels)
+
+    def test_technical_gate_rejects_low_alpha_exact_keys(self):
+        path = self.png("Tools/artworks/candidates/low-alpha.png")
+        for color in ((0, 255, 0), (255, 0, 255)):
+            for alpha in (1, 2, 3, 255):
+                with self.subTest(color=color, alpha=alpha):
+                    image = Image.new("RGBA", (256, 256))
+                    image.putpixel((128, 128), (*color, alpha)); image.save(path)
+                    _, issues = pipeline.inspect_technical(path, "projectile")
+                    self.assertIn("exact_chroma_residue", issues)
+
+    def test_equipment_strict_rejects_actual_approved_master_and_preview_residue(self):
+        self.test_equipment_approval_requires_matching_cty41_style_verdict()
+        for name in ("approval.png", "approval_128.png"):
+            path = self.root / "Tools/artworks/candidates" / name
+            with Image.open(path) as opened:
+                image = opened.convert("RGBA")
+            image.putpixel((20, 20), (0, 255, 0, 2))
+            image.putpixel((21, 20), (255, 0, 255, 3))
+            image.putpixel((22, 20), (12, 34, 56, 0)); image.save(path)
+            issues = pipeline.strict_check(self.store, False)["issues"]
+            self.assertTrue(any(issue.startswith("equipment_exact_chroma_residue:") and issue.endswith(name) for issue in issues), issues)
+            self.assertTrue(any(issue.startswith("equipment_transparent_rgb_nonzero:") and issue.endswith(name) for issue in issues), issues)
+            with self.assertRaisesRegex(pipeline.PipelineError, "equipment_exact_chroma_residue"):
+                pipeline.strict_check(self.store, True)
 
     def test_equipment_contract_binds_category_anchors_and_requires_invocation(self):
         contract, _profile = self.equipment_contract_fixture()
@@ -1505,6 +2477,367 @@ class ArtworkPipelineTests(unittest.TestCase):
             decided_at="2026-08-25T01:04:00+08:00"))
         receipt = pipeline.decide(self.store, decision, "approved")
         self.assertEqual("approved", receipt["decision"])
+
+    def test_art_direction_registry_is_idempotent_and_binds_schema_v4_contract(self):
+        paths = self.art_direction_fixture()
+        first = pipeline.register_family_profile(self.store, self.ns(source=str(paths["actor.json"])))
+        second = pipeline.register_family_profile(self.store, self.ns(source=str(paths["actor.json"])))
+        self.assertEqual(first, second)
+
+        args = pipeline.build_parser().parse_args([
+            "--root", str(self.root), "create-contract",
+            "--asset-id", "actor-with-art-direction", "--kind", "ground_character",
+            "--direction", "down-right", "--pose", "idle", "--no-mask-required",
+            "--output-master", "Tools/artworks/output/actor.png",
+            "--output-preview", "Tools/artworks/output/actor_128.png",
+            "--family-profile-id", "actor-v1", "--brief-id", "brief-v1",
+        ])
+        contract = pipeline.run(args)
+        self.assertEqual(4, contract["schemaVersion"])
+        self.assertEqual("project-v1", contract["artDirectionSpec"]["profileId"])
+        self.assertEqual("material-v1", contract["materialLanguageSpec"]["profileId"])
+        self.assertEqual("actor", contract["familyProfileSpec"]["family"])
+        self.assertEqual(["CASE-001"], contract["acceptanceCaseIds"])
+        self.assertEqual([], pipeline.strict_check(self.store, False)["issues"])
+
+    def test_art_direction_contract_requires_complete_binding_and_strict_reports_hash_drift(self):
+        paths = self.art_direction_fixture()
+        with self.assertRaisesRegex(pipeline.PipelineError, "both --family-profile-id and --brief-id"):
+            args = pipeline.build_parser().parse_args([
+                "--root", str(self.root), "create-contract",
+                "--asset-id", "bad-binding", "--kind", "ground_character",
+                "--direction", "down-right", "--pose", "idle", "--no-mask-required",
+                "--output-master", "Tools/artworks/output/bad.png",
+                "--output-preview", "Tools/artworks/output/bad_128.png",
+                "--family-profile-id", "actor-v1",
+            ])
+            pipeline.run(args)
+        family = json.loads(paths["actor.json"].read_text(encoding="utf-8"))
+        family["rules"].append("drift")
+        paths["actor.json"].write_text(json.dumps(family), encoding="utf-8")
+        issues = pipeline.strict_check(self.store, False)["issues"]
+        self.assertIn("art_direction_registry_hash:family-profiles:actor-v1", issues)
+
+    def test_only_cty41_approved_anchor_can_bind_art_direction_contract(self):
+        self.art_direction_fixture()
+        candidate = self.png("Tools/artworks/candidates/anchor.png")
+        review = self.png("Tools/artworks/reviews/anchor-board.png")
+        with self.assertRaisesRegex(pipeline.PipelineError, "reviewer cty41"):
+            pipeline.record_anchor_verdict(self.store, self.ns(
+                candidate=str(candidate), family="actor", responsibility=["identity"], excluded_use=[],
+                review=str(review), decision="approved-anchor", reviewer="agent", reason="invalid",
+                decided_at="2026-09-03T12:00:00+08:00"))
+        rejected = pipeline.record_anchor_verdict(self.store, self.ns(
+            candidate=str(candidate), family="actor", responsibility=["identity"], excluded_use=[],
+            review=str(review), decision="rejected-as-anchor", reviewer="cty41", reason="negative only",
+            decided_at="2026-09-03T12:00:00+08:00"))
+        values = [
+            "--root", str(self.root), "create-contract", "--asset-id", "actor",
+            "--kind", "ground_character", "--direction", "down-right", "--pose", "idle",
+            "--no-mask-required", "--output-master", "Tools/artworks/output/actor.png",
+            "--output-preview", "Tools/artworks/output/actor_128.png", "--family-profile-id", "actor-v1",
+            "--brief-id", "brief-v1", "--anchor-verdict-id", rejected["anchorVerdictId"],
+        ]
+        with self.assertRaisesRegex(pipeline.PipelineError, "only approved-anchor"):
+            pipeline.run(pipeline.build_parser().parse_args(values))
+
+    def test_acceptance_cases_and_cty41_verdict_form_hash_bound_art_direction_gate(self):
+        self.art_direction_fixture()
+        contract = pipeline.run(pipeline.build_parser().parse_args([
+            "--root", str(self.root), "create-contract", "--asset-id", "actor",
+            "--kind", "ground_character", "--direction", "down-right", "--pose", "idle",
+            "--no-mask-required", "--output-master", "Tools/artworks/output/actor.png",
+            "--output-preview", "Tools/artworks/output/actor_128.png", "--family-profile-id", "actor-v1",
+            "--brief-id", "brief-v1",
+        ]))
+        job = {"schemaVersion": 4, "jobId": "job-v4", "contractId": contract["contractId"], "state": "ready"}
+        pipeline.write_json_idempotent(self.store.record("jobs", "job-v4"), job)
+        candidate = self.png("Tools/artworks/pipeline/artifacts/job-v4/job-v4-a001/prepared.png")
+        attempt = {"schemaVersion": 4, "attemptId": "job-v4-a001", "jobId": "job-v4", "state": "review_pending",
+                   "artifacts": {"prepared": {"path": self.store.relative(candidate), "sha256": pipeline.sha256_file(candidate)}}}
+        pipeline.write_json_idempotent(self.store.record("attempts", attempt["attemptId"]), attempt)
+        panel = self.png("Tools/artworks/reviews/panel.png")
+        pending = pipeline.record_acceptance_case_result(self.store, self.ns(
+            attempt_id=attempt["attemptId"], case_id="CASE-001", evidence=[f"candidate={panel}"],
+            automated_fact=["geometry passed"], automated_result="passed", human_check=["style pending"],
+            human_decision="pending", reviewer="agent", reason="awaiting review",
+            decided_at="2026-09-03T12:00:00+08:00"))
+        self.assertEqual("pending", pending["humanDecision"])
+        pending_review = pipeline.render_art_direction_review(self.store, self.ns(
+            attempt_id=attempt["attemptId"], panel=[f"candidate-master={panel}"],
+            output="Tools/artworks/reviews/art-direction-pending.png"))
+        current = pipeline.load_json(self.store.record("attempts", attempt["attemptId"]))
+        with self.assertRaisesRegex(pipeline.PipelineError, "all required acceptance cases must pass"):
+            pipeline._validate_art_direction_approval(self.store, current, contract)
+        result = pipeline.record_acceptance_case_result(self.store, self.ns(
+            attempt_id=attempt["attemptId"], case_id="CASE-001", evidence=[f"candidate={panel}"],
+            automated_fact=["geometry passed"], automated_result="passed", human_check=["style reads"],
+            human_decision="passed", reviewer="cty41", reason="accepted", decided_at="2026-09-03T12:01:00+08:00"))
+        self.assertEqual("passed", result["humanDecision"])
+        review = pipeline.render_art_direction_review(self.store, self.ns(
+            attempt_id=attempt["attemptId"], panel=[f"candidate-master={panel}"],
+            output="Tools/artworks/reviews/art-direction.png"))
+        self.assertNotEqual(pending_review["artDirectionReviewId"], review["artDirectionReviewId"])
+        current = pipeline.load_json(self.store.record("attempts", attempt["attemptId"]))
+        with self.assertRaisesRegex(pipeline.PipelineError, "verdict is required"):
+            pipeline._validate_art_direction_approval(self.store, current, contract)
+        verdict = pipeline.record_art_direction_verdict(self.store, self.ns(
+            attempt_id=attempt["attemptId"], review_id=review["artDirectionReviewId"], decision="approved",
+            accept_warning=[], reviewer="cty41", reason="all cases passed",
+            decided_at="2026-09-03T12:02:00+08:00"))
+        current = pipeline.load_json(self.store.record("attempts", attempt["attemptId"]))
+        self.assertEqual(verdict["artDirectionVerdictId"],
+                         pipeline._validate_art_direction_approval(self.store, current, contract)["artDirectionVerdictId"])
+
+    def test_resolve_prepare_transaction_commits_only_from_matching_artifact_evidence(self):
+        prepared = self.png("Tools/artworks/pipeline/artifacts/job-recover/job-recover-a001/prepared.png")
+        artifact = {"path": self.store.relative(prepared), "sha256": pipeline.sha256_file(prepared)}
+        attempt = {"schemaVersion": 2, "attemptId": "job-recover-a001", "jobId": "job-recover",
+                   "state": "prepared", "artifacts": {"prepared": artifact},
+                   "preparation": {"chroma": "00ff00", "chromaTolerance": 42}}
+        pipeline.write_json_idempotent(self.store.record("attempts", attempt["attemptId"]), attempt)
+        payload = {"attemptId": attempt["attemptId"], "chroma": "0,255,0", "chromaTolerance": 42}
+        transaction_id = pipeline.stable_id("transaction", {"operation": "prepare", **payload})
+        pipeline.write_json_idempotent(self.store.record("transactions", transaction_id),
+            {"schemaVersion": 2, "transactionId": transaction_id, "operation": "prepare", "payload": payload, "state": "started"})
+        resolved = pipeline.resolve_transaction(self.store, self.ns(
+            transaction_id=transaction_id, reviewer="cty41", reason="recover",
+            decided_at="2026-09-08T12:00:00+00:00"))
+        self.assertEqual("committed", resolved["state"])
+        self.assertEqual(artifact, resolved["resolution"]["evidence"])
+        original = pipeline.load_json(self.store.record("transactions", transaction_id))
+        self.assertEqual("started", original["state"])
+        repeated = pipeline.resolve_transaction(self.store, self.ns(
+            transaction_id=transaction_id, reviewer="cty41", reason="again",
+            decided_at="2026-09-08T12:01:00+00:00"))
+        self.assertEqual(resolved["resolution"]["transactionResolutionId"],
+                         repeated["resolution"]["transactionResolutionId"])
+
+    def test_composition_hidden_tip_flag_must_be_boolean(self):
+        anchor = self.png("Tools/artworks/anchor.png")
+        spec_path = self.root / "Tools/artworks/composition.json"
+        spec = {"canvas": [256, 256], "coreAxis": {}, "footCenter": {},
+                "weapon": {"tipMayBeOccluded": "yes"}, "forbiddenRegions": [],
+                "equipmentState": {"scabbard": "present"}}
+        spec_path.write_text(json.dumps(spec), encoding="utf-8")
+        with self.assertRaisesRegex(pipeline.PipelineError, "must be boolean"):
+            pipeline.create_composition(self.store, self.ns(asset_id="actor", spec=str(spec_path), anchor=str(anchor)))
+        spec["weapon"]["tipMayBeOccluded"] = True
+        spec_path.write_text(json.dumps(spec), encoding="utf-8")
+        self.assertTrue(pipeline.create_composition(self.store, self.ns(
+            asset_id="actor", spec=str(spec_path), anchor=str(anchor)))["compositionId"])
+
+    def test_reviewer_qualification_supersession_is_explicit_and_effective(self):
+        proof = self.root / "Tools/artworks/proof.json"; proof.parent.mkdir(parents=True, exist_ok=True)
+        proof.write_text(json.dumps({"schemaVersion": 4}), encoding="utf-8")
+        binding = {"path": self.store.relative(proof), "sha256": pipeline.sha256_file(proof)}
+        audit_bindings = []
+        for index in range(3):
+            audit_id = f"audit-{index}"; audit_path = self.root / f"Tools/artworks/{audit_id}.json"
+            audit_path.write_text(json.dumps({"schemaVersion": 4, "modelReviewAuditId": audit_id,
+                                              "reviewer": "cty41", "verdict": "confirmed", "finding": "confirmed"}), encoding="utf-8")
+            audit_bindings.append({"modelReviewAuditId": audit_id, "path": self.store.relative(audit_path),
+                                   "sha256": pipeline.sha256_file(audit_path)})
+        common = {"state": "auto-retry-qualified", "reviewer": "cty41", "ruleId": "RULE", "ruleVersion": 1,
+                  "model": "model", "effort": "medium", "reviewerPromptId": "prompt", "reviewerPromptSha256": "a" * 64,
+                  "compiledPolicyId": "policy", "compiledPolicySha256": "b" * 64, "caseSetVersion": "cases",
+                  "reviewRule": binding, "compiledPolicy": binding, "reviewerPrompt": binding}
+        old_payload = {**common, "qualifiedAt": "2026-09-08T10:00:00+00:00"}
+        old_id = pipeline.stable_id("reviewer-qualification", old_payload)
+        old = {"schemaVersion": 4, "reviewerQualificationId": old_id, **old_payload}
+        new_payload = {**common, "promptOnlyComparison": {"promptComparisonId": "comparison", **binding},
+                       "qualificationAudits": audit_bindings,
+                       "qualifiedAt": "2026-09-08T11:00:00+00:00"}
+        new_id = pipeline.stable_id("reviewer-qualification", new_payload)
+        new = {"schemaVersion": 4, "reviewerQualificationId": new_id, **new_payload}
+        pipeline.write_json_idempotent(self.store.record("reviewer-qualifications", old_id), old, immutable=True)
+        pipeline.write_json_idempotent(self.store.record("reviewer-qualifications", new_id), new, immutable=True)
+        with self.assertRaisesRegex(pipeline.PipelineError, "valid prompt-only comparison"):
+            pipeline.supersede_reviewer_qualification(self.store, self.ns(
+                old_qualification_id=old_id, new_qualification_id=new_id, reviewer="cty41", reason="fake proof",
+                superseded_at="2026-09-08T12:00:00+00:00"))
+
+    def test_invalid_qualification_proof_fails_closed_at_runtime(self):
+        _attempt, _packet, _invocation, policy_id = self._model_review_fixture("invalid-proof")
+        qualification = self._write_test_qualification(
+            "rule-invalid-proof", policy_id, self.root / "Tools/artworks/invalid-proof-reviewer-prompt.txt")
+        audit_path = self.store.absolute(qualification["qualificationAudits"][0]["path"])
+        audit = json.loads(audit_path.read_text(encoding="utf-8")); audit["verdict"] = "rejected"
+        audit_path.write_text(json.dumps(audit), encoding="utf-8")
+        self.assertNotIn(qualification["reviewerQualificationId"],
+                         {item["reviewerQualificationId"] for item in pipeline._effective_qualifications(self.store)})
+
+    def test_automatic_retry_child_creation_is_crash_idempotent(self):
+        attempt, _packet, _invocation, _policy_id = self._model_review_fixture("retry-idempotent")
+        prompt_delta = {"promptDeltaId": "delta", "operations": [], "promptDelta": []}
+
+        first = pipeline._create_model_retry_attempt(self.store, attempt, prompt_delta)
+        second = pipeline._create_model_retry_attempt(self.store, attempt, prompt_delta)
+
+        self.assertEqual(first, second)
+        self.assertEqual(f"{attempt['jobId']}-a002", first["attemptId"])
+        self.assertEqual(2, first["generationRound"])
+        self.assertEqual(2, len(pipeline.list_attempts(self.store, attempt["jobId"])))
+
+    def test_automatic_retry_never_creates_attempt_a004(self):
+        attempt, packet, invocation, policy_id = self._model_review_fixture("no-a004")
+        result = self._record_retry_result(packet, invocation, policy_id, "no-a004")
+        self._write_test_qualification("rule-no-a004", policy_id,
+                                       self.root / "Tools/artworks/no-a004-reviewer-prompt.txt")
+        for ordinal in (2, 3):
+            extra = {**attempt, "attemptId": f"{attempt['jobId']}-a{ordinal:03d}", "ordinal": ordinal,
+                     "generationRound": 1, "state": "ready", "modelReviewResultRecordId": None}
+            pipeline.write_json_idempotent(self.store.record("attempts", extra["attemptId"]), extra, immutable=True)
+        applied = pipeline.apply_model_review(self.store, self.ns(
+            model_review_result_record_id=result["modelReviewResultRecordId"], compiled_review_policy_id=policy_id,
+            reviewer_prompt_id="reviewer-v1", case_set_version="cases-v1"))
+        self.assertEqual("human_review_required", applied["decision"]["action"])
+        self.assertFalse(self.store.record("attempts", f"{attempt['jobId']}-a004").exists())
+
+    def test_transaction_resolution_rejects_partial_conflicting_evidence(self):
+        prepared = self.png("Tools/artworks/pipeline/artifacts/job-partial/job-partial-a001/prepared.png")
+        attempt = {"schemaVersion": 2, "attemptId": "job-partial-a001", "jobId": "job-partial", "state": "prepared",
+                   "artifacts": {"prepared": {"path": self.store.relative(prepared), "sha256": pipeline.sha256_file(prepared)}},
+                   "preparation": {"chroma": "ff00ff", "chromaTolerance": 42}}
+        pipeline.write_json_idempotent(self.store.record("attempts", attempt["attemptId"]), attempt)
+        payload = {"attemptId": attempt["attemptId"], "chroma": "0,255,0", "chromaTolerance": 42}
+        transaction_id = pipeline.stable_id("transaction", {"operation": "prepare", **payload})
+        pipeline.write_json_idempotent(self.store.record("transactions", transaction_id),
+            {"schemaVersion": 2, "transactionId": transaction_id, "operation": "prepare", "payload": payload, "state": "started"})
+        with self.assertRaisesRegex(pipeline.PipelineError, "partial or conflicting"):
+            pipeline.resolve_transaction(self.store, self.ns(transaction_id=transaction_id, reviewer="cty41",
+                reason="do not guess", decided_at="2026-09-08T12:00:00+00:00"))
+        self.assertFalse(any((self.store.pipeline / "transaction-resolutions").glob("*.json")))
+
+    def exact_chroma_processing_fixture(self):
+        source = self.root / "Tools/artworks/exact-source.png"
+        source.parent.mkdir(parents=True, exist_ok=True)
+        image = Image.new("RGBA", (16, 16), (80, 60, 40, 255))
+        image.putpixel((2, 3), (0, 255, 0, 2)); image.putpixel((4, 5), (255, 0, 255, 3))
+        image.putpixel((0, 0), (12, 34, 56, 0)); image.save(source)
+        output = source.with_name("exact-output.png")
+        image.putpixel((2, 3), (0, 0, 0, 0)); image.putpixel((4, 5), (0, 0, 0, 0)); image.save(output)
+        attempt = {"attemptId": "job-exact-a001", "artifacts": {"prepared": pipeline._bound_artifact(self.store, str(source))}}
+        candidate = pipeline._bound_artifact(self.store, str(output))
+        processing = {"schemaVersion": 2, "operation": "deterministic-exact-chroma-pixel-cleanup",
+                      "sourceAttemptId": attempt["attemptId"], "sourcePreparedSha256": pipeline.sha256_file(source),
+                      "outputSha256": candidate["sha256"], "maxAlpha": 3,
+                      "pixels": [{"x": 2, "y": 3, "rgba": [0, 255, 0, 2]},
+                                 {"x": 4, "y": 5, "rgba": [255, 0, 255, 3]}]}
+        return attempt, candidate, processing
+
+    def test_exact_chroma_recontract_replays_only_two_bound_pixels(self):
+        attempt, candidate, processing = self.exact_chroma_processing_fixture()
+        pipeline._validate_recontract_processing(self.store, attempt, candidate, processing)
+        output = self.store.absolute(candidate["path"])
+        with Image.open(output) as opened:
+            changed = opened.copy()
+        changed.putpixel((0, 0), (0, 0, 0, 0)); changed.save(output)
+        candidate["sha256"] = pipeline.sha256_file(output); processing["outputSha256"] = candidate["sha256"]
+        with self.assertRaisesRegex(pipeline.PipelineError, "two-pixel replay"):
+            pipeline._validate_recontract_processing(self.store, attempt, candidate, processing)
+
+    def test_exact_chroma_recontract_rejects_unsafe_declarations(self):
+        attempt, candidate, processing = self.exact_chroma_processing_fixture()
+        mutations = [lambda p: p.update(maxAlpha=255), lambda p: p.update(maxAlpha=True),
+                     lambda p: p.update(outputSha256="wrong"), lambda p: p.update(sourcePreparedSha256="wrong"),
+                     lambda p: p.update(sourceAttemptId="wrong"), lambda p: p.update(extra="erase anything"),
+                     lambda p: p["pixels"].pop(), lambda p: p["pixels"].append(p["pixels"][0]),
+                     lambda p: p["pixels"].__setitem__(1, p["pixels"][0]),
+                     lambda p: p["pixels"][0].update(x=-1), lambda p: p["pixels"][0].update(x=True),
+                     lambda p: p["pixels"][0].update(rgba=[0, 254, 0, 2]),
+                     lambda p: p["pixels"][0].update(rgba=[0, 255, 0, 0]),
+                     lambda p: p["pixels"][0].update(rgba=[0, 255, 0, 4]),
+                     lambda p: p["pixels"][0].update(rgba=[0, 255, 0, 3]),
+                     lambda p: p["pixels"][0].update(x=6, y=6)]
+        for index, mutate in enumerate(mutations):
+            with self.subTest(index=index):
+                invalid = json.loads(json.dumps(processing)); mutate(invalid)
+                with self.assertRaises(pipeline.PipelineError):
+                    pipeline._validate_recontract_processing(self.store, attempt, candidate, invalid)
+        source = self.store.absolute(attempt["artifacts"]["prepared"]["path"])
+        Image.new("RGBA", (16, 16)).save(source)
+        with self.assertRaisesRegex(pipeline.PipelineError, "binding"):
+            pipeline._validate_recontract_processing(self.store, attempt, candidate, processing)
+
+    def test_recontract_processing_does_not_resurrect_invalid_strict_receipt(self):
+        self.test_equipment_approval_requires_matching_cty41_style_verdict()
+        source_path = next((self.store.pipeline / "attempts").glob("*.json"))
+        source = pipeline.load_json(source_path)
+        _fixture, candidate, processing = self.exact_chroma_processing_fixture()
+        image = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
+        ImageDraw.Draw(image).rectangle((110, 129, 140, 236), fill=(120, 80, 60, 255))
+        image.putpixel((2, 3), (0, 255, 0, 2)); image.putpixel((4, 5), (255, 0, 255, 3))
+        fixture_source = self.store.absolute(_fixture["artifacts"]["prepared"]["path"])
+        image.save(fixture_source)
+        _fixture["artifacts"]["prepared"]["sha256"] = pipeline.sha256_file(fixture_source)
+        image.putpixel((2, 3), (0, 0, 0, 0)); image.putpixel((4, 5), (0, 0, 0, 0))
+        image.save(self.store.absolute(candidate["path"]))
+        candidate["sha256"] = pipeline.sha256_file(self.store.absolute(candidate["path"]))
+        processing.update(sourcePreparedSha256=_fixture["artifacts"]["prepared"]["sha256"], outputSha256=candidate["sha256"])
+        source["artifacts"]["prepared"] = _fixture["artifacts"]["prepared"]
+        source["feedbackId"] = "feedback-selected"
+        pipeline.write_json_idempotent(source_path, source)
+        pipeline.write_json_idempotent(self.store.record("feedback", "feedback-selected"),
+            {"schemaVersion": 2, "feedbackId": "feedback-selected", "authorType": "human", "verdict": "selected", "reviewer": "cty41"})
+        processing.update(sourceAttemptId=source["attemptId"])
+        processing_path = self.root / "Tools/artworks/exact-processing.json"
+        pipeline.write_json_idempotent(processing_path, processing)
+        job = pipeline.load_json(self.store.record("jobs", source["jobId"]))
+        result = pipeline.recontract_reviewed_attempt(self.store, self.ns(
+            source_attempt_id=source["attemptId"], contract_id=job["contractId"], candidate=candidate["path"],
+            processing=str(processing_path), reviewer="cty41", reason="exact cleanup",
+            accepted_at="2026-09-08T12:00:00+00:00"))
+        receipt = result["receipt"]
+        expected_issue = "trusted_artifact_record_invalid:reviewed-recontracts:" + receipt["reviewedRecontractId"]
+        self.assertNotIn(expected_issue, pipeline.strict_check(self.store, False)["issues"])
+        receipt["reviewer"] = "forged-reviewer"
+        pipeline.write_json_idempotent(self.store.record("reviewed-recontracts", receipt["reviewedRecontractId"]), receipt)
+        self.assertIn(expected_issue, pipeline.strict_check(self.store, False)["issues"])
+
+    def test_reviewed_recontract_rejects_missing_generation_lineage(self):
+        source = self.png("Tools/artworks/source.png")
+        contract = {"schemaVersion": 4, "contractId": "contract-source", "direction": "up-left", "pose": "idle",
+                    "rights": {"rightsHolder": "cty41", "license": "project-owned", "provenance": "test"}}
+        target = {**contract, "contractId": "contract-target"}
+        pipeline.write_json_idempotent(self.store.record("contracts", "contract-source"), contract)
+        pipeline.write_json_idempotent(self.store.record("contracts", "contract-target"), target)
+        job = {"schemaVersion": 4, "jobId": "job-source", "contractId": "contract-source"}
+        pipeline.write_json_idempotent(self.store.record("jobs", "job-source"), job)
+        feedback = {"schemaVersion": 2, "feedbackId": "feedback-selected", "authorType": "human",
+                    "verdict": "selected", "reviewer": "cty41"}
+        pipeline.write_json_idempotent(self.store.record("feedback", "feedback-selected"), feedback)
+        attempt = {"schemaVersion": 4, "attemptId": "job-source-a001", "jobId": "job-source", "feedbackId": "feedback-selected",
+                   "artifacts": {"raw": {"path": self.store.relative(source), "sha256": pipeline.sha256_file(source)},
+                                 "prepared": {"path": self.store.relative(source), "sha256": pipeline.sha256_file(source)}}}
+        pipeline.write_json_idempotent(self.store.record("attempts", attempt["attemptId"]), attempt)
+        with self.assertRaisesRegex(pipeline.PipelineError, "original generation invocation"):
+            pipeline.recontract_reviewed_attempt(self.store, self.ns(source_attempt_id=attempt["attemptId"],
+                contract_id="contract-target", candidate=None, processing=None, reviewer="cty41", reason="no lineage",
+                accepted_at="2026-09-08T12:00:00+00:00"))
+
+    def test_forged_attempt_id_cannot_register_arbitrary_artwork(self):
+        artifact = self.png("Tools/artworks/arbitrary.png")
+        contract = {"schemaVersion": 2, "contractId": "contract-real", "kind": "ground_character"}
+        job = {"schemaVersion": 2, "jobId": "job-real", "contractId": "contract-real", "state": "ready"}
+        pipeline.write_json_idempotent(self.store.record("contracts", "contract-real"), contract)
+        pipeline.write_json_idempotent(self.store.record("jobs", "job-real"), job)
+        forged = {"schemaVersion": 2, "attemptId": "forged-a001", "jobId": "job-real", "ordinal": 1,
+                  "state": "ready", "artifacts": {"prepared": {"path": self.store.relative(artifact),
+                                                                   "sha256": pipeline.sha256_file(artifact)}}}
+        pipeline.write_json_idempotent(self.store.record("attempts", forged["attemptId"]), forged)
+        self.assertIn("asset_unregistered:Tools/artworks/arbitrary.png",
+                      pipeline.strict_check(self.store, False)["issues"])
+
+    def test_pre_v3_component_migration_rejects_non_cty41_before_writing(self):
+        with self.assertRaisesRegex(pipeline.PipelineError, "requires reviewer cty41"):
+            pipeline.migrate_component(self.store, self.ns(
+                contract_id="missing", source="missing", prepared="missing", processing="missing",
+                reviewer="agent", reason="no", accepted_at="2026-09-08T12:00:00+00:00"))
+        with self.assertRaisesRegex(pipeline.PipelineError, "is retired"):
+            pipeline.migrate_component(self.store, self.ns(
+                contract_id="missing", source="missing", prepared="missing", processing="missing",
+                reviewer="cty41", reason="closed", accepted_at="2026-09-08T12:00:00+00:00"))
 
 
 if __name__ == "__main__":

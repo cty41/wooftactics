@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "equipmentStyleVerdictId": "equipment-style-verdict-68d0dcd233bc50b1",
+  "attemptId": "job-e2f0b006eb756a24-a001",
+  "candidateSha256": "6333b766b9d72915780f62f6af1dbc82a40ae40052d2431f9ad8318c92d1c4f5",
+  "reviewSha256": {
+    "equipmentPanel": "fb743b4090385b03a86f951318f6c30f84bb6e0e264b1338caa073b158250168"
+  },
+  "reviewer": "cty41",
+  "decision": "retry",
+  "reason": "用户审核旅行古琴v2后仍认为相对角色过长，需要进一步缩短整体与长宽比",
+  "decidedAt": "2026-08-30T09:38:21.2921815+08:00"
+}

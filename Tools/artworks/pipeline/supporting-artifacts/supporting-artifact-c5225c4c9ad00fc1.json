@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-c5225c4c9ad00fc1",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_death_source_responsibility_review_v01.png",
+    "sha256": "c441dad8fb530d9fae0e06c15b7084b7a365c673861427f0634163247a4af8e9"
+  },
+  "role": "supporting-derived",
+  "note": "Poet Death source responsibility board: Poet identity only, Hunter Death topology only, approved sheathed-dao form only and deterministic Death geometry.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

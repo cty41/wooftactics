@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 4,
+  "approvalId": "approval-a71f2eecb8e0ec5e",
+  "attemptId": "job-4affd0d3e702d0d0-a001",
+  "candidateSha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512",
+  "maskSha256": "edae09310bdfc2d9738685f542f5797b59782824adc2c67bde2c73bc4f0cf6b2",
+  "reviewer": "cty41",
+  "reviewSha256": {
+    "depthReview": "bff7bdd11732dc507707edc3b421ec80643d5b4a3726a937d3ee69a3e503a6af",
+    "overlay": "8a980d018673926280746a4acc0e83391d593ea119f2aee75c146c7971e42d17",
+    "preview128": "b06382fd59b3d4e16b2c26fde0ee138d4b883d963b3a7820db3d652fa233eaeb",
+    "tile64x32": "28d3b725bdf81b84811821c39b2fa54c89b21465014b92e776c9e0b3441331d1"
+  },
+  "decision": "approved",
+  "reason": "Final human approval after deterministic validation, qualified CAPSULE-NO-LIMBS-v1 pass_to_human, six passed Acceptance Cases, and approved Art Direction review.",
+  "decidedAt": "2026-09-08T19:10:59+08:00",
+  "annotation": {
+    "annotationId": "annotations-718ff6433ffbe991",
+    "sha256": "b9088e202ed671c985d9467e42c0346d57a0a2249509f1604bdf2297dbd50088"
+  },
+  "reportSha256": "6fa83bdd83d76aa2a803c5363e40fbdc91044044012b99c994e1f6a39487db41",
+  "artDirectionVerdict": {
+    "artDirectionVerdictId": "art-direction-verdict-b196da86a5b54f86",
+    "sha256": "8a000337c99de3dd618f923eda7e0c57ed16a9b48937d33005b639c5b88c1ba3"
+  }
+}

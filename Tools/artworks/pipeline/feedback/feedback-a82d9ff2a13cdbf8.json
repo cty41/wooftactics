@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-a82d9ff2a13cdbf8",
+  "attemptId": "job-93dbc1ce4eeb846d-a002",
+  "candidateSha256": "f87b0ccfd6d22bc50ed4c11e8c7a8f11bfe5a46b6f9f2bcddd05ef4a773dba5c",
+  "reviewer": "cty41",
+  "verdict": "retry",
+  "strengths": [
+    "琴体身份、七弦和Pure Run色彩仍可辨识"
+  ],
+  "defects": [
+    "仍显示完整桌面正面/弦面，像平放古琴；横向轴错误。参考图要求琴体沿左肩上方到右侧下腰斜背，琴背面贴角色身体，因此从角色正面DR视角主要应看到琴背/侧缘而不是完整七弦面"
+  ],
+  "nextPromptDelta": "Back-carried orientation from the user reference: broad head above the screen-left shoulder, narrow tail descending to lower-right waist. The guqin underside/back lies against the body; from the front-right DR camera show primarily the smooth back/side edge, not the full seven-string top face. Use a steep diagonal about 65–72 degrees from horizontal.",
+  "recordedAt": "2026-08-31T07:46:43.8363488+08:00",
+  "authorType": "human",
+  "categories": [
+    "equipment_state",
+    "pose_axis",
+    "occlusion"
+  ],
+  "disposition": "retry",
+  "frozenInvariants": [],
+  "pendingFixes": [
+    "改为宽琴首位于画面左上、窄琴尾位于右下；轴线近竖直斜向，琴背贴身；组件主要显示无弦背面与侧缘，仅保留极少弦面提示或完全不露弦"
+  ]
+}

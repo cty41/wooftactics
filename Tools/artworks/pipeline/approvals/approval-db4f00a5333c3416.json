@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 2,
+  "approvalId": "approval-db4f00a5333c3416",
+  "attemptId": "job-823050db4231b9ae-a002",
+  "candidateSha256": "b677fa5977ea35454bf24238bbf8a9f10833bb37c95454abe7d0b46fac1cd926",
+  "maskSha256": null,
+  "reviewer": "cty41",
+  "reviewSha256": {
+    "equipmentPanel": "00cbb647a6885637e970c3aa6a318cd6a0976295e94bb2cbaafd80655f854106"
+  },
+  "decision": "approved",
+  "reason": "用户明确选择皮革酒囊作为当前正式酒器，固定Review与尺寸门禁通过",
+  "decidedAt": "2026-08-30T09:58:18.3709830+08:00",
+  "annotation": null,
+  "reportSha256": "260692e3dd635536ada2689726b08f9c0f23827dc31abaa04c3b8e44c1a16e15"
+}

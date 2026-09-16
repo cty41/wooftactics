@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-495451268123cfd0",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/components/poet_guqin_back_carried_dr_component_clean_v01.png",
+    "sha256": "536104fe2659c3694c448c02d2a4b981b781964fc9a27d543d5e942b4f54715f"
+  },
+  "role": "technical-remediation",
+  "note": "已批准背负古琴v2组件的确定性色幕边缘规范化中间件；仅被schema v3迁移记录引用，不是运行时Sprite"
+}

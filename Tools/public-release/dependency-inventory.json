@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "documentType": "tactics-public-dependency-inventory",
-  "dependencyCount": 23,
+  "dependencyCount": 24,
   "dependencies": [
     {
       "ecosystem": "NuGet",
@@ -77,6 +77,11 @@
       "ecosystem": "Vendored",
       "name": "godot-ai",
       "version": "3.1.2"
+    },
+    {
+      "ecosystem": "Vendored",
+      "name": "maliang-game-art",
+      "version": "0.1.0"
     },
     {
       "ecosystem": "npm",

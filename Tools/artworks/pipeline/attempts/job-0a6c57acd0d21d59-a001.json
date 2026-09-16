@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-0a6c57acd0d21d59-a001",
+  "jobId": "job-0a6c57acd0d21d59",
+  "ordinal": 1,
+  "generationRound": 1,
+  "parentAttemptId": null,
+  "retryFeedbackId": null,
+  "promptDelta": null,
+  "technicalRemediation": false,
+  "state": "technical_failed",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/incoming/poet_melee_dr_release_impact_v3_raw_a001.png",
+      "sha256": "5227b327a5fdfd9a5fad8e6b285e55a43eb2da015cd3fbdc5c3eeebd122b10f0"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a6c57acd0d21d59/job-0a6c57acd0d21d59-a001/raw.png",
+      "sha256": "5227b327a5fdfd9a5fad8e6b285e55a43eb2da015cd3fbdc5c3eeebd122b10f0"
+    },
+    "prepared": {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a6c57acd0d21d59/job-0a6c57acd0d21d59-a001/prepared.png",
+      "sha256": "6e4a0dd9e775ab01dacd5ff183ebef653d640a7230bef76a53534d2000fe7d3b"
+    },
+    "maskSource": {
+      "path": "Tools/artworks/poet_five_red_chow/masks/poet_melee_dr_release_impact_v3_raw_mask_a001.png",
+      "sha256": "39c7d232d785916e7437595162b065a204bd4e7d217f2264d5617eefe473d013"
+    },
+    "mask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a6c57acd0d21d59/job-0a6c57acd0d21d59-a001/mask.png",
+      "sha256": "39c7d232d785916e7437595162b065a204bd4e7d217f2264d5617eefe473d013"
+    },
+    "calibrated": {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a6c57acd0d21d59/job-0a6c57acd0d21d59-a001/calibrated.png",
+      "sha256": "80b25b4f09763b61f1c605f13a7a99b746f9389e4e7fe4cb0ba430f3476871b8"
+    },
+    "calibratedMask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-0a6c57acd0d21d59/job-0a6c57acd0d21d59-a001/calibrated-mask.png",
+      "sha256": "8f45617e740a6ba2b5c7d1f4f08974c01b39a2c917580912dd6f190e84a63875"
+    },
+    "review": {
+      "overlay": {
+        "path": "Tools/artworks/pipeline/reviews/job-0a6c57acd0d21d59-a001/overlay.png",
+        "sha256": "dc6ac0a2c4bdf1f832e2acd2a3f754d2aa7ec68a39d498daf7e8b398ba16ac49"
+      },
+      "preview128": {
+        "path": "Tools/artworks/pipeline/reviews/job-0a6c57acd0d21d59-a001/preview128.png",
+        "sha256": "5490bfb6492152c9b1626621a43a660ba5e2ca6094f5a0f776941d2e7a4e80e4"
+      },
+      "tile64x32": {
+        "path": "Tools/artworks/pipeline/reviews/job-0a6c57acd0d21d59-a001/tile64x32.png",
+        "sha256": "3b401187894af1c3a6f49832f0c3af4196c2900b9decea31de4c127ce4e7272c"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/reports/report-8af3225f8791e91e.json",
+    "sha256": "3ce2be3bf52d9218c13ffaee973bbb26fb19c96f3331d4186f284e9295c9ebde"
+  },
+  "approvalId": null,
+  "feedbackId": "feedback-c3e9ac296b6f748d",
+  "generationInvocationId": "generation-invocation-6587dc6e71911eb7",
+  "generationDeliveryId": "generation-delivery-ca82f064a53c6521",
+  "preparation": {
+    "chroma": "00ff00",
+    "chromaTolerance": 48
+  },
+  "calibration": {
+    "method": "uniform-core-height",
+    "scale": 0.2172211350293542,
+    "offset": [
+      -18,
+      21
+    ],
+    "sourceCoreBbox": [
+      446,
+      455,
+      885,
+      965
+    ],
+    "anchorCoreBbox": [
+      94,
+      121,
+      160,
+      231
+    ],
+    "anchorMask": {
+      "path": "Tools/artworks/pipeline/artifacts/job-34f6747e5a1f30d0/job-34f6747e5a1f30d0-a001/mask.png",
+      "sha256": "30350db22426bd078b09d9095ad797d69eceb3ccd7c83f8f4bb960193e440fa0"
+    }
+  },
+  "annotationId": "annotations-074d81aa8dd5e34e"
+}

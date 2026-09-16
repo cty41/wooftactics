@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 4,
+  "acceptanceCaseResultId": "acceptance-case-result-f5ac101fc02f3715",
+  "attemptId": "job-34f6747e5a1f30d0-a001",
+  "caseId": "POET-STYLE-001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-34f6747e5a1f30d0/job-34f6747e5a1f30d0-a001/prepared.png",
+    "sha256": "e2246e0e6d3a4cea92b85cf7add5ea442366389ac5173490bf0bff2fbf25dfb3"
+  },
+  "contractId": "contract-57bf5c0526078c9d",
+  "contractSha256": "0af903e867b06faffc66bfa9456a31396051bc3ce1746f17d2fd2227d4593df1",
+  "evidence": {
+    "style-context": {
+      "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v09/style-context.png",
+      "sha256": "3bc5f0868dec6ab17a1a004d9feacbb33f9c286f1ec557f661ffdc11b0dd111f"
+    },
+    "grip-nearest": {
+      "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v09/grip-nearest.png",
+      "sha256": "10ed3157e45f09f40939e467cbf54c0d6a136003d71fd531fd6add2eb29b9022"
+    }
+  },
+  "automatedFacts": [
+    "no aggregate aesthetic score emitted"
+  ],
+  "automatedResult": "warning",
+  "humanChecks": [
+    "cty41 must judge media coherence"
+  ],
+  "humanDecision": "pending",
+  "reviewer": "agent",
+  "reason": "Automated evidence ready; aesthetic decision pending",
+  "decidedAt": "2026-09-03T16:00:00+08:00"
+}

@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 4,
+  "attemptId": "job-c91127f8d0e61731-a002",
+  "jobId": "job-c91127f8d0e61731",
+  "ordinal": 2,
+  "generationRound": 2,
+  "parentAttemptId": "job-c91127f8d0e61731-a001",
+  "retryFeedbackId": "feedback-cc23aea80edaec4b",
+  "promptDelta": "Use only approved sheathed_dr_v02.png as actual Image 1, locking grip, ring, guard and compact proportions. v01 is NEGATIVE / DO NOT USE AS INPUT. Shorten blade 20-25 percent versus v01; straight single edge; blade/grip about 4:1 excluding ring and guard; blade must fit reference scabbard. Large ring pommel. No scabbard or character. Entire actual compiled prompt must be short English, at most 220 words. Preserve v01 actual-prompt rewrite disclosure and all historical records; new contract version for changed requirements. Prepare one image only; no approval, promotion or runtime changes.",
+  "technicalRemediation": false,
+  "state": "promoted",
+  "artifacts": {
+    "source": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/concepts/poet_ring_pommel_tang_dao_unsheathed_raw_v02.png",
+      "sha256": "4808df1269886534bd04d6da59c7b994ba2480e1961d90528fe5367e826d626a"
+    },
+    "raw": {
+      "path": "Tools/artworks/pipeline/artifacts/job-c91127f8d0e61731/job-c91127f8d0e61731-a002/raw.png",
+      "sha256": "4808df1269886534bd04d6da59c7b994ba2480e1961d90528fe5367e826d626a"
+    },
+    "prepared": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_unsheathed_v02.png",
+      "sha256": "704cd888947a648a9e1ee0db154804288ba230eca422fcc4c63229c145b9e82b"
+    },
+    "equipmentPreview": {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_ring_pommel_tang_dao_unsheathed_v02_128.png",
+      "sha256": "1b91c243f9a60003f5fb5a7aa2e841117b9da7daf72149514f18575399d90606"
+    },
+    "review": {
+      "equipmentPanel": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/reviews/poet_ring_pommel_tang_dao_unsheathed_review_v02.png",
+        "sha256": "ac860661ce5edaedc71060a3122311a64f3d66985b6e1ee2b31254b148a12908"
+      }
+    },
+    "promoted": {
+      "master": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v01.png",
+        "sha256": "704cd888947a648a9e1ee0db154804288ba230eca422fcc4c63229c145b9e82b"
+      },
+      "preview": {
+        "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v01_128.png",
+        "sha256": "1b91c243f9a60003f5fb5a7aa2e841117b9da7daf72149514f18575399d90606"
+      }
+    }
+  },
+  "report": {
+    "path": "Tools/artworks/pipeline/style-reports/equipment-style-report-ee2b99fd0820ee30.json",
+    "sha256": "2396be1077b1c1b2864b71b5c953a53b4b2abe81d677be6b1a8a05ec0495380b"
+  },
+  "approvalId": "approval-40e551d85e6899c1",
+  "feedbackId": "feedback-518c494547fac1f7",
+  "generationInvocationId": "generation-invocation-b84f2467c34ff845",
+  "generationDeliveryId": "generation-delivery-fc16bf33afd67346",
+  "equipmentStyleReportId": "equipment-style-report-ee2b99fd0820ee30",
+  "acceptanceCaseResultIds": [
+    "acceptance-case-result-e86f7c17dd7ce04d",
+    "acceptance-case-result-3f90c6fa0bf41d8d",
+    "acceptance-case-result-23a5dbedb821c9c2"
+  ],
+  "equipmentStyleVerdictId": "equipment-style-verdict-1f126a937643f493",
+  "equipmentStyleVerdictIds": [
+    "equipment-style-verdict-1f126a937643f493"
+  ],
+  "artDirectionReviewIds": [
+    "art-direction-review-931680098bf82ddf"
+  ],
+  "artDirectionReviewId": "art-direction-review-931680098bf82ddf",
+  "artDirectionVerdictIds": [
+    "art-direction-verdict-67590b39415c014d"
+  ],
+  "artDirectionVerdictId": "art-direction-verdict-67590b39415c014d",
+  "feedbackAddendumIds": [
+    "feedback-addendum-6086f09a42ad87ca"
+  ]
+}

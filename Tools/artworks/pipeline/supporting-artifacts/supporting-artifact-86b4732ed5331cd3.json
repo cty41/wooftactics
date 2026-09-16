@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "supportingArtifactId": "supporting-artifact-86b4732ed5331cd3",
+  "artifact": {
+    "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v09/rejected-regression.png",
+    "sha256": "0bcbd4aafbcf29db50d2d790618b0cbf062cf4750a86e5f798f2c670fc6c1e4a"
+  },
+  "role": "review-derived",
+  "note": "Poet Idle DR v09 hash-bound Art Direction review evidence; non-runtime"
+}

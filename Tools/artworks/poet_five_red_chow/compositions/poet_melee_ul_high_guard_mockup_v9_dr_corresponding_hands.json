@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "reviewOnly": true,
+  "assetId": "poet-melee-ul-high-guard-mockup-v9-dr-corresponding-hands",
+  "supersedes": "poet-melee-ul-high-guard-mockup-v8-visible-two-paw-grip",
+  "formalUl": {"path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_ul_v07.png", "sha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512", "maskPath": "Tools/artworks/pipeline/artifacts/job-4affd0d3e702d0d0/job-4affd0d3e702d0d0-a001/calibrated-mask.png", "maskSha256": "edae09310bdfc2d9738685f542f5797b59782824adc2c67bde2c73bc4f0cf6b2"},
+  "cleanBodyPatch": {"path": "Tools/artworks/pipeline/artifacts/job-9a531767f319b957/job-9a531767f319b957-a001/calibrated.png", "sha256": "9c37f61930aefd4aac08ad6f82a2e1ff6282faf90ca5f0ed42dbfb3e4d29a387", "replaceFormalMaskColors": [[255,0,255,255],[0,255,0,255],[0,200,0,255]]},
+  "drHandSource": {"path": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a008/calibrated.png", "sha256": "e6feabd6ca60bf75701528c30056103e7781cb6fe5234de353c14caf41ef0404", "maskPath": "Tools/artworks/pipeline/artifacts/job-0a890f2b18e97967/job-0a890f2b18e97967-a008/calibrated-mask.png", "maskSha256": "e91824130da09117232553a4ef32482c695e7feab7a88778d7e84b5d2fa4a972", "handMaskColors": [[0,255,0,255],[0,200,0,255]], "transform": "horizontal mirror across the 256 canvas", "responsibility": "exact DR-corresponding two-paw size, vertical separation and shared-grip relation only"},
+  "equipment": {"path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v02.png", "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1", "sourceBbox": [83,141,173,237], "scalePercent": 85, "rotateCropDegrees": 180, "destinationRingAnchorBeforeCalibration": [115,209], "destinationTopLeft": [46,135]},
+  "postTranslation": [0,-4],
+  "layerOrder": ["equipment", "cleanedFormalUl", "mirroredDrFarHand", "mirroredDrNearHand"],
+  "expectedAlphaBbox": [46,93,189,236],
+  "equipmentState": {"blade": "visible", "scabbard": "absent", "staticEffects": "absent"},
+  "notes": "Deterministic review-only v9. Remove the formal Idle UL equipment and both idle-hand semantic pixels using the approved clean body patch. Mirror only the exact two selected DR hand labels into UL screen space so hand size/separation corresponds to accepted upright DR v11; retain native UL head/body/tail/feet. Align the approved high-left sword to the mirrored DR grip."
+}

@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 4,
+  "compiledReviewPolicyRecordId": "compiled-review-policy-record-119c600d79f6c9c5",
+  "compiled": {
+    "schemaVersion": 1,
+    "compiledPolicyId": "compiled-review-policy-e941e18468435a2c",
+    "sha256": "e941e18468435a2c92e444ae5f5f272a374c6abc72eb608f930387e224353e65",
+    "projectPolicy": {
+      "policyId": "pure-run-model-review-policy-v1",
+      "version": 1
+    },
+    "context": {
+      "schemaVersion": 1,
+      "project": "pure-run",
+      "family": "actor",
+      "topology": "capsule",
+      "direction": "up-left",
+      "view": "back",
+      "pose": "idle",
+      "equipmentCategory": "weapon",
+      "equipmentState": "sheathed",
+      "assetId": "poet-five-red-chow-ring-pommel-dao-idle-ul-v2"
+    },
+    "rules": [
+      {
+        "schemaVersion": 1,
+        "ruleId": "CAPSULE-NO-LIMBS-v1",
+        "version": 1,
+        "scope": {
+          "project": [
+            "pure-run"
+          ],
+          "family": [
+            "actor"
+          ],
+          "topology": [
+            "capsule"
+          ]
+        },
+        "authority": "hard",
+        "autoRetryEligible": true,
+        "requiredEvidenceRoles": [
+          "PREPARED_CANDIDATE",
+          "SEMANTIC_MASK_OVERLAY"
+        ],
+        "sources": [
+          {
+            "type": "guideline",
+            "id": "pure-run-artwork-guidelines:no-arms"
+          },
+          {
+            "type": "feedback",
+            "id": "feedback-2ce2bbdf35d14dcc"
+          }
+        ],
+        "positiveCaseIds": [],
+        "negativeCaseIds": [],
+        "lifecycle": "active",
+        "statement": "Visible character topology contains only paws directly attached to the capsule core; any arm, forearm, leg, lower leg, or thin connecting limb is a hard violation even if the semantic mask labels it hand or core."
+      }
+    ],
+    "cases": [
+      {
+        "schemaVersion": 1,
+        "caseId": "CASE-POET-IDLE-UL-V01-VISIBLE-LIMBS-v1",
+        "version": 1,
+        "ruleIds": [
+          "CAPSULE-NO-LIMBS-v1"
+        ],
+        "polarity": "negative",
+        "status": "shadow-only",
+        "scope": {
+          "project": [
+            "pure-run"
+          ],
+          "family": [
+            "actor"
+          ],
+          "topology": [
+            "capsule"
+          ],
+          "direction": [
+            "up-left"
+          ],
+          "pose": [
+            "idle"
+          ]
+        },
+        "artifact": {
+          "path": "Tools/artworks/pipeline/artifacts/job-69a7e239bb73eef5/job-69a7e239bb73eef5-a001/prepared.png",
+          "sha256": "c95884c2a5bb5bfa2de50dba944f26d2bd1e4c864b41ff098c9a1bb7055ef5d9"
+        },
+        "source": {
+          "attemptId": "job-69a7e239bb73eef5-a001",
+          "feedbackId": "feedback-2ce2bbdf35d14dcc",
+          "humanDecision": "retry",
+          "reviewer": "cty41"
+        },
+        "reviewOnly": true,
+        "generationInputAllowed": false,
+        "comparable": true,
+        "observableAtReviewSize": true,
+        "artifactExists": true,
+        "hashVerified": true,
+        "defectIds": [
+          "visible-limb-drift"
+        ],
+        "atomicEvidenceRegion": true,
+        "evidenceRegion": {
+          "x": 0.24,
+          "y": 0.34,
+          "width": 0.53,
+          "height": 0.57
+        }
+      }
+    ],
+    "acceptanceCaseIds": [],
+    "feedbackRuleIds": []
+  },
+  "projectReviewPolicy": {
+    "path": "Tools/artworks/pipeline/project-review-policies/project-review-policy-6e319c00d0238d4d.json",
+    "sha256": "9176dc5ad01ea304d150b1812124973fb9b6a5d418ce5134747760099daff891"
+  },
+  "context": {
+    "path": "Tools/artworks/pure_run/art_direction/review/context_poet_idle_ul_v2.json",
+    "sha256": "b2e28ceda1853ce351d690d5520eb2b4efd1296bad43fa970b4c30730ee3f034"
+  }
+}

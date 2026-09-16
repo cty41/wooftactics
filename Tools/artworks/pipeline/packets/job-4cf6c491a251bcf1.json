@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 2,
+  "jobId": "job-4cf6c491a251bcf1",
+  "state": "ready",
+  "contractId": "contract-3c3f9bc864aca89a",
+  "contractSha256": "c77b125d32d55095c8371899ffd3ac753aa56c958898ed1a30b2d854ff4dcb85",
+  "prompt": {
+    "path": "Tools/artworks/poet_five_red_chow/idle_down_right_generation_prompt_v6_formal.md",
+    "sha256": "44121ff669700911b167863babffea475216b647d5852a6d4a8413c4416d69b2"
+  },
+  "inputs": [
+    {
+      "role": "core_anchor",
+      "path": "Tools/artworks/doge/calibrated/doge_capsule_demonbound_idle_dr_v01.png",
+      "sha256": "21559ca7aedd3e146feb2b93c5a6633affc6ce544122628c960972a982b0b5e7"
+    },
+    {
+      "role": "identity_reference",
+      "path": "Tools/artworks/poet_five_red_chow/concepts/poet_five_red_chow_idle_dr_raw_v05_capsule.png",
+      "sha256": "7dc3b5cd7affedd40e6c29c4b4ecf72e81c83f334c4a71156e94d21609459fca"
+    }
+  ],
+  "target": {
+    "direction": "down-right",
+    "pose": "idle"
+  },
+  "series": {
+    "seriesId": "poet-five-red-chow-formal-v2",
+    "poseId": "idle-dr"
+  },
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": true,
+  "poseGuide": {
+    "poseGuideId": "pose-guide-b624a9397268625e",
+    "sha256": "c5ca9f61cbff1a12105e4ae645a8f445aac7281f0b1d6127d100ef43e68f2038"
+  },
+  "localReferences": []
+}

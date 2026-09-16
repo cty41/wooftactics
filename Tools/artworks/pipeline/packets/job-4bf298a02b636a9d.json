@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "jobId": "job-4bf298a02b636a9d",
+  "state": "ready",
+  "contractId": "contract-a06e581bfaa9863b",
+  "contractSha256": "752821bc0ba4dc5fe250597727e2320be428e6bfa3b414561b74c70f8bb59162",
+  "prompt": {
+    "path": "Tools/artworks/poet_five_red_chow/wineskin_waist_hung_prompt_v1.md",
+    "sha256": "853a8f4b1d7cd20a84634123f0183c5cab09802085aa7c55fab639f2a196e38d"
+  },
+  "inputs": [
+    {
+      "role": "poet_camera_scale",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+      "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753"
+    },
+    {
+      "role": "wineskin_identity",
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_wine_wineskin_v01.png",
+      "sha256": "b677fa5977ea35454bf24238bbf8a9f10833bb37c95454abe7d0b46fac1cd926"
+    }
+  ],
+  "target": {
+    "direction": "non_directional",
+    "pose": "inventory"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": true,
+  "poseGuide": null,
+  "localReferences": []
+}

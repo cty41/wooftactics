@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-2983efef99a65a73",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v12_rear_paw_occlusion_128.png",
+    "sha256": "e7427ec7dec5c60788603000fd138d2493f634bdba67f36b7eaa1850570e9937"
+  },
+  "role": "supporting-derived",
+  "note": "128 derivative of superseded patch-bearing UL rear-paw review.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

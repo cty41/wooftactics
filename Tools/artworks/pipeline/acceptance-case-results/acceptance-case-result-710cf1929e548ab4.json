@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 4,
+  "acceptanceCaseResultId": "acceptance-case-result-710cf1929e548ab4",
+  "attemptId": "job-9a531767f319b957-a001",
+  "caseId": "POET-UL-BODY-V2-DIRECTION-001",
+  "candidate": {
+    "path": "Tools/artworks/pipeline/artifacts/job-9a531767f319b957/job-9a531767f319b957-a001/calibrated.png",
+    "sha256": "9c37f61930aefd4aac08ad6f82a2e1ff6282faf90ca5f0ed42dbfb3e4d29a387"
+  },
+  "contractId": "contract-53ac5c9a2831366a",
+  "contractSha256": "ffb15557fc850c60225b617b8ec79bfa5fdad15565fdbfa7c870cbb63f828c4b",
+  "evidence": {
+    "comparison": {
+      "path": "Tools/artworks/poet_five_red_chow/reviews/poet_idle_ul_body_v3_direction_compare_v01.png",
+      "sha256": "15ed2cd450c30c077aa0c84fb0517e7cfd38dc80d00f785364cb0e54f1ccef2a"
+    }
+  },
+  "automatedFacts": [
+    "Pose tilt passes bound composition and candidate core is centered."
+  ],
+  "automatedResult": "passed",
+  "humanChecks": [
+    "Tail-right, face-left three-quarter rear turn and limited eye/nose cue accepted."
+  ],
+  "humanDecision": "passed",
+  "reviewer": "cty41",
+  "reason": "cty41 explicitly approved the corrected UL body direction.",
+  "decidedAt": "2026-09-05T11:32:06+08:00"
+}

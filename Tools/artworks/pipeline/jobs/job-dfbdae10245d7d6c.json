@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 4,
+  "jobId": "job-dfbdae10245d7d6c",
+  "state": "ready",
+  "contractId": "contract-54fa481aba0912ab",
+  "contractSha256": "61bdeed019e9a6653973d16f8f9e1fb8ad2bdf21be92aac1f65aa781102ec985",
+  "prompt": {
+    "path": "Tools/artworks/poet_five_red_chow/prompts/poet_idle_ul_body_component_prompt_v1.md",
+    "sha256": "4421b60cbdbd2be03a7ca3f31f621a291b9ad436aedb03c0b795328b8c8f2fbb"
+  },
+  "inputs": [
+    {
+      "role": "mother",
+      "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_idle_dr_v03.png",
+      "sha256": "ee4bc7fe07aa2e2d2cd96e9d1d9c62779d07b191e1e1dd2efe0e05c3f096e753"
+    }
+  ],
+  "target": {
+    "direction": "up-left",
+    "pose": "idle"
+  },
+  "series": null,
+  "conceptOnly": false,
+  "contractRequirements": null,
+  "requiresInvocation": true,
+  "poseGuide": {
+    "poseGuideId": "pose-guide-354cc7f9010d462c",
+    "sha256": "6adae51303a8249101f9cd5616ae202dc4ef4c76ef18cafd3c55d2c07438e58e"
+  },
+  "localReferences": []
+}

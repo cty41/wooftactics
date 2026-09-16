@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 4,
+  "modelReviewInvocationId": "model-review-invocation-aac6cf18b671c20a",
+  "state": "started",
+  "attemptId": "job-38caaa8120d4a303-a006",
+  "packetId": "model-review-packet-e4b202fe621e7f1a",
+  "packetSha256": "1701ae4ad9c70594b4b37091007bf5c82f043df72694f19d0a80a2ad066c5bc2",
+  "qualificationMode": true,
+  "provider": "dsh-subagent-current-session",
+  "model": "gpt-5.6-sol",
+  "effort": "high",
+  "freshSession": true,
+  "freshSessionId": "fe7b83fd-5d5f-4bc7-b4fd-5dcb337a6ae0",
+  "promptSource": {
+    "path": "Tools/artworks/pure_run/art_direction/review/reviewer_prompt_v1.md",
+    "sha256": "ea9a86b3e7e4ee724090fe0c520a4271ce4f38a34184335f865189bcf259a850"
+  },
+  "startedAt": "2026-09-04T20:57:23+08:00"
+}

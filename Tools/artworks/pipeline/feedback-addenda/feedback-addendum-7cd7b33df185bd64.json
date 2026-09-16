@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "feedbackAddendumId": "feedback-addendum-7cd7b33df185bd64",
+  "attemptId": "job-75ce23e75e7159f7-a001",
+  "parentFeedbackId": "feedback-12ca8cca66a45b45",
+  "reviewer": "cty41",
+  "defects": [
+    "v7 is not preferred. The previously accepted body pose remains the best base. Instead of depicting the low endpoint of a downward cut, preserve that exact body and orient the sword near its highest point in a raised pre-downward-strike preparation pose, which may read more naturally."
+  ],
+  "recordedAt": "2026-09-13T00:48:53+08:00",
+  "authorType": "human",
+  "disposition": "retry"
+}

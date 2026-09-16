@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "feedbackId": "feedback-3f873696d6334a49",
+  "attemptId": "job-c2fb551be9ecdd83-a003",
+  "candidateSha256": "ffe2a448923edc131dc4938924a411f1dfb2d7543207462d208293fab5d92c17",
+  "reviewer": "agent",
+  "verdict": "technical_failed",
+  "strengths": [
+    "Raw candidate has one continuous right-shoulder weapon cue and no disconnected sheath fragment."
+  ],
+  "defects": [
+    "Initial semantic mask mislabeled the central lower core as tail/feet, causing false core disconnection and vertical offset."
+  ],
+  "nextPromptDelta": "No visual regeneration; correct only mask topology while preserving raw bytes.",
+  "recordedAt": "2026-09-04T23:07:34+08:00",
+  "authorType": "agent",
+  "categories": [
+    "processing"
+  ],
+  "disposition": "technical_failed",
+  "frozenInvariants": [
+    "raw candidate bytes"
+  ],
+  "pendingFixes": [
+    "Initial semantic mask mislabeled the central lower core as tail/feet, causing false core disconnection and vertical offset."
+  ]
+}

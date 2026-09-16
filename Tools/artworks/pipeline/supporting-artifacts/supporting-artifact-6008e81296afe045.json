@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 3,
+  "supportingArtifactId": "supporting-artifact-6008e81296afe045",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/reviews/poet_melee_ul_high_guard_mockup_v16_outline_restore_radius4.png",
+    "sha256": "bf2a3fabbbf66f278b68b843732a777fea3924bc112ca41d6f9c9ef1dfe1aa24"
+  },
+  "role": "supporting-derived",
+  "note": "cty41-authorized deterministic review-only retry after v15 still showed outline breaks: restore 136 exact pre-cleanup pixels within radius 4 of immutable v14 opaque silhouette; detached ghost residue remains removed; pose/equipment/depth unchanged.",
+  "reviewer": "cty41",
+  "rights": {
+    "rightsHolder": "cty41",
+    "license": "project-owned",
+    "provenance": "cty41-direct-supporting-artifact-declaration"
+  }
+}

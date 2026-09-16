@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "reviewOnly": true,
+  "assetId": "poet-melee-ul-high-guard-mockup-v3-forward-lean",
+  "parentMockup": "poet-melee-ul-high-guard-mockup-v2",
+  "humanFeedback": "Melee UL must correspond to Melee DR; v2 differs too much because its body does not visibly lean forward like the accepted DR.",
+  "visualMoment": "native up-left high guard immediately before a downward cut, with forward body commitment corresponding to DR",
+  "identity": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_ring_pommel_dao_idle_ul_v07.png",
+    "sha256": "519e288ff7f4ea2cb35de9393b4163a13c1fbfdca3b8fb5f83eff81733eec512",
+    "deterministicScabbardRingRemovalRect": [166, 127, 183, 146]
+  },
+  "equipment": {
+    "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_ring_pommel_tang_dao_unsheathed_v02.png",
+    "sha256": "375409b3b1fa37a4e74b81500d5abea63c57d311fed5eabcc85759d49aa193b1",
+    "sourceBbox": [83, 141, 173, 237],
+    "scalePercent": 85,
+    "rotateCropDegrees": 180,
+    "destinationTopLeft": [27, 119]
+  },
+  "correspondenceTransform": {
+    "wholeCompositeRotationDegreesCounterClockwise": 7,
+    "rotationCenterFootAnchor": [128, 236],
+    "purpose": "increase UL screen-left forward lean to correspond to the accepted DR screen-right forward lean while preserving the native UL face and tail sides"
+  },
+  "equipmentState": {"blade": "visible", "scabbard": "absent", "staticEffects": "absent"},
+  "notes": "Deterministic review-only v3. Build v2 from approved sources, then rotate the complete composite 7 degrees counter-clockwise around the foot anchor. This changes pose projection without mirroring DR and keeps the sword/body relationship coherent."
+}

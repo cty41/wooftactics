@@ -1,0 +1,253 @@
+{
+  "schemaVersion": 1,
+  "exactChromaRemediationId": "exact-chroma-remediation-30294a041c0a660c",
+  "sourceAttemptId": "job-83839806868cdd1f-a001",
+  "sourceAttempt": {
+    "path": "Tools/artworks/pipeline/attempts/job-83839806868cdd1f-a001.json",
+    "sha256": "26387ed1beb710f730f19f2a9cdb5a4c658bdb4b2e50f3ce3fbc592559d342dd"
+  },
+  "approval": {
+    "path": "Tools/artworks/pipeline/approvals/approval-598209729dc00b80.json",
+    "sha256": "9f973e7f569e6fef718d1543b169f795d6f04c976189532c1d07c3a215a986ba"
+  },
+  "artifacts": [
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/calibrated/poet_tang_sword_v01.png",
+      "beforeSha256": "d4a4198fb47a3d84a0c5f6656d1cef0e66af369c3f85a0ae6692d5ae299164bd",
+      "afterSha256": "21b2c1dc6032e8d039b180757a93924a7c4882fbe4ea22b7cc074b89d28dc4b6",
+      "pixels": [
+        {
+          "x": 190,
+          "y": 98,
+          "rgba": [
+            0,
+            255,
+            0,
+            1
+          ]
+        },
+        {
+          "x": 179,
+          "y": 112,
+          "rgba": [
+            0,
+            255,
+            0,
+            2
+          ]
+        },
+        {
+          "x": 175,
+          "y": 117,
+          "rgba": [
+            0,
+            255,
+            0,
+            2
+          ]
+        },
+        {
+          "x": 124,
+          "y": 145,
+          "rgba": [
+            0,
+            255,
+            0,
+            4
+          ]
+        },
+        {
+          "x": 152,
+          "y": 145,
+          "rgba": [
+            0,
+            255,
+            0,
+            3
+          ]
+        },
+        {
+          "x": 103,
+          "y": 169,
+          "rgba": [
+            0,
+            255,
+            0,
+            1
+          ]
+        },
+        {
+          "x": 90,
+          "y": 174,
+          "rgba": [
+            0,
+            255,
+            0,
+            1
+          ]
+        },
+        {
+          "x": 105,
+          "y": 202,
+          "rgba": [
+            0,
+            255,
+            0,
+            1
+          ]
+        },
+        {
+          "x": 74,
+          "y": 206,
+          "rgba": [
+            0,
+            255,
+            0,
+            1
+          ]
+        },
+        {
+          "x": 64,
+          "y": 215,
+          "rgba": [
+            0,
+            255,
+            0,
+            3
+          ]
+        },
+        {
+          "x": 83,
+          "y": 224,
+          "rgba": [
+            0,
+            255,
+            0,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "path": "Tools/artworks/poet_five_red_chow/equipment/candidates/poet_tang_sword_v01.png",
+      "beforeSha256": "d4a4198fb47a3d84a0c5f6656d1cef0e66af369c3f85a0ae6692d5ae299164bd",
+      "afterSha256": "21b2c1dc6032e8d039b180757a93924a7c4882fbe4ea22b7cc074b89d28dc4b6",
+      "pixels": [
+        {
+          "x": 190,
+          "y": 98,
+          "rgba": [
+            0,
+            255,
+            0,
+            1
+          ]
+        },
+        {
+          "x": 179,
+          "y": 112,
+          "rgba": [
+            0,
+            255,
+            0,
+            2
+          ]
+        },
+        {
+          "x": 175,
+          "y": 117,
+          "rgba": [
+            0,
+            255,
+            0,
+            2
+          ]
+        },
+        {
+          "x": 124,
+          "y": 145,
+          "rgba": [
+            0,
+            255,
+            0,
+            4
+          ]
+        },
+        {
+          "x": 152,
+          "y": 145,
+          "rgba": [
+            0,
+            255,
+            0,
+            3
+          ]
+        },
+        {
+          "x": 103,
+          "y": 169,
+          "rgba": [
+            0,
+            255,
+            0,
+            1
+          ]
+        },
+        {
+          "x": 90,
+          "y": 174,
+          "rgba": [
+            0,
+            255,
+            0,
+            1
+          ]
+        },
+        {
+          "x": 105,
+          "y": 202,
+          "rgba": [
+            0,
+            255,
+            0,
+            1
+          ]
+        },
+        {
+          "x": 74,
+          "y": 206,
+          "rgba": [
+            0,
+            255,
+            0,
+            1
+          ]
+        },
+        {
+          "x": 64,
+          "y": 215,
+          "rgba": [
+            0,
+            255,
+            0,
+            3
+          ]
+        },
+        {
+          "x": 83,
+          "y": 224,
+          "rgba": [
+            0,
+            255,
+            0,
+            2
+          ]
+        }
+      ]
+    }
+  ],
+  "operation": "deterministic-low-alpha-exact-chroma-cleanup",
+  "reviewer": "cty41",
+  "reason": "cty41 authorized deterministic removal of all low-alpha exact green/magenta residue while preserving every other RGBA pixel and historical approval record.",
+  "authorizedAt": "2026-09-14T16:25:32.3675727+08:00"
+}

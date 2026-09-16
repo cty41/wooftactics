@@ -68,6 +68,7 @@ class WindowsRcPipelineTests(unittest.TestCase):
             subprocess.run(["git", "init", "-q"], cwd=source, check=True)
             subprocess.run(["git", "config", "user.name", "test"], cwd=source, check=True)
             subprocess.run(["git", "config", "user.email", "test@invalid"], cwd=source, check=True)
+            subprocess.run(["git", "config", "core.autocrlf", "false"], cwd=source, check=True)
             subprocess.run(["git", "add", "."], cwd=source, check=True)
             subprocess.run(["git", "commit", "-qm", "fixture"], cwd=source, check=True)
 
@@ -91,12 +92,113 @@ class WindowsRcPipelineTests(unittest.TestCase):
                 ], key=str.casefold),
                 sorted([entry["path"] for entry in manifest["files"]], key=str.casefold),
             )
+            self.assertEqual([], manifest["expandedGitlinks"])
             self.assertTrue(all(entry["sourceSha256"] == entry["stagedSha256"] for entry in manifest["files"]))
+            self.assertTrue(all(entry["sourceRepositoryCommit"] == manifest["sourceCommit"] for entry in manifest["files"]))
+            self.assertTrue(all(len(entry["sourceObject"]) == 40 for entry in manifest["files"]))
             status = subprocess.run(
                 ["git", "status", "--porcelain"], cwd=destination, check=True,
                 text=True, stdout=subprocess.PIPE
             ).stdout
             self.assertEqual("", status)
+
+    def test_rc_source_rejects_assume_unchanged_worktree_bytes(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = pathlib.Path(temp)
+            source = root / "source"
+            destination = root / "stage"
+            (source / "godot").mkdir(parents=True)
+            (source / "Tools" / "public-release").mkdir(parents=True)
+            project = source / "godot" / "project.godot"
+            project.write_text("[application]\n", encoding="utf-8")
+            (source / ".gitattributes").write_text("* text eol=lf\n", encoding="utf-8")
+            (source / "Tactics.Godot.slnx").write_text("<Solution />\n", encoding="utf-8")
+            (source / "Tools" / "public-release" / "validate_public_candidate.py").write_text(
+                "raise SystemExit(0)\n", encoding="utf-8"
+            )
+            subprocess.run(["git", "init", "-q"], cwd=source, check=True)
+            subprocess.run(["git", "config", "user.name", "test"], cwd=source, check=True)
+            subprocess.run(["git", "config", "user.email", "test@invalid"], cwd=source, check=True)
+            subprocess.run(["git", "config", "core.autocrlf", "false"], cwd=source, check=True)
+            subprocess.run(["git", "add", "."], cwd=source, check=True)
+            subprocess.run(["git", "commit", "-qm", "fixture"], cwd=source, check=True)
+            subprocess.run(["git", "update-index", "--assume-unchanged", "godot/project.godot"],
+                           cwd=source, check=True)
+            project.write_bytes(b"[application]\r\n")
+            status = subprocess.run(
+                ["git", "status", "--porcelain=v1", "--untracked-files=no"], cwd=source,
+                check=True, text=True, stdout=subprocess.PIPE,
+            ).stdout
+            self.assertEqual("", status)
+
+            result = run_pwsh(
+                TOOLS / "New-GodotOwnedRcSource.ps1", "-SourceRoot", str(source),
+                "-DestinationRoot", str(destination),
+            )
+
+            self.assertNotEqual(0, result.returncode)
+            self.assertIn("differs from its pinned Git object", result.stdout)
+
+    def test_rc_source_materializes_only_the_pinned_clean_submodule(self):
+        workflow = (REPO / ".github" / "workflows" / "godot-windows-build.yml").read_text(encoding="utf-8")
+        self.assertIn("submodules: recursive", workflow)
+        with tempfile.TemporaryDirectory() as temp:
+            root = pathlib.Path(temp)
+            submodule = root / "maliang"
+            source = root / "source"
+            destination = root / "stage"
+            bad_destination = root / "bad-stage"
+            for repository in (submodule, source):
+                repository.mkdir()
+                subprocess.run(["git", "init", "-q"], cwd=repository, check=True)
+                subprocess.run(["git", "config", "user.name", "test"], cwd=repository, check=True)
+                subprocess.run(["git", "config", "user.email", "test@invalid"], cwd=repository, check=True)
+                subprocess.run(["git", "config", "core.autocrlf", "false"], cwd=repository, check=True)
+            (submodule / "payload.txt").write_text("pinned payload", encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=submodule, check=True)
+            subprocess.run(["git", "commit", "-qm", "pinned"], cwd=submodule, check=True)
+            (source / "godot").mkdir()
+            (source / "Tools" / "public-release").mkdir(parents=True)
+            (source / "godot" / "project.godot").write_text("[application]\n", encoding="utf-8")
+            (source / "Tactics.Godot.slnx").write_text("<Solution />\n", encoding="utf-8")
+            (source / "Tools" / "public-release" / "validate_public_candidate.py").write_text(
+                "raise SystemExit(0)\n", encoding="utf-8"
+            )
+            subprocess.run(
+                ["git", "-c", "protocol.file.allow=always", "submodule", "add", "-q", str(submodule),
+                 "Tools/vendor/maliang"], cwd=source, check=True
+            )
+            subprocess.run(["git", "add", "."], cwd=source, check=True)
+            subprocess.run(["git", "commit", "-qm", "fixture"], cwd=source, check=True)
+            result = run_pwsh(
+                TOOLS / "New-GodotOwnedRcSource.ps1", "-SourceRoot", str(source),
+                "-DestinationRoot", str(destination),
+            )
+            self.assertEqual(0, result.returncode, result.stdout)
+            self.assertEqual("pinned payload", (destination / "Tools/vendor/maliang/payload.txt").read_text(encoding="utf-8"))
+            manifest = json.loads((destination / "rc-source-manifest.json").read_text(encoding="utf-8-sig"))
+            pinned_commit = subprocess.run(
+                ["git", "rev-parse", "HEAD"], cwd=submodule, check=True, text=True, stdout=subprocess.PIPE
+            ).stdout.strip()
+            self.assertEqual(
+                [{"path": "Tools/vendor/maliang", "commit": pinned_commit}], manifest["expandedGitlinks"]
+            )
+            expanded = next(entry for entry in manifest["files"] if entry["path"].endswith("payload.txt"))
+            self.assertEqual(pinned_commit, expanded["sourceRepositoryCommit"])
+            self.assertEqual(40, len(expanded["sourceObject"]))
+
+            (submodule / "payload.txt").write_text("unpinned payload", encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=submodule, check=True)
+            subprocess.run(["git", "commit", "-qm", "unpinned"], cwd=submodule, check=True)
+            subprocess.run(["git", "fetch", "-q", str(submodule), "HEAD"], cwd=source / "Tools/vendor/maliang", check=True)
+            subprocess.run(["git", "checkout", "-q", "FETCH_HEAD"], cwd=source / "Tools/vendor/maliang", check=True)
+            subprocess.run(["git", "config", "submodule.Tools/vendor/maliang.ignore", "all"], cwd=source, check=True)
+            result = run_pwsh(
+                TOOLS / "New-GodotOwnedRcSource.ps1", "-SourceRoot", str(source),
+                "-DestinationRoot", str(bad_destination),
+            )
+            self.assertNotEqual(0, result.returncode)
+            self.assertIn("not at its pinned commit", result.stdout)
 
     def test_public_root_reconstruction_preserves_ignored_tracked_files(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -111,6 +213,7 @@ class WindowsRcPipelineTests(unittest.TestCase):
             subprocess.run(["git", "init", "-q"], cwd=source, check=True)
             subprocess.run(["git", "config", "user.name", "test"], cwd=source, check=True)
             subprocess.run(["git", "config", "user.email", "test@invalid"], cwd=source, check=True)
+            subprocess.run(["git", "config", "core.autocrlf", "false"], cwd=source, check=True)
             subprocess.run(["git", "add", ".gitignore", str(validator.relative_to(source))], cwd=source, check=True)
             subprocess.run(["git", "add", "--force", "Tactics.Godot.slnx"], cwd=source, check=True)
             subprocess.run(["git", "commit", "-qm", "fixture"], cwd=source, check=True)
@@ -131,6 +234,45 @@ class WindowsRcPipelineTests(unittest.TestCase):
                 ["git", "rev-list", "--count", "HEAD"], cwd=destination, check=True,
                 text=True, stdout=subprocess.PIPE,
             ).stdout.strip())
+
+    def test_public_root_reconstruction_expands_pinned_submodule(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = pathlib.Path(temp)
+            submodule = root / "vendor"
+            source = root / "source"
+            destination = root / "public-root"
+            for repository in (submodule, source):
+                repository.mkdir()
+                subprocess.run(["git", "init", "-q"], cwd=repository, check=True)
+                subprocess.run(["git", "config", "user.name", "test"], cwd=repository, check=True)
+                subprocess.run(["git", "config", "user.email", "test@invalid"], cwd=repository, check=True)
+                subprocess.run(["git", "config", "core.autocrlf", "false"], cwd=repository, check=True)
+            (submodule / "sample.png").write_bytes(b"sample")
+            subprocess.run(["git", "add", "."], cwd=submodule, check=True)
+            subprocess.run(["git", "commit", "-qm", "vendor fixture"], cwd=submodule, check=True)
+            validator = source / "Tools/public-release/validate_public_candidate.py"
+            validator.parent.mkdir(parents=True)
+            validator.write_text("raise SystemExit(0)\n", encoding="utf-8")
+            subprocess.run(
+                ["git", "-c", "protocol.file.allow=always", "submodule", "add", "-q",
+                 str(submodule), "Tools/vendor/example"], cwd=source, check=True,
+            )
+            subprocess.run(["git", "add", "."], cwd=source, check=True)
+            subprocess.run(["git", "commit", "-qm", "source fixture"], cwd=source, check=True)
+
+            result = run_pwsh(
+                REPO / "Tools/public-release/New-PublicRootCandidate.ps1",
+                "-SourceRoot", str(source), "-DestinationRoot", str(destination),
+            )
+
+            self.assertEqual(0, result.returncode, result.stdout)
+            self.assertEqual(b"sample", (destination / "Tools/vendor/example/sample.png").read_bytes())
+            tracked = subprocess.run(
+                ["git", "ls-files"], cwd=destination, check=True,
+                text=True, stdout=subprocess.PIPE,
+            ).stdout.splitlines()
+            self.assertIn("Tools/vendor/example/sample.png", tracked)
+            self.assertNotIn("Tools/vendor/example", tracked)
 
     def test_package_audit_writes_manifests_and_rejects_unity_payload(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -310,7 +452,7 @@ class WindowsRcPipelineTests(unittest.TestCase):
         self.assertIn("GodotSharpEditor/4\\.7\\.1", verifier)
         self.assertIn("GodotRuntimeTestRunner ends with exit code", verifier)
         self.assertIn("$reportedAssertionFailure", verifier)
-        self.assertIn("<TestSessionTimeout>120000</TestSessionTimeout>", runsettings)
+        self.assertIn("<TestSessionTimeout>600000</TestSessionTimeout>", runsettings)
 
 
 if __name__ == "__main__":

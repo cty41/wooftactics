@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="SkillDefinitionResource" format=3 uid="uid://1qm3flh3wr3n"]
+
+[ext_resource type="Script" path="res://src/Tactics.Godot.Adapter/Runtime/SkillDefinitionResource.cs" id="1_ywfio"]
+
+[resource]
+script = ExtResource("1_ywfio")
+ContentIdValue = "skill.poet.moon-drink.lv3"
+SourceId = "godot.skill.poet.moon-drink.lv3"
+DisplayName = "月下独酌"
+Description = "月下独酌"
+RoleValue = "Poet"
+KindValue = "Active"
+Level = 3
+ManaCost = 4
+ExecutionKindValue = "PoetMoonDrink"
+DamageKindValue = "None"
+MaxUsesPerTurn = 1
+CanCrit = false
+BranchId = "poet.wine-immortal"
+PrerequisiteContentIdValue = "skill.poet.moon-drink.lv2"
+PrerequisiteBranchId = "poet.wine-immortal"
+RequiredAttribute = "Strength"
+MinimumAttribute = 7
+AuthoringSourceKindValue = "GodotAuthored"

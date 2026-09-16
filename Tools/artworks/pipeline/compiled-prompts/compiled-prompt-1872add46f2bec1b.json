@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 2,
+  "compiledPromptId": "compiled-prompt-1872add46f2bec1b",
+  "jobId": "job-e2f0b006eb756a24",
+  "equipmentProfileSha256": "e23e540c790a57432967d944c82bdad9721f109d2cb6352b3288c0c2c7d7bbb1",
+  "artifact": {
+    "path": "Tools/artworks/poet_five_red_chow/pipeline/guqin_compiled_prompt_v2_travel.md",
+    "sha256": "513225c726472240490a48c212e426ce15db161f2b19f064b82502fc7705140c"
+  }
+}
