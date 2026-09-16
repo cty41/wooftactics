@@ -84,14 +84,22 @@ class PinnedMaliangAdapterTests(unittest.TestCase):
                     "sourceObject": "b" * 40,
                 }],
             }
-            (root / "rc-source-manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+            manifest_path = root / "rc-source-manifest.json"
+            manifest_text = json.dumps(manifest, indent=2) + "\n"
+            manifest_path.write_text(manifest_text, encoding="utf-8")
+            (root / ".gitattributes").write_text("rc-source-manifest.json text eol=lf\n", encoding="utf-8")
             git(root, "init", "-q"); git(root, "config", "user.name", "test")
             git(root, "config", "user.email", "test@invalid"); git(root, "add", ".")
             git(root, "commit", "-qm", "RC source snapshot")
+            manifest_path.write_bytes(manifest_text.replace("\n", "\r\n").encode("utf-8"))
             previous_root = MODULE.ROOT
             MODULE.ROOT = root
             try:
                 MODULE._verify_pinned_checkout(checkout, pinned_commit)
+                manifest_path.write_text(json.dumps({**manifest, "sourceCommit": "d" * 40}, indent=2) + "\n", encoding="utf-8")
+                with self.assertRaisesRegex(RuntimeError, "manifest differs"):
+                    MODULE._verify_pinned_checkout(checkout, pinned_commit)
+                manifest_path.write_bytes(manifest_text.replace("\n", "\r\n").encode("utf-8"))
                 payload.write_bytes(b"tampered payload")
                 with self.assertRaisesRegex(RuntimeError, "differs from staged provenance"):
                     MODULE._verify_pinned_checkout(checkout, pinned_commit)

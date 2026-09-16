@@ -47,9 +47,11 @@ def _verify_expanded_snapshot(repo: Path, expected_commit: str) -> None:
         raise RuntimeError("flattened MaLiang checkout lacks the RC source manifest")
     manifest_blob = _git(ROOT, "rev-parse", "HEAD:rc-source-manifest.json").decode("ascii").strip()
     manifest_data = manifest_path.read_bytes()
-    actual_manifest_blob = hashlib.sha1(
-        f"blob {len(manifest_data)}\0".encode("ascii") + manifest_data
-    ).hexdigest()
+    # The generated JSON may have checkout-native line endings; compare its Git-cleaned
+    # blob to the staging commit, then use raw SHA-256 below for every payload byte.
+    actual_manifest_blob = _git(
+        ROOT, "hash-object", "--path=rc-source-manifest.json", "rc-source-manifest.json"
+    ).decode("ascii").strip()
     if actual_manifest_blob != manifest_blob:
         raise RuntimeError("RC source manifest differs from its staging commit")
     manifest = json.loads(manifest_data.decode("utf-8-sig"))
