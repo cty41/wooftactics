@@ -1,5 +1,9 @@
 # Tactics Knowledge Update Log
 
+## 2026-09-16
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:a9d0e14ee12574b9992fed437b5d0989b3b278ce3c4a72d05ce645af963df2ec`。
+* **Update**: PR #4 合入最新 main 后，人工账本保留诗人和动态先攻为 pending，并把 Start Camp 与 Esc Run 生命周期回归加入本轮验收顺序；旧 Home/Main Menu 合同已由 `CONTINUE`、`OPTIONS`、`ABANDON RUN`、`SAVE AND QUIT` 取代，自动门禁不代替人工 verdict。
+
 ## 2026-09-15
 * **Sync**: `pure-run-artwork` 已同步到来源指纹 `sha256:204e7b2814e2d860b61e8df93ae60bb1fd7d50dbbb195b7b8535611c1b9f2ace`。
 * **Sync**: `project-documentation` 已同步到来源指纹 `sha256:c7be57077ae35302c7f745c6c6f56734facf53b07ede491ddfb95fb9724a24b8`。

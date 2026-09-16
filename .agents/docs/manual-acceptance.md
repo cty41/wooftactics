@@ -13,7 +13,7 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 - Observe: Start Camp 候选区、Battle action bar、棋盘单位/状态层、HP/MP、事件日志、CheatConsole 与 Godot Output。
 - Preserve on failure: Run seed、起始分支、技能等级、双方格子与朝向、施法前后 HP/MP/状态、截图或短视频、battle checkpoint/save 副本和完整 Output。
 - Save boundary: 选择队伍、成长和战斗会修改当前 Run；只使用 disposable/隔离存档，不覆盖生产存档。
-- Automated evidence: exact HEAD `3b766176` 的本地统一门禁与 Windows Debug/Release run `35083861179` 已通过；Core 206/206、Application 199/199、Poet/Initiative/Actor GdUnit、29/29 Gameplay journeys、ResourceSaver 幂等性、artwork 152 与 Godot tooling 15 均通过。运行时 DR/UL 副本哈希绑定获批母图，自动化断言白色 tint、方向回退、Death 占位、分身清理、技能公式与硬 AI 分身优先；动作可读性、半透明分身辨识度和职业体验仍需人工判断。
+- Automated evidence: integrated code HEAD `a501b359` 的统一 Godot verifier 已通过：Core 209/209、Application 206/206、Poet/Initiative/Actor GdUnit、29/29 Gameplay journeys、ResourceSaver 幂等性、artwork 与 Godot tooling 全绿；exact-code Windows Debug/Release run `35116613148` 已触发并单独收集。运行时 DR/UL 副本哈希绑定获批母图，自动化断言白色 tint、方向回退、Death 占位、分身清理、技能公式与硬 AI 分身优先；动作可读性、半透明分身辨识度和职业体验仍需人工判断。
 - User verdict: 用户本轮选择暂不游玩；保留为待跑测 TODO，未判定通过或失败。
 
 ### MQA-GODOT-INITIATIVE-HUD — 动态先攻头像条、Hover 联动与输入锁
@@ -25,7 +25,7 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 - Observe: 右上 initiative strip、Round 标签、头像框与省略号、棋盘单位轮廓/HP/MP、action bar、事件日志、CheatConsole 和 Godot Output。
 - Preserve on failure: 短视频、Round、完整可见/隐藏队列、各单位先攻与 acted 状态、悬停单位 ID、点击时刻、事件日志、Run seed/checkpoint 和 Output。
 - Save boundary: 战斗行动和召唤会修改 disposable Run；悬停本身只读，失败时先复制 checkpoint 再继续。
-- Automated evidence: exact HEAD `3b766176` 的本地统一门禁与 Windows Debug/Release run `35083861179` 已通过；Core/Application 覆盖逐轮重排、未行动队列同步、召唤插入/替换、昏迷自动 EndTurn 和无重复行动；Godot tests 覆盖九头像省略、0.22 秒过渡、五候选和生产输入锁，Gameplay journeys 29/29 通过。动画手感、Hover 对应关系、视觉层级和高速连续操作仍需人工验收。
+- Automated evidence: integrated code HEAD `a501b359` 的统一 Godot verifier 已通过，exact-code Windows Debug/Release run `35116613148` 已触发并单独收集；Core/Application 覆盖逐轮重排、未行动队列同步、召唤插入/替换、昏迷自动 EndTurn 和无重复行动；Godot tests 覆盖九头像省略、0.22 秒过渡、五候选和生产输入锁，Gameplay journeys 29/29 通过。动画手感、Hover 对应关系、视觉层级和高速连续操作仍需人工验收。
 - User verdict: 用户本轮选择暂不游玩；保留为待跑测 TODO，未判定通过或失败。
 
 ### MQA-GODOT-MAW-BAT-SLICE — 大嘴蝠、浅水与 N2 实战纵切
@@ -333,7 +333,7 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 - Observe: StartCampView, 10×10 bounds, Start→N1 endpoint, route direction, node scale/titles, Party Setup, hints, Esc overlay, and Godot Output.
 - Preserve on failure: Short video, window size, input sequence, click position, node ID, camera state, and the first Output error.
 - Save boundary: Camera and Preview are read-only; do not advance through an exit while preserving a failure.
-- Automated evidence: Godot tests cover body/overlap targeting, Overview selection restrictions, wheel invariance, `M`/`F` state changes, layout scale, and title hierarchy, but could not run in this checkout because the pinned Godot 4.7.1 Mono console binary is missing. Build and pure .NET tests pass; visual readability and input feel remain manual and blocked until the engine gate can run.
+- Automated evidence: exact code HEAD `a501b359` ran with the pinned Godot 4.7.1 Mono executable and passed the unified verifier. Godot tests cover body/overlap targeting, Overview selection restrictions, wheel invariance, `M`/`F` state changes, layout scale and title hierarchy; visual readability and input feel remain manual.
 - User verdict: none after restoration.
 
 ### MQA-GODOT-START-ESC — Start exit, skill setup and Esc run controls
@@ -347,6 +347,19 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 - Save boundary: Abandon, skill selection, and quit mutate the isolated Run; preserve a copy first.
 - Automated evidence: Setup transitions, persistence, PendingBattle checkpoint, and quit behavior have pure .NET coverage; menu readability and real restart remain manual.
 - User verdict: none.
+
+### MQA-GODOT-PAUSE-MENU — Esc Run lifecycle controls
+
+- Status: `pending`
+- Source: PR #4 main integration; `a501b359`
+- Reopen reason: The integrated Start Camp, Tile Adventure and battle flow intentionally replaces the legacy Home/Main Menu contract with Run-scoped `CONTINUE`, `OPTIONS`, `ABANDON RUN` and `SAVE AND QUIT` controls.
+- Action: In an isolated Run, press Esc from Start Camp, Tile Adventure and a PendingBattle page; exercise Continue and Options/Back, then separately test Abandon Run and Save and Quit followed by process restart.
+- Expected: The overlay covers the active page; only the current Run controls appear. Continue closes the overlay, Options returns safely, Abandon creates an Abandoned summary and routes to a fresh camp, while Save and Quit exits and resumes the same committed Encounter/Seed checkpoint after restart. No legacy Home or Main Menu action appears.
+- Observe: Esc overlay, active page title, Terminal Summary, resumed battle entry, `user://pure-run` files, CheatConsole and Godot Output.
+- Preserve on failure: Overlay/summary screenshots, exact Esc/menu sequence, Run seed/revision, checkpoint save/backup and the first Output error.
+- Save boundary: Continue and Options are read-only; Abandon and Save and Quit mutate the isolated Run. Preserve a copy before either destructive action.
+- Automated evidence: exact code HEAD `a501b359` passes the unified Godot verifier, 29/29 gameplay journeys and focused restart/quit production-input coverage. Overlay readability, input feel and real process restart remain human-only.
+- User verdict: Previous legacy-menu verdict is superseded by this changed Run lifecycle contract; current verdict is none.
 
 ### MQA-GODOT-TILE-ESCORT-DIFFICULTY — Lost villager escort readability and difficulty
 
@@ -522,19 +535,6 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 - Automated evidence: Label formatting, action-state marker suppression, event-derived targets, alpha hit ordering, spear lifecycle, console guards, and renderer smoke are asserted; sizing and visual parity remain manual.
 - User verdict: Passed in the latest user report.
 
-### MQA-GODOT-PAUSE-MENU — Esc pause and safe exit flow
-
-- Status: `passed`
-- Source: Phase 8E pause overlay hierarchy and menu scope fix
-- Reopen reason: The reported overlay rendered below actors and exposed a noncanonical Save and Quit action; the fix raises the overlay and removes that action.
-- Action: During a battle press Esc, exercise Continue, Options/Back and Main Menu, then open Esc again while targeting and while CheatConsole is visible.
-- Expected: The dark overlay and menu cover all actors/HUD; only Continue, Options and Main Menu appear; targeting/Console take Esc precedence; Quit remains only on Home.
-- Observe: Pause overlay, battle HUD, Home menu, playback state, and CheatConsole.
-- Preserve on failure: Screenshot and exact Esc/menu action sequence; keep the Run and Output open.
-- Save boundary: Main Menu preserves the Active Run and Continue restarts from the committed pre-battle checkpoint.
-- Automated evidence: Z-order, menu actions, input blocking, pause ownership and absence of Save and Quit are asserted; visual stacking and interaction feel remain manual.
-- User verdict: Passed in the latest user report.
-
 ### MQA-GODOT-BOARD-FIT — Isometric board framing and input
 
 - Status: `passed`
@@ -600,5 +600,7 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 
 ## Last Emitted Order
 
-1. `MQA-GODOT-POET-RUNTIME` — 诗人开局、六套技能与临时分身
-2. `MQA-GODOT-INITIATIVE-HUD` — 动态先攻头像条、Hover 与输入锁
+1. `MQA-GODOT-TILE-START-CAMP` — Start Camp 选人、移动与技能衔接
+2. `MQA-GODOT-PAUSE-MENU` — Esc、Abandon、Save and Quit 与重启恢复
+3. `MQA-GODOT-POET-RUNTIME` — 诗人开局、六套技能与临时分身
+4. `MQA-GODOT-INITIATIVE-HUD` — 动态先攻头像条、Hover 与输入锁

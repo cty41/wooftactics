@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics/tree/main/.agents/docs
 title: Project Documentation
 description: 当前设计、活跃计划、统一缺口与 OKF 综合层的文档生命周期。
 tags: [operations, documentation, plans, knowledge]
-timestamp: "2026-09-15T11:30:50+08:00"
+timestamp: "2026-09-16T23:50:59+08:00"
 status: active
 catalog_scope: project-documentation
 repo_paths:
@@ -12,7 +12,7 @@ repo_paths:
   - .agents/plans
   - .agents/skills/manual-qa-handoff/SKILL.md
 verified_revision: c9ff3a710fd9
-source_fingerprint: sha256:c7be57077ae35302c7f745c6c6f56734facf53b07ede491ddfb95fb9724a24b8
+source_fingerprint: sha256:a9d0e14ee12574b9992fed437b5d0989b3b278ce3c4a72d05ce645af963df2ec
 ---
 
 # Current State
@@ -37,7 +37,7 @@ Pure Run 新装备的独立生产策略记录在 `.agents/docs/2026-08-25-pure-r
 
 可执行 skill 的 Python 依赖应在该 skill 目录内声明；调用统一 verifier 的 CI 必须显式安装所覆盖 skill 的 requirements，不能依赖开发机或 runner 的偶然全局包。
 
-当前 Godot 人工验收状态由 `.agents/docs/manual-acceptance.md` 以稳定 ID 维护；需要继续开发或决策的 TODO 则只进入 `.agents/docs/project-known-gaps.md`，不另建并列总清单。实现通过 code review 与自动门禁后，`manual-qa-handoff` 只重开受本轮行为、UI、表现、流程或 Editor 生命周期影响的项目，并输出本轮重点、累计待验收、自动覆盖边界和最短操作旅程；自动证据不能把人工项晋升为 passed，只有用户明确反馈可以更新人工结论。
+当前 Godot 人工验收状态由 `.agents/docs/manual-acceptance.md` 以稳定 ID 维护；需要继续开发或决策的 TODO 则只进入 `.agents/docs/project-known-gaps.md`，不另建并列总清单。实现通过 code review 与自动门禁后，`manual-qa-handoff` 只重开受本轮行为、UI、表现、流程或 Editor 生命周期影响的项目，并输出本轮重点、累计待验收、自动覆盖边界和最短操作旅程；自动证据不能把人工项晋升为 passed，只有用户明确反馈可以更新人工结论。PR #4 合入最新 main 后，诗人和动态先攻继续 pending；Start Camp 与 Esc Run 生命周期回归也进入本轮顺序，其中当前菜单权威是 `CONTINUE`、`OPTIONS`、`ABANDON RUN`、`SAVE AND QUIT`，不存在旧 Home/Main Menu 合同。
 
 Agent-first Editor 开发入口及首次 Codex 重启、worktree 隔离、共享人工 QA 边界记录在 `.agents/docs/godot-agent-first-development.md`；真实 Dock 可见性和跨 worktree 路由继续由人工验收账本判定。
 
