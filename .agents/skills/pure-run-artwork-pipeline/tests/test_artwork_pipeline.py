@@ -507,10 +507,10 @@ class ArtworkPipelineTests(unittest.TestCase):
             image = opened.convert("RGBA")
         image.putpixel((12, 34), (0, 255, 0, 2))
         image.putpixel((56, 78), (255, 0, 255, 4))
-        image.save(candidate)
+        image.save(candidate, format="PNG", optimize=False, compress_level=9)
         master = self.root / "Tools/artworks/equipment/calibrated/item.png"
         master.parent.mkdir(parents=True)
-        image.save(master)
+        image.save(master, format="PNG", optimize=False, compress_level=9)
         before = pipeline.sha256_file(candidate)
         approval = {"schemaVersion": 2, "approvalId": "approval-chroma", "decision": "approved", "reviewer": "cty41"}
         pipeline.write_json_idempotent(self.store.record("approvals", "approval-chroma"), approval, immutable=True)
@@ -568,7 +568,22 @@ class ArtworkPipelineTests(unittest.TestCase):
         self.assertTrue(pipeline._effective_artifact_binding_matches(
             self.store, attempt["artifacts"]["prepared"], remediations))
         receipt_path = self.store.record("exact-chroma-remediations", receipt["exactChromaRemediationId"])
-        malformed = dict(receipt)
+        forged = json.loads(json.dumps(receipt))
+        with Image.open(candidate) as opened:
+            tampered = opened.copy()
+        tampered.putpixel((1, 1), (1, 2, 3, 255))
+        tampered.save(candidate, format="PNG", optimize=False, compress_level=9)
+        next(item for item in forged["artifacts"] if item["path"] == self.store.relative(candidate))["afterSha256"] = pipeline.sha256_file(candidate)
+        forged_payload = {key: value for key, value in forged.items()
+                          if key not in {"schemaVersion", "exactChromaRemediationId"}}
+        forged["exactChromaRemediationId"] = pipeline.stable_id("exact-chroma-remediation", forged_payload)
+        receipt_path.unlink()
+        receipt_path = self.store.record("exact-chroma-remediations", forged["exactChromaRemediationId"])
+        pipeline.write_json_idempotent(receipt_path, forged, immutable=True)
+        forged_issues = []
+        pipeline._validated_exact_chroma_remediations(self.store, forged_issues)
+        self.assertEqual([f"exact_chroma_remediation_invalid:{receipt_path.stem}"], forged_issues)
+        malformed = dict(forged)
         malformed["artifacts"] = ["bad"]
         receipt_path.write_text(json.dumps(malformed), encoding="utf-8")
         malformed_issues = []
@@ -2611,6 +2626,18 @@ class ArtworkPipelineTests(unittest.TestCase):
         audit_path.write_text(json.dumps(audit), encoding="utf-8")
         self.assertNotIn(qualification["reviewerQualificationId"],
                          {item["reviewerQualificationId"] for item in pipeline._effective_qualifications(self.store)})
+
+    def test_automatic_retry_child_creation_is_crash_idempotent(self):
+        attempt, _packet, _invocation, _policy_id = self._model_review_fixture("retry-idempotent")
+        prompt_delta = {"promptDeltaId": "delta", "operations": [], "promptDelta": []}
+
+        first = pipeline._create_model_retry_attempt(self.store, attempt, prompt_delta)
+        second = pipeline._create_model_retry_attempt(self.store, attempt, prompt_delta)
+
+        self.assertEqual(first, second)
+        self.assertEqual(f"{attempt['jobId']}-a002", first["attemptId"])
+        self.assertEqual(2, first["generationRound"])
+        self.assertEqual(2, len(pipeline.list_attempts(self.store, attempt["jobId"])))
 
     def test_automatic_retry_never_creates_attempt_a004(self):
         attempt, packet, invocation, policy_id = self._model_review_fixture("no-a004")

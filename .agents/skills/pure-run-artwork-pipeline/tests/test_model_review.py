@@ -89,6 +89,40 @@ class ModelReviewCoreTests(unittest.TestCase):
         value["reviewerQualificationId"] = review.stable_id("reviewer-qualification", value)
         return value
 
+    def test_explicit_acceptance_case_must_link_to_an_active_rule(self):
+        unrelated = self.case(ruleIds=["OTHER-RULE"])
+        with self.assertRaisesRegex(review.ReviewValidationError, "linked to an active compiled rule"):
+            review.compile_review_policy(
+                {"policyId": "pure-run-policy", "version": 1}, [self.rule()], [unrelated],
+                {"project": "pure-run", "family": "poet", "topology": "capsule"},
+                acceptance_case_ids=["CASE-FAIL"],
+            )
+
+    def test_defect_rule_must_link_to_cited_acceptance_case(self):
+        second_rule = self.rule(ruleId="OTHER-RULE", positiveCaseIds=[], negativeCaseIds=["CASE-OTHER"])
+        other_case = self.case("CASE-OTHER", ruleIds=["OTHER-RULE"])
+        policy = review.compile_review_policy(
+            {"policyId": "pure-run-policy", "version": 1}, [self.rule(), second_rule],
+            [self.case(), other_case],
+            {"project": "pure-run", "family": "poet", "topology": "capsule"},
+            acceptance_case_ids=["CASE-OTHER"],
+        )
+        packet = review.build_model_review_packet(
+            attempt={"attemptId": "job-poet-a001"}, contract={"contractId": "contract-1", "sha256": SHA},
+            brief={"briefId": "brief-1", "sha256": SHA2}, compiled_policy=policy,
+            artifacts={"calibrated": {"path": "Tools/artworks/candidate.png", "sha256": SHA}},
+            evidence=[
+                {"role": "CALIBRATED_256", "path": "Tools/artworks/candidate.png", "sha256": SHA},
+                {"role": "SEMANTIC_MASK_OVERLAY", "path": "Tools/artworks/mask.png", "sha256": SHA2},
+            ], acceptance_cases=[{"caseId": "CASE-OTHER"}], feedback=[], frozen_invariants=["identity"],
+            required_model="gpt-5.6-sol",
+        )
+        result = self.result(packet)
+        result["defects"][0]["acceptanceCaseId"] = "CASE-OTHER"
+
+        with self.assertRaisesRegex(review.ReviewValidationError, "defect rule is not linked"):
+            review.validate_model_review_result(result, packet, policy)
+
     def test_stable_id_and_history_derivation_are_deterministic_json(self):
         feedback = {"feedbackId": "feedback-1", "attemptId": "job-a001", "categories": ["topology"], "authorType": "human"}
         first = review.derive_review_history_index_entry(feedback, attempt={"attemptId": "job-a001", "jobId": "job"}, artifact={"path": "Tools/artworks/x.png", "sha256": SHA})

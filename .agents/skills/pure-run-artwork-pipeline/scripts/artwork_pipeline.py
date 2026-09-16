@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
 import math
 import os
@@ -2012,6 +2013,7 @@ def _reviewer_qualification_is_valid(store: Store, record: dict[str, Any], *, al
                     or result_record.get("outcome") != "model_reviewed" or result_record.get("validationError") is not None
                     or result_record.get("promptSource", {}).get("sha256") != record.get("reviewerPromptSha256")
                     or packet.get("compiledPolicy", {}).get("compiledPolicyId") != record.get("compiledPolicyId")
+                    or not case or rule.get("ruleId") not in case.get("ruleIds", [])
                     or polarity not in expected_decision
                     or result_record.get("result", {}).get("decision") != expected_decision[polarity]):
                 return False
@@ -2069,6 +2071,7 @@ def record_reviewer_qualification(store: Store, args: argparse.Namespace) -> dic
                 or result_record.get("model") != args.model or result_record.get("effort") != args.effort
                 or result_record.get("promptSource", {}).get("sha256") != prompt_source["sha256"]
                 or packet.get("compiledPolicy", {}).get("compiledPolicyId") != compiled.get("compiledPolicyId")
+                or not case or rule.get("ruleId") not in case.get("ruleIds", [])
                 or polarity not in expected_decision
                 or result_record.get("result", {}).get("decision") != expected_decision[polarity]):
             raise PipelineError("qualification audit does not prove the required model/effort/policy case decision")
@@ -2219,8 +2222,7 @@ def _create_model_retry_attempt(store: Store, attempt: dict[str, Any], prompt_de
             raise PipelineError("cannot derive generation round from attempt") from exc
     if isinstance(generation_round, bool) or not isinstance(generation_round, int) or generation_round >= 3:
         raise PipelineError("automatic generation budget exhausted; cannot create a004")
-    attempts = list_attempts(store, attempt["jobId"])
-    ordinal = len(attempts) + 1
+    ordinal = generation_round + 1
     if ordinal > 3:
         raise PipelineError("automatic retry cannot create attempt a004 or later; escalate to human review")
     child = {"schemaVersion": attempt.get("schemaVersion", ART_DIRECTION_SCHEMA_VERSION),
@@ -3803,6 +3805,10 @@ def remediate_exact_chroma_artifacts(store: Store, args: argparse.Namespace) -> 
             if opened.mode != "RGBA":
                 raise PipelineError(f"exact chroma remediation requires native RGBA: {rel}")
             image = opened.copy()
+        canonical_before = io.BytesIO()
+        image.save(canonical_before, format="PNG", optimize=False, compress_level=9)
+        if hashlib.sha256(canonical_before.getvalue()).hexdigest() != before_sha:
+            raise PipelineError(f"exact chroma remediation requires canonical PNG encoding: {rel}")
         pixels = []
         for y in range(image.height):
             for x in range(image.width):
@@ -5645,6 +5651,12 @@ def _validated_exact_chroma_remediations(store: Store, issues: list[str]) -> dic
                         restored = opened.copy()
                     valid = all(0 <= pixel["x"] < restored.width and 0 <= pixel["y"] < restored.height for pixel in pixels)
                     valid = valid and all(restored.getpixel((pixel["x"], pixel["y"])) == (0, 0, 0, 0) for pixel in pixels)
+                    if valid:
+                        for pixel in pixels:
+                            restored.putpixel((pixel["x"], pixel["y"]), tuple(pixel["rgba"]))
+                        reconstructed = io.BytesIO()
+                        restored.save(reconstructed, format="PNG", optimize=False, compress_level=9)
+                        valid = hashlib.sha256(reconstructed.getvalue()).hexdigest() == artifact.get("beforeSha256")
             if not valid:
                 raise PipelineError("invalid exact chroma remediation")
             for artifact in artifacts:

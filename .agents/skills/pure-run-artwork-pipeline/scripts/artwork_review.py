@@ -69,10 +69,14 @@ def compile_review_policy(
     acceptance_case_ids: Sequence[str] = (), feedback_rule_ids: Sequence[str] = (),
 ) -> dict[str, Any]:
     _reject_retired_paths((project_policy, rules, cases, context))
-    return _core.compile_review_policy(
+    compiled = _core.compile_review_policy(
         project_policy, rules, cases, context, authority=_AUTHORITY,
         acceptance_case_ids=acceptance_case_ids, feedback_rule_ids=feedback_rule_ids,
     )
+    active_rule_ids = {rule["ruleId"] for rule in compiled.get("rules", [])}
+    if any(not active_rule_ids.intersection(case.get("ruleIds", [])) for case in compiled.get("cases", [])):
+        raise _core.ReviewValidationError("acceptance case is not linked to an active compiled rule")
+    return compiled
 
 
 def build_model_review_packet(*args: Any, **kwargs: Any) -> dict[str, Any]:
@@ -88,8 +92,21 @@ def validate_model_review_packet(packet: Mapping[str, Any]) -> dict[str, Any]:
     return _core.validate_model_review_packet(packet)
 
 
-def validate_model_review_result(*args: Any, **kwargs: Any) -> dict[str, Any]:
-    return _call_with_project_paths(_core.validate_model_review_result, *args, **kwargs)
+def validate_model_review_result(
+    result: Mapping[str, Any], packet: Mapping[str, Any], compiled_policy: Mapping[str, Any],
+) -> dict[str, Any]:
+    validated = _call_with_project_paths(
+        _core.validate_model_review_result, result, packet, compiled_policy,
+    )
+    cases = {
+        case.get("caseId"): case for case in compiled_policy.get("cases", [])
+        if isinstance(case, Mapping)
+    }
+    for defect in validated.get("defects", []):
+        case = cases.get(defect.get("acceptanceCaseId"))
+        if not isinstance(case, Mapping) or defect.get("ruleId") not in case.get("ruleIds", []):
+            raise _core.ReviewValidationError("defect rule is not linked to its acceptance case")
+    return validated
 
 
 def qualification_matches(qualification: Mapping[str, Any], **kwargs: Any) -> bool:
