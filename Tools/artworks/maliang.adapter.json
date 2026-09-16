@@ -3,7 +3,8 @@
   "engine": {
     "repository": "https://github.com/cty41/maliang.git",
     "submodulePath": "Tools/vendor/maliang",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "commit": "00d772ffe57c610c3217b8294d6b2794df175ca2"
   },
   "authority": {
     "reviewer": "cty41"
