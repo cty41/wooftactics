@@ -796,6 +796,7 @@ public sealed class PlayableBattleSessionServiceTests
             new Dictionary<ContentId, SkillDefinition>());
 
         var service = new PlayableBattleSessionService(context);
+        BattleUiFrame? frame = service.DequeueAutomaticFrame();
 
         Assert.Multiple(() =>
         {
@@ -803,6 +804,13 @@ public sealed class PlayableBattleSessionServiceTests
             Assert.That(service.State.Round, Is.EqualTo(1));
             Assert.That(service.State.Units[stunnedId].Statuses, Does.Not.ContainKey(stunId));
             Assert.That(service.CaptureSnapshot().RecentEvents.OfType<StatusExpiredEvent>()
+                .Any(status => status.TargetId == stunnedId && status.StatusId == stunId), Is.True);
+            Assert.That(frame, Is.Not.Null);
+            Assert.That(frame!.Stage, Is.EqualTo("IncapacitatedEnd"));
+            Assert.That(frame.Snapshot.ActiveUnitId, Is.EqualTo(nextId));
+            Assert.That(frame.Snapshot.Units.Single(unit => unit.UnitId == stunnedId).Statuses,
+                Does.Not.Contain(stunId));
+            Assert.That(frame.Events.OfType<StatusExpiredEvent>()
                 .Any(status => status.TargetId == stunnedId && status.StatusId == stunId), Is.True);
         });
     }

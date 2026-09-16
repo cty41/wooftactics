@@ -377,6 +377,27 @@ public sealed class PoetSkillRuntimeTests
     }
 
     [Test]
+    public void LightningAppliesProductionStunAsIncapacitating()
+    {
+        ContentId stunId = new("buff.stun");
+        BattleUnitState enemy = Unit("enemy.target", new GridPoint(3, 1), 1);
+        BattleState state = State(new GridPoint(1, 1), 6, new[] { enemy });
+        SkillDefinition lightning = Skill("skill.mage.lightning.lv1", SkillExecutionKind.Lightning,
+            level: 1, mana: 0, minRange: 1, maxRange: 4, damage: 1,
+            statusId: stunId, statusDuration: 1, canCrit: false);
+
+        BattleTransition result = Apply(state, lightning, enemy.Unit.InstanceId, enemy.Unit.Position);
+
+        BattleStatusState stun = result.State.Units[enemy.Unit.InstanceId].Statuses[stunId];
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.Succeeded, Is.True);
+            Assert.That(stun.EffectKind, Is.EqualTo(StatusEffectKind.Stun));
+            Assert.That(stun.CanAct, Is.False);
+        });
+    }
+
+    [Test]
     public void DirectAttackClassificationIsTheExactSingleTargetDirectExecutionSet()
     {
         var expected = new HashSet<SkillExecutionKind>

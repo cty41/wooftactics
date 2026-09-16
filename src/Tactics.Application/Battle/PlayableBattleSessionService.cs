@@ -398,7 +398,7 @@ public sealed class PlayableBattleSessionService
             if (active.IsAlive && active.Statuses.Values.Any(status => !status.CanAct))
             {
                 BattleTransition skipped = _transitions.Apply(State, new EndTurnCommand(active.Unit.InstanceId));
-                _automaticFrames.Enqueue(("IncapacitatedEnd", State, null, skipped.Events));
+                _automaticFrames.Enqueue(("IncapacitatedEnd", skipped.State, null, skipped.Events));
                 State = skipped.State;
                 Append(skipped.Events);
                 continue;
