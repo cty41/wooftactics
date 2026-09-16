@@ -4,30 +4,6 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 
 ## Pending
 
-### MQA-GODOT-POET-RUNTIME — 诗人开局、技能表现与临时分身
-
-- Status: `pending`
-- Source: 第五职业诗人、六套技能与临时分身功能实现
-- Action: 使用三个 disposable Run，在 Start Camp 确认五名候选均有独立站位；每次选择“诗人”与另外两人，并分别从剑仙、诗仙、酒仙起步。进入战斗后至少实际使用一次侠客行、剑雨、将进酒、行路难、月下独酌和山中与幽人对酌；观察冲锋/范围攻击、三次回合开始治疗、敏捷提升、自疗净化，以及按施法前朝向后退并在原地留下分身。
-- Expected: 候选和战斗 UI 显示“诗人”，第五候选不重叠或崩溃；已批准五红土松 Idle 在南/西使用 DR、北/东使用 UL，只有东/西镜像，正式颜色不受额外蓝色 tint 污染。缺失动作安全回退到相应方向 Idle，Death 暂用不镜像 DR；分身继承同一诗人身份但以半透明青色明显区分。技能按钮、目标范围、动作反馈、HP/MP/状态变化容易理解；后退和生成原子完成，敌人在合法直接攻击范围内优先攻击分身。
-- Observe: Start Camp 候选区、Battle action bar、棋盘单位/状态层、HP/MP、事件日志、CheatConsole 与 Godot Output。
-- Preserve on failure: Run seed、起始分支、技能等级、双方格子与朝向、施法前后 HP/MP/状态、截图或短视频、battle checkpoint/save 副本和完整 Output。
-- Save boundary: 选择队伍、成长和战斗会修改当前 Run；只使用 disposable/隔离存档，不覆盖生产存档。
-- Automated evidence: integrated code HEAD `a501b359` 的统一 Godot verifier 已通过：Core 209/209、Application 206/206、Poet/Initiative/Actor GdUnit、29/29 Gameplay journeys、ResourceSaver 幂等性、artwork 与 Godot tooling 全绿；exact-code Windows Debug/Release run `35116613148` 已触发并单独收集。运行时 DR/UL 副本哈希绑定获批母图，自动化断言白色 tint、方向回退、Death 占位、分身清理、技能公式与硬 AI 分身优先；动作可读性、半透明分身辨识度和职业体验仍需人工判断。
-- User verdict: 用户本轮选择暂不游玩；保留为待跑测 TODO，未判定通过或失败。
-
-### MQA-GODOT-INITIATIVE-HUD — 动态先攻头像条、Hover 联动与输入锁
-
-- Status: `pending`
-- Source: Core 权威动态先攻与右上角圆形头像行动条实现
-- Action: 在 disposable battle 中依次完成普通行动、施放行路难改变未行动单位敏捷、召唤或替换召唤物、击杀一个单位，并让一个带不可行动状态的单位轮到行动；悬停友方和敌方头像，再把队列扩展到十个以上单位观察省略号。
-- Expected: 右上条只显示当前与未行动单位，当前头像为金框、友敌底色明确、相同先攻保持玩家方优先；已行动头像消失，未行动头像按新先攻平滑重排，召唤物按当前先攻插入。队列最多显示九个头像和不可交互的“…”；隐藏队列变化时省略号脉冲。Hover 显示白框，并在棋盘对应单位上显示阵营色轮廓及 HP/MP；约 0.22 秒 Tween 期间点击不会重复提交，结束后输入立即恢复。不可行动单位自动跳过但只消费一次 EndTurn/状态时长。
-- Observe: 右上 initiative strip、Round 标签、头像框与省略号、棋盘单位轮廓/HP/MP、action bar、事件日志、CheatConsole 和 Godot Output。
-- Preserve on failure: 短视频、Round、完整可见/隐藏队列、各单位先攻与 acted 状态、悬停单位 ID、点击时刻、事件日志、Run seed/checkpoint 和 Output。
-- Save boundary: 战斗行动和召唤会修改 disposable Run；悬停本身只读，失败时先复制 checkpoint 再继续。
-- Automated evidence: integrated code HEAD `a501b359` 的统一 Godot verifier 已通过，exact-code Windows Debug/Release run `35116613148` 已触发并单独收集；Core/Application 覆盖逐轮重排、未行动队列同步、召唤插入/替换、昏迷自动 EndTurn 和无重复行动；Godot tests 覆盖九头像省略、0.22 秒过渡、五候选和生产输入锁，Gameplay journeys 29/29 通过。动画手感、Hover 对应关系、视觉层级和高速连续操作仍需人工验收。
-- User verdict: 用户本轮选择暂不游玩；保留为待跑测 TODO，未判定通过或失败。
-
 ### MQA-GODOT-MAW-BAT-SLICE — 大嘴蝠、浅水与 N2 实战纵切
 
 - Status: `pending`
@@ -300,18 +276,6 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 - Automated evidence: Formal Main-scene input proves that each exit targets only an immediate successor, locked/non-successor nodes cannot be selected, and the transition commits once. Destination readability and accidental-click risk remain human-only.
 - User verdict: None; pending human acceptance.
 
-### MQA-GODOT-TILE-START-CAMP — Start Camp presentation and setup flow
-
-- Status: `pending`
-- Source: Restored Start Camp TileMap flow (`c08499c3`, `c1207f0a`)
-- Action: Start with an isolated empty save, click three candidates in order, test a repeated selection and a fourth candidate after the party is full, move the first selected leader, restart, then continue through starting-skill selection into the first node.
-- Expected: The UI clearly shows the three-member requirement, order, slots, leader, and exit lock reason; selection is incremental and cannot overflow; only the first selected leader moves; restart preserves selection but resets template cells; the exit unlocks at 3/3 and commits once.
-- Observe: StartCampView, actor Body/Shadow, campfire and exit, Party status, skill cards, first node, and Godot Output.
-- Preserve on failure: Screenshots of each setup page, click positions, selected order and skills, actor cells, save/backup copy, and the first Output error.
-- Save boundary: Each selection mutates PendingRunSetup; use an isolated save and preserve save/backup before continuing after a failure.
-- Automated evidence: Application covers incremental order, duplicate/full rejection, setup persistence and V11 round-trip; Godot tests cover the real actors, 10×10 TileMap, body/overlap hit targets, and exit structure. Readability, misclick risk, and movement feel remain manual.
-- User verdict: None; pending human acceptance.
-
 ### MQA-GODOT-START-FLOW — Automatic startup and recovery
 
 - Status: `pending`
@@ -347,19 +311,6 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 - Save boundary: Abandon, skill selection, and quit mutate the isolated Run; preserve a copy first.
 - Automated evidence: Setup transitions, persistence, PendingBattle checkpoint, and quit behavior have pure .NET coverage; menu readability and real restart remain manual.
 - User verdict: none.
-
-### MQA-GODOT-PAUSE-MENU — Esc Run lifecycle controls
-
-- Status: `pending`
-- Source: PR #4 main integration; `a501b359`
-- Reopen reason: The integrated Start Camp, Tile Adventure and battle flow intentionally replaces the legacy Home/Main Menu contract with Run-scoped `CONTINUE`, `OPTIONS`, `ABANDON RUN` and `SAVE AND QUIT` controls.
-- Action: In an isolated Run, press Esc from Start Camp, Tile Adventure and a PendingBattle page; exercise Continue and Options/Back, then separately test Abandon Run and Save and Quit followed by process restart.
-- Expected: The overlay covers the active page; only the current Run controls appear. Continue closes the overlay, Options returns safely, Abandon creates an Abandoned summary and routes to a fresh camp, while Save and Quit exits and resumes the same committed Encounter/Seed checkpoint after restart. No legacy Home or Main Menu action appears.
-- Observe: Esc overlay, active page title, Terminal Summary, resumed battle entry, `user://pure-run` files, CheatConsole and Godot Output.
-- Preserve on failure: Overlay/summary screenshots, exact Esc/menu sequence, Run seed/revision, checkpoint save/backup and the first Output error.
-- Save boundary: Continue and Options are read-only; Abandon and Save and Quit mutate the isolated Run. Preserve a copy before either destructive action.
-- Automated evidence: exact code HEAD `a501b359` passes the unified Godot verifier, 29/29 gameplay journeys and focused restart/quit production-input coverage. Overlay readability, input feel and real process restart remain human-only.
-- User verdict: Previous legacy-menu verdict is superseded by this changed Run lifecycle contract; current verdict is none.
 
 ### MQA-GODOT-TILE-ESCORT-DIFFICULTY — Lost villager escort readability and difficulty
 
@@ -573,6 +524,55 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 - User verdict: Passed in the latest user report.
 
 ## Deferred or Blocked
+
+### MQA-GODOT-TILE-START-CAMP — Start Camp presentation and setup flow
+
+- Status: `deferred`
+- Source: Restored Start Camp TileMap flow (`c08499c3`, `c1207f0a`)
+- Action: Start with an isolated empty save, click three candidates in order, test a repeated selection and a fourth candidate after the party is full, move the first selected leader, restart, then continue through starting-skill selection into the first node.
+- Expected: The UI clearly shows the three-member requirement, order, slots, leader, and exit lock reason; selection is incremental and cannot overflow; only the first selected leader moves; restart preserves selection but resets template cells; the exit unlocks at 3/3 and commits once.
+- Observe: StartCampView, actor Body/Shadow, campfire and exit, Party status, skill cards, first node, and Godot Output.
+- Preserve on failure: Screenshots of each setup page, click positions, selected order and skills, actor cells, save/backup copy, and the first Output error.
+- Save boundary: Each selection mutates PendingRunSetup; use an isolated save and preserve save/backup before continuing after a failure.
+- Automated evidence: Application covers incremental order, duplicate/full rejection, setup persistence and V11 round-trip; Godot tests cover the real actors, 10×10 TileMap, body/overlap hit targets, and exit structure. Readability, misclick risk, and movement feel remain manual.
+- User verdict: On 2026-09-17 the user explicitly chose to defer this manual gate and merge PR #4 immediately without treating it as passed.
+
+### MQA-GODOT-PAUSE-MENU — Esc Run lifecycle controls
+
+- Status: `deferred`
+- Source: PR #4 main integration; `a501b359`
+- Reopen reason: The integrated Start Camp, Tile Adventure and battle flow intentionally replaces the legacy Home/Main Menu contract with Run-scoped `CONTINUE`, `OPTIONS`, `ABANDON RUN` and `SAVE AND QUIT` controls.
+- Action: In an isolated Run, press Esc from Start Camp, Tile Adventure and a PendingBattle page; exercise Continue and Options/Back, then separately test Abandon Run and Save and Quit followed by process restart.
+- Expected: The overlay covers the active page; only the current Run controls appear. Continue closes the overlay, Options returns safely, Abandon creates an Abandoned summary and routes to a fresh camp, while Save and Quit exits and resumes the same committed Encounter/Seed checkpoint after restart. No legacy Home or Main Menu action appears.
+- Observe: Esc overlay, active page title, Terminal Summary, resumed battle entry, `user://pure-run` files, CheatConsole and Godot Output.
+- Preserve on failure: Overlay/summary screenshots, exact Esc/menu sequence, Run seed/revision, checkpoint save/backup and the first Output error.
+- Save boundary: Continue and Options are read-only; Abandon and Save and Quit mutate the isolated Run. Preserve a copy before either destructive action.
+- Automated evidence: exact code HEAD `a501b359` passes the unified Godot verifier, 29/29 gameplay journeys and focused restart/quit production-input coverage. Overlay readability, input feel and real process restart remain human-only.
+- User verdict: On 2026-09-17 the user explicitly chose to defer this manual gate and merge PR #4 immediately without treating it as passed.
+
+### MQA-GODOT-POET-RUNTIME — 诗人开局、技能表现与临时分身
+
+- Status: `deferred`
+- Source: 第五职业诗人、六套技能与临时分身功能实现
+- Action: 使用三个 disposable Run，在 Start Camp 确认五名候选均有独立站位；每次选择“诗人”与另外两人，并分别从剑仙、诗仙、酒仙起步。进入战斗后至少实际使用一次侠客行、剑雨、将进酒、行路难、月下独酌和山中与幽人对酌；观察冲锋/范围攻击、三次回合开始治疗、敏捷提升、自疗净化，以及按施法前朝向后退并在原地留下分身。
+- Expected: 候选和战斗 UI 显示“诗人”，第五候选不重叠或崩溃；已批准五红土松 Idle 在南/西使用 DR、北/东使用 UL，只有东/西镜像，正式颜色不受额外蓝色 tint 污染。缺失动作安全回退到相应方向 Idle，Death 暂用不镜像 DR；分身继承同一诗人身份但以半透明青色明显区分。技能按钮、目标范围、动作反馈、HP/MP/状态变化容易理解；后退和生成原子完成，敌人在合法直接攻击范围内优先攻击分身。
+- Observe: Start Camp 候选区、Battle action bar、棋盘单位/状态层、HP/MP、事件日志、CheatConsole 与 Godot Output。
+- Preserve on failure: Run seed、起始分支、技能等级、双方格子与朝向、施法前后 HP/MP/状态、截图或短视频、battle checkpoint/save 副本和完整 Output。
+- Save boundary: 选择队伍、成长和战斗会修改当前 Run；只使用 disposable/隔离存档，不覆盖生产存档。
+- Automated evidence: integrated code HEAD `a501b359` 的统一 Godot verifier 已通过：Core 209/209、Application 206/206、Poet/Initiative/Actor GdUnit、29/29 Gameplay journeys、ResourceSaver 幂等性、artwork 与 Godot tooling 全绿。运行时 DR/UL 副本哈希绑定获批母图，自动化断言白色 tint、方向回退、Death 占位、分身清理、技能公式与硬 AI 分身优先；动作可读性、半透明分身辨识度和职业体验仍需人工判断。
+- User verdict: On 2026-09-17 the user explicitly chose to defer this manual gate and merge PR #4 immediately without treating it as passed.
+
+### MQA-GODOT-INITIATIVE-HUD — 动态先攻头像条、Hover 联动与输入锁
+
+- Status: `deferred`
+- Source: Core 权威动态先攻与右上角圆形头像行动条实现
+- Action: 在 disposable battle 中依次完成普通行动、施放行路难改变未行动单位敏捷、召唤或替换召唤物、击杀一个单位，并让一个带不可行动状态的单位轮到行动；悬停友方和敌方头像，再把队列扩展到十个以上单位观察省略号。
+- Expected: 右上条只显示当前与未行动单位，当前头像为金框、友敌底色明确、相同先攻保持玩家方优先；已行动头像消失，未行动头像按新先攻平滑重排，召唤物按当前先攻插入。队列最多显示九个头像和不可交互的“…”；隐藏队列变化时省略号脉冲。Hover 显示白框，并在棋盘对应单位上显示阵营色轮廓及 HP/MP；约 0.22 秒 Tween 期间点击不会重复提交，结束后输入立即恢复。不可行动单位自动跳过但只消费一次 EndTurn/状态时长。
+- Observe: 右上 initiative strip、Round 标签、头像框与省略号、棋盘单位轮廓/HP/MP、action bar、事件日志、CheatConsole 和 Godot Output。
+- Preserve on failure: 短视频、Round、完整可见/隐藏队列、各单位先攻与 acted 状态、悬停单位 ID、点击时刻、事件日志、Run seed/checkpoint 和 Output。
+- Save boundary: 战斗行动和召唤会修改 disposable Run；悬停本身只读，失败时先复制 checkpoint 再继续。
+- Automated evidence: integrated code HEAD `a501b359` 的统一 Godot verifier 已通过；Core/Application 覆盖逐轮重排、未行动队列同步、召唤插入/替换、昏迷自动 EndTurn 和无重复行动；Godot tests 覆盖九头像省略、0.22 秒过渡、五候选和生产输入锁，Gameplay journeys 29/29 通过。动画手感、Hover 对应关系、视觉层级和高速连续操作仍需人工验收。
+- User verdict: On 2026-09-17 the user explicitly chose to defer this manual gate and merge PR #4 immediately without treating it as passed.
 
 ### MQA-GODOT-POET-DECOY-ART — 青川犬正式分身美术
 

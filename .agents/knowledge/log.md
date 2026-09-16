@@ -1,7 +1,8 @@
 # Tactics Knowledge Update Log
 
 ## 2026-09-17
-* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:4b2187c33e4c9cd46f0ccdb561dbe786c955886b1caa807591419ff8d6a4b7ec`。
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:eaeea37fce4b70429612b2957ee304b52d47594aa28f1fe39345d5aa85e4593a`。
+* **Update**: 用户明确选择将 PR #4 的 Start Camp、Esc Run 生命周期、诗人运行时与动态先攻四项人工门禁记为 deferred（不是 passed），不运行高耗时 GitHub CI，并立即以 merge commit 合入。
 * **Sync**: `project-architecture` 已同步到来源指纹 `sha256:068bccc6c1e4e4a98f059c2c106e6837c91673b01319107fb2aacf4eb5755c83`。
 * **Sync**: `okf-maintenance` 已同步到来源指纹 `sha256:6fe1ef2aac5e0f0dac5479e110f0a562dd23c81d115b17adb637f54a2e5fdaa8`。
 * **Sync**: `godot-agent-workflow` 已同步到来源指纹 `sha256:d803273a4fcef4df0c2d3f13258dae6388dc17d967d451176e5e44a0c79e0eb9`。
