@@ -16,6 +16,7 @@ import os
 import shutil
 import sys
 import tempfile
+import time
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -131,6 +132,17 @@ def pixel_data(image: Image.Image) -> list[tuple[int, int, int, int]]:
 
 def stable_id(prefix: str, payload: Any, length: int = 16) -> str:
     return f"{prefix}-{hashlib.sha256(canonical_bytes(payload)).hexdigest()[:length]}"
+
+
+def _replace_with_retry(source: Path, destination: Path) -> None:
+    for attempt in range(6):
+        try:
+            os.replace(source, destination)
+            return
+        except PermissionError:
+            if attempt == 5:
+                raise
+            time.sleep(0.025 * (attempt + 1))
 
 
 def write_json_idempotent(path: Path, value: Any, immutable: bool = False) -> bool:
@@ -3850,7 +3862,7 @@ def remediate_exact_chroma_artifacts(store: Store, args: argparse.Namespace) -> 
     write_json_idempotent(receipt_path, receipt, immutable=True)
     try:
         for path, temporary, entry, after_sha, _original_bytes in staged:
-            os.replace(temporary, path)
+            _replace_with_retry(temporary, path)
             entry["sha256"] = after_sha
         write_json_idempotent(manifest_path, manifest)
     except Exception as exc:
@@ -3858,10 +3870,10 @@ def remediate_exact_chroma_artifacts(store: Store, args: argparse.Namespace) -> 
             temporary.unlink(missing_ok=True)
             rollback = path.with_name(f".{path.name}.exact-chroma.rollback")
             rollback.write_bytes(original_bytes)
-            os.replace(rollback, path)
+            _replace_with_retry(rollback, path)
         manifest_rollback = manifest_path.with_name(f".{manifest_path.name}.exact-chroma.rollback")
         manifest_rollback.write_bytes(manifest_bytes)
-        os.replace(manifest_rollback, manifest_path)
+        _replace_with_retry(manifest_rollback, manifest_path)
         if not receipt_existed:
             receipt_path.unlink(missing_ok=True)
         raise PipelineError(f"exact chroma remediation transaction rolled back: {exc}") from exc

@@ -534,6 +534,13 @@ class ArtworkPipelineTests(unittest.TestCase):
                 path=[str(existing)], reviewer="cty41", reason="must not remove existing",
                 decided_at="2026-09-16T14:52:37+08:00"))
 
+    def test_replace_with_retry_tolerates_transient_windows_file_lock(self):
+        with mock.patch.object(pipeline.os, "replace", side_effect=[PermissionError("locked"), None]) as replace:
+            with mock.patch.object(pipeline.time, "sleep") as sleep:
+                pipeline._replace_with_retry(Path("source"), Path("destination"))
+        self.assertEqual(2, replace.call_count)
+        sleep.assert_called_once_with(0.025)
+
     def test_remediate_exact_chroma_artifacts_records_low_alpha_changes(self):
         candidate = self.png("Tools/artworks/equipment/candidates/item.png")
         with Image.open(candidate) as opened:
