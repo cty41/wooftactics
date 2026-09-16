@@ -40,6 +40,7 @@ description: "Use when generating, editing, chroma-keying, calibrating, reviewin
 | Attempt 公开来源补登记 | `sync-attempt-provenance` 仅同步 `Tools/artworks/pipeline/**` PNG，并沿用合同既有 rights；失败的旧 receipt 用 `invalidate-attempt-provenance-sync` 显式失效，不得删除或冒充成功 |
 | 装备风格防漂移 | 新装备使用 `create-equipment-contract` 绑定 v2 基础风格与品类锚点，正式生成后以 `prepare-equipment-candidate` 保真处理、`render-equipment-review` 固定对比，并由 cty41 写入 style verdict |
 | 公开许可变更 | `relicense-public-artifact`；仅允许 `cty41` 将哈希匹配的 approved `project-owned` 成图显式发布为 `CC-BY-4.0`，并生成不可变 receipt |
+| 清理缺失公开投影 | `prune-missing-public-provenance`；仅允许 `cty41` 移除已不存在的 `Tools/artworks/**` manifest 条目，并以不可变 receipt 保留被移除条目与原因；不得用于现存文件 |
 | 登记离线辅助图 | `register-supporting-artifact` 必须由 `cty41` 对当前文件作逐文件 `project-owned` rights 声明；不得复用无关 Approval、升级为 CC-BY 或作为运行时 Sprite |
 | 状态机严格门禁 | `python scripts/artwork_pipeline.py --root <repo> check --strict` |
 | 运行时视觉 QA | 使用 Godot 后台测试、生产输入注入或已有截图；不控制真实 Editor 窗口 |

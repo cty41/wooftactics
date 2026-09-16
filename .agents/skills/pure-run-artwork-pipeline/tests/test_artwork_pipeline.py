@@ -472,6 +472,35 @@ class ArtworkPipelineTests(unittest.TestCase):
         pipeline._validated_relicensed_paths(self.store, malformed_issues, {})
         self.assertEqual([f"license_receipt_invalid:{receipt_path.stem}"], malformed_issues)
 
+    def test_prune_missing_public_provenance_records_cty41_decision(self):
+        existing = self.png("Tools/artworks/approved/existing.png")
+        manifest_path = self.root / "Tools/public-release/asset-provenance.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest["entries"].extend([
+            {"path": "Tools/artworks/tmp/missing.png", "sha256": "1" * 64,
+             "status": "approved", "rightsHolder": "cty41", "license": "CC-BY-4.0", "provenance": "test"},
+            {"path": self.store.relative(existing), "sha256": pipeline.sha256_file(existing),
+             "status": "approved", "rightsHolder": "cty41", "license": "CC-BY-4.0", "provenance": "test"},
+        ])
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+        args = self.ns(path=["Tools/artworks/tmp/missing.png"], reviewer="cty41",
+                       reason="remove stale public manifest projection", decided_at="2026-09-16T14:52:37+08:00")
+
+        receipt = pipeline.prune_missing_public_provenance(self.store, args)
+
+        updated = json.loads(manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual([self.store.relative(existing)], [entry["path"] for entry in updated["entries"]])
+        self.assertEqual("Tools/artworks/tmp/missing.png", receipt["removedEntries"][0]["path"])
+        self.assertTrue(self.store.record("provenance-prunes", receipt["provenancePruneId"]).is_file())
+        with self.assertRaisesRegex(pipeline.PipelineError, "requires reviewer cty41"):
+            pipeline.prune_missing_public_provenance(self.store, self.ns(
+                path=["Tools/artworks/tmp/other.png"], reviewer="agent", reason="unauthorized",
+                decided_at="2026-09-16T14:52:37+08:00"))
+        with self.assertRaisesRegex(pipeline.PipelineError, "existing artifact"):
+            pipeline.prune_missing_public_provenance(self.store, self.ns(
+                path=[str(existing)], reviewer="cty41", reason="must not remove existing",
+                decided_at="2026-09-16T14:52:37+08:00"))
+
     def test_remediate_exact_chroma_artifacts_records_low_alpha_changes(self):
         candidate = self.png("Tools/artworks/equipment/candidates/item.png")
         with Image.open(candidate) as opened:

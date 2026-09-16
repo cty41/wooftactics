@@ -15427,150 +15427,6 @@
       "provenance": "project-owned-supporting-derived"
     },
     {
-      "path": "Tools/artworks/pure_run/equipment/tmp/review-panels/01_tile.png",
-      "sha256": "a9d6ae300419ba3094065231f4b43220f5a3479f84a20b5072ce1ad6fea2132e",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
-      "path": "Tools/artworks/pure_run/equipment/tmp/review-panels/01_ui.png",
-      "sha256": "420647bcf7a1effc7248350637de329e328dfd5c91120d68267340cfb9177d7b",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
-      "path": "Tools/artworks/pure_run/equipment/tmp/review-panels/02_tile.png",
-      "sha256": "6a1408cb77de8424ba096956a1a80ffa8a306983f0815f6db41345035d0fb204",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
-      "path": "Tools/artworks/pure_run/equipment/tmp/review-panels/02_ui.png",
-      "sha256": "2f4a3305b463db9a2d7e0db248291a15d2932c6a1e12b432b91dd1a62fb21699",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
-      "path": "Tools/artworks/pure_run/equipment/tmp/review-panels/03_tile.png",
-      "sha256": "6161de5dcfb1de5e56669607755d2a36d457af5a129df50b4f287782d5d8687d",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
-      "path": "Tools/artworks/pure_run/equipment/tmp/review-panels/03_ui.png",
-      "sha256": "179ba7842146af6eb456d1d94fd5a608e96c1655e4c8854f188ee9013fe61b8f",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
-      "path": "Tools/artworks/pure_run/equipment/tmp/review-panels/04_tile.png",
-      "sha256": "c3bb2d4465669669c001dd43fbabac1301b64db1a3a7b49cd1fbc647538b5198",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
-      "path": "Tools/artworks/pure_run/equipment/tmp/review-panels/04_ui.png",
-      "sha256": "ddeed5d9f3849151cb9beeb086c2804f6037b5e25096378866a6561a08f8befa",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
-      "path": "Tools/artworks/pure_run/equipment/tmp/review-panels/05_tile.png",
-      "sha256": "0882f2760b54481418b50150f67d1ed9df97682c136276c0be7c8cf2a1065d4c",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
-      "path": "Tools/artworks/pure_run/equipment/tmp/review-panels/05_ui.png",
-      "sha256": "3c8c18fc6628e86c30ee7a150180d9eb1a066e92b5392744d71e37fc8436b8a0",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
-      "path": "Tools/artworks/pure_run/equipment/tmp/review-panels/06_tile.png",
-      "sha256": "0f57dc37ec354762bb0746915cedfe7ad3a5ae03350a2efe83965ce2efed4571",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
-      "path": "Tools/artworks/pure_run/equipment/tmp/review-panels/06_ui.png",
-      "sha256": "7bcd58e1d5e3dc0b11c2dbc56cfdfccfdc0ba4eff699c6fd2c073cae96eca265",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
-      "path": "Tools/artworks/pure_run/equipment/tmp/review-panels/pure_run_equipment_amazon_javelin_v01_128.png",
-      "sha256": "b2352aa5d207111d17a558b0afd9ff75014e1430ca12aa4c79367ca27c803664",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
-      "path": "Tools/artworks/pure_run/equipment/tmp/review-panels/pure_run_equipment_amazon_round_shield_v01_128.png",
-      "sha256": "d9902f0bf402ca29344115a9d5d6c9c84164a1d2ab9499bc0ad79eb4157f29b0",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
-      "path": "Tools/artworks/pure_run/equipment/tmp/review-panels/pure_run_equipment_demonbound_bound_sword_v01_128.png",
-      "sha256": "8c6cbcc21559f9d221fd4e891e83c8e8de9ac1193dde84b83a6ea7f50179af42",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
-      "path": "Tools/artworks/pure_run/equipment/tmp/review-panels/pure_run_equipment_mage_oak_staff_v01_128.png",
-      "sha256": "100b31731fdb7c5bcdfcc25106cbd346ea37edbd33324f61462e6354a2cd2a68",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
-      "path": "Tools/artworks/pure_run/equipment/tmp/review-panels/pure_run_equipment_necromancer_dagger_v01_128.png",
-      "sha256": "a5458546ee1794da6503dcdd3cef3f0b5a6c0a0a78277fbce049f7ebe181e506",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
-      "path": "Tools/artworks/pure_run/equipment/tmp/review-panels/pure_run_equipment_plain_iron_sword_v01_128.png",
-      "sha256": "006c9e50683fb8eff891832a9a041b9e85c75e860b741d277d8477403ad369dd",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
       "path": "Tools/artworks/pure_run/equipment/reviews/pure_run_equipment_amazon_javelin_v01_size_comparison.png",
       "sha256": "e1fdae853a211f8c85b71ff04d5a17d6e6ea7c2762fb43d848bb04ff5ba728cd",
       "status": "approved",
@@ -15991,7 +15847,7 @@
       "sha256": "2ca1328677a5c83cc3e79bb9c0165c3814ae332ea981cb3a4984daf9ce85f06e",
       "status": "approved",
       "rightsHolder": "cty41",
-      "license": "project-owned",
+      "license": "CC-BY-4.0",
       "provenance": "project-owned-gpt-generated"
     },
     {
@@ -15999,7 +15855,7 @@
       "sha256": "3f0484620a4ac8044012494c7841cc565545da9bd55bb008b472e9459903604d",
       "status": "approved",
       "rightsHolder": "cty41",
-      "license": "project-owned",
+      "license": "CC-BY-4.0",
       "provenance": "project-owned-gpt-generated"
     },
     {
@@ -16015,7 +15871,7 @@
       "sha256": "d5e14d2259d2af05a5fe5c00c275ed245ae5b543d0507ab031a23919363a2b24",
       "status": "approved",
       "rightsHolder": "cty41",
-      "license": "project-owned",
+      "license": "CC-BY-4.0",
       "provenance": "project-owned-gpt-generated"
     },
     {
@@ -16023,7 +15879,7 @@
       "sha256": "804c3c427a1ebc06bb5dcd5db9cf812f949232825fc5e377c2b295cf9d3e2445",
       "status": "approved",
       "rightsHolder": "cty41",
-      "license": "project-owned",
+      "license": "CC-BY-4.0",
       "provenance": "project-owned-gpt-generated"
     },
     {
@@ -16039,7 +15895,7 @@
       "sha256": "3d0c3eb8fc37979f6a9f97483df54de1186e3b349bbc89e75f1ade896e003ea8",
       "status": "approved",
       "rightsHolder": "cty41",
-      "license": "project-owned",
+      "license": "CC-BY-4.0",
       "provenance": "project-owned-gpt-generated"
     },
     {
@@ -16047,7 +15903,7 @@
       "sha256": "b28756d35f2e0bb2e22430037c2aa6893028a0a8bbc69120e2d386a0a4a994f8",
       "status": "approved",
       "rightsHolder": "cty41",
-      "license": "project-owned",
+      "license": "CC-BY-4.0",
       "provenance": "project-owned-gpt-generated"
     },
     {
@@ -16063,7 +15919,7 @@
       "sha256": "7b5854a12e2515cabab1f8e263e444e2407d2e77fcfd7c808fb4314b1e837123",
       "status": "approved",
       "rightsHolder": "cty41",
-      "license": "project-owned",
+      "license": "CC-BY-4.0",
       "provenance": "project-owned-gpt-generated"
     },
     {
@@ -16071,7 +15927,7 @@
       "sha256": "7c5793e0a855ac9e0cd609371daa5a09cbe4755b26ce63757a8038d022dd1834",
       "status": "approved",
       "rightsHolder": "cty41",
-      "license": "project-owned",
+      "license": "CC-BY-4.0",
       "provenance": "project-owned-gpt-generated"
     },
     {
@@ -16087,7 +15943,7 @@
       "sha256": "827056833326fe3e41a36f19a3ca9c30ad51dc8362ecb09a17cc9e5f36b8e563",
       "status": "approved",
       "rightsHolder": "cty41",
-      "license": "project-owned",
+      "license": "CC-BY-4.0",
       "provenance": "project-owned-gpt-generated"
     },
     {
@@ -16095,7 +15951,7 @@
       "sha256": "376e315b82fdeef73637903426aabaa18e1e5e168cb02b210a1397dda1cd28b3",
       "status": "approved",
       "rightsHolder": "cty41",
-      "license": "project-owned",
+      "license": "CC-BY-4.0",
       "provenance": "project-owned-gpt-generated"
     },
     {
@@ -16111,7 +15967,7 @@
       "sha256": "4ca459c8a4ba3e40344707af10648218e9e34feeb022c7d453352fdbe4ded942",
       "status": "approved",
       "rightsHolder": "cty41",
-      "license": "project-owned",
+      "license": "CC-BY-4.0",
       "provenance": "project-owned-gpt-generated"
     },
     {
@@ -16119,7 +15975,7 @@
       "sha256": "0489d52554c6de949e9ba35344f8f051e4e4bbc76c8e5694c7b62b23d103741f",
       "status": "approved",
       "rightsHolder": "cty41",
-      "license": "project-owned",
+      "license": "CC-BY-4.0",
       "provenance": "project-owned-gpt-generated"
     },
     {
@@ -16847,7 +16703,7 @@
       "sha256": "bfa2dd69f85136690106ebb1998845ff20fdc589417012167e4988861c722b3b",
       "status": "approved",
       "rightsHolder": "cty41",
-      "license": "project-owned",
+      "license": "CC-BY-4.0",
       "provenance": "derived-from-imagegen-reviewed"
     },
     {
@@ -16855,7 +16711,7 @@
       "sha256": "6aa74e4e7c6497418843502eadfd19fc3b022763afe5e992511dcaf8f5433dad",
       "status": "approved",
       "rightsHolder": "cty41",
-      "license": "project-owned",
+      "license": "CC-BY-4.0",
       "provenance": "derived-from-imagegen-reviewed"
     },
     {
@@ -17223,7 +17079,7 @@
       "sha256": "ee67ec9e8445a37d26a2db9e434402ef53861dfd82c83723f2681bf70dab0f56",
       "status": "approved",
       "rightsHolder": "cty41",
-      "license": "project-owned",
+      "license": "CC-BY-4.0",
       "provenance": "imagegen-user-reviewed"
     },
     {
@@ -17231,7 +17087,7 @@
       "sha256": "bb88e4a698f19147769ed2e659610af8f5fea8277ea1c72bcd01e5d3f2434008",
       "status": "approved",
       "rightsHolder": "cty41",
-      "license": "project-owned",
+      "license": "CC-BY-4.0",
       "provenance": "imagegen-user-reviewed"
     },
     {
@@ -17315,22 +17171,6 @@
       "provenance": "project-owned-artwork-review"
     },
     {
-      "path": "Tools/artworks/pure_run/equipment/tmp/pure_run_equipment_leather_boots_v05_alpha_fixed.png",
-      "sha256": "a8b3f9741e5cd0be7989c55c9be48296e128fcbc370b0544f40d426f8feee7cc",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
-      "path": "Tools/artworks/pure_run/equipment/tmp/pure_run_equipment_leather_boots_v05_alpha_fixed_128.png",
-      "sha256": "e0b9ec42d8b819fd7a4f5977bbc51f3f7dad0a7c1222200b49278dc30b22e9e7",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
       "path": "Tools/artworks/pure_run/equipment/candidates/pure_run_equipment_leather_boots_v05_alpha_fixed.png",
       "sha256": "cdff834d777578766e5b85297aee2060f4a682c0140eb3ef5e260f3a3bd6ec52",
       "status": "approved",
@@ -17359,7 +17199,7 @@
       "sha256": "cdff834d777578766e5b85297aee2060f4a682c0140eb3ef5e260f3a3bd6ec52",
       "status": "approved",
       "rightsHolder": "cty41",
-      "license": "project-owned",
+      "license": "CC-BY-4.0",
       "provenance": "imagegen-user-reviewed"
     },
     {
@@ -17367,7 +17207,7 @@
       "sha256": "22d08bf7c21fa0e2989f845173c42d31d4a5ecde43b6ba219bbdb9c043a367d0",
       "status": "approved",
       "rightsHolder": "cty41",
-      "license": "project-owned",
+      "license": "CC-BY-4.0",
       "provenance": "imagegen-user-reviewed"
     },
     {
@@ -17411,22 +17251,6 @@
       "provenance": "project-owned-artwork-review"
     },
     {
-      "path": "Tools/artworks/pure_run/equipment/tmp/pure_run_equipment_shadow_cloak_v04_alpha_fixed.png",
-      "sha256": "e4c9ca7942dbaaec6153f0fe8157da66e4b6f7e6b29676baebaaae53d0eef7a1",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
-      "path": "Tools/artworks/pure_run/equipment/tmp/pure_run_equipment_shadow_cloak_v04_alpha_fixed_128.png",
-      "sha256": "efeddf897407ee457505bfa9896f4c57936fa5e2d3e16f76203fb8791fe02cae",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
       "path": "Tools/artworks/pure_run/equipment/candidates/pure_run_equipment_shadow_cloak_v04_alpha_fixed.png",
       "sha256": "e254e333a2b7941c405e99a6104b989fc9be0683853b9929e31addd02286c787",
       "status": "approved",
@@ -17455,7 +17279,7 @@
       "sha256": "e254e333a2b7941c405e99a6104b989fc9be0683853b9929e31addd02286c787",
       "status": "approved",
       "rightsHolder": "cty41",
-      "license": "project-owned",
+      "license": "CC-BY-4.0",
       "provenance": "imagegen-user-reviewed"
     },
     {
@@ -17463,7 +17287,7 @@
       "sha256": "a530895118e60e69c2c00f66da8155f89068ab1a7b18a74af217ad681f0093c1",
       "status": "approved",
       "rightsHolder": "cty41",
-      "license": "project-owned",
+      "license": "CC-BY-4.0",
       "provenance": "imagegen-user-reviewed"
     },
     {
@@ -17499,22 +17323,6 @@
       "provenance": "project-owned-supporting-derived"
     },
     {
-      "path": "Tools/artworks/pure_run/equipment/tmp/pure_run_equipment_wizard_hat_v04_alpha_fixed.png",
-      "sha256": "5731c095a4f788c69d10baa79540a6fa2944f75edf59574e18af3828e0fbe98d",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
-      "path": "Tools/artworks/pure_run/equipment/tmp/pure_run_equipment_wizard_hat_v04_alpha_fixed_128.png",
-      "sha256": "51cd2cb5aac10ae18380ef95b91554b162f2ab76d111594ca18f76844e8cc6d7",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
       "path": "Tools/artworks/pure_run/equipment/candidates/pure_run_equipment_wizard_hat_v04_alpha_fixed.png",
       "sha256": "752963c4df58947c87c21d754e65aa6f16bead35a69e0e05a9d9f74022f0c8a7",
       "status": "approved",
@@ -17543,7 +17351,7 @@
       "sha256": "752963c4df58947c87c21d754e65aa6f16bead35a69e0e05a9d9f74022f0c8a7",
       "status": "approved",
       "rightsHolder": "cty41",
-      "license": "project-owned",
+      "license": "CC-BY-4.0",
       "provenance": "imagegen-user-reviewed"
     },
     {
@@ -17551,7 +17359,7 @@
       "sha256": "495bfaef9ac7b0785115541149ca8a1ff6b3a6f25a181d0a874fb1fb65ad0c4e",
       "status": "approved",
       "rightsHolder": "cty41",
-      "license": "project-owned",
+      "license": "CC-BY-4.0",
       "provenance": "imagegen-user-reviewed"
     },
     {
@@ -20701,14 +20509,6 @@
     {
       "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v09/base-character-tilemap-compare.png",
       "sha256": "43dfe2cbbc22bcd37b36203eeefeddc538f8097820f3837dd0095e8b6b10612e",
-      "status": "approved",
-      "rightsHolder": "cty41",
-      "license": "CC-BY-4.0",
-      "provenance": "project-owned-supporting-derived"
-    },
-    {
-      "path": "Tools/artworks/pure_run/art_direction/reviews/poet_idle_dr_v09/amazon-poet-tilemap-compare.png",
-      "sha256": "086b8434ea9206ab6d369f48e3af1f6a6404f0d27619bd5225d8b3f8967419d5",
       "status": "approved",
       "rightsHolder": "cty41",
       "license": "CC-BY-4.0",
@@ -25865,6 +25665,14 @@
       "rightsHolder": "MaLiang contributors",
       "license": "MIT",
       "provenance": "vendored-maliang-example@00d772ffe57c610c3217b8294d6b2794df175ca2"
+    },
+    {
+      "path": "Tools/artworks/pure_run/equipment/concepts/pure_run_equipment_iron_helmet_v04_chroma_source.png",
+      "sha256": "b336def55fce06c29bd94b1e2e486e7bdc7fb99d2c702777659d408d442555dd",
+      "status": "approved",
+      "rightsHolder": "cty41",
+      "license": "CC-BY-4.0",
+      "provenance": "cty41-direct-supporting-artifact-declaration"
     }
   ]
 }

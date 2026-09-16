@@ -3902,6 +3902,39 @@ def relicense_public_artifacts(store: Store, args: argparse.Namespace) -> dict[s
     return receipt
 
 
+def prune_missing_public_provenance(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    _iso_timestamp(args.decided_at, "--decided-at")
+    if args.reviewer != "cty41":
+        raise PipelineError("public provenance pruning requires reviewer cty41")
+    manifest_path = store.root / "Tools/public-release/asset-provenance.json"
+    manifest = load_json(manifest_path)
+    by_path = {entry["path"]: entry for entry in manifest["entries"]}
+    removed: list[dict[str, Any]] = []
+    for value in sorted(set(args.path)):
+        rel = store.relative(value)
+        if not rel.startswith("Tools/artworks/"):
+            raise PipelineError(f"only Tools/artworks provenance may be pruned: {rel}")
+        if store.absolute(rel).exists():
+            raise PipelineError(f"cannot prune provenance for an existing artifact: {rel}")
+        entry = by_path.get(rel)
+        if entry is None:
+            raise PipelineError(f"provenance entry is missing: {rel}")
+        removed.append(dict(entry))
+    payload = {
+        "removedEntries": removed,
+        "reviewer": args.reviewer,
+        "reason": args.reason,
+        "decidedAt": args.decided_at,
+    }
+    receipt_id = stable_id("public-provenance-prune", payload)
+    receipt = {"schemaVersion": 1, "provenancePruneId": receipt_id, **payload}
+    write_json_idempotent(store.record("provenance-prunes", receipt_id), receipt, immutable=True)
+    removed_paths = {entry["path"] for entry in removed}
+    manifest["entries"] = [entry for entry in manifest["entries"] if entry["path"] not in removed_paths]
+    write_json_idempotent(manifest_path, manifest)
+    return receipt
+
+
 def _iso_timestamp(value: str, option: str) -> None:
     if not isinstance(value, str):
         raise PipelineError(f"{option} must be an ISO-8601 timestamp")
@@ -6926,6 +6959,10 @@ def build_parser() -> argparse.ArgumentParser:
     relicense_p.add_argument("--to-license", default="CC-BY-4.0")
     relicense_p.add_argument("--reviewer", required=True); relicense_p.add_argument("--reason", required=True)
     relicense_p.add_argument("--decided-at", required=True)
+    prune_provenance_p = commands.add_parser("prune-missing-public-provenance")
+    prune_provenance_p.add_argument("--path", action="append", required=True)
+    prune_provenance_p.add_argument("--reviewer", required=True); prune_provenance_p.add_argument("--reason", required=True)
+    prune_provenance_p.add_argument("--decided-at", required=True)
     adopt_p = commands.add_parser("adopt-reviewed-sprite")
     adopt_p.add_argument("--contract-id", required=True); adopt_p.add_argument("--source", required=True)
     adopt_p.add_argument("--candidate", required=True); adopt_p.add_argument("--preview", required=True)
@@ -7021,6 +7058,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "invalidate-attempt-provenance-sync": invalidate_attempt_provenance_sync,
         "remediate-exact-chroma": remediate_exact_chroma_artifacts,
         "relicense-public-artifact": relicense_public_artifacts,
+        "prune-missing-public-provenance": prune_missing_public_provenance,
         "adopt-reviewed-sprite": adopt_reviewed_sprite,
         "recontract-reviewed-attempt": recontract_reviewed_attempt,
         "migrate-component": migrate_component, "derive-component": derive_component,
