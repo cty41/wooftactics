@@ -98,6 +98,41 @@ class WindowsRcPipelineTests(unittest.TestCase):
             ).stdout
             self.assertEqual("", status)
 
+    def test_rc_source_rejects_assume_unchanged_worktree_bytes(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = pathlib.Path(temp)
+            source = root / "source"
+            destination = root / "stage"
+            (source / "godot").mkdir(parents=True)
+            (source / "Tools" / "public-release").mkdir(parents=True)
+            project = source / "godot" / "project.godot"
+            project.write_text("[application]\n", encoding="utf-8")
+            (source / "Tactics.Godot.slnx").write_text("<Solution />\n", encoding="utf-8")
+            (source / "Tools" / "public-release" / "validate_public_candidate.py").write_text(
+                "raise SystemExit(0)\n", encoding="utf-8"
+            )
+            subprocess.run(["git", "init", "-q"], cwd=source, check=True)
+            subprocess.run(["git", "config", "user.name", "test"], cwd=source, check=True)
+            subprocess.run(["git", "config", "user.email", "test@invalid"], cwd=source, check=True)
+            subprocess.run(["git", "add", "."], cwd=source, check=True)
+            subprocess.run(["git", "commit", "-qm", "fixture"], cwd=source, check=True)
+            subprocess.run(["git", "update-index", "--assume-unchanged", "godot/project.godot"],
+                           cwd=source, check=True)
+            project.write_text("[application]\nconfig/name=\"tampered\"\n", encoding="utf-8")
+            status = subprocess.run(
+                ["git", "status", "--porcelain=v1", "--untracked-files=no"], cwd=source,
+                check=True, text=True, stdout=subprocess.PIPE,
+            ).stdout
+            self.assertEqual("", status)
+
+            result = run_pwsh(
+                TOOLS / "New-GodotOwnedRcSource.ps1", "-SourceRoot", str(source),
+                "-DestinationRoot", str(destination),
+            )
+
+            self.assertNotEqual(0, result.returncode)
+            self.assertIn("differs from its pinned Git object", result.stdout)
+
     def test_rc_source_materializes_only_the_pinned_clean_submodule(self):
         workflow = (REPO / ".github" / "workflows" / "godot-windows-build.yml").read_text(encoding="utf-8")
         self.assertIn("submodules: recursive", workflow)

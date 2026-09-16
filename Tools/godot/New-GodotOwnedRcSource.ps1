@@ -33,7 +33,7 @@ $trackedEntries = @(git -C $source ls-files --stage)
 if ($LASTEXITCODE -ne 0 -or $trackedEntries.Count -eq 0) {
     throw 'Unable to enumerate tracked source files.'
 }
-$trackedFiles = [Collections.Generic.List[string]]::new()
+$trackedFiles = [Collections.Generic.List[object]]::new()
 $gitlinks = [Collections.Generic.List[object]]::new()
 foreach ($entry in $trackedEntries) {
     if ($entry -notmatch '^(?<mode>\d{6})\s+(?<object>[0-9a-f]+)\s+\d+\t(?<path>.+)$') {
@@ -42,7 +42,12 @@ foreach ($entry in $trackedEntries) {
     if ($Matches.mode -eq '160000') {
         $gitlinks.Add([ordered]@{ path = $Matches.path; commit = $Matches.object })
     } else {
-        $trackedFiles.Add($Matches.path)
+        $trackedFiles.Add([ordered]@{
+            path = $Matches.path
+            repositoryRoot = $source
+            repositoryPath = $Matches.path
+            object = $Matches.object
+        })
     }
 }
 foreach ($gitlink in $gitlinks) {
@@ -59,12 +64,21 @@ foreach ($gitlink in $gitlinks) {
     if ($LASTEXITCODE -ne 0 -or $submoduleStatus.Count -ne 0) {
         throw "Tracked submodule has modified files: $gitlinkPath"
     }
-    $submoduleFiles = @(git -C $submoduleRoot ls-files)
+    $submoduleFiles = @(git -C $submoduleRoot ls-files --stage)
     if ($LASTEXITCODE -ne 0 -or $submoduleFiles.Count -eq 0) {
         throw "Unable to enumerate tracked submodule files: $gitlinkPath"
     }
-    foreach ($submoduleFile in $submoduleFiles) {
-        $trackedFiles.Add("$gitlinkPath/$submoduleFile")
+    foreach ($submoduleEntry in $submoduleFiles) {
+        if ($submoduleEntry -notmatch '^(?<mode>\d{6})\s+(?<object>[0-9a-f]+)\s+\d+\t(?<path>.+)$' -or
+            $Matches.mode -eq '160000') {
+            throw "Unable to parse tracked submodule entry: $gitlinkPath/$submoduleEntry"
+        }
+        $trackedFiles.Add([ordered]@{
+            path = "$gitlinkPath/$($Matches.path)"
+            repositoryRoot = $submoduleRoot
+            repositoryPath = $Matches.path
+            object = $Matches.object
+        })
     }
 }
 python (Join-Path $source 'Tools/public-release/validate_public_candidate.py') --root $source --candidate
@@ -74,7 +88,8 @@ if ($LASTEXITCODE -ne 0) {
 
 New-Item -ItemType Directory -Path $destination | Out-Null
 $copied = [Collections.Generic.List[object]]::new()
-foreach ($relativePath in $trackedFiles) {
+foreach ($trackedFile in $trackedFiles) {
+    $relativePath = [string]$trackedFile.path
     $normalized = $relativePath.Replace('\', '/')
     if ($excludedPrefixes | Where-Object { $normalized.StartsWith($_, [StringComparison]::OrdinalIgnoreCase) }) {
         continue
@@ -82,6 +97,10 @@ foreach ($relativePath in $trackedFiles) {
     $sourceFile = Join-Path $source $relativePath
     if (-not (Test-Path -LiteralPath $sourceFile -PathType Leaf)) {
         throw "Tracked source file is missing or not materialized: $relativePath"
+    }
+    $actualObject = (git -C ([string]$trackedFile.repositoryRoot) hash-object "--path=$([string]$trackedFile.repositoryPath)" -- $sourceFile).Trim()
+    if ($LASTEXITCODE -ne 0 -or $actualObject -ne [string]$trackedFile.object) {
+        throw "Tracked source file differs from its pinned Git object: $relativePath"
     }
     $destinationFile = Join-Path $destination $relativePath
     $parent = Split-Path -Parent $destinationFile
