@@ -30,7 +30,7 @@ Unity-only rules、skills、MCP 和工具的退役证据保存在 `Tools/migrati
 
 ## 共享 Agent 技能
 
-通用技能（`grill-me`、`grilling`、`brainstorming`、`make-dev-plan`、`plan-mode-plan-writer`、`project-doc-organization`、`skill-writing`）来自公共仓 `cty41/skills`（[github.com/cty41/skills](https://github.com/cty41/skills)，MIT），经其 `scripts/install-user.ps1` 全局安装到 `~/.agents/skills`（Windows junction / macOS-Linux symlink）。本机已安装；更新 = `git -C <skills-checkout> pull` + 重跑安装脚本。任何读取用户级技能根的工具（DSH、Codex、OpenCode、Claude）在所有项目中都能看到这些技能。
+通用技能（`grill-me`、`grilling`、`brainstorming`、`eli5`、`make-dev-plan`、`plan-mode-plan-writer`、`project-doc-organization`、`skill-writing`）来自公共仓 `cty41/skills`（[github.com/cty41/skills](https://github.com/cty41/skills)，MIT），经其 `scripts/install-user.ps1` 全局安装到 `~/.agents/skills`（Windows junction / macOS-Linux symlink）。本机已安装；更新 = `git -C <skills-checkout> pull` + 重跑安装脚本。任何读取用户级技能根的工具（DSH、Codex、OpenCode、Claude）在所有项目中都能看到这些技能。
 
 - **优先级**：项目本地 `.agents/skills/<技能名>` 覆盖用户级全局安装（DSH 发现顺序为 project-agents 先于 user-agents）。
 - **本地技能边界**：仅项目专属技能（`godot-*`、`gameplay-*`、`artworks-prompt-library`、`pure-run-artwork-pipeline`）与两个有意特化 —— `knowledge-maintenance`（完整 `Tools/okf` 工具链，替代全局 OKF-lite 版）、`manual-qa-handoff`（含 `agents/openai.yaml`，被 `Tools/agent-policy/validate_manual_qa_handoff.py` 硬引用）。
