@@ -3877,6 +3877,16 @@ def relicense_public_artifacts(store: Store, args: argparse.Namespace) -> dict[s
     manifest_path = store.root / "Tools/public-release/asset-provenance.json"
     manifest = load_json(manifest_path)
     by_path = {entry["path"]: entry for entry in manifest["entries"]}
+    reconcile = bool(getattr(args, "reconcile_existing_projection", False))
+    supporting_declarations: set[tuple[str, str]] = set()
+    if reconcile:
+        for declaration_path in sorted((store.pipeline / "supporting-artifacts").glob("*.json")):
+            declaration = load_json(declaration_path)
+            artifact = declaration.get("artifact", {})
+            rights = declaration.get("rights", {})
+            if (declaration.get("reviewer") == "cty41" and rights.get("rightsHolder") == "cty41"
+                    and rights.get("license") == "project-owned"):
+                supporting_declarations.add((artifact.get("path"), artifact.get("sha256")))
     artifacts: list[dict[str, str]] = []
     for value in sorted(set(args.path)):
         rel = store.relative(value, must_exist=True)
@@ -3889,7 +3899,15 @@ def relicense_public_artifacts(store: Store, args: argparse.Namespace) -> dict[s
         if entry.get("status") != "approved" or entry.get("rightsHolder") != "cty41":
             raise PipelineError(f"artifact is not approved project-owned work: {rel}")
         if entry.get("license") != args.from_license:
-            raise PipelineError(f"artifact is not currently licensed as {args.from_license}: {rel}")
+            if not reconcile or entry.get("license") != args.to_license:
+                raise PipelineError(f"artifact is not currently licensed as {args.from_license}: {rel}")
+            if (rel, digest) not in supporting_declarations:
+                raise PipelineError(f"existing public projection lacks a project-owned supporting declaration: {rel}")
+            for receipt_path in sorted((store.pipeline / "license-receipts").glob("*.json")):
+                existing = load_json(receipt_path)
+                if any(item.get("path") == rel and item.get("sha256") == digest
+                       for item in existing.get("artifacts", []) if isinstance(item, dict)):
+                    raise PipelineError(f"existing public projection is already covered by a license receipt: {rel}")
         artifacts.append({"path": rel, "sha256": digest})
     payload = {
         "artifacts": artifacts,
@@ -3899,6 +3917,8 @@ def relicense_public_artifacts(store: Store, args: argparse.Namespace) -> dict[s
         "reason": args.reason,
         "decidedAt": args.decided_at,
     }
+    if reconcile:
+        payload["reconcilesExistingProjection"] = True
     receipt_id = stable_id("public-artifact-license", payload)
     receipt = {"schemaVersion": 1, "licenseReceiptId": receipt_id, **payload}
     write_json_idempotent(store.record("license-receipts", receipt_id), receipt, immutable=True)
@@ -6969,6 +6989,7 @@ def build_parser() -> argparse.ArgumentParser:
     relicense_p.add_argument("--path", action="append", required=True)
     relicense_p.add_argument("--from-license", default="project-owned")
     relicense_p.add_argument("--to-license", default="CC-BY-4.0")
+    relicense_p.add_argument("--reconcile-existing-projection", action="store_true")
     relicense_p.add_argument("--reviewer", required=True); relicense_p.add_argument("--reason", required=True)
     relicense_p.add_argument("--decided-at", required=True)
     prune_provenance_p = commands.add_parser("prune-missing-public-provenance")

@@ -472,6 +472,39 @@ class ArtworkPipelineTests(unittest.TestCase):
         pipeline._validated_relicensed_paths(self.store, malformed_issues, {})
         self.assertEqual([f"license_receipt_invalid:{receipt_path.stem}"], malformed_issues)
 
+    def test_relicense_reconciles_only_declared_existing_projection(self):
+        asset = self.png("Tools/artworks/reviews/already-public.png")
+        digest = pipeline.sha256_file(asset)
+        manifest_path = self.root / "Tools/public-release/asset-provenance.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest["entries"].append({
+            "path": self.store.relative(asset), "sha256": digest, "status": "approved",
+            "rightsHolder": "cty41", "license": "CC-BY-4.0", "provenance": "project-owned-supporting-derived",
+        })
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+        declaration_payload = {
+            "artifact": {"path": self.store.relative(asset), "sha256": digest},
+            "role": "historical-review-only", "note": "cty41 declaration", "reviewer": "cty41",
+            "rights": {"rightsHolder": "cty41", "license": "project-owned",
+                       "provenance": "cty41-direct-supporting-artifact-declaration"},
+        }
+        declaration_id = pipeline.stable_id("supporting-artifact", declaration_payload)
+        pipeline.write_json_idempotent(self.store.record("supporting-artifacts", declaration_id),
+            {"schemaVersion": 3, "supportingArtifactId": declaration_id, **declaration_payload}, immutable=True)
+        args = self.ns(path=[str(asset)], from_license="project-owned", to_license="CC-BY-4.0",
+                       reconcile_existing_projection=True, reviewer="cty41",
+                       reason="reconcile explicitly authorized historical projection",
+                       decided_at="2026-09-16T16:00:00+08:00")
+
+        receipt = pipeline.relicense_public_artifacts(self.store, args)
+
+        self.assertTrue(receipt["reconcilesExistingProjection"])
+        issues = []
+        self.assertEqual({self.store.relative(asset)}, pipeline._validated_relicensed_paths(self.store, issues, {}))
+        self.assertEqual([], issues)
+        with self.assertRaisesRegex(pipeline.PipelineError, "already covered"):
+            pipeline.relicense_public_artifacts(self.store, args)
+
     def test_prune_missing_public_provenance_records_cty41_decision(self):
         existing = self.png("Tools/artworks/approved/existing.png")
         manifest_path = self.root / "Tools/public-release/asset-provenance.json"
