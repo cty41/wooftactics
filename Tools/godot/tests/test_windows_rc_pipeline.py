@@ -68,6 +68,7 @@ class WindowsRcPipelineTests(unittest.TestCase):
             subprocess.run(["git", "init", "-q"], cwd=source, check=True)
             subprocess.run(["git", "config", "user.name", "test"], cwd=source, check=True)
             subprocess.run(["git", "config", "user.email", "test@invalid"], cwd=source, check=True)
+            subprocess.run(["git", "config", "core.autocrlf", "false"], cwd=source, check=True)
             subprocess.run(["git", "add", "."], cwd=source, check=True)
             subprocess.run(["git", "commit", "-qm", "fixture"], cwd=source, check=True)
 
@@ -107,6 +108,7 @@ class WindowsRcPipelineTests(unittest.TestCase):
             (source / "Tools" / "public-release").mkdir(parents=True)
             project = source / "godot" / "project.godot"
             project.write_text("[application]\n", encoding="utf-8")
+            (source / ".gitattributes").write_text("* text eol=lf\n", encoding="utf-8")
             (source / "Tactics.Godot.slnx").write_text("<Solution />\n", encoding="utf-8")
             (source / "Tools" / "public-release" / "validate_public_candidate.py").write_text(
                 "raise SystemExit(0)\n", encoding="utf-8"
@@ -114,11 +116,12 @@ class WindowsRcPipelineTests(unittest.TestCase):
             subprocess.run(["git", "init", "-q"], cwd=source, check=True)
             subprocess.run(["git", "config", "user.name", "test"], cwd=source, check=True)
             subprocess.run(["git", "config", "user.email", "test@invalid"], cwd=source, check=True)
+            subprocess.run(["git", "config", "core.autocrlf", "false"], cwd=source, check=True)
             subprocess.run(["git", "add", "."], cwd=source, check=True)
             subprocess.run(["git", "commit", "-qm", "fixture"], cwd=source, check=True)
             subprocess.run(["git", "update-index", "--assume-unchanged", "godot/project.godot"],
                            cwd=source, check=True)
-            project.write_text("[application]\nconfig/name=\"tampered\"\n", encoding="utf-8")
+            project.write_bytes(b"[application]\r\n")
             status = subprocess.run(
                 ["git", "status", "--porcelain=v1", "--untracked-files=no"], cwd=source,
                 check=True, text=True, stdout=subprocess.PIPE,
@@ -147,6 +150,7 @@ class WindowsRcPipelineTests(unittest.TestCase):
                 subprocess.run(["git", "init", "-q"], cwd=repository, check=True)
                 subprocess.run(["git", "config", "user.name", "test"], cwd=repository, check=True)
                 subprocess.run(["git", "config", "user.email", "test@invalid"], cwd=repository, check=True)
+                subprocess.run(["git", "config", "core.autocrlf", "false"], cwd=repository, check=True)
             (submodule / "payload.txt").write_text("pinned payload", encoding="utf-8")
             subprocess.run(["git", "add", "."], cwd=submodule, check=True)
             subprocess.run(["git", "commit", "-qm", "pinned"], cwd=submodule, check=True)
@@ -196,6 +200,7 @@ class WindowsRcPipelineTests(unittest.TestCase):
             subprocess.run(["git", "init", "-q"], cwd=source, check=True)
             subprocess.run(["git", "config", "user.name", "test"], cwd=source, check=True)
             subprocess.run(["git", "config", "user.email", "test@invalid"], cwd=source, check=True)
+            subprocess.run(["git", "config", "core.autocrlf", "false"], cwd=source, check=True)
             subprocess.run(["git", "add", ".gitignore", str(validator.relative_to(source))], cwd=source, check=True)
             subprocess.run(["git", "add", "--force", "Tactics.Godot.slnx"], cwd=source, check=True)
             subprocess.run(["git", "commit", "-qm", "fixture"], cwd=source, check=True)
@@ -228,6 +233,7 @@ class WindowsRcPipelineTests(unittest.TestCase):
                 subprocess.run(["git", "init", "-q"], cwd=repository, check=True)
                 subprocess.run(["git", "config", "user.name", "test"], cwd=repository, check=True)
                 subprocess.run(["git", "config", "user.email", "test@invalid"], cwd=repository, check=True)
+                subprocess.run(["git", "config", "core.autocrlf", "false"], cwd=repository, check=True)
             (submodule / "sample.png").write_bytes(b"sample")
             subprocess.run(["git", "add", "."], cwd=submodule, check=True)
             subprocess.run(["git", "commit", "-qm", "vendor fixture"], cwd=submodule, check=True)

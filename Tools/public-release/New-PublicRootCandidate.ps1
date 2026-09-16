@@ -9,6 +9,32 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+
+function Assert-PinnedGitBytes {
+    param([string]$RepositoryRoot, [string]$RepositoryPath, [string]$ObjectId, [string]$WorkingFile, [string]$DisplayPath)
+    $filter = (git -C $RepositoryRoot check-attr filter -- $RepositoryPath) -join "`n"
+    if ($LASTEXITCODE -ne 0) { throw "Unable to inspect Git attributes: $DisplayPath" }
+    if ($filter -match ': filter: lfs$') {
+        $pointer = (git -C $RepositoryRoot cat-file -p $ObjectId) -join "`n"
+        if ($LASTEXITCODE -ne 0 -or $pointer -notmatch 'oid sha256:(?<oid>[0-9a-f]{64})') {
+            throw "Tracked LFS pointer is invalid: $DisplayPath"
+        }
+        $expectedSha256 = $Matches.oid
+        if ($pointer -notmatch '(?m)^size (?<size>\d+)$') { throw "Tracked LFS pointer is invalid: $DisplayPath" }
+        $expectedSize = [long]$Matches.size
+        $actualSha256 = (Get-FileHash -LiteralPath $WorkingFile -Algorithm SHA256).Hash.ToLowerInvariant()
+        $actualSize = (Get-Item -LiteralPath $WorkingFile).Length
+        if ($actualSha256 -ne $expectedSha256 -or $actualSize -ne $expectedSize) {
+            throw "Tracked LFS file differs from its pinned object: $DisplayPath"
+        }
+        return
+    }
+    $actualObject = (git -C $RepositoryRoot hash-object --no-filters -- $WorkingFile).Trim()
+    if ($LASTEXITCODE -ne 0 -or $actualObject -ne $ObjectId) {
+        throw "Tracked public file differs from its pinned Git object: $DisplayPath"
+    }
+}
+
 $source = (Resolve-Path -LiteralPath $SourceRoot).Path
 $destination = [IO.Path]::GetFullPath($DestinationRoot)
 if (Test-Path -LiteralPath $destination) {
@@ -82,10 +108,9 @@ try {
         if (-not (Test-Path -LiteralPath $sourcePath -PathType Leaf)) {
             throw "Tracked public file is missing: $relative"
         }
-        $actualObject = (git -C ([string]$trackedFile.repositoryRoot) hash-object "--path=$([string]$trackedFile.repositoryPath)" -- $sourcePath).Trim()
-        if ($LASTEXITCODE -ne 0 -or $actualObject -ne [string]$trackedFile.object) {
-            throw "Tracked public file differs from its pinned Git object: $relative"
-        }
+        Assert-PinnedGitBytes -RepositoryRoot ([string]$trackedFile.repositoryRoot) `
+            -RepositoryPath ([string]$trackedFile.repositoryPath) -ObjectId ([string]$trackedFile.object) `
+            -WorkingFile $sourcePath -DisplayPath $relative
         $targetPath = Join-Path $destination $relative
         $targetDirectory = Split-Path -Parent $targetPath
         if (-not (Test-Path -LiteralPath $targetDirectory)) {
