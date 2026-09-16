@@ -10,7 +10,8 @@
 
 - `Tactics.Core` 和 `Tactics.Application` 禁止引用 Unity、Godot、Editor API 或迁移 DTO。
 - Godot Node、Resource、UID 与 Editor 类型只能存在于 Godot Adapter/Editor 层。
-- 修改 Godot/Core/Application C# 后必须 Build，并运行相关 NUnit、GdUnit、headless 与项目工具测试；最终使用 `Tools/godot/Verify-GodotProject.ps1` 串行收口。
+- 修改 Godot/Core/Application C# 后必须 Build，并先运行直接覆盖改动的最小 NUnit、GdUnit、headless 或项目工具测试；产品代码达到收口点时，至多运行一次 `Tools/godot/Verify-GodotProject.ps1` 串行收口。纯文档、人工账本或 PR 描述变更只运行对应轻量策略/文档门禁，不重跑完整产品 verifier。
+- 验证默认仅在本地执行。未经用户明确要求或已批准计划逐项授权，不得主动触发、重跑或等待 GitHub Actions、`workflow_dispatch`、远程 RC/Windows 导出、制品打包或其他同类高耗时托管任务。仓库平台自行触发的 required check 可以读取结果；若合并政策需要但未自动触发，则报告缺少的远程证据并等待授权。
 - 禁止并行执行共享 Core 输出的 Godot/Core 构建或测试；已验证会争抢 `obj` 文件。
 - GdUnit、godot-ai、EditorPlugin、测试和迁移 DTO 不得成为 Release 运行时依赖。
 

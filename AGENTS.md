@@ -9,7 +9,7 @@
 | 唯一 Godot 项目 | 只使用 `godot/project.godot`，不得创建第二个项目或切换 worktree |
 | C# 分层 | Core/Application 不引用 Godot；Adapter 承载 Node、Resource、文件系统与 UI |
 | 资源写入 | `.tres/.tscn` 只能通过 ResourceSaver、Editor API 或受测转换器生成 |
-| 主线验证 | 使用 `Tools/godot/Verify-GodotProject.ps1`；它要求 Unity 根目录不存在 |
+| 主线验证 | 默认先跑最小本地门禁；产品代码收口时至多运行一次 `Tools/godot/Verify-GodotProject.ps1`。未经用户明确要求，不主动触发 GitHub Actions、远程导出或同类高耗时任务 |
 | Editor 启动 | 只用 `Tools/godot/Open-GodotDev.ps1`；它串行 Build、隔离 worktree 用户数据并校验插件/配置 |
 | Godot 修改验证 | Core/Application/Godot `.cs` 使用主线或迁移期隔离门禁，不调用 Unity compile |
 | Editor 生命周期 | reload-sensitive 修改使用 `godot-editor-lifecycle` 正常关闭并恢复，不强杀进程 |
@@ -55,6 +55,7 @@ Unity-only rules、skills、MCP 和工具的退役证据保存在 `Tools/migrati
    - 更新受影响权威概念正文
    - `python Tools/okf/catalog_impact.py sync --worktree --scope <scope> --write`
 5. 内容 ownership 与人工验收分开记录：允许 `GodotOwned + manual_qa_pending`，不得把自动门禁写成人工通过。
+6. 验证采用成本递增顺序：最小相关测试 → 相关本地门禁 → 必要时一次统一本地 verifier。除非用户明确要求、已批准计划逐项写明，或托管平台自行触发 required check，否则 Agent 不得主动调用 `gh workflow run`、重新运行 GitHub Actions、远程 RC/导出/制品构建或其他同类高耗时任务；若合并政策依赖未自动触发的远程门禁，应报告并等待授权，不得自行补跑。纯文档或人工账本提交不得因此重跑完整产品 CI。
 
 ## Agent 约束
 

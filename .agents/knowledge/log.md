@@ -1,6 +1,13 @@
 # Tactics Knowledge Update Log
 
+## 2026-09-17
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:4b2187c33e4c9cd46f0ccdb561dbe786c955886b1caa807591419ff8d6a4b7ec`。
+* **Sync**: `project-architecture` 已同步到来源指纹 `sha256:068bccc6c1e4e4a98f059c2c106e6837c91673b01319107fb2aacf4eb5755c83`。
+* **Sync**: `okf-maintenance` 已同步到来源指纹 `sha256:6fe1ef2aac5e0f0dac5479e110f0a562dd23c81d115b17adb637f54a2e5fdaa8`。
+* **Sync**: `godot-agent-workflow` 已同步到来源指纹 `sha256:d803273a4fcef4df0c2d3f13258dae6388dc17d967d451176e5e44a0c79e0eb9`。
+
 ## 2026-09-16
+* **Update**: 验证流程改为成本递增的本地优先策略：最小相关测试、相关本地门禁、产品代码收口时至多一次统一 verifier；未经用户明确要求或已批准计划授权，不主动触发/重跑 GitHub Actions、远程 RC/导出或制品构建，纯文档与人工账本只运行轻量门禁。
 * **Sync**: `project-documentation` 已同步到来源指纹 `sha256:a9d0e14ee12574b9992fed437b5d0989b3b278ce3c4a72d05ce645af963df2ec`。
 * **Update**: PR #4 合入最新 main 后，人工账本保留诗人和动态先攻为 pending，并把 Start Camp 与 Esc Run 生命周期回归加入本轮验收顺序；旧 Home/Main Menu 合同已由 `CONTINUE`、`OPTIONS`、`ABANDON RUN`、`SAVE AND QUIT` 取代，自动门禁不代替人工 verdict。
 

@@ -31,8 +31,9 @@ Use for every Godot migration task when the correct project boundary, specialist
 4. If the authorized work requires Editor session count `0`, route through `godot-editor-lifecycle`; restore only an Editor that workflow closed.
 5. If an API, lifecycle, version, plugin, or engine error is uncertain, follow `references/research-guide.md` before changing code.
 6. Implement without adding Unity/Godot references to Core/Application or dev-tool dependencies to release runtime.
-7. Run `Tools/godot/Verify-GodotProject.ps1`; narrow diagnostics may run first, but the unified gate is authoritative.
-8. Record a new engine pitfall as an Incident. Promote only verified conclusions to OKF and only repeated workflow changes to a Skill.
+7. Validate by increasing cost: narrow local tests first, then related local gates; when product code is ready, run the unified `Tools/godot/Verify-GodotProject.ps1` at most once. Documentation-only changes use only their lightweight validators.
+8. Do not trigger or rerun GitHub Actions, `workflow_dispatch`, remote RC/export, or artifact builds unless the user explicitly requests it or an approved plan names that exact hosted gate. Observe automatically triggered required checks; otherwise report the missing evidence and wait.
+9. Record a new engine pitfall as an Incident. Promote only verified conclusions to OKF and only repeated workflow changes to a Skill.
 
 ## Examples
 
@@ -46,11 +47,13 @@ Use for every Godot migration task when the correct project boundary, specialist
 - Do not scan all Incidents; route by normalized error signature or subsystem.
 - Do not treat the Poison Spear Spike as parity evidence.
 - Do not create a second `project.godot` to simplify tests.
+- Do not dispatch expensive hosted CI to refresh evidence after documentation or QA-ledger changes.
 
 ## Checklist
 
 - [ ] Canonical project/worktree confirmed.
 - [ ] Specialist Skill and relevant OKF page loaded.
 - [ ] Unknown behavior researched with evidence labels.
-- [ ] Required build/tests passed sequentially.
+- [ ] Cheapest sufficient local build/tests passed sequentially.
+- [ ] Hosted CI/export was not triggered without explicit authorization.
 - [ ] Incident/OKF/Skill promotion boundary respected.

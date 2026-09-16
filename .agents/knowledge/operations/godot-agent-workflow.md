@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Godot agent workflow
 description: Godot 4.7 C# 主线的项目、分层、Editor 生命周期、验证和发布边界。
 tags: [godot, agent, workflow, testing]
-timestamp: "2026-09-15T11:30:49+08:00"
+timestamp: "2026-09-17T00:07:57+08:00"
 status: active
 catalog_scope: godot-agent-workflow
 repo_paths:
@@ -18,7 +18,7 @@ repo_paths:
   - Tools/godot/Build-GodotWindows.ps1
   - Tools/migration/manifest/godot-tooling.json
 verified_revision: d092a955
-source_fingerprint: sha256:8072ceb8fbb82c6645b483d9d161d15ca26e6bfe740294a8d6866da162a560e5
+source_fingerprint: sha256:d803273a4fcef4df0c2d3f13258dae6388dc17d967d451176e5e44a0c79e0eb9
 ---
 
 # Current State
@@ -29,7 +29,7 @@ Godot 4.7 C# 与 `godot/project.godot` 是唯一产品和编辑权威。Core/App
 
 Godot 修改先由 `godot-workflow` 路由到最小 Specialist Skill。C#、ResourceSaver、生成器和 reload-sensitive 工作遵循 `godot-editor-lifecycle`；只正常关闭该流程确认的 canonical Editor，并只恢复由本流程关闭的会话。
 
-统一入口 `Tools/godot/Verify-GodotProject.ps1` 串行执行 restore/build、Core/Application/FrozenOracle、Gameplay Spec、Python、Skill/Incident、ResourceSaver 升级、GdUnit、Release/Runtime/Editor headless、renderer、receipt 与 OKF。FrozenOracle、Golden 和 receipt 只是历史/确定性证据，不能替代视觉、手感、真实 Editor Reload 或干净 Windows 启动。
+验证按成本递增：先运行直接覆盖改动的最小本地测试，再运行相关本地门禁；产品代码收口时至多运行一次统一入口 `Tools/godot/Verify-GodotProject.ps1`，其串行执行 restore/build、Core/Application/FrozenOracle、Gameplay Spec、Python、Skill/Incident、ResourceSaver 升级、GdUnit、Release/Runtime/Editor headless、renderer、receipt 与 OKF。纯文档或人工账本变更只跑轻量策略/文档门禁。未经用户明确要求或已批准计划逐项授权，Agent 不主动触发或重跑 GitHub Actions、远程 RC/导出与制品构建；平台自动 required check 只读取结果，缺失的远程证据应等待授权。FrozenOracle、Golden 和 receipt 只是历史/确定性证据，不能替代视觉、手感、真实 Editor Reload 或干净 Windows 启动。
 
 Windows 构建使用单一 `Windows Desktop` preset、锁定工具链和受审计 staging。CI 在运行统一 verifier 前显式安装 OKF 与 Pure Run Artwork skill 各自声明的 Python requirements；Debug/Release 包必须通过架构、PCK/managed runtime、顶层 allowlist、测试/缓存/本地配置排除、manifest/hash 与隔离用户目录启动验证。
 
