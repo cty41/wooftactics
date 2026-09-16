@@ -42,19 +42,33 @@ def collect_npm(root: Path) -> list[dict[str, str]]:
 
 
 def collect_vendored(root: Path) -> list[dict[str, str]]:
+    dependencies: list[dict[str, str]] = []
+
     manifest_path = root / "Tools" / "migration" / "manifest" / "godot-tooling.json"
-    if not manifest_path.is_file():
-        return []
-    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    godot_ai = manifest.get("godotAi", {})
-    vendor_path = root / str(godot_ai.get("vendorPath", ""))
-    if not vendor_path.is_dir():
-        return []
-    return [{
-        "ecosystem": "Vendored",
-        "name": "godot-ai",
-        "version": str(godot_ai.get("tag", "unknown")).removeprefix("v"),
-    }]
+    if manifest_path.is_file():
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        godot_ai = manifest.get("godotAi", {})
+        vendor_path = root / str(godot_ai.get("vendorPath", ""))
+        if vendor_path.is_dir():
+            dependencies.append({
+                "ecosystem": "Vendored",
+                "name": "godot-ai",
+                "version": str(godot_ai.get("tag", "unknown")).removeprefix("v"),
+            })
+
+    adapter_path = root / "Tools" / "artworks" / "maliang.adapter.json"
+    if adapter_path.is_file():
+        adapter = json.loads(adapter_path.read_text(encoding="utf-8"))
+        engine = adapter.get("engine", {})
+        vendor_path = root / str(engine.get("submodulePath", ""))
+        if vendor_path.is_dir():
+            dependencies.append({
+                "ecosystem": "Vendored",
+                "name": "maliang-game-art",
+                "version": str(engine.get("version", "unknown")),
+            })
+
+    return dependencies
 
 
 def build_report(root: Path) -> dict[str, object]:
