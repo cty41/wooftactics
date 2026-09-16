@@ -6,7 +6,7 @@ requiredAdapters: [Map, PlayerInput, UI, Battle]
 setup:
   - kind: loadValidatedCheckpoint
     adapter: Map
-    parameters: { id: demonbound-ready-v1, path: "validated://demonbound-ready-v1", semanticHash: 8eb6407f3a930534b9aa6d11e65787fba59b56bff018f2561c8e5a09ebc4f7cf }
+    parameters: { id: demonbound-ready-v1, path: "validated://demonbound-ready-v1", semanticHash: 6a6cd1044c7a51332edc0d347970565df0b4f5dd22e08dd4ede2e316aef9c5df }
   - kind: initializePlayerInput
     adapter: PlayerInput
     parameters: {}

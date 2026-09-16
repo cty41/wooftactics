@@ -99,6 +99,7 @@ public partial class GodotPlayableRunMain : Control
     private GodotRogueMapView? _mapView;
     private GodotAdventureBoardView? _adventureBoard;
     private GodotStartCampView? _startCampView;
+    private Control? _startCampInput;
     private readonly List<string> _partySelectionOrder = new();
     private string? _adventureLastBoardContentId;
     private Label? _mapDetail;
@@ -172,7 +173,7 @@ public partial class GodotPlayableRunMain : Control
     private GodotAdventureRuntimeProbe? CaptureAdventureProbe()
     {
         PureRunSaveSnapshot? snapshot = SaveStore.Load().Snapshot;
-        PureRunState? run = snapshot?.ActiveRun;
+        PureRunState? run = _run?.ResumeRun().Snapshot?.ActiveRun ?? snapshot?.ActiveRun;
         RunAdventureState? adventure = run?.AdventureState;
         if (adventure is null)
         {
@@ -315,8 +316,8 @@ public partial class GodotPlayableRunMain : Control
         if (_startCampView is not null && GodotObject.IsInstanceValid(_startCampView) &&
             _startCampView.TryResolveTarget(targetKind, locator, out globalPoint))
         {
-            surface = _startCampView;
-            return true;
+            surface = _startCampInput;
+            return surface is not null && GodotObject.IsInstanceValid(surface);
         }
         surface = _adventureBoard;
         globalPoint = Vector2.Zero;
@@ -672,6 +673,7 @@ public partial class GodotPlayableRunMain : Control
             ZIndex = StartPageUiZIndex - 1
         };
         root.AddChild(atlasInput);
+        _startCampInput = atlasInput;
         atlasInput.GuiInput += input =>
         {
             if (input is InputEventMouse mouse)
@@ -2330,6 +2332,7 @@ public partial class GodotPlayableRunMain : Control
         _mapView=null;
         _adventureBoard=null;
         _startCampView=null;
+        _startCampInput=null;
         _mapDetail=null;
         _pauseMenu=null;
         _pauseMenuControlsBattlePlayback=false;

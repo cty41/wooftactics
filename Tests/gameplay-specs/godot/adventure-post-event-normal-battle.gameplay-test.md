@@ -6,7 +6,7 @@ requiredAdapters: [Map, PlayerInput, UI]
 setup:
   - kind: loadValidatedCheckpoint
     adapter: Map
-    parameters: { id: layer4-event-ready-v1, path: "validated://layer4-event-ready-v1", semanticHash: c6ed0dc0ff3f12ffaeb2459ea37aba19be6647b42e5620b095bc9ee1970dfb8d }
+    parameters: { id: layer4-event-ready-v1, path: "validated://layer4-event-ready-v1", semanticHash: a3fb1f889423aae1e4c53a8fba80d4c0bcfc966ec6b5872f80f7e7e7b3407c29 }
   - kind: initializePlayerInput
     adapter: PlayerInput
     parameters: {}

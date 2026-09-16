@@ -9,7 +9,7 @@ setup:
     parameters:
       id: layer4-choice-ready-v1
       path: validated://layer4-choice-ready-v1
-      semanticHash: 2d0ab502e474b2c61c413be755279126fa509dcf9cfb5afdb9ce3f66b20f9ac2
+      semanticHash: 8876d2ebebbd451ac2ae5b3be2d018b26c24eba29c1cc03bcd2a5bea848bdf19
   - kind: initializePlayerInput
     adapter: PlayerInput
     parameters: {}

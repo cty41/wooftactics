@@ -36,20 +36,20 @@ public class GodotGameplayRuntimeRunnerTests
 
     [TestCase]
     [RequireGodotRuntime]
-    public void ValidatedCheckpointCatalogProducesStableCanonicalV10Hashes()
+    public void ValidatedCheckpointCatalogProducesStableCanonicalV11Hashes()
     {
         var expected = new Dictionary<string, string>(StringComparer.Ordinal)
         {
-            ["inventory-store-ready-v1"] = "f0178ece6249cfa8e978550fa36e3871ea2ecc2b7b05f138d1d76598e659d8b9",
-            ["defeat-no-summon-v1"] = "ca88be359b96f0e3a2b193d9052618ddb6b086c8c63065175ac36acfe5a6ea0c",
-            ["numbers-mana-v1"] = "c418483a77bdc78b3388d33b88abac8ee82d6291cae0dfbf7ad4a2939c7fca78",
-            ["numbers-miss-v1"] = "2ac46742150437eba37c8007286e946d2a4caf2f478c0b4e5f833bd7d63126b7",
-            ["reload-pending-battle-v1"] = "8ee5dc0cf76134f6a816ff1c49fb41192afc0ccd4609a487c0f8f55027aa1d98",
-            ["demonbound-ready-v1"] = "8eb6407f3a930534b9aa6d11e65787fba59b56bff018f2561c8e5a09ebc4f7cf",
-            ["layer4-choice-ready-v1"] = "2d0ab502e474b2c61c413be755279126fa509dcf9cfb5afdb9ce3f66b20f9ac2",
-            ["layer4-event-ready-v1"] = "c6ed0dc0ff3f12ffaeb2459ea37aba19be6647b42e5620b095bc9ee1970dfb8d",
-            ["layer6-event-ready-v1"] = "27961cf36a0c8d73c22bfb367d5005dfeedfc009229ba22f120b1821d3c01198",
-            ["layer6-escort-ready-v1"] = "08f4a87c3e25a3008af4a5441567ad0fa88985a66b8b3a2e42aed5d1993a86e2"
+            ["inventory-store-ready-v1"] = "acf7098eb5833e018afd5c35cb82eb1d0f2e3b88d89375f1ec059dce37f6c6e0",
+            ["defeat-no-summon-v1"] = "57f955cffb989e9a44aac824568b88509c0756f19279652a965beb74e58ccc8b",
+            ["numbers-mana-v1"] = "0600ff730fc74de5e9ef3c81b59db38f6ddf64dbec9e45a8e8ef82a14fb65b75",
+            ["numbers-miss-v1"] = "9a6718898e311e99470ff6f55ad67ad76baf22a715ab0d5e4108af613ab3e0e4",
+            ["reload-pending-battle-v1"] = "13c911dd9ed54586e3dc160a86e03bdde1a9301b8bbc6c0702962f4a3038e6a0",
+            ["demonbound-ready-v1"] = "6a6cd1044c7a51332edc0d347970565df0b4f5dd22e08dd4ede2e316aef9c5df",
+            ["layer4-choice-ready-v1"] = "8876d2ebebbd451ac2ae5b3be2d018b26c24eba29c1cc03bcd2a5bea848bdf19",
+            ["layer4-event-ready-v1"] = "a3fb1f889423aae1e4c53a8fba80d4c0bcfc966ec6b5872f80f7e7e7b3407c29",
+            ["layer6-event-ready-v1"] = "35d535d83668385d2e5466824acc29a6b0e17639bf83bbf1ee3ed984ba135099",
+            ["layer6-escort-ready-v1"] = "db5796777319f9278eafaa394efaa98e153b97e009680b413c22fa9811ce5339"
         };
         var mismatches = new List<string>();
         foreach ((string id, string hash) in expected)
@@ -128,9 +128,13 @@ public class GodotGameplayRuntimeRunnerTests
     {
         var assertion = new GodotGameplayPlanAssertion("runtimeHasNoErrors", "UI", null, Json(true), []);
         var plan = new GodotGameplayScenarioPlan(2, "Godot", "Runner.MainQuit", ["PlayerInput", "UI"],
-            ["setup:initializePlayerInput", "action:clickPointerTarget", "assertion:runtimeHasNoErrors"],
+            ["setup:initializePlayerInput", "action:pressInputKey", "action:clickPointerTarget", "assertion:runtimeHasNoErrors"],
             [new GodotGameplayPlanStep("initializePlayerInput", "PlayerInput", null, [])],
-            [new GodotGameplayPlanStep("clickPointerTarget", "PlayerInput", "Quit", [])],
+            [
+                new GodotGameplayPlanStep("pressInputKey", "PlayerInput", null,
+                    new Dictionary<string, JsonElement> { ["key"] = JsonSerializer.SerializeToElement("Escape") }),
+                new GodotGameplayPlanStep("clickPointerTarget", "PlayerInput", "SAVE AND QUIT", [])
+            ],
             [assertion], [new GodotGameplayProbeRequest(assertion.Kind, assertion.Adapter, assertion.Target, assertion.Parameters)],
             new GodotGameplaySaveIsolation("user://qa-runner", true),
             new GodotGameplayWatchdog(30000, 80, 300000, 4), null);
@@ -144,7 +148,7 @@ public class GodotGameplayRuntimeRunnerTests
         AssertThat(result.ErrorCode).IsNull();
         AssertThat(result.Succeeded).IsTrue();
         AssertThat(result.ProductionSaveUnchanged).IsTrue();
-        AssertThat(result.Trace.Count).IsEqual(3);
+        AssertThat(result.Trace.Count).IsEqual(4);
         AssertThat(result.RemainingTemporaryNodes).IsEqual(0);
     }
 
@@ -452,15 +456,17 @@ public class GodotGameplayRuntimeRunnerTests
     public async Task MainRestartReusesTheIsolatedStoreAndProductionInput()
     {
         var restart = new GodotGameplayPlanStep("restartGodotMain", "UI", null, []);
-        var quit = new GodotGameplayPlanStep("clickPointerTarget", "PlayerInput", "Quit",
+        var pause = new GodotGameplayPlanStep("pressInputKey", "PlayerInput", null,
+            Parameters(("key", "Escape")));
+        var quit = new GodotGameplayPlanStep("clickPointerTarget", "PlayerInput", "SAVE AND QUIT",
             Parameters(("targetKind", "UiElement")));
         var assertion = BoolAssertion("runtimeHasNoErrors", "UI", true);
-        GodotGameplayScenarioPlan plan = Plan("Runner.Restart", [], [restart, quit], [assertion]);
+        GodotGameplayScenarioPlan plan = Plan("Runner.Restart", [], [restart, pause, quit], [assertion]);
 
         GodotGameplayScenarioResult result = await new GodotGameplayRuntimeRunner().ExecuteAsync(plan);
 
         AssertThat(result.Succeeded).IsTrue();
-        AssertThat(result.Trace.Count).IsEqual(3);
+        AssertThat(result.Trace.Count).IsEqual(4);
         AssertThat(result.RemainingTemporaryNodes).IsEqual(0);
     }
 

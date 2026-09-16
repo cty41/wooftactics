@@ -10,14 +10,6 @@ setup:
 actions:
   - kind: waitForPlayerObservable
     adapter: PlayerInput
-    target: New Run
-    parameters: { observable: uiElement, elementName: New Run, maximumFrames: 180 }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: New Run
-    parameters: { targetKind: UiElement }
-  - kind: waitForPlayerObservable
-    adapter: PlayerInput
     parameters: { observable: adventureBoardReady, maximumFrames: 180 }
   - kind: clickPointerTarget
     adapter: PlayerInput

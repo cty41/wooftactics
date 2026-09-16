@@ -6,7 +6,7 @@ requiredAdapters: [Map, PlayerInput, UI]
 setup:
   - kind: loadValidatedCheckpoint
     adapter: Map
-    parameters: { id: layer6-escort-ready-v1, path: "validated://layer6-escort-ready-v1", semanticHash: 08f4a87c3e25a3008af4a5441567ad0fa88985a66b8b3a2e42aed5d1993a86e2 }
+    parameters: { id: layer6-escort-ready-v1, path: "validated://layer6-escort-ready-v1", semanticHash: db5796777319f9278eafaa394efaa98e153b97e009680b413c22fa9811ce5339 }
   - kind: initializePlayerInput
     adapter: PlayerInput
     parameters: {}
