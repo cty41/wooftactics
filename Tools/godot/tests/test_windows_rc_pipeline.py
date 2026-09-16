@@ -217,6 +217,44 @@ class WindowsRcPipelineTests(unittest.TestCase):
                 text=True, stdout=subprocess.PIPE,
             ).stdout.strip())
 
+    def test_public_root_reconstruction_expands_pinned_submodule(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = pathlib.Path(temp)
+            submodule = root / "vendor"
+            source = root / "source"
+            destination = root / "public-root"
+            for repository in (submodule, source):
+                repository.mkdir()
+                subprocess.run(["git", "init", "-q"], cwd=repository, check=True)
+                subprocess.run(["git", "config", "user.name", "test"], cwd=repository, check=True)
+                subprocess.run(["git", "config", "user.email", "test@invalid"], cwd=repository, check=True)
+            (submodule / "sample.png").write_bytes(b"sample")
+            subprocess.run(["git", "add", "."], cwd=submodule, check=True)
+            subprocess.run(["git", "commit", "-qm", "vendor fixture"], cwd=submodule, check=True)
+            validator = source / "Tools/public-release/validate_public_candidate.py"
+            validator.parent.mkdir(parents=True)
+            validator.write_text("raise SystemExit(0)\n", encoding="utf-8")
+            subprocess.run(
+                ["git", "-c", "protocol.file.allow=always", "submodule", "add", "-q",
+                 str(submodule), "Tools/vendor/example"], cwd=source, check=True,
+            )
+            subprocess.run(["git", "add", "."], cwd=source, check=True)
+            subprocess.run(["git", "commit", "-qm", "source fixture"], cwd=source, check=True)
+
+            result = run_pwsh(
+                REPO / "Tools/public-release/New-PublicRootCandidate.ps1",
+                "-SourceRoot", str(source), "-DestinationRoot", str(destination),
+            )
+
+            self.assertEqual(0, result.returncode, result.stdout)
+            self.assertEqual(b"sample", (destination / "Tools/vendor/example/sample.png").read_bytes())
+            tracked = subprocess.run(
+                ["git", "ls-files"], cwd=destination, check=True,
+                text=True, stdout=subprocess.PIPE,
+            ).stdout.splitlines()
+            self.assertIn("Tools/vendor/example/sample.png", tracked)
+            self.assertNotIn("Tools/vendor/example", tracked)
+
     def test_package_audit_writes_manifests_and_rejects_unity_payload(self):
         with tempfile.TemporaryDirectory() as temp:
             root = pathlib.Path(temp)
