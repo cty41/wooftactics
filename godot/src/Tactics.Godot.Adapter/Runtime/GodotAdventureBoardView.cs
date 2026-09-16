@@ -14,6 +14,7 @@ public partial class GodotAdventureBoardView : Control
     private readonly Dictionary<string, GridPoint> _actorCells = new(StringComparer.Ordinal);
     private TileMapLayer? _tiles;
     private AdventureBoardDefinition? _definition;
+    private bool _inputConnected;
 
     public event Action<GridPoint>? CellPressed;
     public event Action<string>? ActorPressed;
@@ -22,22 +23,19 @@ public partial class GodotAdventureBoardView : Control
     public AdventureBoardDefinition Definition => _definition ?? throw new InvalidOperationException("Adventure board is not configured.");
     public IReadOnlyDictionary<string, GridPoint> ActorCells => _actorCells;
 
-    public override void _Ready()
-    {
-        MouseFilter = MouseFilterEnum.Stop;
-        SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-        TileSet tileSet = ResourceLoader.Load<TileSet>(SharedTileSetPath)
-            ?? throw new InvalidOperationException($"Generated adventure TileSet is missing: {SharedTileSetPath}.");
-        _tiles = new TileMapLayer { Name = "AdventureTileMapLayer", TileSet = tileSet, Position = BoardOffset };
-        AddChild(_tiles);
-        GuiInput += OnGuiInput;
-    }
+    public override void _Ready() => EnsureInitialized();
 
-    public override void _ExitTree() => GuiInput -= OnGuiInput;
+    public override void _ExitTree()
+    {
+        if (!_inputConnected) return;
+        GuiInput -= OnGuiInput;
+        _inputConnected = false;
+    }
 
     public void SetBoard(AdventureBoardDefinition definition)
     {
         ArgumentNullException.ThrowIfNull(definition);
+        EnsureInitialized();
         definition.Validate();
         _definition = definition;
         _actorCells.Clear();
@@ -85,6 +83,22 @@ public partial class GodotAdventureBoardView : Control
         Vector2I mapped = TileLayer.LocalToMap(point - TileLayer.Position);
         cell = new GridPoint(mapped.X, mapped.Y);
         return _definition?.Contains(cell) == true;
+    }
+
+    private void EnsureInitialized()
+    {
+        if (_tiles is null)
+        {
+            MouseFilter = MouseFilterEnum.Stop;
+            SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+            TileSet tileSet = ResourceLoader.Load<TileSet>(SharedTileSetPath)
+                ?? throw new InvalidOperationException($"Generated adventure TileSet is missing: {SharedTileSetPath}.");
+            _tiles = new TileMapLayer { Name = "AdventureTileMapLayer", TileSet = tileSet, Position = BoardOffset };
+            AddChild(_tiles);
+        }
+        if (_inputConnected) return;
+        GuiInput += OnGuiInput;
+        _inputConnected = true;
     }
 
     private void OnGuiInput(InputEvent input)
