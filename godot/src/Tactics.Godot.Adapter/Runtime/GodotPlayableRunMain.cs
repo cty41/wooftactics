@@ -616,6 +616,7 @@ public partial class GodotPlayableRunMain : Control
             choices.AddChild(skillButton);
         }
         _status = LabelAt(root, "Starting skill choices are saved immediately. Press Esc for run controls.", new Vector2(470, 680), 18);
+        BuildPauseMenu(root, false);
     }
 
     private void ShowPartySelection()
@@ -749,6 +750,7 @@ public partial class GodotPlayableRunMain : Control
         };
         root.AddChild(PlaceControl(Button("Inventory", () => ShowInventory(run)), new Vector2(1130, 720), new Vector2(360, 58)));
         _status = LabelAt(root, $"Leader: {adventure.LeaderId}", new Vector2(470, 810), 18);
+        BuildPauseMenu(root, false);
     }
 
     private static AdventureBoardDefinition CreateInitialAdventureBoard(IReadOnlyList<AdventureActorPlacement> actors)
