@@ -1,4 +1,6 @@
+import hashlib
 import importlib.util
+import json
 import subprocess
 import tempfile
 import unittest
@@ -62,6 +64,39 @@ class PinnedMaliangAdapterTests(unittest.TestCase):
 
         with self.assertRaisesRegex(RuntimeError, "untracked content"):
             MODULE._verify_pinned_checkout(self.repo, self.commit)
+
+    def test_accepts_only_manifest_bound_flattened_rc_snapshot(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            checkout = root / "Tools" / "vendor" / "maliang"
+            checkout.mkdir(parents=True)
+            payload = checkout / "payload.txt"
+            payload.write_bytes(b"pinned payload")
+            digest = hashlib.sha256(payload.read_bytes()).hexdigest()
+            pinned_commit = "a" * 40
+            manifest = {
+                "schemaVersion": 1, "sourceCommit": "c" * 40,
+                "boundary": "public-source-byte-identical-v1",
+                "expandedGitlinks": [{"path": "Tools/vendor/maliang", "commit": pinned_commit}],
+                "files": [{
+                    "path": "Tools/vendor/maliang/payload.txt", "sourceSha256": digest,
+                    "stagedSha256": digest, "sourceRepositoryCommit": pinned_commit,
+                    "sourceObject": "b" * 40,
+                }],
+            }
+            (root / "rc-source-manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+            git(root, "init", "-q"); git(root, "config", "user.name", "test")
+            git(root, "config", "user.email", "test@invalid"); git(root, "add", ".")
+            git(root, "commit", "-qm", "RC source snapshot")
+            previous_root = MODULE.ROOT
+            MODULE.ROOT = root
+            try:
+                MODULE._verify_pinned_checkout(checkout, pinned_commit)
+                payload.write_bytes(b"tampered payload")
+                with self.assertRaisesRegex(RuntimeError, "differs from staged provenance"):
+                    MODULE._verify_pinned_checkout(checkout, pinned_commit)
+            finally:
+                MODULE.ROOT = previous_root
 
 
 if __name__ == "__main__":

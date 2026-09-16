@@ -72,6 +72,7 @@ foreach ($entry in $trackedEntries) {
             path = $Matches.path
             repositoryRoot = $source
             repositoryPath = $Matches.path
+            repositoryCommit = $sourceCommit
             object = $Matches.object
         })
     }
@@ -103,6 +104,7 @@ foreach ($gitlink in $gitlinks) {
             path = "$gitlinkPath/$($Matches.path)"
             repositoryRoot = $submoduleRoot
             repositoryPath = $Matches.path
+            repositoryCommit = $submoduleCommit
             object = $Matches.object
         })
     }
@@ -137,6 +139,8 @@ foreach ($trackedFile in $trackedFiles) {
         path = $normalized
         size = (Get-Item -LiteralPath $destinationFile).Length
         sourceSha256 = (Get-FileHash -LiteralPath $destinationFile -Algorithm SHA256).Hash.ToLowerInvariant()
+        sourceRepositoryCommit = [string]$trackedFile.repositoryCommit
+        sourceObject = [string]$trackedFile.object
         stagedSha256 = ''
     })
 }
@@ -177,6 +181,7 @@ $manifest = [ordered]@{
     sourceCommit = $sourceCommit
     boundary = 'public-source-byte-identical-v1'
     excludedPrefixes = $excludedPrefixes
+    expandedGitlinks = @($gitlinks | ForEach-Object { [ordered]@{ path = ([string]$_.path).Replace('\\', '/'); commit = [string]$_.commit } })
     fileCount = $copied.Count
     files = @($copied | Sort-Object path)
 }

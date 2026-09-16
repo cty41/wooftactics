@@ -8,6 +8,9 @@ import sys
 from pathlib import Path
 from typing import Any
 
+# Keep flattened release-candidate snapshots byte-identical across repeated imports.
+sys.dont_write_bytecode = True
+
 ROOT = Path(__file__).resolve().parents[4]
 CONFIG_PATH = ROOT / "Tools" / "artworks" / "maliang.adapter.json"
 
@@ -38,7 +41,52 @@ def _git(repo: Path, *arguments: str) -> bytes:
     return result.stdout
 
 
+def _verify_expanded_snapshot(repo: Path, expected_commit: str) -> None:
+    manifest_path = ROOT / "rc-source-manifest.json"
+    if not manifest_path.is_file():
+        raise RuntimeError("flattened MaLiang checkout lacks the RC source manifest")
+    manifest_blob = _git(ROOT, "rev-parse", "HEAD:rc-source-manifest.json").decode("ascii").strip()
+    manifest_data = manifest_path.read_bytes()
+    actual_manifest_blob = hashlib.sha1(
+        f"blob {len(manifest_data)}\0".encode("ascii") + manifest_data
+    ).hexdigest()
+    if actual_manifest_blob != manifest_blob:
+        raise RuntimeError("RC source manifest differs from its staging commit")
+    manifest = json.loads(manifest_data.decode("utf-8-sig"))
+    if manifest.get("boundary") != "public-source-byte-identical-v1":
+        raise RuntimeError("flattened MaLiang checkout has an invalid RC source boundary")
+    submodule_path = repo.relative_to(ROOT).as_posix()
+    links = {item.get("path"): item.get("commit") for item in manifest.get("expandedGitlinks", [])}
+    if links.get(submodule_path) != expected_commit:
+        raise RuntimeError(f"flattened MaLiang checkout is not bound to pinned commit {expected_commit}")
+    prefix = f"{submodule_path}/"
+    entries = {
+        item.get("path"): item for item in manifest.get("files", [])
+        if isinstance(item, dict) and str(item.get("path", "")).startswith(prefix)
+    }
+    actual_paths = {
+        path.relative_to(ROOT).as_posix() for path in repo.rglob("*") if path.is_file()
+    }
+    if actual_paths != set(entries):
+        raise RuntimeError("flattened MaLiang checkout file set differs from the RC source manifest")
+    for relative, item in entries.items():
+        if (item.get("sourceRepositoryCommit") != expected_commit
+                or not isinstance(item.get("sourceObject"), str)
+                or len(item["sourceObject"]) != 40
+                or item.get("sourceSha256") != item.get("stagedSha256")):
+            raise RuntimeError(f"flattened MaLiang provenance is invalid: {relative}")
+        actual_sha256 = hashlib.sha256((ROOT / relative).read_bytes()).hexdigest()
+        if actual_sha256 != item.get("stagedSha256"):
+            raise RuntimeError(f"flattened MaLiang file differs from staged provenance: {relative}")
+
+
 def _verify_pinned_checkout(repo: Path, expected_commit: str) -> None:
+    git_root = Path(_git(repo, "rev-parse", "--show-toplevel").decode("utf-8").strip()).resolve()
+    if git_root != repo.resolve():
+        if git_root != ROOT.resolve():
+            raise RuntimeError(f"MaLiang checkout resolves through an unexpected repository: {git_root}")
+        _verify_expanded_snapshot(repo, expected_commit)
+        return
     head = _git(repo, "rev-parse", "HEAD").decode("ascii").strip()
     if head != expected_commit:
         raise RuntimeError(f"MaLiang checkout is not at pinned commit {expected_commit}: {head}")

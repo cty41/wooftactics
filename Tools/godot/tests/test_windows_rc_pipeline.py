@@ -92,7 +92,10 @@ class WindowsRcPipelineTests(unittest.TestCase):
                 ], key=str.casefold),
                 sorted([entry["path"] for entry in manifest["files"]], key=str.casefold),
             )
+            self.assertEqual([], manifest["expandedGitlinks"])
             self.assertTrue(all(entry["sourceSha256"] == entry["stagedSha256"] for entry in manifest["files"]))
+            self.assertTrue(all(entry["sourceRepositoryCommit"] == manifest["sourceCommit"] for entry in manifest["files"]))
+            self.assertTrue(all(len(entry["sourceObject"]) == 40 for entry in manifest["files"]))
             status = subprocess.run(
                 ["git", "status", "--porcelain"], cwd=destination, check=True,
                 text=True, stdout=subprocess.PIPE
@@ -173,6 +176,16 @@ class WindowsRcPipelineTests(unittest.TestCase):
             )
             self.assertEqual(0, result.returncode, result.stdout)
             self.assertEqual("pinned payload", (destination / "Tools/vendor/maliang/payload.txt").read_text(encoding="utf-8"))
+            manifest = json.loads((destination / "rc-source-manifest.json").read_text(encoding="utf-8-sig"))
+            pinned_commit = subprocess.run(
+                ["git", "rev-parse", "HEAD"], cwd=submodule, check=True, text=True, stdout=subprocess.PIPE
+            ).stdout.strip()
+            self.assertEqual(
+                [{"path": "Tools/vendor/maliang", "commit": pinned_commit}], manifest["expandedGitlinks"]
+            )
+            expanded = next(entry for entry in manifest["files"] if entry["path"].endswith("payload.txt"))
+            self.assertEqual(pinned_commit, expanded["sourceRepositoryCommit"])
+            self.assertEqual(40, len(expanded["sourceObject"]))
 
             (submodule / "payload.txt").write_text("unpinned payload", encoding="utf-8")
             subprocess.run(["git", "add", "."], cwd=submodule, check=True)
