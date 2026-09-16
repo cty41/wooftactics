@@ -13,8 +13,8 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 - Observe: Start Camp 候选区、Battle action bar、棋盘单位/状态层、HP/MP、事件日志、CheatConsole 与 Godot Output。
 - Preserve on failure: Run seed、起始分支、技能等级、双方格子与朝向、施法前后 HP/MP/状态、截图或短视频、battle checkpoint/save 副本和完整 Output。
 - Save boundary: 选择队伍、成长和战斗会修改当前 Run；只使用 disposable/隔离存档，不覆盖生产存档。
-- Automated evidence: Core 205/205、Application 199/199、Poet focused 13/13、Resource/Catalog 185、Poet/Initiative/Actor GdUnit 10/10 与 29/29 Gameplay journeys已通过；运行时 DR/UL 副本哈希绑定获批母图，ResourceSaver 断言白色 tint、方向回退、Death 占位与分身清理。技能公式、合法性、持续时间、硬 AI 分身优先和五候选结构由自动化覆盖；动作可读性、半透明分身辨识度和职业体验仍需人工判断。
-- User verdict: none.
+- Automated evidence: exact HEAD `3b766176` 的本地统一门禁与 Windows Debug/Release run `35083861179` 已通过；Core 206/206、Application 199/199、Poet/Initiative/Actor GdUnit、29/29 Gameplay journeys、ResourceSaver 幂等性、artwork 152 与 Godot tooling 15 均通过。运行时 DR/UL 副本哈希绑定获批母图，自动化断言白色 tint、方向回退、Death 占位、分身清理、技能公式与硬 AI 分身优先；动作可读性、半透明分身辨识度和职业体验仍需人工判断。
+- User verdict: 用户本轮选择暂不游玩；保留为待跑测 TODO，未判定通过或失败。
 
 ### MQA-GODOT-INITIATIVE-HUD — 动态先攻头像条、Hover 联动与输入锁
 
@@ -25,8 +25,8 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 - Observe: 右上 initiative strip、Round 标签、头像框与省略号、棋盘单位轮廓/HP/MP、action bar、事件日志、CheatConsole 和 Godot Output。
 - Preserve on failure: 短视频、Round、完整可见/隐藏队列、各单位先攻与 acted 状态、悬停单位 ID、点击时刻、事件日志、Run seed/checkpoint 和 Output。
 - Save boundary: 战斗行动和召唤会修改 disposable Run；悬停本身只读，失败时先复制 checkpoint 再继续。
-- Automated evidence: Core/Application 覆盖逐轮重排、未行动队列同步、召唤插入/替换、昏迷自动 EndTurn 和无重复行动；Godot tests 覆盖九头像省略、0.22 秒过渡、五候选和生产输入锁，Gameplay journeys 29/29 通过。动画手感、Hover 对应关系、视觉层级和高速连续操作仍需人工验收。
-- User verdict: none.
+- Automated evidence: exact HEAD `3b766176` 的本地统一门禁与 Windows Debug/Release run `35083861179` 已通过；Core/Application 覆盖逐轮重排、未行动队列同步、召唤插入/替换、昏迷自动 EndTurn 和无重复行动；Godot tests 覆盖九头像省略、0.22 秒过渡、五候选和生产输入锁，Gameplay journeys 29/29 通过。动画手感、Hover 对应关系、视觉层级和高速连续操作仍需人工验收。
+- User verdict: 用户本轮选择暂不游玩；保留为待跑测 TODO，未判定通过或失败。
 
 ### MQA-GODOT-MAW-BAT-SLICE — 大嘴蝠、浅水与 N2 实战纵切
 
@@ -566,4 +566,3 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 
 1. `MQA-GODOT-POET-RUNTIME` — 诗人开局、六套技能与临时分身
 2. `MQA-GODOT-INITIATIVE-HUD` — 动态先攻头像条、Hover 与输入锁
-3. `MQA-GODOT-POET-DECOY-ART` — 青川犬正式美术（deferred）
