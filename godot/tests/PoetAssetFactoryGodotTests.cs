@@ -38,7 +38,7 @@ public class PoetAssetFactoryGodotTests
 
     [TestCase]
     [RequireGodotRuntime]
-    public void ApprovedPoetIdleAndDecoyVisualContractsUseExplicitSafeFallbacks()
+    public void ApprovedPoetPosesAndDecoyVisualContractsUseExpectedDirectionsAndFallbacks()
     {
         var poet = ResourceLoader.Load<UnitDefinitionResource>(
             "res://content/poet/PureRunPoet.tres", string.Empty, ResourceLoader.CacheMode.Ignore);
@@ -50,9 +50,16 @@ public class PoetAssetFactoryGodotTests
 
         AssertThat(poet.DownRightTexture?.ResourcePath).IsEqual("res://assets/units/doge_poet.png");
         AssertThat(poet.UpLeftTexture?.ResourcePath).IsEqual("res://assets/units/doge_poet_ul.png");
-        AssertThat(ReferenceEquals(poet.DeathTexture, poet.DownRightTexture)).IsTrue();
-        AssertThat(poet.DeathBodyOffset.IsEqualApprox(poet.DownRightBodyOffset)).IsTrue();
-        AssertThat(HasNoActionTextures(poet)).IsTrue();
+        AssertThat(poet.DeathTexture?.ResourcePath).IsEqual("res://assets/units/doge_poet_death.png");
+        AssertThat(poet.DeathBodyOffset.IsEqualApprox(Vector2.Zero)).IsTrue();
+        AssertThat(poet.MeleeDownRightTexture?.ResourcePath).IsEqual("res://assets/units/actions/doge_poet_melee_attack_dr.png");
+        AssertThat(poet.MeleeUpLeftTexture?.ResourcePath).IsEqual("res://assets/units/actions/doge_poet_melee_attack_ul.png");
+        AssertThat(poet.CastDownRightTexture?.ResourcePath).IsEqual("res://assets/units/actions/doge_poet_cast_dr.png");
+        AssertThat(poet.CastUpLeftTexture?.ResourcePath).IsEqual("res://assets/units/actions/doge_poet_cast_ul.png");
+        AssertThat(poet.HitDownRightTexture?.ResourcePath).IsEqual("res://assets/units/actions/doge_poet_hit_dr.png");
+        AssertThat(poet.HitUpLeftTexture?.ResourcePath).IsEqual("res://assets/units/actions/doge_poet_hit_ul.png");
+        AssertThat(poet.RangedDownRightTexture).IsNull();
+        AssertThat(poet.RangedUpLeftTexture).IsNull();
         AssertThat(poet.BodyTint.IsEqualApprox(Colors.White)).IsTrue();
         AssertThat(decoy.DownRightTexture?.ResourcePath).IsEqual("res://assets/units/doge_poet.png");
         AssertThat(decoy.UpLeftTexture?.ResourcePath).IsEqual("res://assets/units/doge_poet_ul.png");
@@ -69,26 +76,39 @@ public class PoetAssetFactoryGodotTests
             return;
         }
         actor.SetSpearHeld(true);
-        actor.SetFacing(GodotUnitFacing.South);
-        actor.SetActionPose(GodotUnitActionPose.Melee);
-        AssertThat(actor.Body.Texture?.ResourcePath).IsEqual("res://assets/units/doge_poet.png");
-        AssertThat(actor.Body.FlipH).IsFalse();
-        actor.SetFacing(GodotUnitFacing.North);
-        actor.SetActionPose(GodotUnitActionPose.Cast);
-        AssertThat(actor.Body.Texture?.ResourcePath).IsEqual("res://assets/units/doge_poet_ul.png");
-        AssertThat(actor.Body.FlipH).IsFalse();
-        actor.SetFacing(GodotUnitFacing.East);
-        actor.SetActionPose(GodotUnitActionPose.Hit);
-        AssertThat(actor.Body.Texture?.ResourcePath).IsEqual("res://assets/units/doge_poet_ul.png");
-        AssertThat(actor.Body.FlipH).IsTrue();
-        actor.SetFacing(GodotUnitFacing.West);
-        actor.SetActionPose(GodotUnitActionPose.Ranged);
-        AssertThat(actor.Body.Texture?.ResourcePath).IsEqual("res://assets/units/doge_poet.png");
-        AssertThat(actor.Body.FlipH).IsTrue();
+        var posePaths = new Dictionary<GodotUnitActionPose, (string DownRight, string UpLeft)>
+        {
+            [GodotUnitActionPose.Melee] = ("res://assets/units/actions/doge_poet_melee_attack_dr.png", "res://assets/units/actions/doge_poet_melee_attack_ul.png"),
+            [GodotUnitActionPose.Cast] = ("res://assets/units/actions/doge_poet_cast_dr.png", "res://assets/units/actions/doge_poet_cast_ul.png"),
+            [GodotUnitActionPose.Hit] = ("res://assets/units/actions/doge_poet_hit_dr.png", "res://assets/units/actions/doge_poet_hit_ul.png")
+        };
+        var directions = new (GodotUnitFacing Facing, bool UsesUpLeft, bool Flip)[]
+        {
+            (GodotUnitFacing.South, false, false),
+            (GodotUnitFacing.North, true, false),
+            (GodotUnitFacing.East, true, true),
+            (GodotUnitFacing.West, false, true)
+        };
+        foreach ((GodotUnitActionPose pose, (string downRight, string upLeft)) in posePaths)
+            foreach ((GodotUnitFacing facing, bool usesUpLeft, bool flip) in directions)
+            {
+                actor.SetFacing(facing);
+                actor.SetActionPose(pose);
+                AssertThat(actor.Body.Texture?.ResourcePath).IsEqual(usesUpLeft ? upLeft : downRight);
+                AssertThat(actor.Body.FlipH).IsEqual(flip);
+            }
+        foreach ((GodotUnitFacing facing, bool usesUpLeft, bool flip) in directions)
+        {
+            actor.SetFacing(facing);
+            actor.SetActionPose(GodotUnitActionPose.Ranged);
+            AssertThat(actor.Body.Texture?.ResourcePath).IsEqual(usesUpLeft
+                ? "res://assets/units/doge_poet_ul.png" : "res://assets/units/doge_poet.png");
+            AssertThat(actor.Body.FlipH).IsEqual(flip);
+        }
         actor.SetDeathVisual(true);
-        AssertThat(actor.Body.Texture?.ResourcePath).IsEqual("res://assets/units/doge_poet.png");
+        AssertThat(actor.Body.Texture?.ResourcePath).IsEqual("res://assets/units/doge_poet_death.png");
         AssertThat(actor.Body.FlipH).IsFalse();
-        AssertThat(actor.Body.Offset.IsEqualApprox(poet.DownRightBodyOffset)).IsTrue();
+        AssertThat(actor.Body.Offset.IsEqualApprox(Vector2.Zero)).IsTrue();
         actor.Free();
     }
 

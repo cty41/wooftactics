@@ -14,6 +14,13 @@ public static class PoetAssetFactory
     private const string BalancePath = "res://content/ui/PlayableLv1BalanceProfile.tres";
     private const string PoetDownRightTexturePath = "res://assets/units/doge_poet.png";
     private const string PoetUpLeftTexturePath = "res://assets/units/doge_poet_ul.png";
+    private const string PoetDeathTexturePath = "res://assets/units/doge_poet_death.png";
+    private const string PoetMeleeDownRightTexturePath = "res://assets/units/actions/doge_poet_melee_attack_dr.png";
+    private const string PoetMeleeUpLeftTexturePath = "res://assets/units/actions/doge_poet_melee_attack_ul.png";
+    private const string PoetCastDownRightTexturePath = "res://assets/units/actions/doge_poet_cast_dr.png";
+    private const string PoetCastUpLeftTexturePath = "res://assets/units/actions/doge_poet_cast_ul.png";
+    private const string PoetHitDownRightTexturePath = "res://assets/units/actions/doge_poet_hit_dr.png";
+    private const string PoetHitUpLeftTexturePath = "res://assets/units/actions/doge_poet_hit_ul.png";
 
     private sealed record SkillData(
         string Id, string Name, int Level, int Mana, int MinRange, int MaxRange,
@@ -113,12 +120,15 @@ public static class PoetAssetFactory
         UnitDefinitionResource visualTemplate = ResourceLoader.Load<UnitDefinitionResource>(
             "res://content/demonbound/PureRunDemonbound.tres", string.Empty, ResourceLoader.CacheMode.Ignore)
             ?? throw new InvalidOperationException("Poet generation requires the canonical player-unit template.");
-        Texture2D poetDownRightTexture = ResourceLoader.Load<Texture2D>(PoetDownRightTexturePath,
-            string.Empty, ResourceLoader.CacheMode.Ignore)
-            ?? throw new InvalidOperationException($"Approved Poet Idle texture missing: {PoetDownRightTexturePath}");
-        Texture2D poetUpLeftTexture = ResourceLoader.Load<Texture2D>(PoetUpLeftTexturePath,
-            string.Empty, ResourceLoader.CacheMode.Ignore)
-            ?? throw new InvalidOperationException($"Approved Poet Idle texture missing: {PoetUpLeftTexturePath}");
+        Texture2D poetDownRightTexture = ApprovedPoetTexture(PoetDownRightTexturePath, "Idle DR");
+        Texture2D poetUpLeftTexture = ApprovedPoetTexture(PoetUpLeftTexturePath, "Idle UL");
+        Texture2D poetDeathTexture = ApprovedPoetTexture(PoetDeathTexturePath, "Death");
+        Texture2D poetMeleeDownRightTexture = ApprovedPoetTexture(PoetMeleeDownRightTexturePath, "Melee DR");
+        Texture2D poetMeleeUpLeftTexture = ApprovedPoetTexture(PoetMeleeUpLeftTexturePath, "Melee UL");
+        Texture2D poetCastDownRightTexture = ApprovedPoetTexture(PoetCastDownRightTexturePath, "Cast DR");
+        Texture2D poetCastUpLeftTexture = ApprovedPoetTexture(PoetCastUpLeftTexturePath, "Cast UL");
+        Texture2D poetHitDownRightTexture = ApprovedPoetTexture(PoetHitDownRightTexturePath, "Hit DR");
+        Texture2D poetHitUpLeftTexture = ApprovedPoetTexture(PoetHitUpLeftTexturePath, "Hit UL");
         UnitDefinitionResource poet = (UnitDefinitionResource)visualTemplate.Duplicate(true);
         poet.ContentIdValue = "unit.pure-run.poet";
         poet.SourceId = "godot.poet";
@@ -130,7 +140,10 @@ public static class PoetAssetFactory
         poet.Speed = 5; poet.MaxHealth = 20; poet.MaxMana = 18; poet.StartingMana = 6;
         poet.MoveRange = 4; poet.Initiative = 10; poet.MovementTraitModifier = 0;
         poet.DerivedStatModeValue = "frozen-formula";
-        ConfigurePoetVisuals(poet, poetDownRightTexture, poetUpLeftTexture);
+        ConfigurePoetVisuals(poet, poetDownRightTexture, poetUpLeftTexture, poetDeathTexture,
+            poetMeleeDownRightTexture, poetMeleeUpLeftTexture,
+            poetCastDownRightTexture, poetCastUpLeftTexture,
+            poetHitDownRightTexture, poetHitUpLeftTexture);
         poet.ToCoreDefinition();
         const string poetPath = Root + "/PureRunPoet.tres";
         pendingResources.Add((poet, poetPath));
@@ -189,15 +202,30 @@ public static class PoetAssetFactory
     internal static void ConfigurePoetVisuals(
         UnitDefinitionResource poet,
         Texture2D downRightTexture,
-        Texture2D upLeftTexture)
+        Texture2D upLeftTexture,
+        Texture2D deathTexture,
+        Texture2D meleeDownRightTexture,
+        Texture2D meleeUpLeftTexture,
+        Texture2D castDownRightTexture,
+        Texture2D castUpLeftTexture,
+        Texture2D hitDownRightTexture,
+        Texture2D hitUpLeftTexture)
     {
         poet.DownRightTexture = downRightTexture;
         poet.UpLeftTexture = upLeftTexture;
-        poet.DeathTexture = downRightTexture;
-        poet.DeathBodyOffset = poet.DownRightBodyOffset;
+        poet.DeathTexture = deathTexture;
+        // Death masters are centered on the tile by their corpse AABB instead of a standing foot baseline.
+        poet.DeathBodyOffset = Vector2.Zero;
         poet.UnarmedDownRightTexture = null;
         poet.UnarmedUpLeftTexture = null;
-        ClearActionTextures(poet);
+        poet.MeleeDownRightTexture = meleeDownRightTexture;
+        poet.MeleeUpLeftTexture = meleeUpLeftTexture;
+        poet.RangedDownRightTexture = null;
+        poet.RangedUpLeftTexture = null;
+        poet.CastDownRightTexture = castDownRightTexture;
+        poet.CastUpLeftTexture = castUpLeftTexture;
+        poet.HitDownRightTexture = hitDownRightTexture;
+        poet.HitUpLeftTexture = hitUpLeftTexture;
         poet.BodyTint = Colors.White;
         poet.BaseBodyColor = Colors.White;
         poet.BodyTintModeValue = UnitBodyTintModes.Multiply;
@@ -341,6 +369,10 @@ public static class PoetAssetFactory
         SchemaVersion = value.SchemaVersion,
         ReferenceContentIds = value.ReferenceContentIds.ToArray()
     };
+
+    private static Texture2D ApprovedPoetTexture(string path, string pose) =>
+        ResourceLoader.Load<Texture2D>(path, string.Empty, ResourceLoader.CacheMode.Ignore)
+        ?? throw new InvalidOperationException($"Approved Poet {pose} texture missing: {path}");
 
     private static long Uid(string path)
     {

@@ -904,8 +904,29 @@ try {
     }
     }
 
-    Invoke-Checked 'Import approved Poet Idle PNG payload in headless Editor' {
+    $poetRuntimeTargets = @(
+        'assets\units\doge_poet.png', 'assets\units\doge_poet.png.import',
+        'assets\units\doge_poet_ul.png', 'assets\units\doge_poet_ul.png.import',
+        'assets\units\doge_poet_death.png', 'assets\units\doge_poet_death.png.import',
+        'assets\units\actions\doge_poet_melee_attack_dr.png', 'assets\units\actions\doge_poet_melee_attack_dr.png.import',
+        'assets\units\actions\doge_poet_melee_attack_ul.png', 'assets\units\actions\doge_poet_melee_attack_ul.png.import',
+        'assets\units\actions\doge_poet_cast_dr.png', 'assets\units\actions\doge_poet_cast_dr.png.import',
+        'assets\units\actions\doge_poet_cast_ul.png', 'assets\units\actions\doge_poet_cast_ul.png.import',
+        'assets\units\actions\doge_poet_hit_dr.png', 'assets\units\actions\doge_poet_hit_dr.png.import',
+        'assets\units\actions\doge_poet_hit_ul.png', 'assets\units\actions\doge_poet_hit_ul.png.import'
+    ) | ForEach-Object { Join-Path $projectRoot $_ }
+    $preImportPoetHashes = @{}
+    foreach ($target in $poetRuntimeTargets) {
+        if (-not (Test-Path -LiteralPath $target -PathType Leaf)) { throw "Poet runtime target is missing: $target" }
+        $preImportPoetHashes[$target] = (Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash
+    }
+    Invoke-Checked 'Import approved Poet runtime PNG payload in headless Editor' {
         & $GodotExecutable --headless --editor --path $projectRoot --quit-after 6000
+    }
+    foreach ($target in $poetRuntimeTargets) {
+        if ($preImportPoetHashes[$target] -ne (Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash) {
+            throw "Poet runtime import changed a checked-in target: $target"
+        }
     }
     $poetGeneratedTargets = @(
         Get-ChildItem -LiteralPath (Join-Path $projectRoot 'content\poet') -Filter '*.tres' -File |
@@ -915,9 +936,30 @@ try {
         (Join-Path $projectRoot 'content\runs\PureRunThreeEncounterV1.tres')
         (Join-Path $projectRoot 'content\ui\PlayableLv1BalanceProfile.tres')
     )
+    $prePoetGenerationTargets = @($poetGeneratedTargets | Sort-Object)
+    $prePoetGenerationHashes = @{}
+    foreach ($target in $prePoetGenerationTargets) {
+        $prePoetGenerationHashes[$target] = (Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash
+    }
     Invoke-Checked 'Generate approved Poet content through ResourceSaver' {
         & $GodotExecutable --headless --path $projectRoot `
             --script 'res://src/Tactics.Godot.Adapter/Editor/PoetAssetBuilder.cs'
+    }
+    $postPoetGenerationTargets = @(
+        Get-ChildItem -LiteralPath (Join-Path $projectRoot 'content\poet') -Filter '*.tres' -File |
+            Select-Object -ExpandProperty FullName
+    ) + @(
+        (Join-Path $projectRoot 'content\ContentCatalog.tres')
+        (Join-Path $projectRoot 'content\runs\PureRunThreeEncounterV1.tres')
+        (Join-Path $projectRoot 'content\ui\PlayableLv1BalanceProfile.tres')
+    ) | Sort-Object
+    if (Compare-Object $prePoetGenerationTargets $postPoetGenerationTargets) {
+        throw 'Poet generation changed the checked-in target set.'
+    }
+    foreach ($target in $prePoetGenerationTargets) {
+        if ($prePoetGenerationHashes[$target] -ne (Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash) {
+            throw "Poet first generation changed a checked-in target: $target"
+        }
     }
     $firstPoetGenerationHashes = @{}
     foreach ($target in $poetGeneratedTargets) {

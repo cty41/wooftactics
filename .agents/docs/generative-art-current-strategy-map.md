@@ -135,7 +135,7 @@ Melee 还有直接时序错位：Brief 将目标图定义为“下劈峰值”�
 - 允许确定性 Assembly 与诚实 recontract；
 - 用人工 Acceptance/Verdict/Approval 和 SHA 冻结结果。
 
-但产品切片未完成：`PureRunPoet.tres` 的动作 pair 全空，缺图回退 Idle，Death 是 Idle DR placeholder；`MQA-GODOT-POET-RUNTIME` 仍为 pending。Idle 只能称为离线身份/生产成功及自动接入已完成，不能称为完整运行时体验通过。
+产品切片现已把获批 Melee、Cast、Hit 的 DR/UL 与单张 Death 逐字节复制到 `godot/assets`，并由 `PoetAssetFactory` 通过 ResourceSaver 绑定到 `PureRunPoet.tres`；Ranged 仍无专用图并安全回退 Idle，非行动分身继续只使用半透明 Idle。`MQA-GODOT-POET-RUNTIME` 仍需人工复验动作切换、镜像、落点和职业体验，自动接入完成不等于视觉通过。
 
 ### 7.2 Melee 双参考
 
@@ -155,14 +155,14 @@ Melee 还有直接时序错位：Brief 将目标图定义为“下劈峰值”�
 
 `register-runtime-copy` 当前：
 
-- 读取已存在 source 与 target；
-- 验证 SHA 完全一致；
-- 要求 source public provenance 为 approved 且有 rightsHolder/license；
-- 将 target rightsHolder/license 设为 source 值；
-- 将 target provenance 固定为 `project-owned-migrated-runtime-art`；
-- 更新 `Tools/public-release/asset-provenance.json`。
+- 读取已存在 source 与 target，不替调用者复制文件；
+- 验证 target 位于 `godot/assets/**`、是 PNG 且与 approved source 的 SHA 完全一致；
+- 要求 source public provenance 具有 rightsHolder 和公开 allowlist 许可证；
+- 将 target rightsHolder/license 设为 source 值，并将 provenance 固定为 `project-owned-migrated-runtime-art`；
+- 要求 `cty41`、reason、decidedAt、至少一个 `res://*.tres` Resource 路径与 Manual QA stable ID；
+- 生成不可变 `runtime-authorization-*` receipt 后更新 `Tools/public-release/asset-provenance.json`，相同输入幂等，冲突 target fail closed。
 
-它不复制文件、不记录 `authorizedBy/reason/decidedAt`、不生成 runtime authorization receipt、不绑定 Resource 字段、Cue、自动测试或 Manual QA。
+Receipt 证明 source→target 字节、授权、Resource 与人工验收边界；具体 Cue 选择和运行时表现仍由 Application/Godot 测试与人工 QA 分别证明。
 
 ## 9. 当前值得保留的基础
 
