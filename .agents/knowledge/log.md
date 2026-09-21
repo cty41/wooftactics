@@ -1,8 +1,68 @@
 # Tactics Knowledge Update Log
 
+## 2026-09-21
+* **Sync**: `roguelike-run` 已同步到来源指纹 `sha256:ec378fdba989acd77c9c42d13b873f443ca84ca13ef83f4d837685d6f8c305cc`。
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:704387b2f2f23280e56d390274d08e2c67dc4146ba6c454f28ea966894eca3db`。
+* **Sync**: `project-architecture` 已同步到来源指纹 `sha256:dede4274070e57cfc8412246f76872c7204c6070b5e072643737a73e07bcb0cb`。
+* **Sync**: `okf-maintenance` 已同步到来源指纹 `sha256:cb345f5d516be73265b15b4f1e3505ef7713397cb3a9d3c82b71cd348b45f696`。
+* **Sync**: `godot-migration` 已同步到来源指纹 `sha256:6aafb0ad90c2ccc30af0f64e4d0e839ae1df93cc1c1f5367c67afdf1f21be017`。
+* **Sync**: `godot-agent-workflow` 已同步到来源指纹 `sha256:1f65c870913676f763601ce5a72fed9f824615df7ccde0ff8b159ac0f69bda73`。
+* **Sync**: `gameplay-test-framework` 已同步到来源指纹 `sha256:9a0d4e4943fbcb07a5ef83075469800e9a61801ad5789dc9319b6df1f9e012d7`。
+* **Sync**: `battle-system` 已同步到来源指纹 `sha256:b12c5d6b3de42a8245ca4f7d66503367419e5d1bf117bf9d1943710122fc14b0`。
+
+## 2026-09-17
+* **Fix**: 纠正 Adventure/Battle 等距朝向合同与实现：真实投影的 `+X/-X/+Y/-Y` 分别对应右上、左下、左上、右下，并使用 UL镜像、DR镜像、UL、DR 表现。
+
+## 2026-09-12
+* **Sync**: `godot-agent-workflow` 已同步到来源指纹 `sha256:1f65c870913676f763601ce5a72fed9f824615df7ccde0ff8b159ac0f69bda73`。
+* **Update**: 受审计的 godot-ai EditorPlugin 从 v4.0.4 升级到 v4.1.0，保留项目级隔离 Attach 配置并纳入 Windows lifecycle 修复。
+* **Sync**: `battle-system` 已同步到来源指纹 `sha256:1204d25767c4739b2c021dd78b163b0eba280b9b67b7d14014011eec5e3ed993`。
+* **Sync**: `gameplay-test-framework` 已同步到来源指纹 `sha256:9a0d4e4943fbcb07a5ef83075469800e9a61801ad5789dc9319b6df1f9e012d7`。
+* **Sync**: `godot-migration` 已同步到来源指纹 `sha256:cf4e2133a6c05d0820209fc9ee4e62d35cd95f753c5c51471177f06b2782f349`。
+* **Sync**: `project-architecture` 已同步到来源指纹 `sha256:a36b0f9db7b86a5a2d82fa378b207f27ba25c7edeca6c53d03abb527df7f4b93`。
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:317726489f026681a713bdf7fea4356ec3bdcc03e5831b3f5a0d582c61f3298e`。
+* **Sync**: `roguelike-run` 已同步到来源指纹 `sha256:e266737105051c496bee95e876edc5ad06bcbcc2b0c0a76a361e2799a5467a18`。
+
 ## 2026-09-11
-* **Sync**: `godot-agent-workflow` 已同步到来源指纹 `sha256:34dcb9bcae224102d52fd47b8c6eb2c0faf08c0bd47dd4ffdaa0a744ab4d613a`。
+* **Update**: Adventure逐格朝向改为等距屏幕方向；出口点击自动选择最短稳定相邻格并安全延迟触发；确定性Battle/Elite/Boss节点移除预战斗TileMap并直接进入encounter。
+* **Sync**: `godot-agent-workflow` 已同步到来源指纹 `sha256:accf5ea103bd45f848bd0c9b9213c494a596a8f8205d0ab21f711f4fb11669a7`。
 * **Update**: 受审计的 godot-ai EditorPlugin 从 v3.2.5 升级到 v4.0.4；项目级 Codex Attach 同步采用 capability 认证与隔离的 public-PyPI uvx 解析策略。
+
+## 2026-09-08
+* **Sync**: `gameplay-test-framework` 已同步到来源指纹 `sha256:31247a89f0aa7dd019dc8f8f997c9cca1443d4c2987588f3a1e64ece03bdfdab`。
+* **Sync**: `godot-migration` 已同步到来源指纹 `sha256:108604e4ed6ffd62c3db7fd64a1f189fe8f51eeaa2496deb3cde5483a6ce3fd6`。
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:23d319d4cc421d60728768330f9f62391623be19d8033e2fee93b7db95030c30`。
+* **Sync**: `roguelike-run` 已同步到来源指纹 `sha256:46b9af42f7e342ae47e4b03e500ccf4c627076136c3dfc4bcc752c92a50e1939`。
+* **Sync**: `battle-system` 已同步到来源指纹 `sha256:dcac06e843809b3e9da5fbf1d243d507800a641c796bdfab3fae062eaee67697`。
+* **Sync**: `project-architecture` 已同步到来源指纹 `sha256:2f2555217c224f68c4957e54950695fd6a4bae408dcb437eae0a6472b7c13366`。
+
+## 2026-09-07
+* **Update**: Runtime UI完成Main/Page/Run/Open Session/Frame所有权审计；Pause、Battle退出、Run草稿、Page status、Cheat Console与Adventure resize重入规则已写入权威合同和相关系统概念。
+* **Sync**: `roguelike-run` 已同步到来源指纹 `sha256:4c0aa9485b34d807b9c7f474c38e585c0f8da6983f91a9a89bbd2d0ee874b102`。
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:4e35f3770975d4d51c74316cd1ec96a7d17a9b07902ddfd932d1626be73b6671`。
+
+## 2026-09-03
+* **Sync**: `roguelike-run` 已同步到来源指纹 `sha256:e30c27ac0bb469b9e7fc137d81d9af9bb0f5e96325ebf29fadfb2867dfa87a60`。
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:38c12e6e731eaf9bb21ed54fc2ba1e3e81eda0146e5eaae88b10fd332b054472`。
+
+## 2026-09-02
+* **Sync**: `godot-migration` 已同步到来源指纹 `sha256:c38fe1514276844c304f543bada6ad3e1c56c9ef341e1adb1697ca5f06afc233`（排除任务外未提交的 `godot/project.godot` 工作区差异）。
+* **Sync**: `project-architecture` 已同步到来源指纹 `sha256:2954488eadf4e25521daf0451ab6e8be915967a8a5757a7b8e34ec7405a4bc23`（排除任务外未提交的 `godot/project.godot` 工作区差异）。
+* **Sync**: `godot-agent-workflow` 已同步到来源指纹 `sha256:71fafa22f91dd6825db95ff45e0c48e5835b3c0247f1ce98c5323b75be27610b`（排除任务外未提交的 `godot/project.godot` 工作区差异）。
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:156dba2b8fa86376faf437f1b614fd9a53d3c7f9ee4f53172753a531f1b7d816`。
+* **Update**: Godot Editor 改为 Human Direct / Prepared Agent 双入口；GDScript Main Screen Shell 支持缺失 C# assembly 的显式一键构建与同 PID reload。
+* **Update**: `Build-GodotDevAssembly.ps1` 统一串行 Adapter Build、assembly identity、token结果和日志，prepared launcher继续拥有worktree/Codex/session边界。
+* **Sync**: `gameplay-test-framework` 已同步到来源指纹 `sha256:31247a89f0aa7dd019dc8f8f997c9cca1443d4c2987588f3a1e64ece03bdfdab`。
+* **Sync**: `roguelike-run` 已同步到来源指纹 `sha256:43966e8654b744f53eb7556dfbdb79265f99276d805afbe196196a684457232d`。
+* **Update**: Pure Run 开局选人与起始技能改为进程内事务草稿，最后一个必需技能才一次 CAS 保存；V11 丢弃历史 pending setup。
+* **Update**: `GodotPlayableRunMain` 统一持有跨页 Pause Overlay 与 Esc 输入路由，Gameplay probe/runner 区分瞬时 setup 和持久化 Save。
+* **Sync**: `battle-system` 已同步到来源指纹 `sha256:84856922fa1985b7f900b5e9246ff6b02c0fc261e3e44fc2fd4832ca73fda628`。
+
+## 2026-09-01
+* **Sync**: `roguelike-run` 已同步到来源指纹 `sha256:3088fad64c817f428d5790c70034bb8d1cc3835fdea8c3865b2b4b828ddc44ec`。
+* **Sync**: `battle-system` 已同步到来源指纹 `sha256:a679bb0dc1d20411b795fc3beb87a50e13c83079f46fd05117ab9aa079ccc937`。
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:a9dd1561c80a809639411c687e21afd977c16860bec658abae329cb5033d755c`。
+* **Sync**: `gameplay-test-framework` 已同步到来源指纹 `sha256:d12d2f1a03e17533bb914091695183a7424ff32baaa0c673a78e3d14d75ec36d`。
 
 ## 2026-08-28
 * **Sync**: `godot-agent-workflow` 已同步到来源指纹 `sha256:271dd95c722c2a779339c673397ec1cbec13fd50d4a70907f88984a00362982e`。

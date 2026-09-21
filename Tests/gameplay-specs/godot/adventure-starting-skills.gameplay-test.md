@@ -3,19 +3,12 @@ feature: AdventureBoard
 scenario: StartingSkillsEnterAdventureBoard
 tags: [godot, player-input-e2e, adventure-board, isolated-save]
 requiredAdapters: [Map, PlayerInput, UI]
+contractIds: [ROGUELIKE-SETUP-COMMIT-001]
 setup:
   - kind: initializePlayerInput
     adapter: PlayerInput
     parameters: {}
 actions:
-  - kind: waitForPlayerObservable
-    adapter: PlayerInput
-    target: New Run
-    parameters: { observable: uiElement, elementName: New Run, maximumFrames: 180 }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: New Run
-    parameters: { targetKind: UiElement }
   - kind: waitForPlayerObservable
     adapter: PlayerInput
     parameters: { observable: adventureBoardReady, maximumFrames: 180 }

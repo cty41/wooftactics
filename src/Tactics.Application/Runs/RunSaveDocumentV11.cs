@@ -20,6 +20,8 @@ public static class RunSaveDocumentV11
     public static string Encode(PureRunSaveSnapshot snapshot)
     {
         ArgumentNullException.ThrowIfNull(snapshot);
+        if (snapshot.PendingRunSetup is not null)
+            throw new ArgumentException("Pending run setup is process-local and cannot be persisted.", nameof(snapshot));
         PureRunSaveSnapshot recovered = NormalizeRecovery(snapshot);
         JsonObject root = ParseObject(RunSaveDocumentV10.Encode(recovered));
         root["schemaVersion"] = SchemaVersion;
@@ -58,7 +60,8 @@ public static class RunSaveDocumentV11
 
             if (!decoded.Succeeded || decoded.Snapshot is null)
                 return new(false, decoded.ErrorCode, null, version < SchemaVersion ? version : 0, decoded.RequiresNewRun);
-            PureRunSaveSnapshot normalized = NormalizeRecovery(decoded.Snapshot);
+            PureRunSaveSnapshot recovered = decoded.Snapshot with { PendingRunSetup = null };
+            PureRunSaveSnapshot normalized = NormalizeRecovery(recovered);
             return new(true, null, normalized, version < SchemaVersion ? version : 0, decoded.RequiresNewRun);
         }
         catch (JsonException)

@@ -46,14 +46,6 @@
     {
       "adapter": "PlayerInput",
       "kind": "clickPointerTarget",
-      "target": "5,7",
-      "parameters": {
-        "targetKind": "AdventureCell"
-      }
-    },
-    {
-      "adapter": "PlayerInput",
-      "kind": "clickPointerTarget",
       "target": "exit:layer_04_store",
       "parameters": {
         "targetKind": "AdventureObject"

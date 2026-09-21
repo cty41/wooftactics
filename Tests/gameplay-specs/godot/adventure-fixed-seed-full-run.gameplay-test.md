@@ -3,6 +3,7 @@ feature: AdventureBoard
 scenario: FixedSeedCompleteRun
 tags: [godot, player-input-e2e, adventure-board, fixed-seed, full-run, isolated-save]
 requiredAdapters: [Map, PlayerInput, UI]
+contractIds: [ADVENTURE-EXIT-AUTO-APPROACH-001, PURE-RUN-BATTLE-DIRECT-ENTRY-001]
 setup:
   - kind: initializePlayerInput
     adapter: PlayerInput
@@ -48,20 +49,11 @@ actions:
     parameters: { observable: adventureBoardReady, maximumFrames: 180 }
   - kind: clickPointerTarget
     adapter: PlayerInput
-    target: 7,5
-    parameters: { targetKind: AdventureCell }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
     target: "exit:layer_01_battle"
     parameters: { targetKind: AdventureObject }
-  - kind: clickPointerTarget
+  - kind: waitForPlayerObservable
     adapter: PlayerInput
-    target: 6,5
-    parameters: { targetKind: AdventureCell }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: encounter
-    parameters: { targetKind: AdventureObject }
+    parameters: { observable: battleReady, maximumFrames: 300 }
   - kind: playBattleThroughInput
     adapter: PlayerInput
     parameters: { maximumActions: 100 }
@@ -82,22 +74,13 @@ actions:
     target: Continue
     parameters: { targetKind: UiElement }
 
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: 8,7
-    parameters: { targetKind: AdventureCell }
   - kind: clickPointerTarget
     adapter: PlayerInput
     target: "exit:layer_02_battle"
     parameters: { targetKind: AdventureObject }
-  - kind: clickPointerTarget
+  - kind: waitForPlayerObservable
     adapter: PlayerInput
-    target: 6,5
-    parameters: { targetKind: AdventureCell }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: encounter
-    parameters: { targetKind: AdventureObject }
+    parameters: { observable: battleReady, maximumFrames: 300 }
   - kind: playBattleThroughInput
     adapter: PlayerInput
     parameters: { maximumActions: 100 }
@@ -120,20 +103,11 @@ actions:
 
   - kind: clickPointerTarget
     adapter: PlayerInput
-    target: 8,7
-    parameters: { targetKind: AdventureCell }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
     target: "exit:layer_03_battle"
     parameters: { targetKind: AdventureObject }
-  - kind: clickPointerTarget
+  - kind: waitForPlayerObservable
     adapter: PlayerInput
-    target: 6,5
-    parameters: { targetKind: AdventureCell }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: encounter
-    parameters: { targetKind: AdventureObject }
+    parameters: { observable: battleReady, maximumFrames: 300 }
   - kind: playBattleThroughInput
     adapter: PlayerInput
     parameters: { maximumActions: 100 }
@@ -150,10 +124,6 @@ actions:
     target: ProgressionSkillChoice_0
     parameters: { targetKind: UiElement }
 
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: 3,7
-    parameters: { targetKind: AdventureCell }
   - kind: clickPointerTarget
     adapter: PlayerInput
     target: "exit:layer_04_rest"
@@ -173,20 +143,11 @@ actions:
 
   - kind: clickPointerTarget
     adapter: PlayerInput
-    target: 8,7
-    parameters: { targetKind: AdventureCell }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
     target: "exit:layer_05_battle"
     parameters: { targetKind: AdventureObject }
-  - kind: clickPointerTarget
+  - kind: waitForPlayerObservable
     adapter: PlayerInput
-    target: 6,5
-    parameters: { targetKind: AdventureCell }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: encounter
-    parameters: { targetKind: AdventureObject }
+    parameters: { observable: battleReady, maximumFrames: 300 }
   - kind: playBattleThroughInput
     adapter: PlayerInput
     parameters: { maximumActions: 100 }
@@ -203,10 +164,6 @@ actions:
     target: ProgressionSkillChoice_0
     parameters: { targetKind: UiElement }
 
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: 8,8
-    parameters: { targetKind: AdventureCell }
   - kind: clickPointerTarget
     adapter: PlayerInput
     target: "exit:layer_06_treasure"
@@ -226,20 +183,11 @@ actions:
 
   - kind: clickPointerTarget
     adapter: PlayerInput
-    target: 8,7
-    parameters: { targetKind: AdventureCell }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
     target: "exit:layer_07_battle"
     parameters: { targetKind: AdventureObject }
-  - kind: clickPointerTarget
+  - kind: waitForPlayerObservable
     adapter: PlayerInput
-    target: 6,5
-    parameters: { targetKind: AdventureCell }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: encounter
-    parameters: { targetKind: AdventureObject }
+    parameters: { observable: battleReady, maximumFrames: 300 }
   - kind: playBattleThroughInput
     adapter: PlayerInput
     parameters: { maximumActions: 100 }

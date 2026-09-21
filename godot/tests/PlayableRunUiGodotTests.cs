@@ -96,6 +96,13 @@ public class PlayableRunUiGodotTests
         AssertThat(clipboard.Text).Contains("damage");
         AssertThat(clipboard.Text).Contains("decision");
         AssertThat(clipboard.Text).Contains("blocked");
+        Label copyStatus = Descendants<Label>(console).Single(value => value.Name == "CopyStatus");
+        AssertThat(copyStatus.Text).Contains("Copied");
+        console.SetOpen(false);
+        console.SetOpen(true);
+        AssertThat(filter.Selected).IsEqual(1);
+        AssertThat(console.RenderVisible()).Contains("damage");
+        AssertThat(copyStatus.Text).IsEmpty();
         console.Free();
     }
 
@@ -302,25 +309,247 @@ public class PlayableRunUiGodotTests
 
     [TestCase]
     [RequireGodotRuntime]
-    public void PauseMenuRendersAboveActorsAndDoesNotOfferSaveAndQuit()
+    public async Task PartialStartingSkillsAreDiscardedWhenMainIsRecreated()
+    {
+        var store = new ProbeRunStore();
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        var first = new GodotPlayableRunMain();
+        first.ConfigureTestContext(new GodotPlayableRunTestContext(store, 37, "setup-draft-first"));
+        tree.Root.AddChild(first);
+        await first.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        PureRunSessionService service = (PureRunSessionService)typeof(GodotPlayableRunMain)
+            .GetField("_run", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(first)!;
+        AssertThat(service.SelectPartyMember("pure_run_amazon").Succeeded).IsTrue();
+        AssertThat(service.SelectPartyMember("pure_run_demonbound").Succeeded).IsTrue();
+        AssertThat(service.SelectPartyMember("pure_run_mage").Succeeded).IsTrue();
+        AssertThat(service.ChooseParty(["pure_run_amazon", "pure_run_demonbound", "pure_run_mage"]).Succeeded).IsTrue();
+        AssertThat(service.ChooseStartingSkill("pure_run_amazon", new ContentId("skill.amazon.thrust.lv1")).Succeeded).IsTrue();
+        AssertThat(store.SaveCount).IsEqual(0);
+        first.QueueFree();
+        await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+
+        var replay = new GodotPlayableRunMain();
+        replay.ConfigureTestContext(new GodotPlayableRunTestContext(store, 37, "setup-draft-replay"));
+        tree.Root.AddChild(replay);
+        await replay.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        GodotPlayableRunProbe probe = replay.CaptureTestProbe();
+        AssertThat(probe.PageTitle).Contains("START CAMP");
+        AssertThat(probe.SetupDraftActive).IsTrue();
+        AssertThat(probe.SetupSelectedCount).IsEqual(0);
+        AssertThat(store.SaveCount).IsEqual(0);
+
+        PureRunSessionService replayService = (PureRunSessionService)typeof(GodotPlayableRunMain)
+            .GetField("_run", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(replay)!;
+        AssertThat(replayService.SelectPartyMember("pure_run_amazon").Succeeded).IsTrue();
+        typeof(GodotPlayableRunMain).GetMethod("DiscardSetupFromPause", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .Invoke(replay, null);
+        await replay.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        AssertThat(replay.CaptureTestProbe().SetupDraftActive).IsTrue();
+        AssertThat(replay.CaptureTestProbe().SetupSelectedCount).IsEqual(0);
+        AssertThat(store.SaveCount).IsEqual(0);
+
+        AssertThat(replayService.SelectPartyMember("pure_run_amazon").Succeeded).IsTrue();
+        typeof(GodotPlayableRunMain).GetMethod("SaveAndQuit", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .Invoke(replay, null);
+        AssertThat(replay.CaptureTestProbe().QuitRequested).IsTrue();
+        AssertThat(replayService.HasSetupDraft).IsFalse();
+        AssertThat(store.SaveCount).IsEqual(0);
+        replay.QueueFree();
+        await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task EscapeUsesTheSameGlobalPauseOverlayAcrossStartSkillAndInitialAdventure()
+    {
+        var store = new ProbeRunStore();
+        var ui = new GodotPlayableRunMain();
+        ui.ConfigureTestContext(new GodotPlayableRunTestContext(store, 37, "pause-shell"));
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        tree.Root.AddChild(ui);
+        await ui.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        GodotPlayableRunProbe start = ui.CaptureTestProbe();
+        AssertThat(start.PageTitle).Contains("START CAMP");
+        AssertThat(start.InputContext).IsEqual("Setup");
+        GodotObject overlay = ui.GetNode("GlobalPauseOverlay");
+
+        // Real GUI focus may consume ui_cancel before _UnhandledInput. Exercise the
+        // root _Input phase directly so this regression cannot pass on unhandled-only routing.
+        ui._Input(EscapeKeyEvent());
+        await ui.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        AssertThat(ui.CaptureTestProbe().PauseMenuVisible).IsTrue();
+        Button continueButton = Descendants<Button>((Node)overlay).Single(value => value.Text == "CONTINUE");
+        await ClickControl(continueButton, tree);
+        AssertThat(ui.CaptureTestProbe().PauseMenuVisible).IsFalse();
+
+        PureRunSessionService service = (PureRunSessionService)typeof(GodotPlayableRunMain)
+            .GetField("_run", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(ui)!;
+        AssertThat(service.SelectPartyMember("pure_run_amazon").Succeeded).IsTrue();
+        AssertThat(service.SelectPartyMember("pure_run_demonbound").Succeeded).IsTrue();
+        AssertThat(service.SelectPartyMember("pure_run_mage").Succeeded).IsTrue();
+        RunSessionResult skillSetup = service.ChooseParty(["pure_run_amazon", "pure_run_demonbound", "pure_run_mage"]);
+        typeof(GodotPlayableRunMain).GetMethod("ShowNewRunSetup", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .Invoke(ui, new object[] { skillSetup.Snapshot! });
+        await ui.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        AssertThat(ui.CaptureTestProbe().PageTitle).Contains("STARTING SKILL");
+        await ToggleEscape(ui, tree);
+        AssertThat(ui.CaptureTestProbe().PauseMenuVisible).IsTrue();
+        AssertThat(ReferenceEquals(overlay, ui.GetNode("GlobalPauseOverlay"))).IsTrue();
+        await ToggleEscape(ui, tree);
+
+        AssertThat(service.ChooseStartingSkill("pure_run_amazon", new ContentId("skill.amazon.thrust.lv1")).Succeeded).IsTrue();
+        RunSessionResult completed = service.ChooseStartingSkill("pure_run_mage", new ContentId("skill.mage.fireball.lv1"));
+        AssertThat(completed.Succeeded).IsTrue();
+        AssertThat(store.SaveCount).IsEqual(1);
+        typeof(GodotPlayableRunMain).GetMethod("RouteRunState", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .Invoke(ui, new object[] { completed.Snapshot! });
+        await ui.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        AssertThat(ui.CaptureTestProbe().PageTitle).Contains("TILE ADVENTURE");
+        AssertThat(ui.CaptureTestProbe().InputContext).IsEqual("Adventure");
+        Control page = (Control)typeof(GodotPlayableRunMain)
+            .GetField("_page", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(ui)!;
+        AssertThat(new Rect2(page.GetNode<PanelContainer>("PageHeader").Position,
+            page.GetNode<PanelContainer>("PageHeader").Size)).IsEqual(GodotPlayableRunMain.AdventureHeaderRect);
+        AssertThat(new Rect2(page.GetNode<ColorRect>("RunShellPanel").Position,
+            page.GetNode<ColorRect>("RunShellPanel").Size)).IsEqual(GodotPlayableRunMain.AdventureRunShellRect);
+        AssertThat(new Rect2(page.GetNode<PanelContainer>("AdventureLeaderPanel").Position,
+            page.GetNode<PanelContainer>("AdventureLeaderPanel").Size)).IsEqual(GodotPlayableRunMain.AdventureLeaderRect);
+        AssertThat(new Rect2(page.GetNode<Button>("AdventureInventoryButton").Position,
+            page.GetNode<Button>("AdventureInventoryButton").Size)).IsEqual(GodotPlayableRunMain.AdventureInventoryRect);
+        await ToggleEscape(ui, tree);
+        AssertThat(ui.CaptureTestProbe().PauseMenuVisible).IsTrue();
+        AssertThat(ReferenceEquals(overlay, ui.GetNode("GlobalPauseOverlay"))).IsTrue();
+        Button optionsButton = Descendants<Button>((Node)overlay).Single(value => value.Text == "OPTIONS");
+        await ClickControl(optionsButton, tree);
+        AssertThat(ui.CaptureTestProbe().PauseMenuView).IsEqual("Options");
+        await ToggleEscape(ui, tree);
+        AssertThat(ui.CaptureTestProbe().PauseMenuVisible).IsFalse();
+        await ToggleEscape(ui, tree);
+        AssertThat(ui.CaptureTestProbe().PauseMenuView).IsEqual("Root");
+        AssertThat(Descendants<Button>((Node)overlay).Select(value => value.Text).ToArray()).NotContains("BACK");
+        optionsButton = Descendants<Button>((Node)overlay).Single(value => value.Text == "OPTIONS");
+        await ClickControl(optionsButton, tree);
+        Button backButton = Descendants<Button>((Node)overlay).Single(value => value.Text == "BACK");
+        await ClickControl(backButton, tree);
+        AssertThat(ui.CaptureTestProbe().PauseMenuView).IsEqual("Root");
+        AssertThat(Descendants<Button>((Node)overlay).Select(value => value.Text).ToArray()).Contains("CONTINUE");
+        continueButton = Descendants<Button>((Node)overlay).Single(value => value.Text == "CONTINUE");
+        await ClickControl(continueButton, tree);
+        AssertThat(ui.CaptureTestProbe().PauseMenuVisible).IsFalse();
+
+        GodotAdventureBoardView adventureBoard = (GodotAdventureBoardView)typeof(GodotPlayableRunMain)
+            .GetField("_adventureBoard", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(ui)!;
+        GridPoint origin = adventureBoard.ActorCells.Values.First(cell => cell == new GridPoint(2, 5));
+        await ClickPoint(adventureBoard, adventureBoard.CellCenter(new GridPoint(8, 5)), tree);
+        for (int frame = 0; frame < 180 && adventureBoard.LastMovementDiagnostic?.CurrentCell == origin; frame++)
+            await ui.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        adventureBoard._Notification((int)Control.NotificationResized);
+        await ClickPoint(adventureBoard, adventureBoard.CellCenter(new GridPoint(4, 6)), tree);
+        for (int frame = 0; frame < 240 && adventureBoard.IsMovementLocked; frame++)
+            await ui.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        AssertThat(ui.CaptureTestProbe().BattleActive).IsFalse();
+        adventureBoard = (GodotAdventureBoardView)typeof(GodotPlayableRunMain)
+            .GetField("_adventureBoard", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(ui)!;
+
+        await ClickPoint(adventureBoard, adventureBoard.CellCenter(new GridPoint(8, 5)), tree);
+        for (int frame = 0; frame < 360 && !ui.CaptureTestProbe().BattleActive; frame++)
+            await ui.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        AssertThat(ui.CaptureTestProbe().BattleActive).IsTrue();
+        AssertThat(ui.FindChild("AdventureBattleEntryBoard", true, false)).IsNull();
+        ui._Input(EscapeKeyEvent());
+        await ui.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        AssertThat(ui.CaptureTestProbe().PlaybackPaused).IsTrue();
+        optionsButton = Descendants<Button>((Node)overlay).Single(value => value.Text == "OPTIONS");
+        await ClickControl(optionsButton, tree);
+        backButton = Descendants<Button>((Node)overlay).Single(value => value.Text == "BACK");
+        await ClickControl(backButton, tree);
+        continueButton = Descendants<Button>((Node)overlay).Single(value => value.Text == "CONTINUE");
+        await ClickControl(continueButton, tree);
+        AssertThat(ui.CaptureTestProbe().PlaybackPaused).IsFalse();
+
+        MethodInfo togglePause = typeof(GodotPlayableRunMain).GetMethod("TogglePause",
+            BindingFlags.Instance | BindingFlags.NonPublic)!;
+        togglePause.Invoke(ui, null);
+        ui._Input(EscapeKeyEvent());
+        await ui.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        continueButton = Descendants<Button>((Node)overlay).Single(value => value.Text == "CONTINUE");
+        await ClickControl(continueButton, tree);
+        AssertThat(ui.CaptureTestProbe().PlaybackPaused).IsTrue();
+        togglePause.Invoke(ui, null);
+
+        ui._Input(EscapeKeyEvent());
+        await ui.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        Button abandon = Descendants<Button>((Node)overlay).Single(value => value.Text == "ABANDON RUN");
+        await ClickControl(abandon, tree);
+        ConfirmationDialog confirmation = (ConfirmationDialog)typeof(GodotPlayableRunMain)
+            .GetField("_pauseConfirmation", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(ui)!;
+        AssertThat(ReferenceEquals(confirmation.GetParent(), overlay)).IsTrue();
+        AssertThat(ui.CaptureTestProbe().PauseMenuVisible).IsTrue();
+        AssertThat(ui.CaptureTestProbe().PlaybackPaused).IsTrue();
+        confirmation.EmitSignal(ConfirmationDialog.SignalName.Canceled);
+        await ui.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        AssertThat(ui.CaptureTestProbe().PauseMenuView).IsEqual("Root");
+        continueButton = Descendants<Button>((Node)overlay).Single(value => value.Text == "CONTINUE");
+        await ClickControl(continueButton, tree);
+        AssertThat(ui.CaptureTestProbe().PlaybackPaused).IsFalse();
+
+        ui._Input(EscapeKeyEvent());
+        await ui.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        abandon = Descendants<Button>((Node)overlay).Single(value => value.Text == "ABANDON RUN");
+        await ClickControl(abandon, tree);
+        confirmation = (ConfirmationDialog)typeof(GodotPlayableRunMain)
+            .GetField("_pauseConfirmation", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(ui)!;
+        confirmation.EmitSignal(ConfirmationDialog.SignalName.Confirmed);
+        await ui.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        AssertThat(ui.CaptureTestProbe().PauseMenuVisible).IsFalse();
+        AssertThat(ui.CaptureTestProbe().PlaybackPaused).IsFalse();
+        AssertThat(typeof(GodotPlayableRunMain).GetField("_pauseConfirmation",
+            BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(ui)).IsNull();
+
+        ui.QueueFree();
+        await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public void DeterministicBattleRoutingFailsClosedForUnknownNodeIds()
+    {
+        MethodInfo supported = typeof(GodotPlayableRunMain).GetMethod("IsSupportedDeterministicBattleNode",
+            BindingFlags.Static | BindingFlags.NonPublic)!;
+        AssertThat((bool)supported.Invoke(null, new object[] { "layer_05_battle" })!).IsTrue();
+        AssertThat((bool)supported.Invoke(null, new object[] { "layer_08_elite" })!).IsFalse();
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public void PauseMenuIsOnePersistentMainOverlayAndRebuildsActionsFromInputContext()
     {
         var ui = new GodotPlayableRunMain();
-        ui._Ready();
         var root = new Control();
         ui.AddChild(root);
-        typeof(GodotPlayableRunMain).GetMethod("BuildPauseMenu",
-                BindingFlags.Instance | BindingFlags.NonPublic)!
-            .Invoke(ui, new object[] { root, true });
-        string[] buttons = Descendants<Button>(root).Select(button => button.Text).ToArray();
-        ColorRect? overlay = Descendants<ColorRect>(root)
-            .FirstOrDefault(control => !control.Visible && control.MouseFilter == Control.MouseFilterEnum.Stop);
+        MethodInfo build = typeof(GodotPlayableRunMain).GetMethod("BuildPauseMenu",
+            BindingFlags.Instance | BindingFlags.NonPublic)!;
+        MethodInfo rebuild = typeof(GodotPlayableRunMain).GetMethod("RebuildPauseMenuContent",
+            BindingFlags.Instance | BindingFlags.NonPublic)!;
+        build.Invoke(ui, new object[] { root, true });
+        rebuild.Invoke(ui, null);
+        ColorRect overlay = Descendants<ColorRect>(ui).Single(control => control.Name == "GlobalPauseOverlay");
+        string[] runButtons = Descendants<Button>(overlay).Select(button => button.Text).ToArray();
 
-        AssertThat(buttons).Contains("CONTINUE");
-        AssertThat(buttons).Contains("OPTIONS");
-        AssertThat(buttons).Contains("MAIN MENU");
-        AssertThat(buttons).NotContains("SAVE AND QUIT");
-        AssertThat(overlay).IsNotNull();
-        AssertThat(overlay!.ZIndex).IsGreater(1000);
+        build.Invoke(ui, new object[] { root, false });
+        ColorRect sameOverlay = Descendants<ColorRect>(ui).Single(control => control.Name == "GlobalPauseOverlay");
+        typeof(GodotPlayableRunMain).GetMethod("SetInputContext", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .Invoke(ui, new object[] { GodotPlayableRunMain.RunInputContext.Setup });
+        rebuild.Invoke(ui, null);
+        string[] setupButtons = Descendants<Button>(overlay).Select(button => button.Text).ToArray();
+
+        AssertThat(ReferenceEquals(overlay, sameOverlay)).IsTrue();
+        AssertThat(runButtons).Contains("CONTINUE");
+        AssertThat(runButtons).Contains("ABANDON RUN");
+        AssertThat(runButtons).Contains("SAVE AND QUIT");
+        AssertThat(setupButtons).Contains("DISCARD SETUP");
+        AssertThat(setupButtons).Contains("QUIT — SETUP NOT SAVED");
+        AssertThat(overlay.ZIndex).IsGreater(1000);
         ui.Free();
     }
 
@@ -458,15 +687,18 @@ public class PlayableRunUiGodotTests
 
     [TestCase]
     [RequireGodotRuntime]
-    public void HomeLoadsCanonical101CatalogWithoutWritingSave()
+    public void StartupLoadsCanonicalCatalogBeforeStoreRouting()
     {
-        var ui = new GodotPlayableRunMain();
-        ui._Ready();
-        AssertThat(ui.IsReadyForInput).IsTrue();
-        AssertThat(Descendants<PanelContainer>(ui).Any(panel =>
-            panel.ThemeTypeVariation == GodotTacticsTheme.Panel)).IsTrue();
-        AssertThat(Descendants<Button>(ui).Select(button => button.Text)).Contains("Options");
-        AssertThat(Descendants<Label>(ui).Select(label => label.Text)).Contains("TACTICS");
+        var ui = ReadyForStaticUiTest();
+        string summary = ui.StartupContractSummary;
+        AssertThat(summary).Contains("units=14");
+        AssertThat(summary).Contains("skills=");
+        AssertThat(summary).Contains("ai=9");
+        AssertThat(summary).Contains("layouts=5");
+        AssertThat(summary).Contains("encounters=9");
+        AssertThat(summary).Contains("map=True");
+        AssertThat(summary).Contains("treasure=True");
+        AssertThat(summary).Contains("catalog=166");
         ui.Free();
     }
 
@@ -474,7 +706,7 @@ public class PlayableRunUiGodotTests
     [RequireGodotRuntime]
     public void ProgressionFirstRendersIndependentAttributeChoices()
     {
-        var ui = new GodotPlayableRunMain(); ui._Ready();
+        var ui = ReadyForStaticUiTest();
         var attributes = new UnitAttributes(5, 5, 5, 6, 5, 5);
         var mage = new RunCharacterState("pure_run_mage", new ContentId("unit.pure-run.mage"), 1, attributes,
             20, 20, 12, 12, false, new[] { new ContentId("skill.mage.fireball.lv1") },
@@ -499,7 +731,7 @@ public class PlayableRunUiGodotTests
     [RequireGodotRuntime]
     public void RunMapPageConsumesTheApplicationSnapshotWithoutStartingBattle()
     {
-        var ui = new GodotPlayableRunMain(); ui._Ready();
+        var ui = ReadyForStaticUiTest();
         UnitAttributes attributes = new(5, 5, 5, 6, 5, 5);
         RunCharacterState Character(string id, string unit, string skill) => new(id, new ContentId(unit), 1,
             attributes, 20, 20, 10, 10, false, [new ContentId(skill)]);
@@ -526,7 +758,7 @@ public class PlayableRunUiGodotTests
     [RequireGodotRuntime]
     public void ProgressionAfterAttributeAllocationRendersSkillChoices()
     {
-        var ui = new GodotPlayableRunMain(); ui._Ready();
+        var ui = ReadyForStaticUiTest();
         var attributes = new UnitAttributes(5, 5, 5, 6, 5, 5);
         var proposed = new UnitAttributes(5, 5, 5, 7, 5, 5);
         var mage = new RunCharacterState("pure_run_mage", new ContentId("unit.pure-run.mage"), 1, attributes,
@@ -540,10 +772,12 @@ public class PlayableRunUiGodotTests
         var pending = new PendingProgression("battle:n1:progression", "n1", mage.CharacterId);
         var run = new PureRunState("run-test", 7, 2, PureRunPhase.Ready, 1, new ContentId("encounter.pure-run.n2"),
             new[] { mage }.Concat(others).ToArray(), pendingProgression: new[] { pending });
+        typeof(GodotPlayableRunMain).GetMethod("BindRunUiScope", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .Invoke(ui, new object[] { run.RunId });
         FieldInfo draftsField = typeof(GodotPlayableRunMain).GetField("_progressionDrafts",
             BindingFlags.Instance | BindingFlags.NonPublic)!;
-        var drafts = (Dictionary<string, UnitAttributes>)draftsField.GetValue(ui)!;
-        drafts[pending.TransactionKey] = proposed;
+        var drafts = (Dictionary<(string RunId, string TransactionKey), UnitAttributes>)draftsField.GetValue(ui)!;
+        drafts[(run.RunId, pending.TransactionKey)] = proposed;
         typeof(GodotPlayableRunMain).GetMethod("ShowProgression", BindingFlags.Instance | BindingFlags.NonPublic)?.Invoke(ui, new object[] { run, pending });
         string[] buttonTexts = Descendants<Button>(ui).Select(button => button.Text).ToArray();
         string[] growthCards = buttonTexts.Where(text => text.StartsWith("Learn ", StringComparison.Ordinal) || text.StartsWith("Upgrade ", StringComparison.Ordinal)).ToArray();
@@ -557,6 +791,29 @@ public class PlayableRunUiGodotTests
         AssertThat(labels).Contains("MP 7");
         AssertThat(labels).Contains("施加2层点燃");
         AssertThat(buttonTexts.Any(text => text == "Back to Map")).IsFalse();
+        ui.Free();
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public void RunUiScopeClearsProgressionAndInventoryDraftsAcrossRunIds()
+    {
+        var ui = ReadyForStaticUiTest();
+        MethodInfo bind = typeof(GodotPlayableRunMain).GetMethod("BindRunUiScope",
+            BindingFlags.Instance | BindingFlags.NonPublic)!;
+        FieldInfo draftsField = typeof(GodotPlayableRunMain).GetField("_progressionDrafts",
+            BindingFlags.Instance | BindingFlags.NonPublic)!;
+        var drafts = (Dictionary<(string RunId, string TransactionKey), UnitAttributes>)draftsField.GetValue(ui)!;
+        bind.Invoke(ui, new object[] { "old-run" });
+        drafts[("old-run", "shared-progression")] = new UnitAttributes(6, 5, 5, 5, 5, 5);
+        typeof(GodotPlayableRunMain).GetField("_inventorySelectedInstanceId",
+            BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(ui, "drop-1-0");
+
+        bind.Invoke(ui, new object[] { "new-run" });
+
+        AssertThat(drafts.Count).IsEqual(0);
+        AssertThat((string?)typeof(GodotPlayableRunMain).GetField("_inventorySelectedInstanceId",
+            BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(ui)).IsNull();
         ui.Free();
     }
 
@@ -686,7 +943,7 @@ public class PlayableRunUiGodotTests
     [RequireGodotRuntime]
     public void InventoryRendersSingleBackpackAndActionableLoadoutColumns()
     {
-        var ui = new GodotPlayableRunMain(); ui._Ready();
+        var ui = ReadyForStaticUiTest();
         UnitAttributes attributes = new(5, 5, 5, 6, 5, 5);
         RunCharacterState Character(string id, string unit) => new(id, new ContentId(unit), 1, attributes,
             20, 20, 5, 15, false, Array.Empty<ContentId>());
@@ -723,8 +980,7 @@ public class PlayableRunUiGodotTests
     [RequireGodotRuntime]
     public void InventoryEntryExistsOnlyOnRogueMap()
     {
-        var ui = new GodotPlayableRunMain();
-        ui._Ready();
+        var ui = ReadyForStaticUiTest();
         string[] homeButtons = Descendants<Button>(ui).Select(value => value.Text).ToArray();
         AssertThat(homeButtons).NotContains("Inventory");
 
@@ -861,6 +1117,100 @@ public class PlayableRunUiGodotTests
         AssertThat(panel.Position.Y + panel.Size.Y).IsLessEqual(900);
     }
 
+    private static GodotPlayableRunMain ReadyForStaticUiTest()
+    {
+        var ui = new GodotPlayableRunMain();
+        ui.ConfigureTestContext(new GodotPlayableRunTestContext(new FailingRunStore(), 37, "static-ui"));
+        ui._Ready();
+        return ui;
+    }
+
+    private static InputEventKey EscapeKeyEvent() => new()
+    {
+        Keycode = Key.Escape,
+        PhysicalKeycode = Key.Escape,
+        Pressed = true,
+        Echo = false
+    };
+
+    private static async Task ClickPoint(Control control, Vector2 localPoint, SceneTree tree)
+    {
+        Vector2 point = control.GetGlobalTransformWithCanvas() * localPoint;
+        Viewport viewport = control.GetViewport();
+        viewport.PushInput(new InputEventMouseMotion { Position = point, GlobalPosition = point }, false);
+        await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        viewport.PushInput(new InputEventMouseButton { Position = point, GlobalPosition = point,
+            ButtonIndex = MouseButton.Left, Pressed = true }, false);
+        await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        viewport.PushInput(new InputEventMouseButton { Position = point, GlobalPosition = point,
+            ButtonIndex = MouseButton.Left, Pressed = false }, false);
+        await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+    }
+
+    private static async Task ClickControl(Control control, SceneTree tree)
+    {
+        Vector2 point = control.GetGlobalTransformWithCanvas() * (control.Size * .5f);
+        Viewport viewport = control.GetViewport();
+        viewport.PushInput(new InputEventMouseMotion { Position = point, GlobalPosition = point }, false);
+        await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        viewport.PushInput(new InputEventMouseButton
+        {
+            Position = point,
+            GlobalPosition = point,
+            ButtonIndex = MouseButton.Left,
+            Pressed = true
+        }, false);
+        await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        viewport.PushInput(new InputEventMouseButton
+        {
+            Position = point,
+            GlobalPosition = point,
+            ButtonIndex = MouseButton.Left,
+            Pressed = false
+        }, false);
+        await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+    }
+
+    private static async Task ToggleEscape(GodotPlayableRunMain ui, SceneTree tree)
+    {
+        ui.GetViewport().PushInput(new InputEventKey
+        {
+            Keycode = Key.Escape,
+            PhysicalKeycode = Key.Escape,
+            Pressed = true
+        }, false);
+        await ui.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        ui.GetViewport().PushInput(new InputEventKey
+        {
+            Keycode = Key.Escape,
+            PhysicalKeycode = Key.Escape,
+            Pressed = false
+        }, false);
+        await ui.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+    }
+
+    private sealed class FailingRunStore : IRunSaveStore
+    {
+        public RunStoreResult Load() => new(false, "qa.static_store", null);
+        public RunStoreResult Save(PureRunSaveSnapshot snapshot, long expectedRevision) =>
+            new(false, "qa.static_store", null);
+    }
+
+    private sealed class ProbeRunStore : IRunSaveStore
+    {
+        private PureRunSaveSnapshot? _snapshot;
+        public int SaveCount { get; private set; }
+        public RunStoreResult Load() => new(true, null, _snapshot);
+        public RunStoreResult Save(PureRunSaveSnapshot snapshot, long expectedRevision)
+        {
+            long actual = _snapshot?.Revision ?? 0;
+            if (actual != expectedRevision) return new(false, "save.revision_conflict", _snapshot);
+            _snapshot = snapshot;
+            SaveCount++;
+            return new(true, null, _snapshot);
+        }
+    }
+
     private sealed class MemoryClipboard : ITextClipboard
     {
         public string Text { get; private set; } = string.Empty;
@@ -871,8 +1221,7 @@ public class PlayableRunUiGodotTests
     [RequireGodotRuntime]
     public void ReplacingAPageDoesNotRetainDisposedUnitMeters()
     {
-        var ui = new GodotPlayableRunMain();
-        ui._Ready();
+        var ui = ReadyForStaticUiTest();
         FieldInfo? metersField = typeof(GodotPlayableRunMain).GetField("_unitMeters", BindingFlags.Instance | BindingFlags.NonPublic);
         MethodInfo? newPage = typeof(GodotPlayableRunMain).GetMethod("NewPage", BindingFlags.Instance | BindingFlags.NonPublic);
         var meters = (Dictionary<UnitInstanceId, Control>?)metersField?.GetValue(ui);
@@ -885,6 +1234,11 @@ public class PlayableRunUiGodotTests
 
         AssertThat(meters).IsNotNull();
         AssertThat(meters?.Count ?? -1).IsEqual(0);
+        typeof(GodotPlayableRunMain).GetMethod("SetStatus", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .Invoke(ui, new object[] { "current-page-error" });
+        Control currentPage = (Control)typeof(GodotPlayableRunMain).GetField("_page",
+            BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(ui)!;
+        AssertThat(currentPage.GetNode<Label>("PageFallbackStatus").Text).IsEqual("current-page-error");
 
         ui.Free();
     }

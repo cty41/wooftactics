@@ -13,16 +13,16 @@ Set-StrictMode -Version Latest
 $repoRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..')).Path
 $projectRoot = (Resolve-Path -LiteralPath (Join-Path $repoRoot 'godot')).Path
 $projectFile = Join-Path $projectRoot 'project.godot'
-$adapterProject = Join-Path $projectRoot 'Tactics.Godot.Adapter.csproj'
 $manifest = Get-Content -LiteralPath (Join-Path $repoRoot 'Tools\migration\manifest\godot-tooling.json') -Raw | ConvertFrom-Json
 $sessionModule = Join-Path $PSScriptRoot 'GodotDevSession.psm1'
+$buildHelper = Join-Path $PSScriptRoot 'Build-GodotDevAssembly.ps1'
 Import-Module $sessionModule -Force
 $editorLaunchArgument = Get-TacticsGodotLaunchArgument
 
 if ($Mode -eq 'Agent' -and $UserDataProfile -eq 'SharedManualQA') {
     throw 'SharedManualQA is a Human-only profile; Agent sessions must use worktree-isolated user data.'
 }
-foreach ($required in @($GodotExecutable, $projectFile, $adapterProject, (Join-Path $projectRoot 'addons\godot_ai\plugin.cfg'))) {
+foreach ($required in @($GodotExecutable, $projectFile, $buildHelper, (Join-Path $projectRoot 'addons\godot_ai\plugin.cfg'))) {
     if (-not (Test-Path -LiteralPath $required -PathType Leaf)) { throw "Required Godot development file is missing: $required" }
 }
 $expectedGodotVersion = ([string]$manifest.godotVersion).Split('-')[0]
@@ -30,22 +30,8 @@ $actualGodotVersion = [Diagnostics.FileVersionInfo]::GetVersionInfo($GodotExecut
 if ($actualGodotVersion -ne $expectedGodotVersion) {
     throw "Expected Godot $expectedGodotVersion, found $actualGodotVersion at $GodotExecutable."
 }
-$expectedSdk = [Version][string]$manifest.dotnetSdk
-Push-Location $repoRoot
-try {
-    $actualSdkText = (dotnet --version).Trim()
-}
-finally {
-    Pop-Location
-}
-$actualSdk = [Version]$actualSdkText
-$expectedFeatureBand = [Math]::Floor($expectedSdk.Build / 100)
-$actualFeatureBand = [Math]::Floor($actualSdk.Build / 100)
-if ($actualSdk.Major -ne $expectedSdk.Major -or $actualSdk.Minor -ne $expectedSdk.Minor -or $actualFeatureBand -ne $expectedFeatureBand) {
-    throw "Expected .NET SDK feature band $($expectedSdk.Major).$($expectedSdk.Minor).$($expectedFeatureBand)xx, found $actualSdkText."
-}
-
 $lock = $null
+$buildResultPath = Join-Path $env:TEMP ("tactics-godot-dev-build-{0}.json" -f [guid]::NewGuid().ToString('N'))
 try {
     $lock = Enter-TacticsGodotOperationLock -RepoRoot $repoRoot
     $identity = $lock.Identity
@@ -73,22 +59,20 @@ config/custom_user_dir_name="$userDirectory"
     & powershell @syncArguments
     if ($LASTEXITCODE -ne 0) { throw "Godot AI Codex configuration failed with exit code $LASTEXITCODE." }
 
-    Push-Location $repoRoot
-    try {
-        & dotnet build $adapterProject -c Debug -m:1
-        $buildExitCode = $LASTEXITCODE
+    $buildToken = [guid]::NewGuid().ToString('N')
+    & $buildHelper -Token $buildToken -ResultPath $buildResultPath -HeldOperationLock $lock
+    $buildExitCode = $LASTEXITCODE
+    if (-not (Test-Path -LiteralPath $buildResultPath -PathType Leaf)) {
+        throw "Godot Adapter build helper did not write its result: $buildResultPath"
     }
-    finally {
-        Pop-Location
+    $buildResult = Get-Content -LiteralPath $buildResultPath -Raw | ConvertFrom-Json
+    if ($buildResult.token -ne $buildToken) { throw 'Godot Adapter build helper returned a mismatched token.' }
+    if ($buildExitCode -ne 0 -or $buildResult.status -ne 'succeeded' -or $buildResult.exitCode -ne 0) {
+        throw "Godot Adapter Debug build failed: $($buildResult.firstError)"
     }
-    if ($buildExitCode -ne 0) { throw "Godot Adapter Debug build failed with exit code $buildExitCode." }
-    $assemblyPath = Join-Path $projectRoot '.godot\mono\temp\bin\Debug\Tactics.Godot.Adapter.dll'
-    if (-not (Test-Path -LiteralPath $assemblyPath -PathType Leaf)) { throw "Production Adapter assembly is missing: $assemblyPath" }
-    $assemblyName = [Reflection.AssemblyName]::GetAssemblyName($assemblyPath)
-    if ($assemblyName.Name -ne 'Tactics.Godot.Adapter') { throw "Unexpected Adapter assembly identity: $($assemblyName.FullName)" }
 
     if ($NoLaunch) {
-        Write-Output "GODOT_DEV_READY mode=$Mode profile=$UserDataProfile assembly=$($assemblyName.FullName)"
+        Write-Output "GODOT_DEV_READY mode=$Mode profile=$UserDataProfile assembly=$($buildResult.assemblyIdentity)"
         if ($createdConfig) { Write-Output 'CODEX_RESTART_REQUIRED' }
         return
     }
@@ -107,5 +91,6 @@ config/custom_user_dir_name="$userDirectory"
     if ($createdConfig) { Write-Output 'CODEX_RESTART_REQUIRED' }
 }
 finally {
+    if (Test-Path -LiteralPath $buildResultPath) { Remove-Item -LiteralPath $buildResultPath -Force }
     Exit-TacticsGodotOperationLock -Lock $lock
 }

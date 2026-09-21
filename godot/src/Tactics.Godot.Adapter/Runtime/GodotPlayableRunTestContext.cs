@@ -27,11 +27,16 @@ public sealed record GodotPlayableRunProbe(
     bool PlaybackPaused,
     float PlaybackSpeed,
     bool PauseMenuVisible,
+    string PauseMenuView,
     bool CheatConsoleVisible,
     int RuntimeErrorCount,
     bool QuitRequested,
     string? StatusText,
-    GodotAdventureRuntimeProbe? Adventure);
+    GodotAdventureRuntimeProbe? Adventure,
+    string InputContext = "Disabled",
+    bool SetupDraftActive = false,
+    int SetupSelectedCount = 0,
+    IReadOnlyList<string>? SetupSelectedCharacterIds = null);
 
 public sealed record GodotAdventureRuntimeProbe(
     string BoardContentId,
@@ -49,7 +54,12 @@ public sealed record GodotAdventureRuntimeProbe(
     int LeaderRevision,
     int InteractionRevision,
     int ExitRevision,
-    int SceneRevision);
+    int SceneRevision,
+    GodotStartCampInputDiagnostic? StartCampInput = null,
+    bool MovementPlaying = false,
+    bool MovementLocked = false,
+    GodotAdventureMovementDiagnostic? Movement = null,
+    string? PointerCell = null);
 
 public sealed record GodotBattleUnitProjection(UnitInstanceId UnitId, int MaxHealth, int MaxMana,
     float BaseSpeed, int PhysicalAttack, int MagicalAttack, int MoveRange, float Initiative,

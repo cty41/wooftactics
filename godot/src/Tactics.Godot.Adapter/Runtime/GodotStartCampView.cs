@@ -1,3 +1,4 @@
+using System.Globalization;
 using Godot;
 using Tactics.Core.Board;
 using Tactics.Core.Runs;
@@ -6,6 +7,40 @@ namespace Tactics.Godot.Adapter.Runtime;
 
 public sealed record GodotStartCampCandidate(string CharacterId, UnitDefinitionResource Definition);
 public enum StartAtlasCameraMode { Current, Overview }
+public enum StartCampPointerResolution { Candidate, Exit, Tile, Preview, BlockedOverview, BlockedOccupied, BlockedMovement, Miss }
+
+/// <summary>Bounded, structured evidence for the most recent Start Camp left-click routing attempt.</summary>
+public sealed record GodotStartCampInputDiagnostic(
+    long AttemptId,
+    string SourceControl,
+    string HoveredControl,
+    StartAtlasCameraMode CameraMode,
+    Vector2 SourcePoint,
+    Vector2 ViewPoint,
+    Vector2 AtlasPoint,
+    Vector2 MapPoint,
+    StartCampPointerResolution Resolution,
+    string? TargetId,
+    string? NearestCandidateId,
+    Rect2? NearestCandidateBounds,
+    float? NearestCandidateDistance,
+    int SelectedBefore,
+    int SelectedAfter,
+    string? Outcome)
+{
+    public string ToLogLine() =>
+        $"attempt={AttemptId} source={SourceControl} hovered={HoveredControl} mode={CameraMode} " +
+        $"sourcePoint={Format(SourcePoint)} viewPoint={Format(ViewPoint)} atlasPoint={Format(AtlasPoint)} mapPoint={Format(MapPoint)} " +
+        $"resolution={Resolution} target={TargetId ?? "none"} nearest={NearestCandidateId ?? "none"} " +
+        $"nearestBounds={(NearestCandidateBounds is Rect2 bounds ? Format(bounds) : "none")} " +
+        $"nearestDistance={(NearestCandidateDistance?.ToString("0.###", CultureInfo.InvariantCulture) ?? "none")} " +
+        $"selected={SelectedBefore}->{SelectedAfter} outcome={Outcome ?? "pending"}";
+
+    private static string Format(Vector2 value) =>
+        $"({value.X.ToString("0.###", CultureInfo.InvariantCulture)},{value.Y.ToString("0.###", CultureInfo.InvariantCulture)})";
+
+    private static string Format(Rect2 value) => $"{Format(value.Position)}:{Format(value.Size)}";
+}
 
 /// <summary>Full-scale, typed start-camp surface used by party selection.</summary>
 public partial class GodotStartCampView : Control
@@ -36,10 +71,17 @@ public partial class GodotStartCampView : Control
     private bool _cameraDragging;
     private Vector2 _cameraDragOrigin;
     private Vector2 _cameraPanOrigin;
+    private Control? _inputSurface;
+    private bool _inputSurfaceConnected;
+    private GodotAdventureMovementPlayer? _movementPlayer;
+    private StandardUnitPresentationResource _movementProfile = new();
+    private float _movementSpeed = 1f;
+    private long _inputAttemptId;
 
     public event Action<string>? CandidatePressed;
     public event Action? ExitPressed;
     public event Action<GridPoint>? LeaderMoved;
+    public event Action<string>? MovementRejected;
     public event Action<string>? PreviewPressed;
     public event Action<StartAtlasCameraMode>? CameraModeChanged;
     public string? LeaderId { get; private set; }
@@ -57,12 +99,98 @@ public partial class GodotStartCampView : Control
     public Vector2 AtlasPan => _atlasPan;
     public bool IsAtlasOverview => _cameraMode == StartAtlasCameraMode.Overview;
     public StartAtlasCameraMode CameraMode => _cameraMode;
+    public Control InputSurface => EnsureInputSurface();
+    public GodotStartCampInputDiagnostic? LastInputDiagnostic { get; private set; }
+    public GodotAdventureMovementDiagnostic? LastMovementDiagnostic => _movementPlayer?.LastDiagnostic;
+    public bool IsMovementLocked => _movementPlayer?.IsLocked == true;
+
+    public override void _EnterTree()
+    {
+        if (_inputSurface is not null && GodotObject.IsInstanceValid(_inputSurface)) ConnectInputSurface();
+    }
 
     public override void _Ready()
     {
         MouseFilter = MouseFilterEnum.Ignore;
         FocusMode = FocusModeEnum.None;
         SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+        EnsureInputSurface();
+        EnsureMovementPlayer();
+    }
+
+    public override void _ExitTree()
+    {
+        if (_inputSurface is not null && _inputSurfaceConnected)
+            _inputSurface.GuiInput -= OnInputSurfaceGuiInput;
+        _inputSurfaceConnected = false;
+        _movementPlayer?.Cancel("start-camp-exit-tree");
+    }
+
+    private Control EnsureInputSurface()
+    {
+        if (_inputSurface is not null && GodotObject.IsInstanceValid(_inputSurface))
+        {
+            ConnectInputSurface();
+            return _inputSurface;
+        }
+        _inputSurface = new Control
+        {
+            Name = "StartCampAtlasInput",
+            Position = AtlasViewport.Position,
+            Size = AtlasViewport.Size,
+            MouseFilter = MouseFilterEnum.Stop,
+            FocusMode = FocusModeEnum.None,
+            ZIndex = GodotPlayableRunMain.StartPageUiZIndex - 1
+        };
+        AddChild(_inputSurface);
+        ConnectInputSurface();
+        return _inputSurface;
+    }
+
+    private void ConnectInputSurface()
+    {
+        if (_inputSurface is null || _inputSurfaceConnected) return;
+        _inputSurface.GuiInput += OnInputSurfaceGuiInput;
+        _inputSurfaceConnected = true;
+    }
+
+    private GodotAdventureMovementPlayer EnsureMovementPlayer()
+    {
+        if (_movementPlayer is not null && GodotObject.IsInstanceValid(_movementPlayer)) return _movementPlayer;
+        _movementPlayer = new GodotAdventureMovementPlayer { Name = "StartCampMovementPlayer" };
+        AddChild(_movementPlayer);
+        _movementPlayer.Configure(_movementProfile, _movementSpeed);
+        _movementPlayer.CellCentered += cell =>
+        {
+            if (LeaderId is null || !_candidates.TryGetValue(LeaderId, out GodotUnitActor? leader)) return;
+            _candidateCells[LeaderId] = cell;
+            leader.ZIndex = 30 + cell.X + cell.Y;
+        };
+        _movementPlayer.MovementCompleted += completion => LeaderMoved?.Invoke(completion.Destination);
+        return _movementPlayer;
+    }
+
+    public void ConfigureMovement(StandardUnitPresentationResource profile, float speed = 1f)
+    {
+        _movementProfile = profile ?? throw new ArgumentNullException(nameof(profile));
+        _movementSpeed = speed;
+        EnsureMovementPlayer().Configure(profile, speed);
+        foreach (GodotUnitActor actor in _candidates.Values) actor.ConfigurePresentation(profile);
+    }
+
+    public void SetMovementPaused(bool paused) => EnsureMovementPlayer().SetPaused(paused);
+    public void SetMovementSpeed(float speed)
+    {
+        _movementSpeed = speed;
+        EnsureMovementPlayer().SetSpeed(speed);
+    }
+
+    private void OnInputSurfaceGuiInput(InputEvent input)
+    {
+        if (_inputSurface is null || input is not InputEventMouse mouse) return;
+        Vector2 canvasPoint = _inputSurface.GetGlobalTransform() * mouse.Position;
+        Vector2 viewPoint = GetGlobalTransform().AffineInverse() * canvasPoint;
+        HandleAtlasInput(input, viewPoint, _inputSurface, mouse.Position);
     }
 
     public void Configure(AdventureMapTemplateResource template, IReadOnlyList<GodotStartCampCandidate> candidates)
@@ -76,6 +204,7 @@ public partial class GodotStartCampView : Control
         if (definition.CandidateSlots.Count < candidates.Count)
             throw new InvalidOperationException($"Start camp template has {definition.CandidateSlots.Count} candidate slots for {candidates.Count} candidates.");
 
+        EnsureMovementPlayer().Cancel("start-camp-reconfigure");
         _atlasWorldRoot?.QueueFree();
         _candidates.Clear();
         _candidateCells.Clear();
@@ -118,6 +247,7 @@ public partial class GodotStartCampView : Control
             GodotUnitActor actor = GodotUnitFactory.InstantiateActor(candidate.Definition);
             actor.Name = $"StartCampCandidate{index + 1}";
             actor.ConfigureInstanceIdentity("start-camp:" + candidate.CharacterId);
+            actor.ConfigurePresentation(_movementProfile);
             actor.Position = MapInstance.Surface.CellCenter(slot.Cell);
             actor.Scale = Vector2.One * .34f;
             actor.ZIndex = 30 + slot.Cell.X + slot.Cell.Y;
@@ -179,8 +309,11 @@ public partial class GodotStartCampView : Control
 
     public void SetSelection(IReadOnlyCollection<string> selected, bool exitUnlocked)
     {
+        string? nextLeader = selected.FirstOrDefault();
+        if (IsMovementLocked && !string.Equals(LeaderId, nextLeader, StringComparison.Ordinal))
+            _movementPlayer?.Cancel("start-camp-leader-changed");
         _selected.Clear();
-        LeaderId = selected.FirstOrDefault();
+        LeaderId = nextLeader;
         foreach (string id in selected) _selected.Add(id);
         foreach ((string id, GodotUnitActor actor) in _candidates)
             actor.Modulate = _selected.Contains(id) ? Colors.White : new Color(.62f, .66f, .68f, .82f);
@@ -193,7 +326,19 @@ public partial class GodotStartCampView : Control
         if (_mapRoot is null) return false;
         if (targetKind == "AdventureActor" && _candidates.TryGetValue(locator, out GodotUnitActor? actor))
         {
-            globalPoint = _mapRoot.GlobalTransform * actor.Position;
+            Rect2 bounds = actor.VisualBoundsInParent();
+            foreach (float y in new[] { .12f, .28f, .44f, .60f, .76f, .88f })
+            foreach (float x in new[] { .5f, .32f, .68f, .18f, .82f })
+            {
+                Vector2 point = bounds.Position + new Vector2(bounds.Size.X * x, bounds.Size.Y * y);
+                if (actor.ContainsOpaquePoint(point) && ResolveCandidateAtMapPoint(point) == locator)
+                {
+                    globalPoint = _mapRoot.GlobalTransform * point;
+                    return true;
+                }
+            }
+            Vector2 fallback = new(bounds.GetCenter().X, bounds.Position.Y + Math.Min(6f, bounds.Size.Y * .12f));
+            globalPoint = _mapRoot.GlobalTransform * fallback;
             return true;
         }
         if (targetKind == "AdventureObject" && locator == "start-exit" && _exit is not null)
@@ -201,10 +346,18 @@ public partial class GodotStartCampView : Control
             globalPoint = _mapRoot.GlobalTransform * _exit.Position;
             return true;
         }
+        if (targetKind == "AdventureCell" && TryCell(locator, out GridPoint cell) && _definition?.Board.Contains(cell) == true)
+        {
+            globalPoint = _mapRoot.GlobalTransform * MapInstance.Surface.CellCenter(cell);
+            return true;
+        }
         return false;
     }
 
-    public void HandleAtlasInput(InputEvent input, Vector2 viewPoint)
+    public void HandleAtlasInput(InputEvent input, Vector2 viewPoint) =>
+        HandleAtlasInput(input, viewPoint, null, viewPoint);
+
+    private void HandleAtlasInput(InputEvent input, Vector2 viewPoint, Control? source, Vector2 sourcePoint)
     {
         if (_mapRoot is null) return;
         if (input is InputEventMouseButton { ButtonIndex: MouseButton.Right } right)
@@ -212,37 +365,82 @@ public partial class GodotStartCampView : Control
             _cameraDragging = right.Pressed;
             if (_cameraMode != StartAtlasCameraMode.Overview) return;
             if (right.Pressed) { _cameraDragOrigin = viewPoint; _cameraPanOrigin = _atlasPan; }
-            AcceptEvent(); return;
+            AcceptInput(source); return;
         }
         if (input is InputEventMouseMotion && _cameraDragging && _cameraMode == StartAtlasCameraMode.Overview)
         {
             _atlasPan = ClampAtlasPan(_cameraPanOrigin + viewPoint - _cameraDragOrigin);
-            ApplyAtlasCamera(); AcceptEvent(); return;
+            ApplyAtlasCamera(); AcceptInput(source); return;
         }
         if (input is InputEventMouseButton { ButtonIndex: MouseButton.WheelUp or MouseButton.WheelDown })
-        { AcceptEvent(); return; }
-        if (input is not InputEventMouseButton { ButtonIndex: MouseButton.Left, Pressed: true } button) return;
+        { AcceptInput(source); return; }
+        if (input is not InputEventMouseButton { ButtonIndex: MouseButton.Left, Pressed: true }) return;
         Vector2 atlasPoint = _atlasWorldRoot is null ? Vector2.Zero : _atlasWorldRoot.Transform.AffineInverse() * viewPoint;
+        Vector2 mapPoint = _mapRoot.Transform.AffineInverse() * atlasPoint;
         string? previewNode = _routePreviewRects.FirstOrDefault(value =>
             value.Key != GodotAdventureAtlasLayout.StartNodeId && value.Value.HasPoint(atlasPoint)).Key;
         if (_cameraMode == StartAtlasCameraMode.Overview)
         {
+            StartCampPointerResolution resolution = string.IsNullOrEmpty(previewNode)
+                ? StartCampPointerResolution.BlockedOverview
+                : StartCampPointerResolution.Preview;
+            RecordInput(source, sourcePoint, viewPoint, atlasPoint, mapPoint, resolution, previewNode);
             if (!string.IsNullOrEmpty(previewNode)) PreviewPressed?.Invoke(previewNode);
-            AcceptEvent();
+            AcceptInput(source);
             return;
         }
-        Vector2 mapPoint = _mapRoot.Transform.AffineInverse() * atlasPoint;
+        if (IsMovementLocked && LeaderId is not null && _definition is not null)
+        {
+            string? blockedCandidate = ResolveCandidateAtMapPoint(mapPoint);
+            bool blockedExit = _exit is not null && _exit.Position.DistanceTo(mapPoint) <= 38f;
+            if (blockedCandidate is null && !blockedExit && MapInstance.Surface.TryPointToCell(mapPoint, out GridPoint retargetCell) &&
+                _definition.Board.IsWalkable(retargetCell) && !_candidateCells.Where(value => value.Key != LeaderId)
+                    .Select(value => value.Value).Contains(retargetCell))
+            {
+                bool accepted = EnsureMovementPlayer().TryRetarget(retargetCell, out string? rejection);
+                RecordInput(source, sourcePoint, viewPoint, atlasPoint, mapPoint, StartCampPointerResolution.Tile,
+                    $"{retargetCell.X},{retargetCell.Y}", accepted ? "retargeted" : rejection);
+                if (!accepted) MovementRejected?.Invoke(rejection ?? "adventure.destination_unreachable");
+            }
+            else
+            {
+                string target = blockedCandidate ?? (blockedExit ? "start-exit" : "occupied-or-invalid");
+                RecordInput(source, sourcePoint, viewPoint, atlasPoint, mapPoint,
+                    StartCampPointerResolution.BlockedMovement, target, "adventure.movement_in_progress");
+                MovementRejected?.Invoke("adventure.movement_in_progress");
+            }
+            AcceptInput(source);
+            return;
+        }
         string? candidate = ResolveCandidateAtMapPoint(mapPoint);
         if (candidate is not null)
         {
-            CandidatePressed?.Invoke(candidate);
-            AcceptEvent();
+            int subscriberCount = CandidatePressed?.GetInvocationList().Length ?? 0;
+            RecordInput(source, sourcePoint, viewPoint, atlasPoint, mapPoint, StartCampPointerResolution.Candidate,
+                candidate, $"dispatching:{subscriberCount}");
+            try
+            {
+                CandidatePressed?.Invoke(candidate);
+            }
+            catch (Exception exception)
+            {
+                LastInputDiagnostic = LastInputDiagnostic! with
+                {
+                    Outcome = $"handler-exception:{exception.GetType().Name}:{Sanitize(exception.Message)}"
+                };
+                GD.PushError("[StartCampSelection] " + LastInputDiagnostic.ToLogLine());
+                throw;
+            }
+            if (LastInputDiagnostic?.Outcome == $"dispatching:{subscriberCount}")
+                LastInputDiagnostic = LastInputDiagnostic with { Outcome = "handled-without-outcome" };
+            AcceptInput(source);
             return;
         }
         if (_exit is not null && _exit.Position.DistanceTo(mapPoint) <= 38f)
         {
+            RecordInput(source, sourcePoint, viewPoint, atlasPoint, mapPoint, StartCampPointerResolution.Exit, "start-exit");
             ExitPressed?.Invoke();
-            AcceptEvent();
+            AcceptInput(source);
             return;
         }
         if (LeaderId is not null && _definition is not null &&
@@ -250,14 +448,38 @@ public partial class GodotStartCampView : Control
         {
             HashSet<GridPoint> occupied = _candidateCells.Where(value => value.Key != LeaderId)
                 .Select(value => value.Value).ToHashSet();
-            if (occupied.Contains(cell)) { AcceptEvent(); return; }
-            _candidateCells[LeaderId] = cell;
+            if (occupied.Contains(cell))
+            {
+                RecordInput(source, sourcePoint, viewPoint, atlasPoint, mapPoint,
+                    StartCampPointerResolution.BlockedOccupied, $"{cell.X},{cell.Y}");
+                AcceptInput(source);
+                return;
+            }
+            GridPoint origin = _candidateCells[LeaderId];
             GodotUnitActor leader = _candidates[LeaderId];
-            leader.Position = MapInstance.Surface.CellCenter(cell);
-            leader.ZIndex = 30 + cell.X + cell.Y;
-            LeaderMoved?.Invoke(cell);
-            AcceptEvent();
+            bool started = EnsureMovementPlayer().TryStart(leader, LeaderId, origin, cell, _definition.Board, occupied,
+                MapInstance.Surface.CellCenter, out string? rejection);
+            RecordInput(source, sourcePoint, viewPoint, atlasPoint, mapPoint,
+                StartCampPointerResolution.Tile, $"{cell.X},{cell.Y}", started ? "movement-started" : rejection);
+            if (!started) MovementRejected?.Invoke(rejection ?? "adventure.destination_unreachable");
+            AcceptInput(source);
+            return;
         }
+        RecordInput(source, sourcePoint, viewPoint, atlasPoint, mapPoint, StartCampPointerResolution.Miss, null);
+        AcceptInput(source);
+    }
+
+    public void RecordSelectionOutcome(bool accepted, string? errorCode, int selectedAfter)
+    {
+        if (LastInputDiagnostic is null || LastInputDiagnostic.Resolution != StartCampPointerResolution.Candidate) return;
+        LastInputDiagnostic = LastInputDiagnostic with
+        {
+            SelectedAfter = selectedAfter,
+            Outcome = accepted ? "accepted" : "rejected:" + (errorCode ?? "unknown")
+        };
+#if DEBUG
+        GD.Print("[StartCampSelection] " + LastInputDiagnostic.ToLogLine());
+#endif
     }
 
     public bool HandleAtlasKey(InputEvent input)
@@ -364,10 +586,87 @@ public partial class GodotStartCampView : Control
         return ResolveCandidateAtMapPoint(_mapRoot.Transform.AffineInverse() * atlasPoint);
     }
 
+    private void AcceptInput(Control? source)
+    {
+        if (source is not null) source.AcceptEvent();
+        else AcceptEvent();
+    }
+
+    private void RecordInput(Control? source, Vector2 sourcePoint, Vector2 viewPoint, Vector2 atlasPoint,
+        Vector2 mapPoint, StartCampPointerResolution resolution, string? targetId, string? outcome = null)
+    {
+        (string? nearestId, Rect2? nearestBounds, float? nearestDistance) = NearestCandidate(mapPoint);
+        LastInputDiagnostic = new GodotStartCampInputDiagnostic(
+            ++_inputAttemptId,
+            source?.Name.ToString() ?? Name.ToString(),
+            GetViewport()?.GuiGetHoveredControl()?.Name.ToString() ?? "none",
+            _cameraMode,
+            sourcePoint,
+            viewPoint,
+            atlasPoint,
+            mapPoint,
+            resolution,
+            targetId,
+            nearestId,
+            nearestBounds,
+            nearestDistance,
+            _selected.Count,
+            _selected.Count,
+            outcome);
+#if DEBUG
+        GD.Print("[StartCampInput] " + LastInputDiagnostic.ToLogLine());
+#endif
+    }
+
+    private static bool TryCell(string value, out GridPoint cell)
+    {
+        string[] parts = value.Split(',', StringSplitOptions.TrimEntries);
+        if (parts.Length == 2 && int.TryParse(parts[0], out int x) && int.TryParse(parts[1], out int y))
+        {
+            cell = new GridPoint(x, y);
+            return true;
+        }
+        cell = default;
+        return false;
+    }
+
+    private static string Sanitize(string value) => value
+        .Replace('\r', '_')
+        .Replace('\n', '_')
+        .Replace('\t', '_')
+        .Replace(' ', '_')
+        .Replace('=', '_');
+
+    private (string? Id, Rect2? Bounds, float? Distance) NearestCandidate(Vector2 mapPoint)
+    {
+        (string Id, Rect2 Bounds, float Distance)? nearest = null;
+        foreach ((string id, GodotUnitActor actor) in _candidates)
+        {
+            if (!GodotObject.IsInstanceValid(actor) || !actor.Visible) continue;
+            Rect2 bounds = actor.VisualBoundsInParent().Grow(8f);
+            Vector2 closest = new(
+                Mathf.Clamp(mapPoint.X, bounds.Position.X, bounds.End.X),
+                Mathf.Clamp(mapPoint.Y, bounds.Position.Y, bounds.End.Y));
+            float distance = closest.DistanceTo(mapPoint);
+            if (nearest is null || distance < nearest.Value.Distance ||
+                Mathf.IsEqualApprox(distance, nearest.Value.Distance) && string.CompareOrdinal(id, nearest.Value.Id) < 0)
+                nearest = (id, bounds, distance);
+        }
+        return nearest is null ? (null, null, null) : (nearest.Value.Id, nearest.Value.Bounds, nearest.Value.Distance);
+    }
+
     private string? ResolveCandidateAtMapPoint(Vector2 mapPoint) => _candidates
-        .Where(value => GodotObject.IsInstanceValid(value.Value) && value.Value.Visible &&
-            (value.Value.ContainsOpaquePoint(mapPoint) || value.Value.VisualBoundsInParent().Grow(8f).HasPoint(mapPoint)))
-        .OrderByDescending(value => value.Value.ZIndex)
+        .Where(value => GodotObject.IsInstanceValid(value.Value) && value.Value.Visible)
+        .Select(value => new
+        {
+            value.Key,
+            Actor = value.Value,
+            Opaque = value.Value.ContainsOpaquePoint(mapPoint),
+            InsideBounds = value.Value.VisualBoundsInParent().Grow(8f).HasPoint(mapPoint)
+        })
+        .Where(value => value.Opaque || value.InsideBounds)
+        .OrderByDescending(value => value.Opaque)
+        .ThenByDescending(value => value.Actor.ZIndex)
         .ThenBy(value => value.Key, StringComparer.Ordinal)
         .Select(value => value.Key)
         .FirstOrDefault();

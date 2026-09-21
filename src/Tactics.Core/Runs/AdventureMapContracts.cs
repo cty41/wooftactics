@@ -114,27 +114,74 @@ public sealed record ExitIntelSnapshot(
 /// </summary>
 public sealed class AdventureExplorationSession
 {
-    private AdventureExplorationSession(string leaderId, IReadOnlyList<RunAdventureActorCell> actorCells)
+    private AdventureExplorationSession(string runId, ContentId boardContentId, string leaderId,
+        IReadOnlyList<RunAdventureActorCell> actorCells)
     {
+        RunId = runId;
+        BoardContentId = boardContentId;
         LeaderId = leaderId;
         ActorCells = actorCells;
     }
 
+    public string RunId { get; }
+    public ContentId BoardContentId { get; }
     public string LeaderId { get; private set; }
     public IReadOnlyList<RunAdventureActorCell> ActorCells { get; private set; }
 
     public static AdventureExplorationSession Restore(PureRunState run, AdventureMapTemplateDefinition template)
     {
-        ArgumentNullException.ThrowIfNull(run);
         ArgumentNullException.ThrowIfNull(template);
         template.Validate();
-        if (template.PartyEntrySlots.Count < run.Party.Count)
-            throw new ArgumentException("Template does not provide enough party entry slots.", nameof(template));
-        RunCharacterState leader = run.Party.FirstOrDefault(value => !value.IsDead && value.CharacterId == run.AdventureState?.LeaderId)
+        return Restore(run, template.PartyEntrySlots.Select(value => value.Cell).ToArray());
+    }
+
+    public static AdventureExplorationSession Restore(PureRunState run, IReadOnlyList<GridPoint> entrySlots)
+    {
+        ArgumentNullException.ThrowIfNull(run);
+        ArgumentNullException.ThrowIfNull(entrySlots);
+        RunAdventureState adventure = run.AdventureState ?? throw new InvalidOperationException("adventure.state_missing");
+        if (entrySlots.Count < run.Party.Count)
+            throw new ArgumentException("Board does not provide enough party entry slots.", nameof(entrySlots));
+        RunCharacterState leader = run.Party.FirstOrDefault(value => !value.IsDead && value.CharacterId == adventure.LeaderId)
             ?? run.Party.FirstOrDefault(value => !value.IsDead)
             ?? throw new InvalidOperationException("adventure.no_living_leader");
         RunAdventureActorCell[] cells = run.Party.Select((member, index) =>
-            new RunAdventureActorCell(member.CharacterId, template.PartyEntrySlots[index].Cell)).ToArray();
-        return new AdventureExplorationSession(leader.CharacterId, cells);
+            new RunAdventureActorCell(member.CharacterId, entrySlots[index])).ToArray();
+        return new AdventureExplorationSession(run.RunId, adventure.BoardContentId, leader.CharacterId, cells);
+    }
+
+    public bool Matches(PureRunState run) => run.RunId == RunId && run.AdventureState?.BoardContentId == BoardContentId &&
+        run.Party.Select(value => value.CharacterId).Order(StringComparer.Ordinal)
+            .SequenceEqual(ActorCells.Select(value => value.ActorId).Order(StringComparer.Ordinal));
+
+    public GridPoint CellOf(string actorId) => ActorCells.Single(value => value.ActorId == actorId).Cell;
+
+    public void SetLeader(string actorId)
+    {
+        if (!ActorCells.Any(value => value.ActorId == actorId)) throw new InvalidOperationException("adventure.actor_not_found");
+        LeaderId = actorId;
+    }
+
+    public void SetCell(string actorId, GridPoint cell)
+    {
+        if (!ActorCells.Any(value => value.ActorId == actorId)) throw new InvalidOperationException("adventure.actor_not_found");
+        ActorCells = ActorCells.Select(value => value.ActorId == actorId ? value with { Cell = cell } : value).ToArray();
+    }
+
+    public AdventureActorPlacement[] Placements() => ActorCells
+        .OrderBy(value => value.ActorId, StringComparer.Ordinal)
+        .Select(value => new AdventureActorPlacement(value.ActorId, value.Cell)).ToArray();
+
+    public PureRunState Hydrate(PureRunState run)
+    {
+        ArgumentNullException.ThrowIfNull(run);
+        RunAdventureState adventure = run.AdventureState ?? throw new InvalidOperationException("adventure.state_missing");
+        if (adventure.BoardContentId != BoardContentId) throw new InvalidOperationException("adventure.session_board_mismatch");
+        RunAdventureState hydrated = adventure with { LeaderId = LeaderId, ActorCells = ActorCells.ToArray() };
+        return new PureRunState(run.RunId, run.Seed, run.Revision, run.Phase, run.EncounterIndex,
+            run.EncounterContentId, run.Party, run.BackpackConsumables, run.BackpackEquipment,
+            run.PendingProgression, run.AppliedTransactionKeys, run.Gold, run.BattlesCompleted,
+            run.EnemiesDefeated, run.AcquiredItems, run.Checkpoint, run.MapState, run.NodeTransaction,
+            run.EscortState, hydrated);
     }
 }

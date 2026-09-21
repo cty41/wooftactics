@@ -184,7 +184,11 @@ public class GodotGameplayRuntimeRunnerTests
     [RequireGodotRuntime]
     public async Task AdventureLeaderSwitchMovesOnlyTheLeaderThroughProductionInput()
     {
-        GodotGameplayScenarioPlan plan = LoadCompiledPlan("adventure-exploration-controls");
+        GodotGameplayScenarioPlan source = LoadCompiledPlan("adventure-exploration-controls");
+        GodotGameplayScenarioPlan plan = source with
+        {
+            RuntimeActions = source.RuntimeActions.Where(step => step.Target != "New Run").ToArray()
+        };
         GodotGameplayScenarioResult result = await new GodotGameplayRuntimeRunner().ExecuteAsync(plan);
 
         if (!result.Succeeded)

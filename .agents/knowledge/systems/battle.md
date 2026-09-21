@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Battle System
 description: Godot Pure Run 的棋盘、回合、技能、状态、AI 合法性、结算与表现投影主链。
 tags: [gameplay, battle, turn-based, godot]
-timestamp: "2026-08-23T01:15:18+08:00"
+timestamp: "2026-09-21T10:55:43+08:00"
 status: active
 catalog_scope: battle-system
 repo_paths:
@@ -25,19 +25,19 @@ repo_paths:
   - godot/src/Tactics.Godot.Adapter/Runtime/GodotPlayableRunMain.cs
   - godot/tests/CoreGoldenVectorGodotTests.cs
 verified_revision: 04c75ec4
-source_fingerprint: sha256:00e4b53ef1b7390bb0a992b89dd6250ccca509c00e44871371d4c8e4eee7e351
+source_fingerprint: sha256:b12c5d6b3de42a8245ca4f7d66503367419e5d1bf117bf9d1943710122fc14b0
 ---
 
 # Current State
 
 当前产品战斗主线分为三层：`Tactics.Core` 持有不可变战斗状态、命令、事件、技能解释、回合、路径和视线；
 `Tactics.Application` 组合遭遇、玩家意图、AI 候选和 UI Snapshot；Godot Adapter 只负责输入、Resource 映射、
-棋盘绘制和 committed event 表现，不重新裁决玩法结果。
+棋盘绘制和 committed event 表现，不重新裁决玩法结果。Battle Pause采用单次open-session ownership：只恢复由菜单取得的暂停，Abandon确认保持该ownership且不能跨页；Settlement/Summary进入时清除Battle session引用，防止非战斗页继续接收旧输入。
 
-跨引擎沿用的属性、状态、朝向与等距投影规则已整理为带稳定 Contract ID 的 Godot 权威文档。新角色或机制必须显式引用相关合同；旧 Unity 类名和编辑器结构不再作为规则来源。
+跨引擎沿用的属性、状态、朝向与等距投影规则已整理为带稳定 Contract ID 的 Godot 权威文档。新角色或机制必须显式引用相关合同；旧 Unity 类名和编辑器结构不再作为规则来源。Godot可见朝向由Grid位移经过共享等距投影后解析：逻辑轴不能直接当成屏幕东南西北；当前投影固定为`+X→右上(UL镜像)`、`-X→左下(DR镜像)`、`+Y→左上(UL)`、`-Y→右下(DR)`，Battle与Adventure逐格移动及预览复用同一resolver。
 
 固定战场使用 10×10、零基坐标。单位实例身份使用 `UnitInstanceId`，不能用内容 `ContentId` 代替。合法性预览、
-AI 和真实 Transition 必须复用 Core 规则；表现 cue、Tween、伤害数字和 Sprite 姿态不能修改战斗状态。
+AI 和真实 Transition 必须复用 Core 规则；表现 cue、Tween、伤害数字和 Sprite 姿态不能修改战斗状态。Battle 与 Adventure 只共享稳定 Dijkstra 搜索机制和单格 Tween 构造器：Battle 继续独立拥有地形、移动类型、占位与 origin-exclusive 路径策略，Adventure 另有均匀成本和对象阻挡策略，不能把任一方政策硬编码进共享层。
 
 Roguelike 地图首切片新增的 `GodotIsometricTileMapSurface` 已证明其 10×10、96×48 逐格中心和拾取合同与既有战斗投影一致，并生成基础战斗模板作为后续迁移输入；当前生产战斗棋盘尚未切换到该 TileMap 表面，不能据此删除 `GodotIsometricBattleBoard` 或宣称战斗 TileMap 化完成。
 

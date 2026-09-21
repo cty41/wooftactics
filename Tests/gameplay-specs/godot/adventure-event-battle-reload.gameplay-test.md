@@ -13,10 +13,6 @@ setup:
 actions:
   - kind: clickPointerTarget
     adapter: PlayerInput
-    target: 7,7
-    parameters: { targetKind: AdventureCell }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
     target: "exit:layer_04_event"
     parameters: { targetKind: AdventureObject }
   - kind: clickPointerTarget

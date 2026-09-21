@@ -1,6 +1,6 @@
 # Godot Agent-first 开发入口
 
-Agent 与人工开发统一从仓库根运行：
+Agent、自动化与 godot-ai/MCP 开发统一从仓库根运行 prepared 入口：
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File Tools/godot/Open-GodotDev.ps1
@@ -8,7 +8,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File Tools/godot/Open-GodotDev.ps
 
 默认等价于 `-Mode Agent -UserDataProfile Worktree -GodotAiProfile phase3-observe`。入口会校验锁定的 Godot/.NET/godot-ai，生成被忽略的 `godot/override.cfg` 和 `.codex/config.toml`，始终串行增量 Build `Tactics.Godot.Adapter.csproj`，验证 production DLL 身份，再以 `--tactics-open-godot-dev=v1` user argument 启动当前 worktree 的 Editor。第一次生成 Codex 配置时会输出 `CODEX_RESTART_REQUIRED`；Editor 可以继续使用，但必须重启一次以当前 worktree 为根的 Codex 任务，Godot AI 工具才会进入该 Agent 会话。
 
-如果用户从 Project Manager、双击项目或手工命令直接打开，Tactics Tooling 的 GDScript Bootstrap 不加载 C# controller：GUI 只显示一次关闭当前 Editor、运行统一入口并等待 Build 的恢复提示，Headless 输出 `TACTICS_TOOLING_BLOCKED_DIRECT_LAUNCH`。提示可复制完整 PowerShell 命令，但不会执行脚本、关闭 Editor 或更改插件启用列表。旧 DLL 存在也不视为受支持启动。
+人工可以从 Project Manager 直接打开 canonical 项目。Tactics Tooling 的 GDScript Bootstrap 始终注册Main Screen：有production Adapter assembly时立即加载C# Workbench；无assembly时显示`BUILD C# AND RELOAD`，仅在用户确认后异步调用固定helper并优先在同一Editor PID reload。Direct Human会保留Workbench UI作者能力，但不会启动可写authoring MCP bridge，也不会生成prepared dev-session、Codex或worktree readiness证据；Agent不得把direct会话当作恢复或写入入口。
 
 人工复用既有 QA 存档时显式运行：
 

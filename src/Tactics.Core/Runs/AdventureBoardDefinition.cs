@@ -1,5 +1,6 @@
 using Tactics.Core.Board;
 using Tactics.Core.Content;
+using Tactics.Core.Pathfinding;
 
 namespace Tactics.Core.Runs;
 
@@ -61,9 +62,12 @@ public sealed record AdventureBoardDefinition(
         !Objects.Any(value => value.Cell == cell && value.BlocksMovement);
 }
 
+public sealed record AdventureApproachRoute(GridPoint Destination, IReadOnlyList<GridPoint> Path);
+
 public static class AdventureBoardPathfinder
 {
-    private static readonly GridPoint[] Directions = [new(0, -1), new(-1, 0), new(1, 0), new(0, 1)];
+    // Adventure owns this policy even while its initial ordering matches BoardSnapshot.
+    private static readonly GridPoint[] Directions = [new(1, 0), new(-1, 0), new(0, 1), new(0, -1)];
 
     public static IReadOnlyList<GridPoint> FindPath(AdventureBoardDefinition board, GridPoint origin, GridPoint destination,
         IReadOnlyCollection<GridPoint>? occupiedCells = null)
@@ -72,26 +76,31 @@ public static class AdventureBoardPathfinder
         board.Validate();
         var occupied = occupiedCells is null ? new HashSet<GridPoint>() : occupiedCells.ToHashSet();
         occupied.Remove(origin);
-        if (!board.IsWalkable(origin) || !board.IsWalkable(destination) || occupied.Contains(destination)) return Array.Empty<GridPoint>();
-        var frontier = new Queue<GridPoint>();
-        var previous = new Dictionary<GridPoint, GridPoint?> { [origin] = null };
-        frontier.Enqueue(origin);
-        while (frontier.Count > 0)
-        {
-            GridPoint current = frontier.Dequeue();
-            if (current == destination) break;
-            foreach (GridPoint direction in Directions)
-            {
-                GridPoint next = new(current.X + direction.X, current.Y + direction.Y);
-                if (!board.IsWalkable(next) || occupied.Contains(next) || previous.ContainsKey(next)) continue;
-                previous[next] = current;
-                frontier.Enqueue(next);
-            }
-        }
-        if (!previous.ContainsKey(destination)) return Array.Empty<GridPoint>();
-        var path = new List<GridPoint>();
-        for (GridPoint? current = destination; current.HasValue; current = previous[current.Value]) path.Add(current.Value);
-        path.Reverse();
-        return path;
+        if (!board.IsWalkable(origin) || !board.IsWalkable(destination) || occupied.Contains(destination))
+            return Array.Empty<GridPoint>();
+
+        IReadOnlyList<GridPoint> steps = DeterministicGridPathSearch.FindPath(
+            origin,
+            destination,
+            current => Directions.Select(direction => new GridPoint(current.X + direction.X, current.Y + direction.Y))
+                .Where(board.Contains),
+            (point, _) => board.IsWalkable(point) && !occupied.Contains(point),
+            _ => 1f);
+        if (origin != destination && steps.Count == 0) return Array.Empty<GridPoint>();
+        return new[] { origin }.Concat(steps).ToArray();
+    }
+
+    public static AdventureApproachRoute? FindApproach(AdventureBoardDefinition board, GridPoint origin,
+        GridPoint target, IReadOnlyCollection<GridPoint>? occupiedCells = null)
+    {
+        return Directions.Select((direction, order) => (Destination: new GridPoint(target.X + direction.X, target.Y + direction.Y), order))
+            .Where(candidate => board.Contains(candidate.Destination))
+            .Select(candidate => (candidate.Destination, candidate.order,
+                Path: FindPath(board, origin, candidate.Destination, occupiedCells)))
+            .Where(candidate => candidate.Path.Count > 0)
+            .OrderBy(candidate => candidate.Path.Count)
+            .ThenBy(candidate => candidate.order)
+            .Select(candidate => new AdventureApproachRoute(candidate.Destination, candidate.Path))
+            .FirstOrDefault();
     }
 }

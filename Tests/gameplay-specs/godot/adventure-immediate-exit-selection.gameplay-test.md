@@ -19,10 +19,6 @@ actions:
     parameters: { observable: adventureBoardReady, maximumFrames: 180 }
   - kind: clickPointerTarget
     adapter: PlayerInput
-    target: 3,7
-    parameters: { targetKind: AdventureCell }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
     target: "exit:layer_04_rest"
     parameters: { targetKind: AdventureObject }
   - kind: waitForPlayerObservable
@@ -55,4 +51,4 @@ timeoutMs: 30000
 
 # Immediate successor exit selection
 
-从 Layer 3 已结算的 Tile 场景只显示五个直接后继出口。领队移动到 Rest 出口相邻格并点击后，立即进入该节点场景，不存在全局路线预提交或额外确认。
+从 Layer 3 已结算的 Tile 场景只显示五个直接后继出口。直接点击 Rest 出口后，领队自动接近并立即进入该节点场景，不存在全局路线预提交或额外确认。

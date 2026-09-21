@@ -10,7 +10,7 @@
 | C# 分层 | Core/Application 不引用 Godot；Adapter 承载 Node、Resource、文件系统与 UI |
 | 资源写入 | `.tres/.tscn` 只能通过 ResourceSaver、Editor API 或受测转换器生成 |
 | 主线验证 | 使用 `Tools/godot/Verify-GodotProject.ps1`；它要求 Unity 根目录不存在 |
-| Editor 启动 | 只用 `Tools/godot/Open-GodotDev.ps1`；它串行 Build、隔离 worktree 用户数据并校验插件/配置 |
+| Editor 启动 | 人工可从 Project Manager 直接打开并由 GDScript Shell 首次构建；Agent、自动化和 godot-ai/MCP 只用 `Tools/godot/Open-GodotDev.ps1` |
 | Godot 修改验证 | Core/Application/Godot `.cs` 使用主线或迁移期隔离门禁，不调用 Unity compile |
 | Editor 生命周期 | reload-sensitive 修改使用 `godot-editor-lifecycle` 正常关闭并恢复，不强杀进程 |
 | 前台交互 | 未经明确授权不得抢占焦点或注入真实输入；自动 QA 使用后台测试链 |

@@ -14,7 +14,8 @@ internal static class RunSaveNormalizer
             throw new ArgumentException("Active run revision must equal envelope revision.", nameof(snapshot));
         PendingRunSetup? setup = snapshot.PendingRunSetup;
         if (setup is not null && (setup.CurrentCharacterIndex < 0 || setup.CurrentCharacterIndex > 3 ||
-            setup.Choices.Count != setup.CurrentCharacterIndex || setup.SelectedCharacterIds.Count is not (0 or 3) ||
+            setup.Choices.Count != setup.CurrentCharacterIndex || setup.SelectedCharacterIds.Count > 3 ||
+            setup.SelectedCharacterIds.Count is 1 or 2 && setup.CurrentCharacterIndex != 0 ||
             setup.SelectedCharacterIds.Distinct(StringComparer.Ordinal).Count() != setup.SelectedCharacterIds.Count))
             throw new ArgumentException("Pending run setup progress is invalid.", nameof(snapshot));
         return snapshot with

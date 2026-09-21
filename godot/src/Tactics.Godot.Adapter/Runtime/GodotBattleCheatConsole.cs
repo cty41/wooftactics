@@ -23,6 +23,7 @@ public partial class GodotBattleCheatConsole : PanelContainer
         Position = Vector2.Zero; Size = new Vector2(1600, 225); ZIndex = 2000;
         MouseFilter = MouseFilterEnum.Stop; Visible = false;
         var panel = new VBoxContainer(); AddChild(panel);
+        _copyStatus.Name = "CopyStatus";
         var header = new HBoxContainer(); panel.AddChild(header);
         foreach (string name in new[] { "All", "Gameplay", "AI", "Rejected" }) _filter.AddItem(name);
         _filter.ItemSelected += _ => Refresh(); header.AddChild(_filter);
@@ -37,6 +38,12 @@ public partial class GodotBattleCheatConsole : PanelContainer
     }
 
     public void SetEntries(IReadOnlyList<BattleUiLogEntry> entries) { _entries = entries; Refresh(); }
+
+    public void SetOpen(bool open)
+    {
+        if (open) _copyStatus.Text = string.Empty;
+        Visible = open;
+    }
 
     private void Refresh()
     {

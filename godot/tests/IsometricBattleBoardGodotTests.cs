@@ -43,6 +43,10 @@ public sealed class IsometricBattleBoardGodotTests
         ((SceneTree)Engine.GetMainLoop()).Root.AddChild(view);
         await view.ToSignal(view.GetTree(), SceneTree.SignalName.ProcessFrame);
         AdventureBoardDefinition board = AdventureBoard();
+        UnitDefinitionResource mage = ResourceLoader.Load<UnitDefinitionResource>("res://content/units/PureRunMage.tres")
+            ?? throw new InvalidOperationException("PureRunMage test resource is missing.");
+        view.ConfigureActors(new Dictionary<string, UnitDefinitionResource> { ["party-mage"] = mage }, "party-mage",
+            new StandardUnitPresentationResource());
 
         view.SetBoard(board);
 
@@ -113,12 +117,27 @@ public sealed class IsometricBattleBoardGodotTests
     }
 
     [TestCase]
-    public void PresentationFacingMatchesFrozenUnityRules()
+    public void PresentationFacingMatchesTheIsometricScreenDirection()
     {
         AssertThat(GodotPresentationFacingResolver.Initial(0)).IsEqual(GodotUnitFacing.East);
         AssertThat(GodotPresentationFacingResolver.Initial(1)).IsEqual(GodotUnitFacing.West);
-        AssertThat(GodotPresentationFacingResolver.Resolve(new GridPoint(0,0),new GridPoint(1,3),GodotUnitFacing.East)).IsEqual(GodotUnitFacing.North);
-        AssertThat(GodotPresentationFacingResolver.Resolve(new GridPoint(2,2),new GridPoint(1,1),GodotUnitFacing.West)).IsEqual(GodotUnitFacing.West);
+        GridPoint origin = new(4, 4);
+        AssertThat(GodotPresentationFacingResolver.Resolve(origin, new GridPoint(5, 4), GodotUnitFacing.South)).IsEqual(GodotUnitFacing.East);
+        AssertThat(GodotPresentationFacingResolver.Resolve(origin, new GridPoint(3, 4), GodotUnitFacing.North)).IsEqual(GodotUnitFacing.West);
+        AssertThat(GodotPresentationFacingResolver.Resolve(origin, new GridPoint(4, 5), GodotUnitFacing.East)).IsEqual(GodotUnitFacing.North);
+        AssertThat(GodotPresentationFacingResolver.Resolve(origin, new GridPoint(4, 3), GodotUnitFacing.West)).IsEqual(GodotUnitFacing.South);
+        AssertThat(GodotPresentationFacingResolver.Resolve(new GridPoint(0, 0), new GridPoint(1, 3), GodotUnitFacing.East)).IsEqual(GodotUnitFacing.North);
+        AssertThat(GodotPresentationFacingResolver.Resolve(new GridPoint(2, 2), new GridPoint(1, 1), GodotUnitFacing.West)).IsEqual(GodotUnitFacing.West);
+        AssertThat(GodotPresentationFacingResolver.Resolve(origin, origin, GodotUnitFacing.North)).IsEqual(GodotUnitFacing.North);
+
+        AssertThat(IsometricGridProjection.GridToScreen(new GridPoint(5, 4)) - IsometricGridProjection.GridToScreen(origin))
+            .IsEqual(new Vector2(48, -24));
+        AssertThat(IsometricGridProjection.GridToScreen(new GridPoint(3, 4)) - IsometricGridProjection.GridToScreen(origin))
+            .IsEqual(new Vector2(-48, 24));
+        AssertThat(IsometricGridProjection.GridToScreen(new GridPoint(4, 5)) - IsometricGridProjection.GridToScreen(origin))
+            .IsEqual(new Vector2(-48, -24));
+        AssertThat(IsometricGridProjection.GridToScreen(new GridPoint(4, 3)) - IsometricGridProjection.GridToScreen(origin))
+            .IsEqual(new Vector2(48, 24));
     }
 
     [TestCase]

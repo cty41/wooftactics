@@ -70,31 +70,7 @@
     {
       "adapter": "PlayerInput",
       "kind": "clickPointerTarget",
-      "target": "7,5",
-      "parameters": {
-        "targetKind": "AdventureCell"
-      }
-    },
-    {
-      "adapter": "PlayerInput",
-      "kind": "clickPointerTarget",
       "target": "exit:layer_01_battle",
-      "parameters": {
-        "targetKind": "AdventureObject"
-      }
-    },
-    {
-      "adapter": "PlayerInput",
-      "kind": "clickPointerTarget",
-      "target": "6,5",
-      "parameters": {
-        "targetKind": "AdventureCell"
-      }
-    },
-    {
-      "adapter": "PlayerInput",
-      "kind": "clickPointerTarget",
-      "target": "encounter",
       "parameters": {
         "targetKind": "AdventureObject"
       }

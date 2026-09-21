@@ -43,17 +43,18 @@ Roguelike Map 分阶段操作步骤见 [真实 TileMap 人工验收 Checklist](r
 - Automated evidence: Vendor hash, launcher policy, Codex bootstrap/profile, production assembly identity, release exclusion and same-worktree mutex checks are automated. Real Dock visibility, Editor reload and two-window routing remain human-only.
 - User verdict: none.
 
-### MQA-GODOT-DIRECT-LAUNCH-GUARD — Direct Editor launch recovery prompt
+### MQA-GODOT-DIRECT-LAUNCH-GUARD — Direct Editor first-build self-heal
 
 - Status: `pending`
-- Source: GDScript Tactics Tooling Bootstrap and supported-launch argument contract.
-- Action: First close every Editor for this worktree, then open `godot/project.godot` directly without `Open-GodotDev.ps1`; inspect the prompt and use “复制启动命令”. Close that Editor normally, run the copied command, and inspect the reopened Editor. If practical, repeat the first direct-open step after moving the generated Debug Adapter DLL aside through a controlled backup/restore flow.
-- Expected: Direct launch shows one Chinese recovery prompt, omits the Tactics Tooling Main Screen, keeps the addon enabled, and copies a correctly quoted absolute PowerShell command without executing it. The supported launch builds with 0 errors, shows no recovery prompt and restores one working Tactics Tooling Main Screen. Neither path reports the legacy `Unable to load addon script ... TacticsEditorPlugin.cs` error.
-- Observe: Recovery dialog, clipboard text, top-level Editor workspaces, Project Settings plugin list, Godot Output, and `.godot/tactics-dev-session.json` after the supported launch.
-- Preserve on failure: Screenshot of the prompt or missing prompt, copied command, exact launch method, DLL-present/absent state, plugin enabled state, first Output error and Editor PID/project path.
-- Save boundary: Editor-only/read-only check; close normally, do not force-kill, do not execute the copied launcher while the direct-open Editor remains active, and restore any temporarily moved generated DLL in `finally`.
-- Automated evidence: Godot tooling policy tests cover launch-time Main Screen registration, quoted process paths, unique logs, verifier-lock reuse and PCK exclusion; Debug Adapter build, four headless Bootstrap probes (direct with old/absent DLL and supported argument with absent/valid DLL) and real same-PID assembly reload passed. The full verifier is currently blocked before project tests by an unrelated pinned godot-ai vendor-tree hash drift, so this item is not ready to mark passed from automation.
-- User verdict: Partial pass on 2026-08-28: after the repository-root SDK fix, the user confirmed the copied `Open-GodotDev.ps1` command works. Direct-launch dialog appearance, clipboard contents, plugin-list persistence and absence of the legacy Output error remain pending.
+- Source: `.agents/docs/godot-editor-bootstrap-contract.md` Human Direct / Prepared Agent 双入口合同。
+- Reopen reason: 用户确认旧“无 prepared 参数即阻断并要求关闭 Editor”设计偏离原始首次构建目标；现改为始终可用的 GDScript Main Screen Shell。
+- Action: 先保留现有 Debug Adapter，从 Godot Project Manager 直接打开 `godot/project.godot`；确认 Workbench 后关闭。再通过受控 backup 暂移生成 DLL，重新 direct open，在 Tactics Main Screen 点击 `BUILD C# AND RELOAD`。另制造一次可恢复编译错误，检查失败页、复制命令与 Retry，最后恢复源码和 DLL。
+- Expected: 有 assembly 时 direct open 直接显示唯一 Workbench，无 PowerShell 恢复弹窗。无 assembly 时仍显示 Tactics Main Screen 和首次构建页；按钮只启动一次异步 Build，Editor 保持响应且不出现第二个 Editor，成功后同一 PID 进入 Workbench，且direct PID不生成可写authoring bridge descriptor；prepared入口仍正常生成并轮换bridge token。失败时显示首条错误、完整日志路径、复制命令和 Retry；addon 始终启用，不出现 legacy `Unable to load addon script ... TacticsEditorPlugin.cs`。
+- Observe: Tactics Tooling Main Screen、按钮状态、Editor PID、Project Settings plugin list、Godot Output、构建日志；prepared launcher时另看 `.godot/tactics-dev-session.json`。
+- Preserve on failure: 首次构建/失败页截图、点击次数、DLL状态、Editor PID、复制命令、firstError、完整日志和第一条 Output 异常。
+- Save boundary: Editor-only；使用受控生成 DLL backup/restore，不修改 Run存档或正式 Resource。Headless probe可终止自己创建的进程，人工 canonical Editor只正常关闭。
+- Automated evidence: 20/20 Godot tooling policy；build-only helper实际Build/identity/result合同通过；headless覆盖direct/prepared有assembly、无assembly BUILD_REQUIRED，以及GDScript Shell在同一direct Editor PID中启动helper并恢复controller。隔离visible进程先证明伪造prepared marker但无匹配dev-session时无bridge descriptor，再证明匹配session后的bridge可用与assembly reload token轮换。真实可视Main Screen、Build中响应性和失败页可读性仍需人工判断。
+- User verdict: 旧guard流程仅确认复制launcher命令可用；新self-heal体验尚无用户结论。
 
 ### MQA-GODOT-DEMONBOUND-ACTION-ART — Demonbound native pose integration
 
@@ -299,16 +300,29 @@ Roguelike Map 分阶段操作步骤见 [真实 TileMap 人工验收 Checklist](r
 - Expected: 右侧清楚说明选 3 人、计数、槽位、首位领队和锁定原因；已选顺序不可撤销/重排，满员不溢出；领队可在可走格移动，其他人固定；重启保留选择但重置格位；出口仅在 3/3 解锁并提交一次。
 - Observe: StartCampView、角色 Body/Shadow、篝火与出口、Party 状态文字、技能卡、首节点和 Godot Output。
 - Preserve on failure: Screenshots of every setup page, selected order and skills, initial actor cells, save/backup copy, and Output.
-- Save boundary: 每次选人立即修改 PendingRunSetup；使用隔离存档，失败前保留 save/backup。
-- Automated evidence: Application 覆盖增量顺序、重复/满员拒绝、顺序不可更换和 setup 放弃；Godot 结构覆盖真实 Actor、TileMap 和出口。提示可读性、移动手感与误触仍需人工判断。
-- User verdict: None; pending human acceptance.
+- Save boundary: 选人和部分起始技能仅修改进程内草稿；最后一个必需技能才一次 CAS 写入完整 Active Run。使用隔离存档，失败前保留 save/backup。
+- Automated evidence: Application 覆盖瞬时点击顺序、重复/满员拒绝、最终单次 Save、Replay 丢弃和旧 Run 保护；Godot 真实输入覆盖 Start Camp 点击顺序、部分技能重建 Main 后零选择，以及最终技能进入 Adventure。提示可读性、移动手感与误触仍需人工判断。
+- User verdict: 用户已明确确认候选“选中对了”；其后报告领队仍为瞬移，因此本项整体保持 pending，移动部分转入下方独立复验。
+
+### MQA-GODOT-ADVENTURE-MOVEMENT — Active Board leader movement parity
+
+- Status: `pending`
+- Source: `ADVENTURE-PATH-POLICY-001`、`ADVENTURE-REPATH-CENTER-001`、`ADVENTURE-MOVE-COMMIT-001`、`ADVENTURE-MOVE-LOCK-001`、`FACING-ISOMETRIC-MOTION-001`、`ADVENTURE-EXIT-AUTO-APPROACH-001`、`PURE-RUN-BATTLE-DIRECT-ENTRY-001`
+- Reopen reason: 屏占比和左上紧凑布局已获用户明确确认；用户随后报告移动朝向错误、出口必须手点邻格，以及确定性战斗节点存在多余预战斗TileMap。出口与直达已修复；2026-09-17 用户再次实测确认右上移动仍错误使用 DR 图，根因是合同、resolver 与测试把真实投影的 `+X→右上` 误写成 `+X→右下`，现按真实投影修复后重新进入人工复验。
+- Action: 在 Start Camp 只选首位领队，沿四个Grid方向移动并观察每段朝向；移动到半格时连续点击两个不同空地。进入首个Adventure后直接点击远处出口，不先点邻格；另在自动接近途中resize并retarget后再次点击出口。确认普通Battle、Elite、Boss出口均直接开战，无预战斗TileMap；再测试Esc暂停/继续。
+- Expected: TileMap完整包含在近全屏安全区，几何中心与屏幕中心一致，并随Viewport等比缩放；标题、Run摘要、Leader和Inventory仅覆盖等距菱形四个空白角，不再为HUD预留整条顶部/底部屏幕区域；角色按战斗相同节奏逐格移动，每段朝向与等距屏幕位移一致：右上使用UL图水平镜像、左上使用UL原图、右下使用DR原图、左下使用DR图水平镜像，并具有身体抬升/摇摆/倾斜和收势；空闲时点击已解锁出口会自动选择最短稳定相邻格、移动提交后自动触发，Battle/Elite/Boss无预战斗地图直接进入战斗；连续改道只采用最后一个合法空地，但当前段先精确落在格中心，无漂移。移动中队友/对象/出口/页面导航均显示 `adventure.movement_in_progress` 且不触发；暂停冻结原位，继续后完成。Start Camp 不保存移动；普通 Adventure 仅最终收势后 revision 增加一次。
+- Observe: 领队 Root/Body/Shadow、格中心/ZIndex、状态文字、Run revision，以及 Godot Output 中 `[AdventureMovement]`。
+- Preserve on failure: 从首次点击开始的短视频、目标格序列、移动前后 revision、页面标题、save/backup 副本和完整 `[AdventureMovement]` Output 行；失败后不要再次移动或切页。
+- Save boundary: Start Camp 移动非持久化；普通 Adventure 最终落点会提交一次。请使用隔离存档并在测试普通 Board 前保留副本。
+- Automated evidence: Core 155/155与目标Godot 72/72通过；真实`Viewport.PushInput`覆盖远处出口自动接近、resize中断/retarget不误触发、随后再次点击直接进入真实Battle且不存在`AdventureBattleEntryBoard`。四方向等距朝向、MoveActor移动锁/占位、Pause及UI回归通过；21/21 Godot gameplay specs校验并由compiler重建。真实视觉连续性和输入手感仍只能人工判断。
+- User verdict: 2026-09-02用户明确确认“屏占比也ok了”；地图居中、近全屏占比及四角HUD视觉通过。2026-09-17用户明确报告右上直线移动实际使用DR图，预期为UL图水平镜像；移动朝向子项失败并在修复后重新pending。
 
 ### MQA-GODOT-START-FLOW — Automatic startup and recovery
 
 - Status: `pending`
 - Source: Start-first flow implementation, `ROGUELIKE-START-FLOW-001`
-- Action: 分别使用空存档、PendingRunSetup、普通节点、PendingBattle 和损坏副本启动应用。
-- Expected: 无旧 Home；空/不可恢复存档静默进入新营地，可恢复状态直接 Continue 到原页面；损坏文件保留隔离证据；PendingBattle 保持 Encounter/Seed 并从入口 checkpoint 重开。
+- Action: 分别使用空存档、历史 PendingRunSetup、部分技能后直接关闭、普通节点、PendingBattle 和损坏副本启动应用。
+- Expected: 无旧 Home；空存档、历史 pending 和未完成 setup 均进入零选择新营地；正式 Active Run 直接 Continue 到原页面；损坏文件保留隔离证据；PendingBattle 保持 Encounter/Seed 并从入口 checkpoint 重开。
 - Observe: 首个页面、Run seed/revision、战斗入口、`user://pure-run` 隔离文件和 Godot Output。
 - Preserve on failure: save/backup/corrupt 文件、首屏截图、seed/revision、页面标题及第一条 Output 异常。
 - Save boundary: 使用隔离存档副本；损坏测试不得针对唯一生产存档。
@@ -319,26 +333,28 @@ Roguelike Map 分阶段操作步骤见 [真实 TileMap 人工验收 Checklist](r
 
 - Status: `pending`
 - Source: Start-first atlas implementation, `ROGUELIKE-MAP-CAMERA-001`
-- Reopen reason: 用户最新复验仍无法左键选人，并报告 Overview 过远、节点文字漂移、M 无法返回和滚轮/提示状态不符合双状态模型；现改用专用地图输入层、全局 M、固定可读 Overview、地图顶部锚定标题及模式化提示，等待复验。
+- Reopen reason: 用户在 2026-09-01 再次确认 Current 无法选择任何候选。诊断证明真实输入已到达候选解析，但 V11 normalizer 错误拒绝 1/3 与 2/3 的增量 PendingRunSetup；同时旧输入层由 Main 以 sibling 持有，真实 GUI 分发未被原 7/7 覆盖。现已让 StartCampView 持有 InputSurface、使用完整 Transform、修正增量存档校验，并保留结构化点击诊断，等待用户复验。
 - Action: 在 Current 依次点击候选身体并移动领队；按 M 进入 Overview，以右键/WASD 浏览并点击 Preview；滚动滚轮，再按 M 与 F/Home 返回。
 - Expected: Current 可可靠选人/移动且完整显示 Start；Overview 使用固定可读缩放，只允许浏览和 Preview，右键/WASD 可到达最远节点。滚轮无作用；M 不依赖焦点并稳定往返。每个 Start/Preview 标题均在自身 TileMap 上方中央且不漂移；两种模式的固定提示互斥。
 - Observe: StartCampView、10×10 Tile 边界、Start→N1 端点、主路线/分支方向、节点视觉尺度、页头、Party Setup、Planning/Party 状态、操作提示、Esc overlay 和 Godot Output。
-- Preserve on failure: 短视频、窗口尺寸、输入序列、节点 ID、相机位置/缩放和 Output。
+- Preserve on failure: 短视频、窗口尺寸、输入序列、节点 ID、相机位置/缩放，以及完整 `[StartCampInput]`、`[StartCampSelection]` Output 行。
 - Save boundary: Preview 与相机只读；不要通过出口推进，以免覆盖故障现场。
-- Automated evidence: 隔离 Godot 7/7 覆盖专用指针处理、身体/重叠命中、Overview 禁止选人、滚轮无状态变化、M/F 双态、Overview 比全路线 Fit 更近、全部节点标题顶部居中及层级顺序；实际点击、文字可读性、平移手感仍需人工判断。
-- User verdict: 最新复验失败：无法选择任何队员，Overview 太远、文字漂移且 M 无法返回；本次修复后尚未复验。Debugger 35 条记录按用户决定暂不纳入本轮。
+- Automated evidence: Application 192/192 覆盖增量选人存档与 V11 编解码；隔离 Godot 8/8 覆盖真实 `Viewport.PushInput`、Owned InputSurface、Transform 换算、身体/重叠命中、Overview 禁止选人、滚轮无状态变化和 M/F 双态；Start Camp 生产输入旅程 1/1。完整 Gameplay batch 仍有既有 checkpoint/spec 漂移，统一 verifier 另被任务外 godot-ai vendor drift 阻断。实际点击、文字可读性与平移手感仍需人工判断。
+- User verdict: 2026-09-01 用户已明确确认“选中对了”，候选选择回归通过；相机、Preview、移动手感与完整旅程尚未逐项确认，因此整体保持 `pending`。Debugger 35 条历史记录按用户决定不纳入本轮。
 
 ### MQA-GODOT-START-ESC — Start exit, skill setup and Esc run controls
 
 - Status: `pending`
-- Source: Start-first flow implementation, `ROGUELIKE-START-FLOW-001`
-- Action: 在 0/3、1/3、2/3 与 3/3 状态测试出口，完成技能选择；检查 Esc 菜单，并分别验证 setup Abandon Run 与 PendingBattle Save and Quit。
-- Expected: 未满三人不推进，3/3 只提交一次；菜单只有 Continue、Options、Abandon Run、Save and Quit；Abandon 产生 Abandoned 摘要后进入新营地；Save and Quit 恢复相同 Encounter/Seed 的入口 checkpoint。
-- Observe: Start 出口、技能页、Esc overlay、Terminal Summary、重启后的战斗入口和 Godot Output。
-- Preserve on failure: 菜单/摘要截图、完整输入序列、Run seed/revision、checkpoint save/backup 和 Output。
-- Save boundary: Abandon、技能选择和退出会修改隔离 Run；测试前保留存档副本。
-- Automated evidence: setup 放弃摘要、原子选人/技能推进、PendingBattle checkpoint 与 quit interception 可自动验证；菜单可读性、确认体验及真实进程重启仍需人工判断。
-- User verdict: none.
+- Source: `RUN-INPUT-ROUTER-001`、`RUN-PAUSE-SHELL-001`、`ROGUELIKE-SETUP-COMMIT-001`
+- Reopen reason: 用户确认Esc打开和按钮命中后，又报告`Esc→Options→Esc关闭→Esc重开`错误停留在Options。根因是持久Overlay把单次open-session子树当成导航状态；同源审计还发现Options/Back会覆盖Battle暂停ownership。现改为持久Shell+每次打开重置Root的临时会话，等待人工复验。
+- Action: 在首个Adventure执行`Esc→Options→Esc→Esc`，确认重开为根菜单；再执行`Options→Back→Continue`。在Battle分别测试菜单自动暂停和预先由HUD手动暂停两种情况，再补0/3、部分技能及Replay/退出动作。
+- Expected: 每页第一次Esc打开、第二次关闭同一菜单；从Options直接Esc关闭后重开必须回到Root。Continue、Options/Back及退出类按钮均可真实鼠标点击；Battle菜单自动暂停时关闭后恢复，原本手动暂停时保持暂停；首关不失效。Setup菜单显示Continue、Options、Discard Setup、Quit — Setup Not Saved；部分 setup 退出后回到零选择 Start Camp，完整 setup 才恢复 Initial Adventure。未提交 setup 不生成 Abandoned Summary；正式 Run 菜单语义不变。
+- Observe: Start 出口、技能页、首关、全局 Esc overlay、Run revision、重启页面和 Godot Output。
+- Preserve on failure: 菜单截图、完整输入序列、关闭前后页面、Run seed/revision、save/backup 和 Output。
+- Save boundary: 最后一个技能前持久化 revision/SaveCount 不变；最后技能只写一次完整 Active Run。使用隔离存档测试正式 Run 的 Abandon/Save and Quit。
+- Automated evidence: Runtime UI与Adventure Movement目标Godot 47/47通过；真实`Viewport.PushInput`覆盖Options→Esc关闭→重开Root、Options/Back/Continue、菜单自动/手动Battle暂停ownership及Abandon确认/取消；另覆盖RunId草稿隔离、当前页status、Console Resume和resize中断格同步。production Adapter 0 warnings/errors。Gameplay Runner全套仍被既有checkpoint/spec漂移阻断。
+
+- User verdict: 2026-09-02用户已确认Esc打开、按钮命中和屏占比；随后明确报告Options状态跨关闭缓存。完整重入/ownership修复和目标门禁完成后重新pending，等待实际菜单重开与Battle恢复复验。
 
 ### MQA-GODOT-TILE-ESCORT-DIFFICULTY — Lost villager escort readability and difficulty
 
@@ -580,7 +596,4 @@ Roguelike Map 分阶段操作步骤见 [真实 TileMap 人工验收 Checklist](r
 
 ## Last Emitted Order
 
-1. `MQA-GODOT-START-FLOW`
-2. `MQA-GODOT-TILE-START-CAMP`
-3. `MQA-GODOT-MAP-CAMERA`
-4. `MQA-GODOT-START-ESC`
+1. `MQA-GODOT-ADVENTURE-MOVEMENT`

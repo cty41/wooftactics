@@ -104,7 +104,8 @@
     "pure-run-starting-skills-v1.json",
     "pure-run-ui-input-v1.json",
     "pure-run-unit-textures-v1.json",
-    "pure-run-units-v1.json"
+    "pure-run-units-v1.json",
+    "roguelike-map-templates-v1.json"
   ],
   "historicalExportReceiptsPreserved": true,
   "manualAcceptance": "pending_separate_quality_gate",

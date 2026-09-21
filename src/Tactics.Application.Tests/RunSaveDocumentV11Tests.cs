@@ -35,6 +35,37 @@ public sealed class RunSaveDocumentV11Tests
     }
 
     [Test]
+    public void EncodeRejectsAnyPendingSetupFailClosed()
+    {
+        var setup = new PendingRunSetup(41, 0, []) { SelectedCharacterIds = ["demonbound"] };
+
+        Assert.Throws<ArgumentException>(() =>
+            RunSaveDocumentV11.Encode(new PureRunSaveSnapshot(0, null, null, setup)));
+    }
+
+    [Test]
+    public void DecodeHistoricalPendingSetup_DropsDraftAndPreservesRunAndSummary()
+    {
+        PureRunState run = Run("mage");
+        var setup = new PendingRunSetup(41, 0, []) { SelectedCharacterIds = ["demonbound"] };
+        var summary = new PureRunSummary("old-run", 3, PureRunOutcome.Abandoned, 0, 0, 0,
+            [], [], []);
+        string historical = RunSaveDocumentV10.Encode(
+            new PureRunSaveSnapshot(run.Revision, run, summary, setup));
+
+        RunSaveDecodeResultV11 decoded = RunSaveDocumentV11.Decode(historical);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(decoded.Succeeded, Is.True);
+            Assert.That(decoded.MigratedFromSchema, Is.EqualTo(10));
+            Assert.That(decoded.Snapshot!.PendingRunSetup, Is.Null);
+            Assert.That(decoded.Snapshot.ActiveRun!.RunId, Is.EqualTo(run.RunId));
+            Assert.That(decoded.Snapshot.TerminalSummary, Is.EqualTo(summary));
+        });
+    }
+
+    [Test]
     public void V10UpgradeDropsActorCellsAndFallsBackFromIllegalLeader()
     {
         PureRunState source = Run("missing");

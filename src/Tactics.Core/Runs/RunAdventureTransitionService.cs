@@ -30,6 +30,7 @@ public sealed class RunAdventureTransitionService
     {
         RunAdventureState state = Require(run);
         RunAdventureActorCell leader = state.ActorCells.Single(value => value.ActorId == state.LeaderId);
+        if (leader.Cell == destination) return run;
         GridPoint[] occupied = state.ActorCells.Where(value => value.ActorId != state.LeaderId).Select(value => value.Cell).ToArray();
         if (AdventureBoardPathfinder.FindPath(board, leader.Cell, destination, occupied).Count == 0)
             throw new InvalidOperationException("adventure.destination_unreachable");

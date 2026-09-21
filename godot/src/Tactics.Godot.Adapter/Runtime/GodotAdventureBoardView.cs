@@ -4,23 +4,42 @@ using Tactics.Core.Runs;
 
 namespace Tactics.Godot.Adapter.Runtime;
 
-/// <summary>Production-input surface backed by a real Godot TileMapLayer.</summary>
+/// <summary>Production-input surface backed by a real Godot TileMapLayer and transient leader movement.</summary>
 public partial class GodotAdventureBoardView : Control
 {
     private const string SharedTileSetPath = "res://content/adventure_maps/AdventureMapTileSetV1.tres";
-    private static readonly Vector2 BoardOffset = new(400, 400);
-    private readonly Dictionary<string, Label> _actors = new(StringComparer.Ordinal);
+    public static readonly Rect2 CanonicalGameplaySafeArea = new(40, 40, 1520, 820);
+    private readonly Dictionary<string, GodotUnitActor> _actors = new(StringComparer.Ordinal);
     private readonly Dictionary<string, Label> _objects = new(StringComparer.Ordinal);
     private readonly Dictionary<string, GridPoint> _actorCells = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, UnitDefinitionResource> _actorDefinitions = new(StringComparer.Ordinal);
     private TileMapLayer? _tiles;
     private AdventureBoardDefinition? _definition;
+    private GodotAdventureMovementPlayer? _movementPlayer;
+    private StandardUnitPresentationResource _movementProfile = new();
+    private string? _leaderId;
+    private float _movementSpeed = 1f;
+    private Rect2 _localBoardBounds;
+    private float _boardScale = 1f;
 
     public event Action<GridPoint>? CellPressed;
     public event Action<string>? ActorPressed;
     public event Action<string>? ObjectPressed;
+    public event Action<string>? MovementRejected;
+    public event Action? ManualMovementRequested;
+    public event Action<GodotAdventureMovementCompletion>? MovementCompleted;
+    public event Action<GridPoint>? MovementInterruptedAtCell;
     public TileMapLayer TileLayer => _tiles ?? throw new InvalidOperationException("Adventure board is not ready.");
     public AdventureBoardDefinition Definition => _definition ?? throw new InvalidOperationException("Adventure board is not configured.");
     public IReadOnlyDictionary<string, GridPoint> ActorCells => _actorCells;
+    public IReadOnlyDictionary<string, GodotUnitActor> ActorNodes => _actors;
+    public bool IsMovementLocked => _movementPlayer?.IsLocked == true;
+    public GodotAdventureMovementDiagnostic? LastMovementDiagnostic => _movementPlayer?.LastDiagnostic;
+    public GridPoint? LastPointerCell { get; private set; }
+    public Rect2 FittedBoardBounds => _tiles is null
+        ? default
+        : GodotBattleBoardFitter.TransformBounds(_localBoardBounds, _tiles.Transform);
+    public float BoardScale => _boardScale;
 
     public override void _Ready()
     {
@@ -28,17 +47,52 @@ public partial class GodotAdventureBoardView : Control
         SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         TileSet tileSet = ResourceLoader.Load<TileSet>(SharedTileSetPath)
             ?? throw new InvalidOperationException($"Generated adventure TileSet is missing: {SharedTileSetPath}.");
-        _tiles = new TileMapLayer { Name = "AdventureTileMapLayer", TileSet = tileSet, Position = BoardOffset };
+        _tiles = new TileMapLayer { Name = "AdventureTileMapLayer", TileSet = tileSet };
         AddChild(_tiles);
+        EnsureMovementPlayer();
         GuiInput += OnGuiInput;
     }
 
-    public override void _ExitTree() => GuiInput -= OnGuiInput;
+    public override void _ExitTree()
+    {
+        GuiInput -= OnGuiInput;
+        _movementPlayer?.Cancel("adventure-board-exit-tree");
+    }
+
+    public override void _Notification(int what)
+    {
+        if (what != NotificationResized || _definition is null || _tiles is null || !IsNodeReady()) return;
+        GridPoint? interruptedCell = _movementPlayer?.IsMoving == true ? _movementPlayer.CurrentCell : null;
+        _movementPlayer?.Cancel("adventure-board-viewport-resized");
+        if (interruptedCell is GridPoint cell) MovementInterruptedAtCell?.Invoke(cell);
+        FitBoardToViewport();
+        RelayoutMarkers();
+    }
+
+    public void ConfigureActors(IReadOnlyDictionary<string, UnitDefinitionResource> definitions, string leaderId,
+        StandardUnitPresentationResource profile, float speed = 1f)
+    {
+        ArgumentNullException.ThrowIfNull(definitions);
+        ArgumentException.ThrowIfNullOrWhiteSpace(leaderId);
+        _actorDefinitions.Clear();
+        foreach ((string actorId, UnitDefinitionResource definition) in definitions) _actorDefinitions[actorId] = definition;
+        _leaderId = leaderId;
+        _movementProfile = profile ?? throw new ArgumentNullException(nameof(profile));
+        _movementSpeed = speed;
+        EnsureMovementPlayer().Configure(profile, speed);
+    }
 
     public void SetBoard(AdventureBoardDefinition definition)
     {
         ArgumentNullException.ThrowIfNull(definition);
         definition.Validate();
+        foreach (AdventureActorPlacement actor in definition.Actors)
+            if (!_actorDefinitions.ContainsKey(actor.ActorId))
+                throw new InvalidOperationException($"Adventure actor '{actor.ActorId}' has no injected UnitDefinitionResource.");
+        if (definition.Actors.Count > 0 && (_leaderId is null || !definition.Actors.Any(value => value.ActorId == _leaderId)))
+            throw new InvalidOperationException($"Adventure leader '{_leaderId ?? "none"}' is not present on board '{definition.ContentId.Value}'.");
+
+        EnsureMovementPlayer().Cancel("adventure-board-reset");
         _definition = definition;
         _actorCells.Clear();
         foreach (AdventureActorPlacement actor in definition.Actors) _actorCells[actor.ActorId] = actor.Cell;
@@ -49,6 +103,7 @@ public partial class GodotAdventureBoardView : Control
             GridPoint cell = new(x, y);
             TileLayer.SetCell(new Vector2I(x, y), 0, definition.IsWalkable(cell) ? new Vector2I(0, 0) : new Vector2I(1, 0));
         }
+        FitBoardToViewport();
         RebuildMarkers();
     }
 
@@ -72,17 +127,33 @@ public partial class GodotAdventureBoardView : Control
     public void MoveActor(string actorId, GridPoint cell)
     {
         if (!_actorCells.ContainsKey(actorId)) throw new ArgumentException("Unknown adventure actor.", nameof(actorId));
+        if (IsMovementLocked) throw new InvalidOperationException("Adventure actors cannot be repositioned during movement.");
         if (!Definition.IsWalkable(cell)) throw new ArgumentException("Adventure actor destination is not walkable.", nameof(cell));
+        if (_actorCells.Any(value => value.Key != actorId && value.Value == cell))
+            throw new ArgumentException("Adventure actor destination is occupied.", nameof(cell));
         _actorCells[actorId] = cell;
-        if (_actors.TryGetValue(actorId, out Label? marker))
-            marker.Position = CellCenter(cell) - new Vector2(42, 34);
+        if (_actors.TryGetValue(actorId, out GodotUnitActor? actor))
+        {
+            actor.Position = CellCenter(cell);
+            actor.ZIndex = ActorZIndex(cell);
+        }
     }
 
-    public Vector2 CellCenter(GridPoint cell) => TileLayer.Position + TileLayer.MapToLocal(new Vector2I(cell.X, cell.Y));
+    public void SetMovementPaused(bool paused) => EnsureMovementPlayer().SetPaused(paused);
+    public void SetMovementSpeed(float speed)
+    {
+        _movementSpeed = speed;
+        EnsureMovementPlayer().SetSpeed(speed);
+    }
+    public void CancelMovement(string reason) => _movementPlayer?.Cancel(reason);
+
+    public Vector2 CellCenter(GridPoint cell) =>
+        TileLayer.Transform * TileLayer.MapToLocal(new Vector2I(cell.X, cell.Y));
 
     public bool TryPointToCell(Vector2 point, out GridPoint cell)
     {
-        Vector2I mapped = TileLayer.LocalToMap(point - TileLayer.Position);
+        Vector2 localPoint = TileLayer.Transform.AffineInverse() * point;
+        Vector2I mapped = TileLayer.LocalToMap(localPoint);
         cell = new GridPoint(mapped.X, mapped.Y);
         return _definition?.Contains(cell) == true;
     }
@@ -91,31 +162,134 @@ public partial class GodotAdventureBoardView : Control
     {
         if (input is not InputEventMouseButton { ButtonIndex: MouseButton.Left, Pressed: true } button ||
             _definition is null || !TryPointToCell(button.Position, out GridPoint cell)) return;
+        LastPointerCell = cell;
         string? actorId = _actorCells.FirstOrDefault(value => value.Value == cell).Key;
-        if (actorId is not null) { ActorPressed?.Invoke(actorId); AcceptEvent(); return; }
         AdventureBoardObject? value = _definition.Objects.FirstOrDefault(candidate => candidate.Cell == cell);
+        if (IsMovementLocked)
+        {
+            if (actorId is not null || value is not null)
+                MovementRejected?.Invoke("adventure.movement_in_progress");
+            else
+            {
+                ManualMovementRequested?.Invoke();
+                RequestLeaderMovement(cell);
+            }
+            AcceptEvent();
+            return;
+        }
+        if (actorId is not null) { ActorPressed?.Invoke(actorId); AcceptEvent(); return; }
         if (value is not null) { ObjectPressed?.Invoke(value.ObjectId); AcceptEvent(); return; }
         CellPressed?.Invoke(cell);
+        ManualMovementRequested?.Invoke();
+        RequestLeaderMovement(cell);
         AcceptEvent();
+    }
+
+    private void RequestLeaderMovement(GridPoint destination)
+    {
+        if (!TryRequestLeaderMovement(destination, out string? rejection))
+            MovementRejected?.Invoke(rejection ?? "adventure.destination_unreachable");
+    }
+
+    public bool TryRequestLeaderMovement(GridPoint destination, out string? rejection)
+    {
+        if (_definition is null || _leaderId is null || !_actorCells.TryGetValue(_leaderId, out GridPoint origin) ||
+            !_actors.TryGetValue(_leaderId, out GodotUnitActor? actor))
+        {
+            rejection = "adventure.leader_not_found";
+            return false;
+        }
+        GridPoint[] occupied = _actorCells.Where(value => value.Key != _leaderId).Select(value => value.Value).ToArray();
+        return IsMovementLocked
+            ? EnsureMovementPlayer().TryRetarget(destination, out rejection)
+            : EnsureMovementPlayer().TryStart(actor, _leaderId, origin, destination, _definition, occupied, CellCenter, out rejection);
+    }
+
+    private GodotAdventureMovementPlayer EnsureMovementPlayer()
+    {
+        if (_movementPlayer is not null && GodotObject.IsInstanceValid(_movementPlayer)) return _movementPlayer;
+        _movementPlayer = new GodotAdventureMovementPlayer { Name = "AdventureMovementPlayer" };
+        AddChild(_movementPlayer);
+        _movementPlayer.Configure(_movementProfile, _movementSpeed);
+        _movementPlayer.CellCentered += cell =>
+        {
+            if (_leaderId is null || !_actors.TryGetValue(_leaderId, out GodotUnitActor? actor)) return;
+            _actorCells[_leaderId] = cell;
+            actor.ZIndex = ActorZIndex(cell);
+        };
+        _movementPlayer.MovementCompleted += completion => MovementCompleted?.Invoke(completion);
+        return _movementPlayer;
+    }
+
+    public static Rect2 GameplaySafeArea(Vector2 viewportSize)
+    {
+        if (viewportSize.X <= 0 || viewportSize.Y <= 0) return CanonicalGameplaySafeArea;
+        return new Rect2(viewportSize.X * .025f, viewportSize.Y * (40f / 900f),
+            viewportSize.X * .95f, viewportSize.Y * (820f / 900f));
+    }
+
+    private void FitBoardToViewport()
+    {
+        Vector2[] centers = Enumerable.Range(0, Definition.Height)
+            .SelectMany(y => Enumerable.Range(0, Definition.Width)
+                .Select(x => TileLayer.MapToLocal(new Vector2I(x, y))))
+            .ToArray();
+        Vector2 halfTile = new Vector2(TileLayer.TileSet.TileSize.X, TileLayer.TileSet.TileSize.Y) * .5f;
+        float minX = centers.Min(value => value.X) - halfTile.X;
+        float minY = centers.Min(value => value.Y) - halfTile.Y;
+        float maxX = centers.Max(value => value.X) + halfTile.X;
+        float maxY = centers.Max(value => value.Y) + halfTile.Y;
+        _localBoardBounds = new Rect2(minX, minY, maxX - minX, maxY - minY);
+        TileLayer.Transform = GodotBattleBoardFitter.Fit(_localBoardBounds, GameplaySafeArea(Size));
+        _boardScale = TileLayer.Transform.X.Length();
     }
 
     private void RebuildMarkers()
     {
-        foreach (Label marker in _actors.Values.Concat(_objects.Values)) marker.QueueFree();
-        _actors.Clear(); _objects.Clear();
-        foreach (AdventureActorPlacement actor in Definition.Actors)
-            _actors[actor.ActorId] = AddMarker(actor.ActorId, actor.Cell, new Color("6ec8ff"));
+        foreach (Node marker in _actors.Values.Cast<Node>().Concat(_objects.Values)) marker.QueueFree();
+        _actors.Clear();
+        _objects.Clear();
+        foreach (AdventureActorPlacement placement in Definition.Actors)
+        {
+            UnitDefinitionResource resource = _actorDefinitions[placement.ActorId];
+            GodotUnitActor actor = GodotUnitFactory.InstantiateActor(resource);
+            actor.Name = "AdventureActor_" + placement.ActorId;
+            actor.ConfigureInstanceIdentity("adventure:" + placement.ActorId);
+            actor.ConfigurePresentation(_movementProfile);
+            actor.Position = CellCenter(placement.Cell);
+            actor.Scale = Vector2.One * (.34f * _boardScale);
+            actor.ZIndex = ActorZIndex(placement.Cell);
+            AddChild(actor);
+            _actors[placement.ActorId] = actor;
+        }
         foreach (AdventureBoardObject value in Definition.Objects)
-            _objects[value.ObjectId] = AddMarker(value.ObjectId, value.Cell, new Color("ffb347"));
+            _objects[value.ObjectId] = AddObjectMarker(value.ObjectId, value.Cell, new Color("ffb347"));
     }
 
-    private Label AddMarker(string id, GridPoint cell, Color color)
+    private void RelayoutMarkers()
+    {
+        foreach ((string actorId, GodotUnitActor actor) in _actors)
+        {
+            GridPoint cell = _actorCells[actorId];
+            actor.Position = CellCenter(cell);
+            actor.Scale = Vector2.One * (.34f * _boardScale);
+            actor.ZIndex = ActorZIndex(cell);
+        }
+        foreach (AdventureBoardObject value in Definition.Objects)
+            if (_objects.TryGetValue(value.ObjectId, out Label? marker))
+                marker.Position = CellCenter(value.Cell) - new Vector2(42, 34);
+    }
+
+    private Label AddObjectMarker(string id, GridPoint cell, Color color)
     {
         var marker = new Label { Name = id, Text = id, Modulate = color, MouseFilter = MouseFilterEnum.Ignore,
-            Position = CellCenter(cell) - new Vector2(42, 34), Size = new Vector2(84, 28), HorizontalAlignment = HorizontalAlignment.Center };
+            Position = CellCenter(cell) - new Vector2(42, 34), Size = new Vector2(84, 28), HorizontalAlignment = HorizontalAlignment.Center,
+            ZIndex = 60 + cell.X + cell.Y };
         AddChild(marker);
         return marker;
     }
+
+    private static int ActorZIndex(GridPoint cell) => 30 + cell.X + cell.Y;
 
     private static bool TryCell(string value, out GridPoint cell)
     {

@@ -4,22 +4,15 @@
 
 ## 打开 Editor
 
-从仓库根目录运行唯一支持入口：
+人工开发可以直接从 Godot Project Manager 打开本目录的 `project.godot`。`Tactics Tooling` 的 GDScript Main Screen Shell 不依赖 C# 编译：已有 Adapter assembly 时直接进入 Workbench；首次未构建时显示 `BUILD C# AND RELOAD`，由用户确认后异步构建并优先在当前 Editor 中完成 reload。失败页保留首条错误、完整日志、复制命令与 Retry，不需要禁用 addon。
+
+Agent、自动化、godot-ai/MCP 或需要 worktree 隔离的人工流程仍从仓库根目录运行 prepared 入口：
 
 ```powershell
 Tools/godot/Open-GodotDev.ps1
 ```
 
-该入口会串行构建 production Adapter、验证程序集身份、隔离当前 worktree 的 `user://`、同步项目级 godot-ai 配置并记录 Editor session。
-
-如果通过 Godot Project Manager、双击项目或手工命令直接打开，`Tactics Tooling` 会在本次会话中保持停用，并提示：
-
-1. 正常关闭当前 Godot Editor。
-2. 在仓库根目录运行 `Tools/godot/Open-GodotDev.ps1`。
-3. 等待 C# Build 显示 0 errors。
-4. 不要手工重新启用报错的 addon。
-
-提示框可以复制完整启动命令，但不会自动执行脚本或关闭 Editor。
+该入口会串行构建 production Adapter、验证程序集身份、隔离当前 worktree 的 `user://`、同步项目级 godot-ai 配置并记录 Editor session。Project Manager 直接打开不产生这些 Agent/MCP 权限证据。
 
 ## 验证
 

@@ -76,7 +76,7 @@
     {
       "ecosystem": "Vendored",
       "name": "godot-ai",
-      "version": "4.0.4"
+      "version": "4.1.0"
     },
     {
       "ecosystem": "npm",

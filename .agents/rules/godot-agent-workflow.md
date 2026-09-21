@@ -29,14 +29,14 @@
 
 ## godot-ai 项目级 MCP
 
-- Godot Editor 只通过 `Tools/godot/Open-GodotDev.ps1` 启动。入口始终串行增量 Build production Adapter，校验程序集身份，并以 worktree 路径派生互斥锁、用户数据目录和会话记录；禁止把直接双击 Editor 作为 Agent 支持流程。
+- 人工可以从 Godot Project Manager 直接打开 canonical 项目：无 C# assembly 时由 GDScript Main Screen Shell 显示显式首次构建/重载入口；Workbench UI可用，但direct controller禁止启动可写authoring named-pipe bridge，且该流程不产生Agent、MCP、worktree隔离或Codex readiness证据。公开launch argument本身不授权bridge；descriptor必须匹配当前PID、canonical路径、worktree key、mode，且startedAt必须与该PID的进程启动时间关联。Agent、自动化、godot-ai/MCP与严格隔离流程只通过`Tools/godot/Open-GodotDev.ps1`启动；入口串行Build production Adapter、校验程序集身份，并以worktree路径派生互斥锁、用户数据目录和会话记录。
 - godot-ai 源码按 manifest 中的精确 Tag、commit、tree digest 与 license digest 固定在 `godot/addons/godot_ai`，允许进入公开源码根，但必须从 PCK/Windows 运行时包排除。Dock 自更新不受支持；升级只能通过显式 vendor refresh 生成候选 diff 并经 review。
 - godot-ai 只允许由包含 canonical `godot/project.godot` 的当前项目 worktree 中、被 Git 忽略的 `.codex/config.toml` 加载；用户级 `~/.codex/config.toml` 不得长期保留 godot-ai 表，也不得影响历史 Unity 检出或其他项目。
 - 固定使用 manifest tag 对应的 `godot-ai==<version>` Windows Attach 启动方式：绝对路径 `pythonw.exe`、无窗口 bootstrap、HTTP 8000、WebSocket 9500。配置以 `Tools/migration/manifest/godot-tooling.json` 为策略真相源。
 - 首次启动由统一入口运行 `Sync-GodotAiCodexConfig.ps1 -Bootstrap` 生成项目配置，并输出 `CODEX_RESTART_REQUIRED`；重启一次当前 worktree 根目录的 Codex 任务。后续用 `-Check` 验证，用 `-Profile <name>` 切换累积白名单。
 - Agent 只允许 `Worktree` 用户数据；固定 `SharedManualQA` 数据只允许 `-Mode Human` 显式选择。一个 worktree 同时只允许一个 Editor/Agent 写会话；多个 worktree 可共享兼容的 8000/9500 Attach backend，但每次写入仍必须核对 session 的项目路径。
 - 更换 godot-ai 版本、端口、启动方式或工具 Profile 后，必须重新生成/同步配置并重启根目录为该 canonical Godot worktree 的 Codex 任务。
-- 已授权 Godot 修改任务需要 session 为 `0` 时，必须使用 `godot-editor-lifecycle` 对唯一 canonical PID 做正常关闭，并且只在 Editor 原本打开时恢复；超时不强杀、不继续写入。
+- 已授权 Godot 修改任务需要 session 为 `0` 时，必须使用 `godot-editor-lifecycle` 对唯一 canonical PID 做正常关闭，并且只在 Editor 原本打开时恢复；超时不强杀、不继续写入。恢复仍必须委托 `Tools/godot/Open-GodotDev.ps1` 完成 production Adapter 串行 Build、worktree 用户数据、bootstrap 参数和 session 记录；禁止 lifecycle 脚本或 Agent 以裸 `godot --editor --path` 代替正式入口。
 - MCP 写操作前必须先调用 Session 与 Editor 状态接口，确认仅有一个会话、Godot 版本为 4.7.1，且项目指向当前 worktree 的 `godot/project.godot`；不满足时停止写入。
 - Profile 按 `phase3-observe → content-authoring → ui-input → presentation` 累积扩展。未进入对应迁移阶段，不得提前扩大工具面。
 - 始终禁用 `script_create`、`script_attach`、`script_patch`、`filesystem_manage`、`client_manage` 和 `autoload_manage`。生产 C# 使用 `apply_patch` 与 Build；Godot 资产使用 ResourceSaver、Editor API 或受测转换器。

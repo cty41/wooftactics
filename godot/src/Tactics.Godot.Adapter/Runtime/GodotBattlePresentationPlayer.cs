@@ -231,43 +231,11 @@ public partial class GodotBattlePresentationPlayer : Node
         _rootBaselines.TryAdd(actor, actor.Position);
     }
 
-    private void PlayMoveSegment(Tween tween, GodotUnitActor actor, Vector2 origin, Vector2 destination)
-    {
-        if (actor.Body is null) return;
-        Vector2 direction = origin.DirectionTo(destination);
-        Vector2 perpendicular = new(-direction.Y, direction.X);
-        float half = _profile.MoveCycleDuration * .5f;
-        float tilt = Mathf.DegToRad(direction.X >= 0f ? -_profile.MoveTiltDegrees : _profile.MoveTiltDegrees);
-        Vector2 midpoint = origin.Lerp(destination, .5f);
+    private void PlayMoveSegment(Tween tween, GodotUnitActor actor, Vector2 origin, Vector2 destination) =>
+        GodotUnitMoveTweenBuilder.AppendSegment(tween, actor, origin, destination, _profile);
 
-        tween.TweenProperty(actor, "position", midpoint, half).SetTrans(Tween.TransitionType.Linear);
-        tween.Parallel().TweenProperty(actor.Body, "position",
-            perpendicular * _profile.MoveSwayPixels + Vector2.Up * _profile.MoveLiftPixels, half)
-            .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
-        tween.Parallel().TweenProperty(actor.Body, "rotation", tilt, half)
-            .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
-        tween.Parallel().TweenProperty(actor.Body, "scale", new Vector2(.98f, 1.02f), half)
-            .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
-
-        tween.TweenProperty(actor, "position", destination, half).SetTrans(Tween.TransitionType.Linear);
-        tween.Parallel().TweenProperty(actor.Body, "position", -perpendicular * _profile.MoveSwayPixels, half)
-            .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
-        tween.Parallel().TweenProperty(actor.Body, "rotation", -tilt * .65f, half)
-            .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
-        tween.Parallel().TweenProperty(actor.Body, "scale", Vector2.One, half)
-            .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
-    }
-
-    private void PlayBodySettle(Tween tween, GodotUnitActor actor)
-    {
-        if (actor.Body is null) return;
-        tween.TweenProperty(actor.Body, "position", Vector2.Zero, _profile.MoveSettleDuration)
-            .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
-        tween.Parallel().TweenProperty(actor.Body, "rotation", 0f, _profile.MoveSettleDuration)
-            .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
-        tween.Parallel().TweenProperty(actor.Body, "scale", Vector2.One, _profile.MoveSettleDuration)
-            .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
-    }
+    private void PlayBodySettle(Tween tween, GodotUnitActor actor) =>
+        GodotUnitMoveTweenBuilder.AppendSettle(tween, actor, _profile);
 
     private void PlayHitReaction(Tween tween, GodotUnitActor actor, BattlePresentationCue cue,
         IReadOnlyDictionary<UnitInstanceId, GodotUnitActor> actors)

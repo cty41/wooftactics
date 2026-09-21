@@ -8,6 +8,8 @@
 
 交付采用多个可独立验证、可依次合并的 PR。不得把自动测试、截图或 Headless 运行写成人工视觉通过。
 
+移动表现与寻路子计划：[`adventure-leader-movement-parity.md`](adventure-leader-movement-parity.md)；冻结合同：[`../docs/adventure-movement-contract.md`](../docs/adventure-movement-contract.md)。
+
 ## Current State
 
 - `GodotIsometricBattleBoard` 是 `Control`，通过 `_Draw()` 手绘菱形；它使用共享 10×10、96×48 等距投影和真实 `GodotUnitActor`，但不是 `TileMapLayer`。

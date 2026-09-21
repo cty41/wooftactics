@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Godot migration provenance
 description: 已完成迁移的冻结来源、Godot ownership、生成批次与验证边界。
 tags: [migration, godot, provenance, testing]
-timestamp: "2026-08-28T11:46:27+08:00"
+timestamp: "2026-09-21T11:08:05+08:00"
 status: active
 catalog_scope: godot-migration
 repo_paths:
@@ -16,12 +16,12 @@ repo_paths:
   - Tools/migration
   - Tools/migration/manifest/retirement
 verified_revision: 2b341cb3
-source_fingerprint: sha256:fc776ad396b026817e67683f6efe58cc49ea67db8cd8a71d28756e5673817279
+source_fingerprint: sha256:6aafb0ad90c2ccc30af0f64e4d0e839ae1df93cc1c1f5367c67afdf1f21be017
 ---
 
 # Current State
 
-Godot 4.7 C# 是唯一产品主线，`godot/project.godot` 是唯一项目。Core/Application 保持引擎无关，Godot Adapter 承担 Node、Resource、文件系统、UI、作者工具和运行时集成。
+Godot 4.7 C# 是唯一产品主线，`godot/project.godot` 是唯一项目。Core/Application 保持引擎无关，Godot Adapter 承担 Node、Resource、文件系统、UI、作者工具和运行时集成；Runtime UI以Main/Page/Run/Open Session/Frame显式边界治理重入状态，权威合同见`.agents/docs/runtime-ui-lifecycle-contract.md`。
 
 迁移来源已冻结在最终 Tag、FrozenOracle、Golden、DTO、receipt、ownership ledger 与 retirement manifest 中。它们只用于来源审计、确定性回归和许可证证明，不提供 live 旧编辑器、旧 MCP 或旧资产写入路径。
 
@@ -29,7 +29,7 @@ Godot 4.7 C# 是唯一产品主线，`godot/project.godot` 是唯一项目。Cor
 
 Roguelike 地图迁移的首个切片已建立 engine-neutral 10×10 模板、出生槽/入口/出口/状态层合同，以及由 `AdventureMapAssetBuilder` 通过 ResourceSaver 生成的共享等距 TileSet、开始营地和基础战斗模板。生成 manifest、固定 UID、Catalog 与连续两轮字节级幂等共同约束这些资源；运行时不再为 Adventure Board 临时绘制双色 TileSet。
 
-开发工具链把固定的 MIT godot-ai v3.2.5 源码作为 Editor-only vendor 依赖纳入公开源码，并由 manifest 中的 tag、commit、tree digest 与 license digest 审计；它不进入游戏 PCK/Windows 包。Editor 通过统一入口完成 production C# Build、worktree 用户数据隔离、项目级 Codex 配置和会话租约，避免测试宿主程序集或另一个 worktree 的窗口被误认成当前项目。Tactics Tooling 的 GDScript Bootstrap 在缺少入口启动契约时不会加载 C# controller，而是 fail-closed 并给出恢复步骤，因此首次直接打开且 Adapter DLL 不存在时也不再由含糊的 C# addon 错误承担指导职责；受支持入口则以构造时参数完成早期 Main Screen 注册。整个 tooling addon 同样由 export preset 与包审计排除在游戏 PCK 外。
+开发工具链把固定的 MIT godot-ai v3.2.5 源码作为 Editor-only vendor 依赖纳入公开源码，并由 manifest 中的 tag、commit、tree digest 与 license digest 审计；它不进入游戏 PCK/Windows 包。Editor采用Human Direct与Prepared Agent双入口：人工Project Manager入口由无C#依赖的GDScript Shell始终注册Main Screen，缺Adapter assembly时提供显式异步Build和同PID reload；direct controller不启动可写authoring bridge。Agent、自动化和godot-ai/MCP仍通过prepared launcher完成production C# Build、worktree用户数据隔离、项目级Codex配置、可写bridge准入和会话租约，避免测试宿主程序集或另一个worktree窗口被误认。整个tooling addon同样由export preset与包审计排除在游戏PCK外。
 
 # Relationships
 

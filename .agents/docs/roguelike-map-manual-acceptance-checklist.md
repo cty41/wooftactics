@@ -2,21 +2,21 @@
 
 本文件是 `.agents/plans/roguelike-map-real-tilemap-atlas.md` 的分阶段人工验收操作指南，方便按 PR 连续执行；它不保存 verdict。实际 `pending / passed / failed / deferred / blocked` 状态、稳定 MQA ID 和用户反馈只写入 [人工验收账本](manual-acceptance.md)。只有对应 PR 完成 review 且所需自动门禁通过后，才执行该阶段；未实现阶段不能按人工失败记录。
 
-## 本轮验证状态（2026-08-24）
+## 本轮验证状态（2026-09-01）
 
 ### 已通过的自动验证
 
-- [x] `dotnet build Tactics.Godot.slnx --no-restore`：成功，0 warning、0 error。
-- [x] Application Start/Save 回归：60/60，包括增量选人、首位顺序、重复/满员拒绝、setup 放弃和 V11 编解码。
-- [x] Core Adventure Map 合同测试：3/3。
-- [x] 隔离 Godot TileMap/Start Camp 测试：7/7，包括 100 Tile 投影、模板、真实 Actor、唯一 Active、Start→N1 锚点连线、统一地图尺寸和地图集方向。
-- [x] OKF 工具测试：16/16；knowledge bundle 校验通过。
-- [x] `git diff --check`：通过；未暂存、提交或清理用户现有改动。
+- [x] Godot TestHost build：成功，0 warning、0 error。
+- [x] Application 回归：192/192；新增 V11 对 1/3、2/3、3/3 增量选人存档的编解码覆盖，并继续拒绝未满员时进入技能进度。
+- [x] 隔离 Godot TileMap/Start Camp 测试：8/8；新增真实 `Viewport.PushInput`、Owned InputSurface、父级平移/缩放及结构化命中诊断。
+- [x] `AdventureBoard.StartCampPartyOrder` 生产输入旅程：1/1；从 Start-first 首屏依次选择三名角色并进入出口，隔离存档不污染生产主档。
+- [x] `git diff --check`：通过；未覆盖、暂存或清理用户现有 `godot/project.godot` 修改。
 
 ### 当前工具阻断（不等于本切片测试失败）
 
-- [ ] 完整 `Verify-GodotProject.ps1` 在运行测试前因仓库仍存在退役 Unity 根目录 `Assets` 而停止；未授权删除该目录。
-- [ ] gameplay contract CLI 因本地缺少 Node 包 `commander` 无法启动；未擅自安装依赖或修改 lockfile。
+- [ ] 完整 `Verify-GodotProject.ps1` 在测试前因 pinned godot-ai vendor tree drift 停止：`files=247`、`sha256=4723de6c5be2cf59f0b38365e2e67073aa7b7838e8cb44aaaa6748d195a79b10`；本任务未修改 vendor。
+- [ ] 完整 Godot Gameplay suite 当前 13/29 通过；Start Camp 旅程已通过，其余失败主要是既有 checkpoint hash 漂移和仍假定 Home/New Run 的旧 spec，超出本次点击修复范围。
+- [ ] gameplay spec CLI 缺少已构建 `dist/src/cli.js`，本地 `tsc` 也不可用；源 Spec 已同步 Start-first 流程，未擅自安装依赖或修改 lockfile。
 
 ### 仍需人工验证
 
@@ -50,7 +50,7 @@
    - **操作**：在 Current 状态分别点击各候选角色身体并移动首位领队；按 `M` 进入 Overview，用右键拖动和 WASD/方向键浏览到最远节点并点击 Preview；滚动滚轮确认无变化，再按 `M` 返回，另用 `F/Home` 返回领队。
    - **预期**：Current 完整显示 10×10 Start，角色身体可选且重叠处选择前景角色。Overview 保持地图与文字可读，不要求一屏显示全路线；只允许浏览和 Preview，不允许选人、移动或出口。滚轮在两种状态均无作用；`M` 不受焦点影响并可反复稳定切换。每张 TileMap 的“标题·类型·层数”固定在自身上方中央，随地图平移而不漂移。Current 与 Overview 显示不同的固定操作提示；Party Setup、状态和 Esc 菜单始终位于地图内容上方。
    - **观察**：StartCampView、10×10 Tile 边界、Start→N1 端点、主路线/分支方向、各节点视觉尺度、页头、Party Setup、Planning/Party 状态、操作提示、Esc overlay 和 Godot Output。
-   - **失败保留**：窗口尺寸、输入序列、节点 ID、缩放/位置、短视频和 Output。
+   - **失败保留**：窗口尺寸、输入序列、节点 ID、缩放/位置、短视频，以及完整 `[StartCampInput]`、`[StartCampSelection]` Output 行；日志会区分未命中、Overview 阻断、候选 ID、存档拒绝和处理异常。
    - **存档边界**：Preview 与相机只读；不要点击出口覆盖故障现场。
 
 4. [ ] **出口、技能与 Esc（`MQA-GODOT-START-ESC`）**

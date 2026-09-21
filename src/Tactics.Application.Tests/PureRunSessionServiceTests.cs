@@ -121,7 +121,7 @@ public sealed class PureRunSessionServiceTests
         Assert.That(service.SelectPartyMember("demonbound").Succeeded, Is.True);
         Assert.That(service.SelectPartyMember("mage").Succeeded, Is.True);
         Assert.That(service.SelectPartyMember("amazon").Succeeded, Is.True);
-        PureRunSaveSnapshot selected = store.Snapshot!;
+        PureRunSaveSnapshot selected = service.CurrentSetupProjection!;
 
         Assert.Multiple(() =>
         {
@@ -146,7 +146,7 @@ public sealed class PureRunSessionServiceTests
     }
 
     [Test]
-    public void AbandonPendingSetup_CreatesAbandonedTerminalSummary()
+    public void AbandonDuringSetup_IsRejectedAndDoesNotPersistDraft()
     {
         var store = new MemoryRunStore();
         var service = new PureRunSessionService(DefinitionWithDemonbound(), store);
@@ -157,10 +157,10 @@ public sealed class PureRunSessionServiceTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(result.Succeeded, Is.True);
-            Assert.That(result.Snapshot!.PendingRunSetup, Is.Null);
-            Assert.That(result.Snapshot.ActiveRun, Is.Null);
-            Assert.That(result.Snapshot.TerminalSummary!.Outcome, Is.EqualTo(PureRunOutcome.Abandoned));
+            Assert.That(result.ErrorCode, Is.EqualTo("run_setup.pending"));
+            Assert.That(service.HasSetupDraft, Is.True);
+            Assert.That(store.SaveCount, Is.Zero);
+            Assert.That(store.Snapshot, Is.Null);
         });
     }
 
@@ -248,10 +248,109 @@ public sealed class PureRunSessionServiceTests
             Assert.That(legacyStart.ErrorCode, Is.EqualTo("run_setup.pending"));
             Assert.That(restartSetup.ErrorCode, Is.EqualTo("run_setup.pending"));
             Assert.That(mutation.ErrorCode, Is.EqualTo("run_setup.pending"));
-            Assert.That(store.Snapshot!.PendingRunSetup, Is.Not.Null);
-            Assert.That(store.Snapshot.PendingRunSetup!.CurrentCharacterId, Is.EqualTo("mage"));
+            Assert.That(store.Snapshot!.PendingRunSetup, Is.Null);
+            Assert.That(service.CurrentSetupProjection!.PendingRunSetup!.CurrentCharacterId, Is.EqualTo("mage"));
         });
     }
+    [Test]
+    public void SetupDraft_DoesNotSaveUntilFinalSkillAndCannotReplayInNewService()
+    {
+        var store = new MemoryRunStore();
+        var service = new PureRunSessionService(DefinitionWithChoices(), store);
+        service.StartNewRun(3);
+        PureRunSaveSnapshot persisted = store.Snapshot!;
+        int savesBeforeSetup = store.SaveCount;
+
+        service.BeginNewRunSetup(9);
+        service.ChooseStartingSkill("mage", new ContentId("skill.mage.fireball.lv1"));
+        service.ChooseStartingSkill("necromancer", new ContentId("skill.necromancer.bone-spear.lv1"));
+
+        var replay = new PureRunSessionService(DefinitionWithChoices(), store);
+        Assert.Multiple(() =>
+        {
+            Assert.That(service.HasSetupDraft, Is.True);
+            Assert.That(service.CurrentSetupProjection!.PendingRunSetup!.CurrentCharacterId, Is.EqualTo("amazon"));
+            Assert.That(store.SaveCount, Is.EqualTo(savesBeforeSetup));
+            Assert.That(store.Snapshot, Is.SameAs(persisted));
+            Assert.That(replay.HasSetupDraft, Is.False);
+            Assert.That(replay.ChooseStartingSkill("amazon", new ContentId("skill.poison-spear.lv1")).ErrorCode,
+                Is.EqualTo("run_setup.not_pending"));
+            Assert.That(replay.ResumeRun().Snapshot!.ActiveRun!.RunId, Is.EqualTo(persisted.ActiveRun!.RunId));
+        });
+
+        RunSessionResult completed = service.ChooseStartingSkill("amazon", new ContentId("skill.poison-spear.lv1"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(completed.Succeeded, Is.True);
+            Assert.That(service.HasSetupDraft, Is.False);
+            Assert.That(store.SaveCount, Is.EqualTo(savesBeforeSetup + 1));
+            Assert.That(store.Snapshot!.Revision, Is.EqualTo(persisted.Revision + 1));
+        });
+    }
+
+    [Test]
+    public void CancelSetup_DropsDraftWithoutSavingAndKeepsOldRunUnchanged()
+    {
+        var store = new MemoryRunStore();
+        var service = new PureRunSessionService(DefinitionWithChoices(), store);
+        service.StartNewRun(4);
+        PureRunSaveSnapshot persisted = store.Snapshot!;
+        int saveCount = store.SaveCount;
+        service.BeginNewRunSetup(10);
+        service.ChooseStartingSkill("mage", new ContentId("skill.mage.fireball.lv1"));
+
+        RunSessionResult canceled = service.CancelNewRunSetup();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(canceled.Succeeded, Is.True);
+            Assert.That(service.HasSetupDraft, Is.False);
+            Assert.That(service.CurrentSetupProjection, Is.Null);
+            Assert.That(store.SaveCount, Is.EqualTo(saveCount));
+            Assert.That(store.Snapshot, Is.SameAs(persisted));
+            Assert.That(canceled.Snapshot, Is.SameAs(persisted));
+        });
+    }
+
+    [Test]
+    public void FinalSetupSave_UsesBaseRevisionCasAndKeepsDraftAfterConflict()
+    {
+        var store = new MemoryRunStore();
+        var service = new PureRunSessionService(DefinitionWithChoices(), store);
+        service.StartNewRun(5);
+        service.BeginNewRunSetup(11);
+        service.ChooseStartingSkill("mage", new ContentId("skill.mage.fireball.lv1"));
+        service.ChooseStartingSkill("necromancer", new ContentId("skill.necromancer.bone-spear.lv1"));
+        PureRunSaveSnapshot concurrent = store.Snapshot! with { Revision = store.Snapshot!.Revision + 1 };
+        Assert.That(store.Save(concurrent, store.Snapshot.Revision).Succeeded, Is.True);
+
+        RunSessionResult result = service.ChooseStartingSkill("amazon", new ContentId("skill.poison-spear.lv1"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.ErrorCode, Is.EqualTo("save.revision_conflict"));
+            Assert.That(service.HasSetupDraft, Is.True);
+            Assert.That(store.Snapshot, Is.SameAs(concurrent));
+            Assert.That(store.Snapshot!.ActiveRun!.RunId, Is.EqualTo(concurrent.ActiveRun!.RunId));
+        });
+    }
+
+    [Test]
+    public void SetupMutationsWithoutDraft_ReturnNotPending()
+    {
+        var service = new PureRunSessionService(DefinitionWithChoices(), new MemoryRunStore());
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(service.SelectPartyMember("mage").ErrorCode, Is.EqualTo("run_setup.not_pending"));
+            Assert.That(service.ChooseParty(["mage", "necromancer", "amazon"]).ErrorCode,
+                Is.EqualTo("run_setup.not_pending"));
+            Assert.That(service.ChooseStartingSkill("mage", new ContentId("skill.mage.fireball.lv1")).ErrorCode,
+                Is.EqualTo("run_setup.not_pending"));
+            Assert.That(service.CancelNewRunSetup().ErrorCode, Is.EqualTo("run_setup.not_pending"));
+        });
+    }
+
     [Test]
     public void BeginEncounter_PersistsCheckpointBeforeReturningRequest()
     {
@@ -742,11 +841,13 @@ public sealed class PureRunSessionServiceTests
     private sealed class MemoryRunStore : IRunSaveStore
     {
         public PureRunSaveSnapshot? Snapshot { get; set; }
+        public int SaveCount { get; private set; }
 
         public RunStoreResult Load() => new(true, null, Snapshot ?? new PureRunSaveSnapshot(0, null, null));
 
         public RunStoreResult Save(PureRunSaveSnapshot snapshot, long expectedRevision)
         {
+            SaveCount++;
             long current = Snapshot?.Revision ?? 0;
             if (current != expectedRevision)
                 return new RunStoreResult(false, "save.revision_conflict", Snapshot);

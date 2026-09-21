@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics/tree/main/.agents/docs
 title: Project Documentation
 description: 当前设计、活跃计划、统一缺口与 OKF 综合层的文档生命周期。
 tags: [operations, documentation, plans, knowledge]
-timestamp: "2026-08-28T11:46:28+08:00"
+timestamp: "2026-09-21T10:55:43+08:00"
 status: active
 catalog_scope: project-documentation
 repo_paths:
@@ -14,7 +14,7 @@ repo_paths:
   - .agents/skills/plan-mode-plan-writer/SKILL.md
   - .agents/skills/manual-qa-handoff/SKILL.md
 verified_revision: c56d71ad4ebd
-source_fingerprint: sha256:a65f1a6a71dac81d7dd92e25adb3fce367d709a11df5d7a4cf21098ec0ee92e8
+source_fingerprint: sha256:704387b2f2f23280e56d390274d08e2c67dc4146ba6c454f28ea966894eca3db
 ---
 
 # Current State
@@ -25,7 +25,9 @@ source_fingerprint: sha256:a65f1a6a71dac81d7dd92e25adb3fce367d709a11df5d7a4cf210
 
 `.agents/plans/` 只保存仍需执行且 decision-complete 的计划。实现完成并验证后，长期规则回写 docs，未实施项进入已知缺口或经批准的新计划，completed plan 随后删除并由 Git 保留历史。
 
-当前 `roguelike-map-real-tilemap-atlas.md` 作为活跃的六里程碑计划，跟踪共享 TileMap 基础、地图集、战斗与事件同图、节点级恢复和最终人工收口。首个开始营地切片完成不等于整份计划完成；后续里程碑仍须独立 review、自动门禁与人工账本判定。
+当前 `roguelike-map-real-tilemap-atlas.md` 作为活跃的六里程碑计划，跟踪共享 TileMap 基础、地图集、战斗与事件同图、节点级恢复和最终人工收口；其移动子计划 `adventure-leader-movement-parity.md` 冻结全部 Active Board 的逐格 Tween、独立 Adventure 寻路政策、格中心改道、交互锁与最终单次提交，长期合同位于 `.agents/docs/adventure-movement-contract.md`。首个开始营地切片或移动子切片完成不等于整份地图计划完成；后续里程碑仍须独立 review、自动门禁与人工账本判定。
+
+Runtime UI的Main/Page/Run/Open Session/Frame所有权与Reset/Refresh/Resume重入政策集中在`.agents/docs/runtime-ui-lifecycle-contract.md`，输入专项合同只引用该边界而不建立并列真相源。
 
 `.agents/knowledge/` 负责跨系统摘要、关系和导航，不复制完整设计或已完成计划。代码、Godot Resource 和测试仍是当前行为的最终事实源。
 

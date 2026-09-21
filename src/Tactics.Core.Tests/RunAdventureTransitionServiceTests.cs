@@ -57,6 +57,59 @@ public sealed class RunAdventureTransitionServiceTests
             Is.EqualTo(new GridPoint(3, 5)));
     }
 
+    [Test]
+    public void MovingLeaderToCurrentCellIsNoOpWithoutRevisionChange()
+    {
+        var service = new RunAdventureTransitionService();
+        PureRunState run = Run(service);
+        AdventureBoardDefinition board = Board(run.AdventureState!);
+        GridPoint current = run.AdventureState!.ActorCells.Single(value => value.ActorId == run.AdventureState.LeaderId).Cell;
+
+        PureRunState unchanged = service.MoveLeader(run, board, current);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(unchanged, Is.SameAs(run));
+            Assert.That(unchanged.Revision, Is.EqualTo(run.Revision));
+            Assert.That(unchanged.AdventureState!.InteractionRevision,
+                Is.EqualTo(run.AdventureState.InteractionRevision));
+        });
+    }
+
+    [Test]
+    public void ExplorationSessionRestoresSaveStrippedCellsAndHydratesOneFinalTransition()
+    {
+        var service = new RunAdventureTransitionService();
+        PureRunState source = Run(service);
+        RunAdventureState strippedAdventure = source.AdventureState! with { ActorCells = Array.Empty<RunAdventureActorCell>() };
+        var stripped = new PureRunState(source.RunId, source.Seed, source.Revision, source.Phase, source.EncounterIndex,
+            source.EncounterContentId, source.Party, source.BackpackConsumables, source.BackpackEquipment,
+            source.PendingProgression, source.AppliedTransactionKeys, source.Gold, source.BattlesCompleted,
+            source.EnemiesDefeated, source.AcquiredItems, source.Checkpoint, source.MapState, source.NodeTransaction,
+            source.EscortState, strippedAdventure);
+        AdventureExplorationSession session = AdventureExplorationSession.Restore(stripped,
+            [new GridPoint(2, 5), new GridPoint(1, 4), new GridPoint(1, 6)]);
+
+        session.SetLeader("necro");
+        session.SetCell("necro", new GridPoint(4, 5));
+        PureRunState hydrated = session.Hydrate(stripped);
+        var otherRun = new PureRunState("other-run", stripped.Seed, stripped.Revision, stripped.Phase, stripped.EncounterIndex,
+            stripped.EncounterContentId, stripped.Party, stripped.BackpackConsumables, stripped.BackpackEquipment,
+            stripped.PendingProgression, stripped.AppliedTransactionKeys, stripped.Gold, stripped.BattlesCompleted,
+            stripped.EnemiesDefeated, stripped.AcquiredItems, stripped.Checkpoint, stripped.MapState, stripped.NodeTransaction,
+            stripped.EscortState, stripped.AdventureState);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(session.Matches(stripped), Is.True);
+            Assert.That(session.Matches(otherRun), Is.False);
+            Assert.That(hydrated.AdventureState!.LeaderId, Is.EqualTo("necro"));
+            Assert.That(hydrated.AdventureState.ActorCells.Single(value => value.ActorId == "necro").Cell,
+                Is.EqualTo(new GridPoint(4, 5)));
+            Assert.That(stripped.AdventureState!.ActorCells, Is.Empty);
+        });
+    }
+
     private static PureRunState Run(RunAdventureTransitionService service)
     {
         UnitAttributes attributes = new(5, 5, 5, 5, 5, 5);

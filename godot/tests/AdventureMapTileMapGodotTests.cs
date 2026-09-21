@@ -115,6 +115,144 @@ public sealed class AdventureMapTileMapGodotTests
 
     [TestCase]
     [RequireGodotRuntime]
+    public async Task StartCampRoutesRealViewportClicksThroughItsOwnedInputSurface()
+    {
+        GodotStartCampCandidate[] candidates = LoadUnitDefinitions(4).Select((definition, index) =>
+            new GodotStartCampCandidate($"candidate-{index + 1}", definition)).ToArray();
+        var view = new GodotStartCampView
+        {
+            Name = "StartCampViewportInputUnderTest",
+            Position = new Vector2(17, 23),
+            Scale = new Vector2(.9f, .9f)
+        };
+        ((SceneTree)Engine.GetMainLoop()).Root.AddChild(view);
+        await view.ToSignal(view.GetTree(), SceneTree.SignalName.ProcessFrame);
+        view.Configure(AdventureMapAssetFactory.CreateStartCampTemplate(), candidates);
+        await view.ToSignal(view.GetTree(), SceneTree.SignalName.ProcessFrame);
+
+        string targetId = candidates[^1].CharacterId;
+        GodotUnitActor actor = view.CandidateActors[targetId];
+        Rect2 bounds = actor.VisualBoundsInParent();
+        Vector2 bodyPoint = new(bounds.GetCenter().X, bounds.Position.Y + Math.Min(6f, bounds.Size.Y * .12f));
+        Vector2 viewportPoint = ((Node2D)actor.GetParent()).GetGlobalTransformWithCanvas() * bodyPoint;
+        Viewport viewport = view.GetViewport();
+        string? pressedCandidate = null;
+        int pressedCount = 0;
+        view.CandidatePressed += id =>
+        {
+            pressedCandidate = id;
+            pressedCount++;
+            view.RecordSelectionOutcome(true, null, 1);
+        };
+
+        viewport.PushInput(new InputEventMouseMotion { Position = viewportPoint, GlobalPosition = viewportPoint }, false);
+        await view.ToSignal(view.GetTree(), SceneTree.SignalName.ProcessFrame);
+        AssertThat(viewport.GuiGetHoveredControl()).IsEqual(view.InputSurface);
+        viewport.PushInput(new InputEventMouseButton
+        {
+            Position = viewportPoint,
+            GlobalPosition = viewportPoint,
+            ButtonIndex = MouseButton.Left,
+            Pressed = true
+        }, false);
+        await view.ToSignal(view.GetTree(), SceneTree.SignalName.ProcessFrame);
+        viewport.PushInput(new InputEventMouseButton
+        {
+            Position = viewportPoint,
+            GlobalPosition = viewportPoint,
+            ButtonIndex = MouseButton.Left,
+            Pressed = false
+        }, false);
+        await view.ToSignal(view.GetTree(), SceneTree.SignalName.ProcessFrame);
+
+        AssertThat(pressedCandidate).IsEqual(targetId);
+        AssertThat(view.LastInputDiagnostic).IsNotNull();
+        AssertThat(view.LastInputDiagnostic!.SourceControl).IsEqual("StartCampAtlasInput");
+        AssertThat(view.LastInputDiagnostic.Resolution).IsEqual(StartCampPointerResolution.Candidate);
+        AssertThat(view.LastInputDiagnostic.TargetId).IsEqual(targetId);
+        AssertThat(view.LastInputDiagnostic.NearestCandidateId).IsEqual(targetId);
+        string diagnosticLine = view.LastInputDiagnostic.ToLogLine();
+        AssertThat(diagnosticLine).Contains("source=StartCampAtlasInput");
+        AssertThat(diagnosticLine).Contains("resolution=Candidate");
+        AssertThat(diagnosticLine).Contains("outcome=accepted");
+        AssertThat(diagnosticLine).NotContains("\n");
+        AssertThat(pressedCount).IsEqual(1);
+
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        tree.Root.RemoveChild(view);
+        tree.Root.AddChild(view);
+        await view.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        viewportPoint = ((Node2D)actor.GetParent()).GetGlobalTransformWithCanvas() * bodyPoint;
+        viewport.PushInput(new InputEventMouseMotion { Position = viewportPoint, GlobalPosition = viewportPoint }, false);
+        await view.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        viewport.PushInput(new InputEventMouseButton
+        {
+            Position = viewportPoint,
+            GlobalPosition = viewportPoint,
+            ButtonIndex = MouseButton.Left,
+            Pressed = true
+        }, false);
+        await view.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        AssertThat(pressedCount).IsEqual(2);
+        viewport.PushInput(new InputEventMouseButton
+        {
+            Position = viewportPoint,
+            GlobalPosition = viewportPoint,
+            ButtonIndex = MouseButton.Left,
+            Pressed = false
+        }, false);
+        await view.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        view.QueueFree();
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task StartCampLeaderUsesARealMultiCellMovementInsteadOfTeleporting()
+    {
+        GodotStartCampCandidate[] candidates = LoadUnitDefinitions(4).Select((definition, index) =>
+            new GodotStartCampCandidate($"candidate-{index + 1}", definition)).ToArray();
+        var view = new GodotStartCampView { Name = "StartCampMovementUnderTest" };
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        tree.Root.AddChild(view);
+        await view.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        AdventureMapTemplateResource template = AdventureMapAssetFactory.CreateStartCampTemplate();
+        view.ConfigureMovement(new StandardUnitPresentationResource { MoveCycleDuration = .1f, MoveSettleDuration = .02f });
+        view.Configure(template, candidates);
+        string leaderId = candidates[0].CharacterId;
+        view.SetSelection([leaderId], false);
+        GridPoint origin = view.CandidateCells[leaderId];
+        HashSet<GridPoint> occupied = view.CandidateCells.Where(value => value.Key != leaderId).Select(value => value.Value).ToHashSet();
+        AdventureBoardDefinition board = template.ToCoreDefinition().Board;
+        GridPoint destination = Enumerable.Range(1, 8).SelectMany(y => Enumerable.Range(1, 8).Select(x => new GridPoint(x, y)))
+            .First(cell => !occupied.Contains(cell) && AdventureBoardPathfinder.FindPath(board, origin, cell, occupied).Count >= 4);
+        AssertThat(view.TryResolveTarget("AdventureCell", $"{destination.X},{destination.Y}", out Vector2 point)).IsTrue();
+
+        Viewport viewport = view.GetViewport();
+        viewport.PushInput(new InputEventMouseMotion { Position = point, GlobalPosition = point }, false);
+        await view.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        viewport.PushInput(new InputEventMouseButton
+        {
+            Position = point, GlobalPosition = point, ButtonIndex = MouseButton.Left, Pressed = true
+        }, false);
+        await view.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        viewport.PushInput(new InputEventMouseButton
+        {
+            Position = point, GlobalPosition = point, ButtonIndex = MouseButton.Left, Pressed = false
+        }, false);
+
+        AssertThat(view.IsMovementLocked).IsTrue();
+        AssertThat(view.CandidateCells[leaderId]).IsEqual(origin);
+        AssertThat(view.CandidateActors[leaderId].Position).IsNotEqual(view.MapInstance.Surface.CellCenter(destination));
+        for (int frame = 0; frame < 240 && view.IsMovementLocked; frame++)
+            await view.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        AssertThat(view.IsMovementLocked).IsFalse();
+        AssertThat(view.CandidateCells[leaderId]).IsEqual(destination);
+        AssertThat(view.CandidateActors[leaderId].Position).IsEqual(view.MapInstance.Surface.CellCenter(destination));
+        view.QueueFree();
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
     public void StartCampReportsCandidateCapacityInsteadOfIndexingPastSlots()
     {
         AdventureMapTemplateResource template = AdventureMapAssetFactory.CreateStartCampTemplate();
@@ -187,9 +325,15 @@ public sealed class AdventureMapTileMapGodotTests
         Vector2 candidateViewPoint = view.GetGlobalTransform().AffineInverse() * (candidateParent.GetGlobalTransform() * bodyPoint);
         AssertThat(view.ResolveCandidateAt(candidateViewPoint)).IsEqual(candidates[^1].CharacterId);
         string? pressedCandidate = null;
-        view.CandidatePressed += id => pressedCandidate = id;
+        view.CandidatePressed += id =>
+        {
+            pressedCandidate = id;
+            view.RecordSelectionOutcome(true, null, 1);
+        };
         view.HandleAtlasInput(new InputEventMouseButton { ButtonIndex = MouseButton.Left, Pressed = true }, candidateViewPoint);
         AssertThat(pressedCandidate).IsEqual(candidates[^1].CharacterId);
+        AssertThat(view.LastInputDiagnostic!.Resolution).IsEqual(StartCampPointerResolution.Candidate);
+        AssertThat(view.LastInputDiagnostic.Outcome).IsEqual("accepted");
         GodotUnitActor rearActor = view.CandidateActors[candidates[0].CharacterId];
         Rect2 rearBounds = rearActor.VisualBoundsInParent();
         Vector2 overlapPoint = new(rearBounds.GetCenter().X, rearBounds.Position.Y + 4f);
@@ -214,6 +358,7 @@ public sealed class AdventureMapTileMapGodotTests
         pressedCandidate = null;
         view.HandleAtlasInput(new InputEventMouseButton { ButtonIndex = MouseButton.Left, Pressed = true }, candidateViewPoint);
         AssertThat(pressedCandidate).IsNull();
+        AssertThat(view.LastInputDiagnostic!.Resolution).IsNotEqual(StartCampPointerResolution.Candidate);
         Vector2 overviewPan = view.AtlasPan;
         view.HandleAtlasInput(new InputEventMouseButton { ButtonIndex = MouseButton.WheelUp, Pressed = true }, candidateViewPoint);
         AssertThat(view.AtlasZoom).IsEqual(overviewZoom);

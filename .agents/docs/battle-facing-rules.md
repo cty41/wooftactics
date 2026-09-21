@@ -14,13 +14,19 @@ verification:
 dsl_support: unsupported
 ```
 
+### Retired: FACING-DIRECTION-RESOLVE-001
+
+该历史合同曾把逻辑格主轴直接映射为可见朝向；它未考虑 Godot 等距投影，现由 `FACING-ISOMETRIC-MOTION-001` 替代，ID 不复用。
+
 ```gameplay-contract
-id: FACING-DIRECTION-RESOLVE-001
+id: FACING-ISOMETRIC-MOTION-001
 status: verified_current
-statement: 朝向由起点到终点的主轴决定；位移为零时保持当前朝向，横纵位移相等时优先保持与位移一致的当前轴向，否则按横向符号选择东西。
+statement: 朝向按 GridPoint 位移经过等距投影后的屏幕运动方向解析；逻辑正X、负X、正Y、负Y分别显示为右上、左下、左上、右下，对应UL水平镜像、DR水平镜像、UL原图、DR原图；零位移保持当前朝向，双轴等量时优先保留与任一分量一致的当前朝向，否则稳定选择X分量方向。
 verification:
   - layer: godot_test
     path: godot/tests/IsometricBattleBoardGodotTests.cs
+  - layer: godot_test
+    path: godot/tests/AdventureMovementGodotTests.cs
 dsl_support: unsupported
 ```
 

@@ -43,6 +43,14 @@ public sealed class PureRunSessionService
     private readonly PureRunSettlementService _settlement;
     private readonly IReadOnlyList<ContentId> _dropPool;
     private readonly PureRunMapDefinition? _mapDefinition;
+    private PureRunSaveSnapshot? _setupBaseSnapshot;
+    private PendingRunSetup? _setupDraft;
+
+    public bool HasSetupDraft => _setupDraft is not null;
+
+    public PureRunSaveSnapshot? CurrentSetupProjection => _setupBaseSnapshot is null || _setupDraft is null
+        ? null
+        : _setupBaseSnapshot with { PendingRunSetup = _setupDraft };
 
     public PureRunSessionService(
         PureRunDefinition definition,
@@ -65,7 +73,7 @@ public sealed class PureRunSessionService
         RunStoreResult loaded = _store.Load();
         if (!loaded.Succeeded)
             return Fail(loaded.ErrorCode);
-        if (HasPendingSetup(loaded)) return Fail("run_setup.pending", loaded.Snapshot);
+        if (HasSetupDraft || HasPendingSetup(loaded)) return Fail("run_setup.pending", CurrentSetupProjection ?? loaded.Snapshot);
         long expected = loaded.Snapshot?.Revision ?? 0;
         string runId = $"run-{unchecked((uint)PureRunSettlementService.DeriveSeed(seed, "run-id")):x8}";
         RunCharacterState[] party = _definition.Party.Take(_definition.ActivePartySize)
@@ -77,56 +85,53 @@ public sealed class PureRunSessionService
 
     public RunSessionResult BeginNewRunSetup(int seed)
     {
+        if (HasSetupDraft) return Fail("run_setup.pending", CurrentSetupProjection);
         RunStoreResult loaded = _store.Load();
         if (!loaded.Succeeded) return Fail(loaded.ErrorCode, loaded.Snapshot);
-        if (HasPendingSetup(loaded)) return Fail("run_setup.pending", loaded.Snapshot);
-        long expected = loaded.Snapshot?.Revision ?? 0;
-        long revision = expected + 1;
-        PureRunState? preserved = loaded.Snapshot?.ActiveRun is null
-            ? null
-            : CopyRevision(loaded.Snapshot.ActiveRun, revision);
+        if (HasSetupDraft || HasPendingSetup(loaded)) return Fail("run_setup.pending", CurrentSetupProjection ?? loaded.Snapshot);
+        _setupBaseSnapshot = loaded.Snapshot ?? new PureRunSaveSnapshot(0, null, null);
         string[] selected = _definition.Party.Count == _definition.ActivePartySize
             ? _definition.Party.Select(value => value.CharacterId).ToArray()
             : Array.Empty<string>();
-        PendingRunSetup setup = BuildPendingSetup(seed, selected, Array.Empty<PendingRunStartingSkillChoice>());
-        return Save(new PureRunSaveSnapshot(revision, preserved, loaded.Snapshot?.TerminalSummary, setup), expected);
+        _setupDraft = BuildPendingSetup(seed, selected, Array.Empty<PendingRunStartingSkillChoice>());
+        return ProjectSetup();
     }
 
     public RunSessionResult ChooseParty(IReadOnlyList<string> characterIds)
     {
         ArgumentNullException.ThrowIfNull(characterIds);
-        RunStoreResult loaded = _store.Load();
-        if (!loaded.Succeeded || loaded.Snapshot?.PendingRunSetup is not PendingRunSetup setup)
-            return Fail(loaded.ErrorCode ?? "run_setup.not_pending", loaded.Snapshot);
+        if (_setupDraft is not PendingRunSetup setup)
+            return Fail("run_setup.not_pending");
+        PureRunSaveSnapshot projection = CurrentSetupProjection!;
         if (setup.Choices.Count != 0)
-            return Fail("run_setup.party_already_selected", loaded.Snapshot);
+            return Fail("run_setup.party_already_selected", projection);
         if (characterIds.Count != _definition.ActivePartySize ||
             characterIds.Distinct(StringComparer.Ordinal).Count() != _definition.ActivePartySize)
-            return Fail("run_setup.party_size_invalid", loaded.Snapshot);
+            return Fail("run_setup.party_size_invalid", projection);
         HashSet<string> known = _definition.Party.Select(value => value.CharacterId).ToHashSet(StringComparer.Ordinal);
         string[] selected = characterIds.Where(known.Contains).ToArray();
         if (selected.Length != _definition.ActivePartySize)
-            return Fail("run_setup.party_character_invalid", loaded.Snapshot);
+            return Fail("run_setup.party_character_invalid", projection);
         if (setup.SelectedCharacterIds.Count != 0 && !setup.SelectedCharacterIds.SequenceEqual(selected, StringComparer.Ordinal))
-            return Fail("run_setup.party_order_immutable", loaded.Snapshot);
-        return AdvanceSetup(loaded.Snapshot, BuildPendingSetup(setup.Seed, selected,
+            return Fail("run_setup.party_order_immutable", projection);
+        return AdvanceSetup(BuildPendingSetup(setup.Seed, selected,
             Array.Empty<PendingRunStartingSkillChoice>()));
     }
 
     public RunSessionResult SelectPartyMember(string characterId)
     {
         if (string.IsNullOrWhiteSpace(characterId)) throw new ArgumentException("Character id cannot be empty.", nameof(characterId));
-        RunStoreResult loaded = _store.Load();
-        if (!loaded.Succeeded || loaded.Snapshot?.PendingRunSetup is not PendingRunSetup setup)
-            return Fail(loaded.ErrorCode ?? "run_setup.not_pending", loaded.Snapshot);
+        if (_setupDraft is not PendingRunSetup setup)
+            return Fail("run_setup.not_pending");
+        PureRunSaveSnapshot projection = CurrentSetupProjection!;
         if (setup.Choices.Count != 0)
-            return Fail("run_setup.party_already_selected", loaded.Snapshot);
+            return Fail("run_setup.party_already_selected", projection);
         if (setup.SelectedCharacterIds.Contains(characterId, StringComparer.Ordinal))
-            return Fail("run_setup.party_character_immutable", loaded.Snapshot);
+            return Fail("run_setup.party_character_immutable", projection);
         if (setup.SelectedCharacterIds.Count >= _definition.ActivePartySize)
-            return Fail("run_setup.party_full", loaded.Snapshot);
+            return Fail("run_setup.party_full", projection);
         if (!_definition.Party.Any(value => string.Equals(value.CharacterId, characterId, StringComparison.Ordinal)))
-            return Fail("run_setup.party_character_invalid", loaded.Snapshot);
+            return Fail("run_setup.party_character_invalid", projection);
 
         string[] selected = setup.SelectedCharacterIds.Append(characterId).ToArray();
         var selecting = new PendingRunSetup(setup.Seed, 0, Array.Empty<PendingRunStartingSkillChoice>())
@@ -134,45 +139,40 @@ public sealed class PureRunSessionService
             SelectedCharacterIds = selected,
             CurrentCharacterId = null
         };
-        return AdvanceSetup(loaded.Snapshot, selecting, completeRunWhenReady: false);
+        return AdvanceSetup(selecting, completeRunWhenReady: false);
     }
 
     public RunSessionResult ChooseStartingSkill(string characterId, ContentId skillContentId)
     {
-        RunStoreResult loaded = _store.Load();
-        if (!loaded.Succeeded || loaded.Snapshot?.PendingRunSetup is not PendingRunSetup setup)
-            return Fail(loaded.ErrorCode ?? "run_setup.not_pending", loaded.Snapshot);
+        if (_setupDraft is not PendingRunSetup setup)
+            return Fail("run_setup.not_pending");
+        PureRunSaveSnapshot projection = CurrentSetupProjection!;
         IReadOnlyList<PureRunPartyTemplate> selectedParty = SelectedTemplates(setup);
         if (setup.CurrentCharacterIndex >= selectedParty.Count)
-            return Fail("run_setup.complete", loaded.Snapshot);
+            return Fail("run_setup.complete", projection);
         PureRunPartyTemplate template = selectedParty[setup.CurrentCharacterIndex];
         if (!string.Equals(template.CharacterId, characterId, StringComparison.Ordinal))
-            return Fail("run_setup.character_out_of_order", loaded.Snapshot);
+            return Fail("run_setup.character_out_of_order", projection);
         if (!template.EffectiveStartingSkillChoices.Contains(skillContentId))
-            return Fail("run_setup.skill_not_offered", loaded.Snapshot);
+            return Fail("run_setup.skill_not_offered", projection);
 
         PendingRunStartingSkillChoice[] choices = setup.Choices
             .Append(new PendingRunStartingSkillChoice(characterId, skillContentId)).ToArray();
-        return AdvanceSetup(loaded.Snapshot, BuildPendingSetup(setup.Seed,
-            setup.SelectedCharacterIds, choices));
+        return AdvanceSetup(BuildPendingSetup(setup.Seed, setup.SelectedCharacterIds, choices));
     }
 
     public RunSessionResult CancelNewRunSetup()
     {
-        RunStoreResult loaded = _store.Load();
-        if (!loaded.Succeeded || loaded.Snapshot?.PendingRunSetup is null)
-            return Fail(loaded.ErrorCode ?? "run_setup.not_pending", loaded.Snapshot);
-        long revision = loaded.Snapshot.Revision + 1;
-        PureRunState? restored = loaded.Snapshot.ActiveRun is null
-            ? null
-            : CopyRevision(loaded.Snapshot.ActiveRun, revision);
-        return Save(new PureRunSaveSnapshot(revision, restored, loaded.Snapshot.TerminalSummary), loaded.Snapshot.Revision);
+        if (!HasSetupDraft) return Fail("run_setup.not_pending");
+        PureRunSaveSnapshot restored = _setupBaseSnapshot!;
+        ClearSetupDraft();
+        return new RunSessionResult(true, null, restored, null);
     }
 
     public RunSessionResult BeginEncounter()
     {
         RunStoreResult loaded = LoadWithAttributeRepair(out string[] diagnostics);
-        if (HasPendingSetup(loaded)) return Fail("run_setup.pending", loaded.Snapshot);
+        if (HasSetupDraft || HasPendingSetup(loaded)) return Fail("run_setup.pending", CurrentSetupProjection ?? loaded.Snapshot);
         if (!loaded.Succeeded || loaded.Snapshot?.ActiveRun is not PureRunState run)
             return Fail(loaded.ErrorCode ?? "run.no_active_run");
         if (run.Phase != PureRunPhase.Ready)
@@ -193,7 +193,7 @@ public sealed class PureRunSessionService
     public RunSessionResult ResumeRun()
     {
         RunStoreResult loaded = LoadWithAttributeRepair(out string[] diagnostics);
-        if (HasPendingSetup(loaded)) return Fail("run_setup.pending", loaded.Snapshot);
+        if (HasSetupDraft || HasPendingSetup(loaded)) return Fail("run_setup.pending", CurrentSetupProjection ?? loaded.Snapshot);
         if (!loaded.Succeeded || loaded.Snapshot?.ActiveRun is not PureRunState run)
             return Fail(loaded.ErrorCode ?? "run.no_active_run", loaded.Snapshot);
         return run.Phase switch
@@ -211,7 +211,7 @@ public sealed class PureRunSessionService
     public RunSessionResult ApplyBattleResult(PureRunBattleResult battleResult)
     {
         RunStoreResult loaded = LoadWithAttributeRepair(out string[] diagnostics);
-        if (HasPendingSetup(loaded)) return Fail("run_setup.pending", loaded.Snapshot);
+        if (HasSetupDraft || HasPendingSetup(loaded)) return Fail("run_setup.pending", CurrentSetupProjection ?? loaded.Snapshot);
         if (!loaded.Succeeded || loaded.Snapshot is null)
             return Fail(loaded.ErrorCode ?? "run.no_save", loaded.Snapshot);
         if (loaded.Snapshot.ActiveRun is not PureRunState run)
@@ -240,7 +240,7 @@ public sealed class PureRunSessionService
     public RunSessionResult ApplyLayerFourBattleResult(PureRunBattleResult battleResult)
     {
         RunStoreResult loaded = LoadWithAttributeRepair(out string[] diagnostics);
-        if (HasPendingSetup(loaded)) return Fail("run_setup.pending", loaded.Snapshot);
+        if (HasSetupDraft || HasPendingSetup(loaded)) return Fail("run_setup.pending", CurrentSetupProjection ?? loaded.Snapshot);
         if (!loaded.Succeeded || loaded.Snapshot?.ActiveRun is not PureRunState run)
             return Fail(loaded.ErrorCode ?? "run.no_active_run", loaded.Snapshot);
         PureRunSettlementResult settlement = _settlement.ApplyLayerFour(run, battleResult, _dropPool);
@@ -253,6 +253,7 @@ public sealed class PureRunSessionService
 
     public RunSessionResult AbandonRun()
     {
+        if (HasSetupDraft) return Fail("run_setup.pending", CurrentSetupProjection);
         RunStoreResult loaded = LoadWithAttributeRepair(out string[] diagnostics);
         if (loaded.Succeeded && loaded.Snapshot?.PendingRunSetup is PendingRunSetup setup)
         {
@@ -271,7 +272,7 @@ public sealed class PureRunSessionService
     public RunSessionResult ConsumeCompletedSummary()
     {
         RunStoreResult loaded = _store.Load();
-        if (HasPendingSetup(loaded)) return Fail("run_setup.pending", loaded.Snapshot);
+        if (HasSetupDraft || HasPendingSetup(loaded)) return Fail("run_setup.pending", CurrentSetupProjection ?? loaded.Snapshot);
         if (!loaded.Succeeded || loaded.Snapshot is null)
             return Fail(loaded.ErrorCode ?? "run.no_save");
         long revision = loaded.Snapshot.Revision;
@@ -282,7 +283,7 @@ public sealed class PureRunSessionService
     {
         ArgumentNullException.ThrowIfNull(mutation);
         RunStoreResult loaded = LoadWithAttributeRepair(out string[] diagnostics);
-        if (HasPendingSetup(loaded)) return Fail("run_setup.pending", loaded.Snapshot);
+        if (HasSetupDraft || HasPendingSetup(loaded)) return Fail("run_setup.pending", CurrentSetupProjection ?? loaded.Snapshot);
         if (!loaded.Succeeded || loaded.Snapshot?.ActiveRun is not PureRunState run)
             return Fail(loaded.ErrorCode ?? "run.no_active_run", loaded.Snapshot);
         RunMutationResult result = mutation(run);
@@ -294,7 +295,7 @@ public sealed class PureRunSessionService
     {
         ArgumentNullException.ThrowIfNull(mutation);
         RunStoreResult loaded = LoadWithAttributeRepair(out string[] diagnostics);
-        if (HasPendingSetup(loaded)) return Fail("run_setup.pending", loaded.Snapshot);
+        if (HasSetupDraft || HasPendingSetup(loaded)) return Fail("run_setup.pending", CurrentSetupProjection ?? loaded.Snapshot);
         if (!loaded.Succeeded || loaded.Snapshot?.ActiveRun is not PureRunState run)
             return Fail(loaded.ErrorCode ?? "run.no_active_run", loaded.Snapshot);
         RunMutationResult result = mutation(run);
@@ -309,7 +310,7 @@ public sealed class PureRunSessionService
     {
         ArgumentNullException.ThrowIfNull(transition);
         RunStoreResult loaded = LoadWithAttributeRepair(out string[] diagnostics);
-        if (HasPendingSetup(loaded)) return Fail("run_setup.pending", loaded.Snapshot);
+        if (HasSetupDraft || HasPendingSetup(loaded)) return Fail("run_setup.pending", CurrentSetupProjection ?? loaded.Snapshot);
         if (!loaded.Succeeded || loaded.Snapshot?.ActiveRun is not PureRunState run)
             return Fail(loaded.ErrorCode ?? "run.no_active_run", loaded.Snapshot);
         FullRunTransitionResult result = transition(run);
@@ -368,22 +369,33 @@ public sealed class PureRunSessionService
         };
     }
 
-    private RunSessionResult AdvanceSetup(PureRunSaveSnapshot snapshot, PendingRunSetup pending,
-        bool completeRunWhenReady = true)
+    private RunSessionResult AdvanceSetup(PendingRunSetup pending, bool completeRunWhenReady = true)
     {
-        long revision = snapshot.Revision + 1;
+        PureRunSaveSnapshot baseSnapshot = _setupBaseSnapshot!;
         IReadOnlyList<PureRunPartyTemplate> templates = SelectedTemplates(pending);
         if (completeRunWhenReady && templates.Count == _definition.ActivePartySize && pending.Choices.Count == templates.Count)
         {
+            long revision = baseSnapshot.Revision + 1;
             string runId = $"run-{unchecked((uint)PureRunSettlementService.DeriveSeed(pending.Seed, "run-id")):x8}";
             RunCharacterState[] party = templates.Select((value, index) =>
                 CreateCharacter(value, pending.Choices[index].SkillContentId)).ToArray();
             var run = new PureRunState(runId, pending.Seed, revision, PureRunPhase.Ready, 0,
                 _definition.Encounters[0], party, adventureState: new RunAdventureTransitionService().CreateInitial(party));
-            return Save(new PureRunSaveSnapshot(revision, run, null), snapshot.Revision);
+            RunSessionResult saved = Save(new PureRunSaveSnapshot(revision, run, null), baseSnapshot.Revision);
+            if (saved.Succeeded) ClearSetupDraft();
+            return saved;
         }
-        PureRunState? preserved = snapshot.ActiveRun is null ? null : CopyRevision(snapshot.ActiveRun, revision);
-        return Save(new PureRunSaveSnapshot(revision, preserved, snapshot.TerminalSummary, pending), snapshot.Revision);
+        _setupDraft = pending;
+        return ProjectSetup();
+    }
+
+    private RunSessionResult ProjectSetup() =>
+        new(true, null, CurrentSetupProjection, null);
+
+    private void ClearSetupDraft()
+    {
+        _setupBaseSnapshot = null;
+        _setupDraft = null;
     }
 
     private IReadOnlyList<PureRunPartyTemplate> SelectedTemplates(PendingRunSetup setup)
@@ -404,12 +416,6 @@ public sealed class PureRunSessionService
         return choices.OrderBy(value => value.Value, StringComparer.Ordinal)
             .ElementAt((int)((uint)derived % (uint)choices.Count));
     }
-
-    private static PureRunState CopyRevision(PureRunState run, long revision) => new(
-        run.RunId, run.Seed, revision, run.Phase, run.EncounterIndex, run.EncounterContentId,
-        run.Party, run.BackpackConsumables, run.BackpackEquipment, run.PendingProgression,
-        run.AppliedTransactionKeys, run.Gold, run.BattlesCompleted, run.EnemiesDefeated,
-        run.AcquiredItems, run.Checkpoint, run.MapState, run.NodeTransaction, run.EscortState, run.AdventureState);
 
     private static RunSessionResult Fail(string? code, PureRunSaveSnapshot? snapshot = null) =>
         new(false, code ?? "run.store_failure", snapshot, null);

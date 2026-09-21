@@ -23,6 +23,10 @@ public partial class GodotPlayableRunMain : Control
     public const int CanvasHeight = 900;
     public const int PauseOverlayZIndex = 4000;
     public const int StartPageUiZIndex = 1200;
+    internal static readonly Rect2 AdventureHeaderRect = new(24, 20, 550, 122);
+    internal static readonly Rect2 AdventureRunShellRect = new(1180, 24, 380, 104);
+    internal static readonly Rect2 AdventureLeaderRect = new(32, 820, 440, 52);
+    internal static readonly Rect2 AdventureInventoryRect = new(1210, 816, 350, 56);
     public const string StartCurrentControlsHint = "[LMB] select/move   [M] route overview   [F/Home] leader";
     public const string StartOverviewControlsHint = "[LMB] inspect node   [RMB/WASD] browse route   [M] return to camp";
     internal static IReadOnlyDictionary<string, Rect2> BattleHudPanelRects { get; } =
@@ -91,6 +95,8 @@ public partial class GodotPlayableRunMain : Control
     private readonly PureRunFlowProjector _flowProjector = new();
     private GodotRogueMapView? _mapView;
     private GodotAdventureBoardView? _adventureBoard;
+    private AdventureExplorationSession? _adventureSession;
+    private PendingAdventureExit? _pendingAdventureExit;
     private GodotStartCampView? _startCampView;
     private readonly List<string> _partySelectionOrder = new();
     private string? _adventureLastBoardContentId;
@@ -99,21 +105,36 @@ public partial class GodotPlayableRunMain : Control
     private string? _inventoryCharacterId;
     private bool _inventoryEquipmentTab = true;
     private string? _inventorySelectedInstanceId;
-    private readonly Dictionary<string, UnitAttributes> _progressionDrafts = new(StringComparer.Ordinal);
+    private string? _uiRunId;
+    private readonly Dictionary<(string RunId, string TransactionKey), UnitAttributes> _progressionDrafts = new();
     private GodotDamageNumberLayer? _damageNumbers;
     private readonly List<BattlePresentationNumber> _presentationNumberHistory = new();
     private GodotDroppedSpearLayer? _droppedSpears;
     private Control? _pauseMenu;
+    private VBoxContainer? _pauseMenuContent;
+    private Button? _pauseMenuDefaultFocus;
+    private ConfirmationDialog? _pauseConfirmation;
+    private PauseMenuView _pauseMenuView = PauseMenuView.Root;
     private bool _pauseMenuPausedPlayback;
-    private bool _pauseMenuControlsBattlePlayback;
+    private RunInputContext _inputContext = RunInputContext.Disabled;
     private GodotPlayableRunTestContext? _testContext;
     private IRunSaveStore? _saveStore;
     private bool _readyEntered;
     private bool _quitRequested;
     private string _currentPageTitle = string.Empty;
 
+    private sealed record PendingAdventureExit(string RunId, string TargetNodeId, GridPoint ExitCell, Control Page);
     private enum InventoryReturnTarget { RunRoute }
+    private enum PauseMenuView { Root, Options }
     internal enum PresentationDrainAction { DequeueFrame, CompleteBattle, Pause, Refresh }
+    internal sealed record RunInputContext(bool CanPause, bool ControlsBattlePlayback,
+        bool PausesAdventureMovement, bool SetupDraftActive)
+    {
+        public static readonly RunInputContext Disabled = new(false, false, false, false);
+        public static readonly RunInputContext Setup = new(true, false, true, true);
+        public static readonly RunInputContext Adventure = new(true, false, true, false);
+        public static readonly RunInputContext Battle = new(true, true, false, false);
+    }
 
     public bool IsReadyForInput => _run is not null && _page is not null && _units.Count == 14 &&
         _skills.Count >= 22 && _ai.Count == 9 && _layouts.Count >= 2 && _encounters.Count >= 3 &&
@@ -156,38 +177,50 @@ public partial class GodotPlayableRunMain : Control
         _playbackPaused,
         _playbackSpeed,
         _pauseMenu?.Visible == true,
+        _pauseMenuView.ToString(),
         _cheatConsole?.Visible == true,
         _logs.Count(value => value.Category == BattleUiLogCategory.Rejected) + (_settlement.Current?.Stage == BattleSettlementStage.Rejected ? 1 : 0),
         _quitRequested,
         _status is not null && GodotObject.IsInstanceValid(_status) ? _status.Text : null,
-        CaptureAdventureProbe());
+        CaptureAdventureProbe(),
+        _inputContext == RunInputContext.Setup ? "Setup" : _inputContext == RunInputContext.Battle ? "Battle" :
+            _inputContext == RunInputContext.Adventure ? "Adventure" : "Disabled",
+        _run?.HasSetupDraft == true,
+        _run?.CurrentSetupProjection?.PendingRunSetup?.SelectedCharacterIds.Count ?? 0,
+        _run?.CurrentSetupProjection?.PendingRunSetup?.SelectedCharacterIds.ToArray() ?? []);
 
     private GodotAdventureRuntimeProbe? CaptureAdventureProbe()
     {
         PureRunSaveSnapshot? snapshot = SaveStore.Load().Snapshot;
+        PureRunSaveSnapshot? setupProjection = _run?.CurrentSetupProjection;
         PureRunState? run = snapshot?.ActiveRun;
         RunAdventureState? adventure = run?.AdventureState;
-        if (adventure is null)
+        if (_run?.HasSetupDraft == true)
         {
-            if (snapshot?.PendingRunSetup is null || _startCampView is null || !GodotObject.IsInstanceValid(_startCampView)) return null;
+            if (setupProjection?.PendingRunSetup is null || _startCampView is null || !GodotObject.IsInstanceValid(_startCampView)) return null;
             return new GodotAdventureRuntimeProbe(_startCampView.MapInstance.Surface.Template!.BoardContentIdValue, null,
                 _startCampView.CandidateCells.ToDictionary(value => value.Key, value => $"{value.Value.X},{value.Value.Y}", StringComparer.Ordinal),
                 new Dictionary<string, string>(StringComparer.Ordinal)
                 {
                     ["start-exit"] = _partySelectionOrder.Count == _runDefinition?.ActivePartySize ? "Ready" : "Locked"
                 }, [], "PendingSetup", null, null, null, null,
-                0, 0, 0, _partySelectionOrder.Count, 0, 0);
+                0, 0, 0, _partySelectionOrder.Count, 0, 0, _startCampView.LastInputDiagnostic,
+                _startCampView.IsMovementLocked, _startCampView.IsMovementLocked, _startCampView.LastMovementDiagnostic);
         }
+        if (adventure is null || run is null) return null;
         string[] candidates = _mapDefinition is null ? [] : RunAdventureTransitionService
             .ImmediateSuccessors(run!, _mapDefinition).Select(value => value.NodeId).ToArray();
         return new GodotAdventureRuntimeProbe(adventure.BoardContentId.Value, adventure.LeaderId,
-            adventure.ActorCells.ToDictionary(value => value.ActorId, value => $"{value.Cell.X},{value.Cell.Y}", StringComparer.Ordinal),
+            EnsureAdventureSession(run!).ActorCells.ToDictionary(value => value.ActorId, value => $"{value.Cell.X},{value.Cell.Y}", StringComparer.Ordinal),
             DeriveAdventureObjectStates(run!), candidates, adventure.Lifecycle.ToString(),
             DeriveAdventureEventResolution(run!), adventure.PendingEventContext.ToString(),
             run?.EscortState?.Lifecycle.ToString(), run?.EscortState?.ProtectedNpcAlive,
             run?.MapState?.StoreOffers?.Count ?? 0, run?.MapState?.StoreOffers?.Count(value => value.Purchased) ?? 0,
             checked((int)adventure.LeaderRevision),
-            checked((int)adventure.InteractionRevision), checked((int)adventure.ExitRevision), checked((int)adventure.SceneRevision));
+            checked((int)adventure.InteractionRevision), checked((int)adventure.ExitRevision), checked((int)adventure.SceneRevision), null,
+            _adventureBoard?.IsMovementLocked == true, _adventureBoard?.IsMovementLocked == true,
+            _adventureBoard?.LastMovementDiagnostic,
+            _adventureBoard?.LastPointerCell is GridPoint pointerCell ? $"{pointerCell.X},{pointerCell.Y}" : null);
     }
 
     private IReadOnlyDictionary<string, string> DeriveAdventureObjectStates(PureRunState run)
@@ -308,7 +341,7 @@ public partial class GodotPlayableRunMain : Control
         if (_startCampView is not null && GodotObject.IsInstanceValid(_startCampView) &&
             _startCampView.TryResolveTarget(targetKind, locator, out globalPoint))
         {
-            surface = _startCampView;
+            surface = _startCampView.InputSurface;
             return true;
         }
         surface = _adventureBoard;
@@ -348,44 +381,55 @@ public partial class GodotPlayableRunMain : Control
 
     public override void _Input(InputEvent inputEvent)
     {
+        // Escape must be handled in the global input phase. Focused Buttons and other
+        // GUI controls may consume ui_cancel before _UnhandledInput runs.
+        if (TryHandleGlobalEscape(inputEvent))
+        {
+            GetViewport().SetInputAsHandled();
+            return;
+        }
         if (_startCampView is null || _pauseMenu?.Visible == true || _cheatConsole?.Visible == true) return;
         if (!_startCampView.HandleAtlasKey(inputEvent)) return;
         GetViewport().SetInputAsHandled();
+    }
+
+    private bool TryHandleGlobalEscape(InputEvent inputEvent)
+    {
+        if (inputEvent is not InputEventKey { Pressed: true, Echo: false } key ||
+            key.Keycode != Key.Escape && key.PhysicalKeycode != Key.Escape) return false;
+        if (_cheatConsole?.Visible == true)
+        {
+            _cheatConsole.SetOpen(false);
+            return true;
+        }
+        if (_pauseMenu?.Visible == true)
+        {
+            ClosePauseMenu();
+            return true;
+        }
+        if (_battle is not null && _visibleSnapshot?.TargetingMode != BattleTargetingMode.None)
+        {
+            ApplyIntent(new CancelTargetingIntent());
+            return true;
+        }
+        if (!_inputContext.CanPause) return false;
+        OpenPauseMenu();
+        return true;
     }
 
     public override void _UnhandledInput(InputEvent inputEvent)
     {
         if (_battle is not null && inputEvent.IsActionPressed("toggle_console"))
         {
-            if (_cheatConsole is not null) _cheatConsole.Visible = !_cheatConsole.Visible;
+            if (_cheatConsole is not null) _cheatConsole.SetOpen(!_cheatConsole.Visible);
             GetViewport().SetInputAsHandled();
             return;
         }
-        if (_cheatConsole?.Visible == true)
-        {
-            if (inputEvent is InputEventKey { Pressed: true, Echo: false, Keycode: Key.Escape })
-            { _cheatConsole.Visible = false; GetViewport().SetInputAsHandled(); }
-            return;
-        }
-        if (_pauseMenu?.Visible == true)
-        {
-            if (inputEvent is InputEventKey { Pressed: true, Echo: false, Keycode: Key.Escape }) ClosePauseMenu();
-            return;
-        }
-        if (_battle is null)
-        {
-            if (inputEvent is InputEventKey { Pressed: true, Echo: false, Keycode: Key.Escape } && _pauseMenu is not null)
-            { OpenPauseMenu(); GetViewport().SetInputAsHandled(); }
-            return;
-        }
+        if (_cheatConsole?.Visible == true || _pauseMenu?.Visible == true) return;
         if (inputEvent is InputEventKey { Pressed: true, Echo: false } key)
         {
-            if (key.Keycode == Key.Escape)
-            {
-                if (_visibleSnapshot?.TargetingMode != BattleTargetingMode.None) ApplyIntent(new CancelTargetingIntent());
-                else OpenPauseMenu();
-            }
-            else if (key.Keycode is Key.Enter or Key.KpEnter) ApplyIntent(new EndTurnIntent());
+            if (_battle is not null && key.Keycode is (Key.Enter or Key.KpEnter))
+                ApplyIntent(new EndTurnIntent());
         }
         else if (inputEvent is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Right })
             ApplyIntent(new CancelTargetingIntent());
@@ -488,16 +532,14 @@ public partial class GodotPlayableRunMain : Control
         menu.AddChild(new ColorRect { Color = GodotTacticsTheme.Accent, CustomMinimumSize = new Vector2(0, 2), MouseFilter = MouseFilterEnum.Ignore });
         Button newRun = Button("New Run", () => StartNewRun()); menu.AddChild(newRun);
         RunStoreResult loaded = SaveStore.Load();
-        Button continueRun = Button(loaded.Snapshot?.PendingRunSetup is null ? "Continue" : "Resume New Run Setup", ContinueRun);
+        Button continueRun = Button("Continue", ContinueRun);
         continueRun.Disabled = !loaded.Succeeded || loaded.Snapshot is null ||
-            (loaded.Snapshot.ActiveRun is null && loaded.Snapshot.PendingRunSetup is null && loaded.Snapshot.TerminalSummary is null);
+            (loaded.Snapshot.ActiveRun is null && loaded.Snapshot.TerminalSummary is null);
         menu.AddChild(continueRun);
         menu.AddChild(Button("Options", ShowHomeOptions));
         menu.AddChild(Button("Quit", RequestQuit));
         string status = loaded.ErrorCode?.Contains("run_reset_for_v7", StringComparison.Ordinal) == true
             ? "Save upgraded to V7. The previous unfinished run was cleared; start a new run."
-            : loaded.Snapshot?.PendingRunSetup is PendingRunSetup setup
-            ? $"New Run setup: {setup.CurrentCharacterId}"
             : loaded.Snapshot?.ActiveRun is null ? "No active run" : $"Active run: {loaded.Snapshot.ActiveRun.EncounterContentId.Value}";
         _status = Label(status, 16); _status.HorizontalAlignment = HorizontalAlignment.Center;
         _status.AddThemeColorOverride("font_color", GodotTacticsTheme.TextSecondary); menu.AddChild(_status);
@@ -511,10 +553,9 @@ public partial class GodotPlayableRunMain : Control
         // read observes the clean slot while preserving the corrupt evidence files.
         if (!loaded.Succeeded) loaded = SaveStore.Load();
         if (loaded.Succeeded && loaded.Snapshot is { } snapshot &&
-            (snapshot.PendingRunSetup is not null || snapshot.ActiveRun is not null || snapshot.TerminalSummary is not null))
+            (snapshot.ActiveRun is not null || snapshot.TerminalSummary is not null))
         {
-            if (snapshot.PendingRunSetup is not null) ShowNewRunSetup(snapshot);
-            else if (snapshot.TerminalSummary is not null) ShowSummary(snapshot.TerminalSummary);
+            if (snapshot.TerminalSummary is not null) ShowSummary(snapshot.TerminalSummary);
             else ContinueRun();
             return;
         }
@@ -565,12 +606,6 @@ public partial class GodotPlayableRunMain : Control
 
     private void ContinueRun()
     {
-        RunStoreResult loaded = SaveStore.Load();
-        if (loaded.Succeeded && loaded.Snapshot?.PendingRunSetup is not null)
-        {
-            ShowNewRunSetup(loaded.Snapshot);
-            return;
-        }
         RunSessionResult resumed = _run!.ResumeRun();
         if (!resumed.Succeeded) { SetStatus(resumed.ErrorCode); return; }
         if (resumed.EncounterRequest is EncounterRequest request) StartBattle(request);
@@ -589,6 +624,7 @@ public partial class GodotPlayableRunMain : Control
         PureRunPartyTemplate template = _runDefinition!.Party.Single(value =>
             string.Equals(value.CharacterId, setup.CurrentCharacterId, StringComparison.Ordinal));
         Control root = NewPage("NEW RUN — STARTING SKILL", $"Choose 1 of 3 for {template.CharacterId} ({setup.CurrentCharacterIndex + 1}/3)");
+        SetInputContext(RunInputContext.Setup);
         var choices = new VBoxContainer { Position = new Vector2(470, 230), Size = new Vector2(660, 430) };
         root.AddChild(choices);
         foreach (ContentId skill in template.EffectiveStartingSkillChoices)
@@ -605,15 +641,16 @@ public partial class GodotPlayableRunMain : Control
             skillButton.Name = $"starting_skill__{captured.Value.Replace('.', '_')}";
             choices.AddChild(skillButton);
         }
-        _status = LabelAt(root, "Starting skill choices are saved immediately. Press Esc for run controls.", new Vector2(470, 680), 18);
+        _status = LabelAt(root, "Setup commits only after all starting skills are confirmed. Press Esc for run controls.", new Vector2(470, 680), 18);
     }
 
     private void ShowPartySelection()
     {
         Control root = NewPage("NEW RUN — START CAMP", "Select exactly 3. Your first choice becomes the leader and can move on camp tiles.");
+        SetInputContext(RunInputContext.Setup);
         _partySelectionOrder.Clear();
-        PendingRunSetup setup = SaveStore.Load().Snapshot?.PendingRunSetup ??
-            throw new InvalidOperationException("Pending setup is missing.");
+        PendingRunSetup setup = _run?.CurrentSetupProjection?.PendingRunSetup ??
+            throw new InvalidOperationException("Transient setup draft is missing.");
         _partySelectionOrder.AddRange(setup.SelectedCharacterIds);
         AdventureMapTemplateResource template = RequiredResourceLoader.Load<AdventureMapTemplateResource>(
             "res://content/adventure_maps/StartCampTemplateV1.tres", "Start camp template load failed");
@@ -622,6 +659,8 @@ public partial class GodotPlayableRunMain : Control
         _startCampView = new GodotStartCampView { Name = "StartCampView" };
         root.AddChild(_startCampView);
         _startCampView.Configure(template, candidates);
+        _startCampView.ConfigureMovement(_presentationProfile ?? new StandardUnitPresentationResource(), _playbackSpeed);
+        _startCampView.MovementRejected += SetStatus;
         AdventureMapTemplateResource planningTemplate = RequiredResourceLoader.Load<AdventureMapTemplateResource>(
             "res://content/adventure_maps/BasicBattleTemplateV1.tres", "Planning preview template load failed");
         _startCampView.ConfigureRoutePreviews(planningTemplate, MapDefinition);
@@ -635,13 +674,21 @@ public partial class GodotPlayableRunMain : Control
         {
             if (_partySelectionOrder.Contains(characterId, StringComparer.Ordinal))
             {
+                const string error = "party.already_selected";
+                _startCampView.RecordSelectionOutcome(false, error, _partySelectionOrder.Count);
                 SetStatus($"{characterId} is already selected. Party order is locked for this run.");
                 return;
             }
             RunSessionResult selected = _run!.SelectPartyMember(characterId);
-            if (!selected.Succeeded) { SetStatus(selected.ErrorCode); return; }
+            if (!selected.Succeeded)
+            {
+                _startCampView.RecordSelectionOutcome(false, selected.ErrorCode, _partySelectionOrder.Count);
+                SetStatus(selected.ErrorCode);
+                return;
+            }
             _partySelectionOrder.Add(characterId);
             _startCampView.SetSelection(_partySelectionOrder, _partySelectionOrder.Count == _runDefinition.ActivePartySize);
+            _startCampView.RecordSelectionOutcome(true, null, _partySelectionOrder.Count);
             SetStatus(PartySelectionStatus());
         };
         _startCampView.ExitPressed += () =>
@@ -651,20 +698,6 @@ public partial class GodotPlayableRunMain : Control
             if (!result.Succeeded) { SetStatus(result.ErrorCode); return; }
             if (result.Snapshot!.PendingRunSetup is not null) ShowNewRunSetup(result.Snapshot);
             else RouteRunState(result.Snapshot);
-        };
-        var atlasInput = new Control
-        {
-            Name = "StartCampAtlasInput",
-            Position = GodotStartCampView.AtlasViewport.Position,
-            Size = GodotStartCampView.AtlasViewport.Size,
-            MouseFilter = MouseFilterEnum.Stop,
-            ZIndex = StartPageUiZIndex - 1
-        };
-        root.AddChild(atlasInput);
-        atlasInput.GuiInput += input =>
-        {
-            if (input is InputEventMouse mouse)
-                _startCampView?.HandleAtlasInput(input, atlasInput.Position + mouse.Position);
         };
         PanelContainer partyPanel = PanelAt(root, new Vector2(1080, 150), new Vector2(460, 220), GodotTacticsTheme.Card);
         partyPanel.Name = "StartCampPartyPanel";
@@ -687,7 +720,6 @@ public partial class GodotPlayableRunMain : Control
         _startCampView.CameraModeChanged += mode => controlsHint.Text = mode == StartAtlasCameraMode.Current
             ? StartCurrentControlsHint
             : StartOverviewControlsHint;
-        BuildPauseMenu(root, false);
     }
 
     private string PartySelectionStatus()
@@ -702,43 +734,26 @@ public partial class GodotPlayableRunMain : Control
     private void ShowInitialAdventure(PureRunState run)
     {
         RunAdventureState adventure = run.AdventureState ?? throw new InvalidOperationException("adventure.state_missing");
-        Control root = NewPage("PURE RUN — TILE ADVENTURE", "Click a party member to lead; click a reachable tile to move. Idle companions stay in place.");
+        Control root = NewPage("PURE RUN — TILE ADVENTURE", "Select leader • Click reachable tile • Idle companions hold position");
         AddRunShell(root, run, "Adventure");
-        AdventureActorPlacement[] actors = adventure.ActorCells.Select(value => new AdventureActorPlacement(value.ActorId, value.Cell)).ToArray();
+        AdventureActorPlacement[] actors = AdventurePlacements(run);
         AdventureBoardDefinition definition = CreateInitialAdventureBoard(actors);
         _adventureBoard = new GodotAdventureBoardView { Name = "InitialAdventureBoard" };
         root.AddChild(_adventureBoard);
-        _adventureBoard.SetBoard(definition);
-        _adventureBoard.ActorPressed += actorId =>
-        {
-            RunSessionResult changed = _run!.ApplyMutation(state =>
-            {
-                PureRunState next = new RunAdventureTransitionService().SelectLeader(state, actorId);
-                return new RunMutationResult(true, null, next);
-            });
-            if (!changed.Succeeded) { SetStatus(changed.ErrorCode); return; }
-            ShowInitialAdventure(changed.Snapshot!.ActiveRun!);
-        };
-        _adventureBoard.CellPressed += destination =>
-        {
-            RunSessionResult changed = _run!.ApplyMutation(state =>
-            {
-                try { return new RunMutationResult(true, null, new RunAdventureTransitionService().MoveLeader(state, definition, destination)); }
-                catch (InvalidOperationException error) { return new RunMutationResult(false, error.Message, state); }
-            });
-            if (!changed.Succeeded) { SetStatus(changed.ErrorCode); return; }
-            ShowInitialAdventure(changed.Snapshot!.ActiveRun!);
-        };
-        _adventureBoard.ObjectPressed += objectId =>
-        {
-            if (objectId != "exit:layer_01_battle") return;
-            RunAdventureActorCell leader = adventure.ActorCells.Single(value => value.ActorId == adventure.LeaderId);
-            if (!RunAdventureTransitionService.IsAdjacent(leader.Cell, definition.Objects.Single(value => value.ObjectId == objectId).Cell))
-            { SetStatus("Move the leader next to the exit first."); return; }
-            HandleAdventureExit(run, "layer_01_battle");
-        };
-        root.AddChild(PlaceControl(Button("Inventory", () => ShowInventory(run)), new Vector2(1130, 720), new Vector2(360, 58)));
-        _status = LabelAt(root, $"Leader: {adventure.LeaderId}", new Vector2(470, 810), 18);
+        ConfigureAdventureBoard(_adventureBoard, run, definition);
+        WireAdventureMovement(run, definition, ShowInitialAdventure);
+        _adventureBoard.ObjectPressed += objectId => HandleExitPointer(run, definition, objectId);
+        Button inventory = Button("Inventory", AdventureNavigation(() => ShowInventory(run)));
+        inventory.Name = "AdventureInventoryButton";
+        inventory.ZIndex = StartPageUiZIndex;
+        root.AddChild(PlaceControl(inventory, AdventureInventoryRect.Position, AdventureInventoryRect.Size));
+        PanelContainer leaderPanel = PanelAt(root, AdventureLeaderRect.Position, AdventureLeaderRect.Size, GodotTacticsTheme.Card);
+        leaderPanel.Name = "AdventureLeaderPanel";
+        leaderPanel.ZIndex = StartPageUiZIndex;
+        Label leaderLabel = Label($"Leader: {adventure.LeaderId}", 16);
+        leaderLabel.HorizontalAlignment = HorizontalAlignment.Center;
+        leaderLabel.VerticalAlignment = VerticalAlignment.Center;
+        leaderPanel.AddChild(leaderLabel);
     }
 
     private static AdventureBoardDefinition CreateInitialAdventureBoard(IReadOnlyList<AdventureActorPlacement> actors)
@@ -1422,20 +1437,35 @@ public partial class GodotPlayableRunMain : Control
             root.AddChild(PlaceControl(Button("Complete Progression", () => ShowProgression(run, pending)),
                 new Vector2(1140, 475), new Vector2(360, 58)));
         }
-        root.AddChild(PlaceControl(Button("Inventory", () => ShowInventory(run)), new Vector2(1140, 560), new Vector2(360, 58)));
+        root.AddChild(PlaceControl(Button("Inventory", AdventureNavigation(() => ShowInventory(run))), new Vector2(1140, 560), new Vector2(360, 58)));
         root.AddChild(PlaceControl(Button("Return to Current Scene", () => RouteRunState(new PureRunSaveSnapshot(run.Revision, run, null))),
             new Vector2(1140, 630), new Vector2(360, 58)));
         _status = LabelAt(root, string.Empty, new Vector2(1140, 790), 16);
-        BuildPauseMenu(root, false);
     }
 
     private void AddRunShell(Control root, PureRunState run, string page)
     {
-        var panel = new ColorRect { Color = new Color("1c2a33e6"), Position = new Vector2(1115, 125), Size = new Vector2(420, 82) };
+        SetInputContext(RunInputContext.Adventure);
+        var panel = new ColorRect
+        {
+            Name = "RunShellPanel",
+            Color = new Color("1c2a33e6"),
+            Position = new Vector2(1115, 125),
+            Size = new Vector2(420, 82),
+            ZIndex = StartPageUiZIndex
+        };
         root.AddChild(panel);
-        LabelAt(root, $"{page}  |  Gold {run.Gold}  |  Bag {run.BackpackConsumables.Count + run.BackpackEquipment.Count}\n" +
-            string.Join("   ", run.Party.Select(value => $"{value.CharacterId} L{value.Level} HP {value.CurrentHealth}/{value.MaxHealth} MP {value.CurrentMana}/{value.MaxMana}")),
-            new Vector2(1130, 138), 15).Size = new Vector2(390, 62);
+        int currentHealth = run.Party.Sum(value => value.CurrentHealth);
+        int maxHealth = run.Party.Sum(value => value.MaxHealth);
+        int currentMana = run.Party.Sum(value => value.CurrentMana);
+        int maxMana = run.Party.Sum(value => value.MaxMana);
+        Label summary = LabelAt(root,
+            $"{page}  •  Gold {run.Gold}  •  Bag {run.BackpackConsumables.Count + run.BackpackEquipment.Count}\n" +
+            $"Party {run.Party.Count}  •  HP {currentHealth}/{maxHealth}  •  MP {currentMana}/{maxMana}",
+            new Vector2(1130, 138), 14);
+        summary.Name = "RunShellSummary";
+        summary.Size = new Vector2(390, 62);
+        summary.ZIndex = StartPageUiZIndex + 1;
     }
 
     private PureRunMapDefinition MapDefinition => _mapDefinition ??
@@ -1445,7 +1475,7 @@ public partial class GodotPlayableRunMain : Control
     {
         switch(run.NodeTransaction?.Kind)
         {
-            case PureRunNodeKind.Battle: ShowAdventureBattleEntry(run, run.NodeTransaction.NodeId, BeginLayerFourBattle); break;
+            case PureRunNodeKind.Battle: BeginLayerFourBattle(); break;
             case PureRunNodeKind.Rest: ShowAdventureNodeEntry(run, PureRunNodeKind.Rest); break;
             case PureRunNodeKind.Store: ShowAdventureNodeEntry(run, PureRunNodeKind.Store); break;
             case PureRunNodeKind.Mystery: ShowAdventureEventEntry(run, "CursedChestMimic"); break;
@@ -1474,7 +1504,7 @@ public partial class GodotPlayableRunMain : Control
         string description = escort ? "The lost villager must survive the ambush." : altar ? "The altar is guarded." : "The chest moves when approached.";
         Control root = NewPage($"{LayerLabel(run)} — TILE EVENT", description);
         AddRunShell(root, run, "Event");
-        AdventureActorPlacement[] actors = run.AdventureState!.ActorCells.Select(value => new AdventureActorPlacement(value.ActorId, value.Cell)).ToArray();
+        AdventureActorPlacement[] actors = AdventurePlacements(run);
         GridPoint[] perimeter = Enumerable.Range(0, 10).SelectMany(value =>
                 new[] { new GridPoint(value, 0), new GridPoint(value, 9) })
             .Concat(Enumerable.Range(1, 8).SelectMany(value => new[] { new GridPoint(0, value), new GridPoint(9, value) }))
@@ -1486,14 +1516,14 @@ public partial class GodotPlayableRunMain : Control
         _adventureBoard = new GodotAdventureBoardView { Name = "AdventureEventBoard" };
         _adventureLastBoardContentId = definition.ContentId.Value;
         root.AddChild(_adventureBoard);
-        _adventureBoard.SetBoard(definition);
+        ConfigureAdventureBoard(_adventureBoard, run, definition);
         WireAdventureMovement(run, definition, changed => ShowAdventureEventEntry(changed, contextKind));
         _adventureBoard.ObjectPressed += pressed =>
         {
             if (pressed.StartsWith("exit:", StringComparison.Ordinal)) { SetStatus("Complete the event before leaving."); return; }
             if (pressed != objectId) return;
-            RunAdventureActorCell leader = run.AdventureState.ActorCells.Single(value => value.ActorId == run.AdventureState.LeaderId);
-            if (!RunAdventureTransitionService.IsAdjacent(leader.Cell, definition.Objects.Single(value => value.ObjectId == objectId).Cell))
+            GridPoint leaderCell = AdventureLeaderCell(run);
+            if (!RunAdventureTransitionService.IsAdjacent(leaderCell, definition.Objects.Single(value => value.ObjectId == objectId).Cell))
             { SetStatus("Move the leader next to the event object first."); return; }
             try
             {
@@ -1541,18 +1571,18 @@ public partial class GodotPlayableRunMain : Control
             : altar ? "The altar is quiet." : "The mimic has collapsed into an opened chest.";
         Control root = NewPage($"{LayerLabel(run)} — EVENT RESOLVED", resolvedDescription);
         AddRunShell(root, run, "Event Result");
-        AdventureActorPlacement[] actors = run.AdventureState!.ActorCells.Select(value => new AdventureActorPlacement(value.ActorId, value.Cell)).ToArray();
+        AdventureActorPlacement[] actors = AdventurePlacements(run);
         AdventureBoardObject[] exits = CreateExitObjects(run, run.NodeTransaction?.NodeId ?? RunAdventureTransitionService.CurrentNodeId(run), true);
-        AdventureBoardDefinition definition = new(run.AdventureState.BoardContentId, 10, 10, [],
+        AdventureBoardDefinition definition = new(run.AdventureState!.BoardContentId, 10, 10, [],
             new[] { new AdventureBoardObject(objectId, escort ? AdventureObjectKind.Npc : altar ? AdventureObjectKind.Altar : AdventureObjectKind.Chest, new GridPoint(7, 5), false, false) }.Concat(exits).ToArray(), actors,
             new GridPoint(1, 5), new GridPoint(8, 5));
         _adventureBoard = new GodotAdventureBoardView { Name = "ResolvedAdventureEventBoard" };
         _adventureLastBoardContentId = definition.ContentId.Value;
         root.AddChild(_adventureBoard);
-        _adventureBoard.SetBoard(definition);
+        ConfigureAdventureBoard(_adventureBoard, run, definition);
         WireAdventureMovement(run, definition, changed => ShowPostEventScene(changed, contextKind));
         _adventureBoard.ObjectPressed += pressed => HandleExitPointer(run, definition, pressed);
-        root.AddChild(PlaceControl(Button("Continue", () => RouteMap(run)), new Vector2(650, 740), new Vector2(300, 50)));
+        root.AddChild(PlaceControl(Button("Continue", AdventureNavigation(() => RouteMap(run))), new Vector2(650, 740), new Vector2(300, 50)));
         _status = LabelAt(root, eventResolution, new Vector2(470, 810), 18);
     }
 
@@ -1583,7 +1613,7 @@ public partial class GodotPlayableRunMain : Control
         }
         Control root = NewPage($"{LayerLabel(run)} — TILE {kind.ToString().ToUpperInvariant()}", "Move through the scene and interact with the highlighted object.");
         AddRunShell(root, run, kind.ToString());
-        AdventureActorPlacement[] actors = run.AdventureState!.ActorCells.Select(value => new AdventureActorPlacement(value.ActorId, value.Cell)).ToArray();
+        AdventureActorPlacement[] actors = AdventurePlacements(run);
         GridPoint[] perimeter = Enumerable.Range(0, 10).SelectMany(value =>
                 new[] { new GridPoint(value, 0), new GridPoint(value, 9) })
             .Concat(Enumerable.Range(1, 8).SelectMany(value => new[] { new GridPoint(0, value), new GridPoint(9, value) }))
@@ -1596,7 +1626,7 @@ public partial class GodotPlayableRunMain : Control
         _adventureBoard = new GodotAdventureBoardView { Name = $"{kind}AdventureBoard" };
         _adventureLastBoardContentId = definition.ContentId.Value;
         root.AddChild(_adventureBoard);
-        _adventureBoard.SetBoard(definition);
+        ConfigureAdventureBoard(_adventureBoard, run, definition);
         WireAdventureMovement(run, definition, changed => ShowAdventureNodeEntry(changed, kind));
         _adventureBoard.ObjectPressed += pressed =>
         {
@@ -1607,8 +1637,8 @@ public partial class GodotPlayableRunMain : Control
                 return;
             }
             if (pressed != objectId) return;
-            RunAdventureActorCell leader = run.AdventureState.ActorCells.Single(value => value.ActorId == run.AdventureState.LeaderId);
-            if (!RunAdventureTransitionService.IsAdjacent(leader.Cell, definition.Objects.Single(value => value.ObjectId == objectId).Cell))
+            GridPoint leaderCell = AdventureLeaderCell(run);
+            if (!RunAdventureTransitionService.IsAdjacent(leaderCell, definition.Objects.Single(value => value.ObjectId == objectId).Cell))
             { SetStatus("Move the leader next to the interaction object first."); return; }
             switch (kind)
             {
@@ -1620,24 +1650,132 @@ public partial class GodotPlayableRunMain : Control
         _status = LabelAt(root, $"Interact: {objectId}", new Vector2(470, 810), 18);
     }
 
+    private AdventureExplorationSession EnsureAdventureSession(PureRunState run)
+    {
+        if (_adventureSession is null || !_adventureSession.Matches(run))
+            _adventureSession = AdventureExplorationSession.Restore(run,
+                [new GridPoint(2, 5), new GridPoint(1, 4), new GridPoint(1, 6)]);
+        return _adventureSession;
+    }
+
+    private AdventureActorPlacement[] AdventurePlacements(PureRunState run) => EnsureAdventureSession(run).Placements();
+
+    private GridPoint AdventureLeaderCell(PureRunState run) =>
+        EnsureAdventureSession(run).CellOf(run.AdventureState?.LeaderId ?? throw new InvalidOperationException("adventure.state_missing"));
+
+    private static void ConfigureAdventureCornerOverlays(Control root)
+    {
+        if (root.GetNodeOrNull<PanelContainer>("PageHeader") is { } header)
+        {
+            header.Position = AdventureHeaderRect.Position;
+            header.Size = AdventureHeaderRect.Size;
+            if (header.FindChild("PageTitle", true, false) is Label title)
+                title.AddThemeFontSizeOverride("font_size", 26);
+            if (header.FindChild("PageSubtitle", true, false) is Label subtitle)
+            {
+                subtitle.AddThemeFontSizeOverride("font_size", 13);
+                subtitle.AutowrapMode = TextServer.AutowrapMode.WordSmart;
+            }
+        }
+        if (root.GetNodeOrNull<ColorRect>("RunShellPanel") is { } shell)
+        {
+            shell.Position = AdventureRunShellRect.Position;
+            shell.Size = AdventureRunShellRect.Size;
+        }
+        if (root.GetNodeOrNull<Label>("RunShellSummary") is { } summary)
+        {
+            summary.Position = AdventureRunShellRect.Position + new Vector2(16, 14);
+            summary.Size = AdventureRunShellRect.Size - new Vector2(32, 24);
+        }
+    }
+
+    private void ConfigureAdventureBoard(GodotAdventureBoardView view, PureRunState run,
+        AdventureBoardDefinition definition)
+    {
+        if (view.GetParent() is Control root) ConfigureAdventureCornerOverlays(root);
+        AdventureExplorationSession session = EnsureAdventureSession(run);
+        session.SetLeader(run.AdventureState?.LeaderId ?? throw new InvalidOperationException("adventure.state_missing"));
+        var definitions = new Dictionary<string, UnitDefinitionResource>(StringComparer.Ordinal);
+        foreach (RunCharacterState member in run.Party)
+        {
+            if (!_unitResources.TryGetValue(member.UnitContentId, out UnitDefinitionResource? resource))
+                throw new InvalidOperationException($"Adventure actor '{member.CharacterId}' is missing Unit resource '{member.UnitContentId.Value}'.");
+            definitions[member.CharacterId] = resource;
+        }
+        string leaderId = run.AdventureState?.LeaderId ?? throw new InvalidOperationException("adventure.state_missing");
+        view.ConfigureActors(definitions, leaderId, _presentationProfile ?? new StandardUnitPresentationResource(), _playbackSpeed);
+        view.SetBoard(definition);
+        view.MovementRejected += SetStatus;
+    }
+
+    private Action AdventureNavigation(Action action) => () =>
+    {
+        if (_adventureBoard?.IsMovementLocked == true || _startCampView?.IsMovementLocked == true)
+        {
+            SetStatus("adventure.movement_in_progress");
+            return;
+        }
+        action();
+    };
+
     private void WireAdventureMovement(PureRunState run, AdventureBoardDefinition definition, Action<PureRunState> rerender)
     {
-        _adventureBoard!.ActorPressed += actorId =>
+        GodotAdventureBoardView board = _adventureBoard!;
+        board.ManualMovementRequested += () => _pendingAdventureExit = null;
+        board.ActorPressed += actorId =>
         {
+            AdventureExplorationSession session = EnsureAdventureSession(run);
             RunSessionResult changed = _run!.ApplyMutation(state => new RunMutationResult(true, null,
-                new RunAdventureTransitionService().SelectLeader(state, actorId)));
+                new RunAdventureTransitionService().SelectLeader(session.Hydrate(state), actorId)));
             if (!changed.Succeeded) { SetStatus(changed.ErrorCode); return; }
+            session.SetLeader(actorId);
             rerender(changed.Snapshot!.ActiveRun!);
         };
-        _adventureBoard.CellPressed += destination =>
+        board.MovementInterruptedAtCell += cell =>
         {
+            _pendingAdventureExit = null;
+            AdventureExplorationSession session = EnsureAdventureSession(run);
+            string leaderId = run.AdventureState?.LeaderId ?? throw new InvalidOperationException("adventure.state_missing");
+            session.SetCell(leaderId, cell);
+        };
+        board.MovementCompleted += completion =>
+        {
+            if (completion.Origin == completion.Destination)
+            {
+                SetStatus("Leader returned to the starting cell; no movement was committed.");
+                return;
+            }
+            AdventureExplorationSession session = EnsureAdventureSession(run);
             RunSessionResult changed = _run!.ApplyMutation(state =>
             {
-                try { return new RunMutationResult(true, null, new RunAdventureTransitionService().MoveLeader(state, definition, destination)); }
+                try
+                {
+                    PureRunState hydrated = session.Hydrate(state);
+                    return new RunMutationResult(true, null,
+                        new RunAdventureTransitionService().MoveLeader(hydrated, definition, completion.Destination));
+                }
                 catch (InvalidOperationException error) { return new RunMutationResult(false, error.Message, state); }
             });
-            if (!changed.Succeeded) { SetStatus(changed.ErrorCode); return; }
-            rerender(changed.Snapshot!.ActiveRun!);
+            if (!changed.Succeeded)
+            {
+                PureRunState fallback = changed.Snapshot?.ActiveRun ?? run;
+                rerender(fallback);
+                SetStatus(changed.ErrorCode ?? "adventure.movement_commit_failed");
+                GD.PushError("[AdventureMovement] outcome=commit-failed error=" +
+                    (changed.ErrorCode ?? "adventure.movement_commit_failed"));
+                return;
+            }
+            session.SetCell(completion.ActorId, completion.Destination);
+            PureRunState changedRun = changed.Snapshot!.ActiveRun!;
+            PendingAdventureExit? pending = _pendingAdventureExit;
+            _pendingAdventureExit = null;
+            if (pending is not null && pending.RunId == changedRun.RunId && ReferenceEquals(pending.Page, _page) &&
+                RunAdventureTransitionService.IsAdjacent(completion.Destination, pending.ExitCell))
+            {
+                HandleAdventureExit(changedRun, pending.TargetNodeId);
+                return;
+            }
+            rerender(changedRun);
         };
     }
 
@@ -1667,15 +1805,38 @@ public partial class GodotPlayableRunMain : Control
     {
         AdventureBoardObject? exit = definition.Objects.FirstOrDefault(value => value.ObjectId == objectId && value.Kind == AdventureObjectKind.Exit);
         if (exit?.TargetNodeId is null) return;
-        RunAdventureActorCell leader = run.AdventureState!.ActorCells.Single(value => value.ActorId == run.AdventureState.LeaderId);
-        if (!RunAdventureTransitionService.IsAdjacent(leader.Cell, exit.Cell))
-        { SetStatus("Move the leader next to the exit first."); return; }
         if (exit.IsLocked) { SetStatus("Complete the current node before leaving."); return; }
-        HandleAdventureExit(run, exit.TargetNodeId);
+        GridPoint leaderCell = AdventureLeaderCell(run);
+        if (RunAdventureTransitionService.IsAdjacent(leaderCell, exit.Cell))
+        {
+            HandleAdventureExit(run, exit.TargetNodeId);
+            return;
+        }
+        if (_adventureBoard is null || _page is null) return;
+        GridPoint[] occupied = _adventureBoard.ActorCells
+            .Where(value => value.Key != run.AdventureState?.LeaderId)
+            .Select(value => value.Value).ToArray();
+        AdventureApproachRoute? route = AdventureBoardPathfinder.FindApproach(definition, leaderCell, exit.Cell, occupied);
+        if (route is null) { SetStatus("adventure.exit_unreachable"); return; }
+        _pendingAdventureExit = new PendingAdventureExit(run.RunId, exit.TargetNodeId, exit.Cell, _page);
+        if (!_adventureBoard.TryRequestLeaderMovement(route.Destination, out string? rejection))
+        {
+            _pendingAdventureExit = null;
+            SetStatus(rejection ?? "adventure.exit_unreachable");
+            return;
+        }
+        SetStatus("Moving to exit…");
     }
 
     private void HandleAdventureExit(PureRunState run, string targetNodeId)
     {
+        PureRunMapNodeDefinition targetNode = MapDefinition.Nodes.Single(node => node.NodeId == targetNodeId);
+        if (targetNode.Kind is (PureRunNodeKind.Battle or PureRunNodeKind.Elite or PureRunNodeKind.Boss) &&
+            !IsSupportedDeterministicBattleNode(targetNodeId))
+        {
+            SetStatus("battle_node.route_missing:" + targetNodeId);
+            return;
+        }
         if (run.NodeTransaction is { Kind: PureRunNodeKind.Store, Committed: false })
         {
             RunSessionResult left = _run!.ApplyLayerFourMutation(state =>
@@ -1712,49 +1873,33 @@ public partial class GodotPlayableRunMain : Control
         });
         if (!moved.Succeeded) { SetStatus(moved.ErrorCode); return; }
         PureRunState entered = moved.Snapshot!.ActiveRun!;
+        if (targetNode.Kind is PureRunNodeKind.Battle or PureRunNodeKind.Elite or PureRunNodeKind.Boss)
+        {
+            BeginDeterministicBattleNode(targetNodeId);
+            return;
+        }
         if (targetNodeId.StartsWith("layer_04_", StringComparison.Ordinal)) { RouteLayerFour(entered); return; }
         if (targetNodeId.StartsWith("layer_06_", StringComparison.Ordinal)) { RouteLayerSixNode(entered); return; }
-        Action begin = targetNodeId switch
-        {
-            "layer_05_battle" => BeginLayerFive,
-            "layer_07_battle" => BeginBoss,
-            _ => BeginReadyEncounter
-        };
-        ShowAdventureBattleEntry(entered, targetNodeId, begin);
+        ShowResolvedAdventureNode(entered);
     }
 
-    private void ShowAdventureBattleEntry(PureRunState run, string nodeId, Action beginBattle)
+    private static bool IsSupportedDeterministicBattleNode(string nodeId) => nodeId is
+        "layer_01_battle" or "layer_02_battle" or "layer_03_battle" or "layer_04_battle" or
+        "layer_05_battle" or "layer_06_battle" or "layer_07_battle";
+
+    private void BeginDeterministicBattleNode(string nodeId)
     {
-        ContentId boardId = AdventureBoardIdForNode(nodeId);
-        if (run.AdventureState?.BoardContentId != boardId)
+        Action? begin = nodeId switch
         {
-            RunSessionResult entered = _run!.ApplyMutation(state => new RunMutationResult(true, null,
-                new RunAdventureTransitionService().EnterBoard(state, boardId)));
-            if (!entered.Succeeded) { SetStatus(entered.ErrorCode); return; }
-            run = entered.Snapshot!.ActiveRun!;
-        }
-        Control root = NewPage($"{nodeId} — TILE BATTLE", "Approach the encounter marker to begin combat.");
-        AddRunShell(root, run, "Battle Node");
-        AdventureActorPlacement[] actors = run.AdventureState!.ActorCells
-            .Select(value => new AdventureActorPlacement(value.ActorId, value.Cell)).ToArray();
-        AdventureBoardObject[] exits = CreateExitObjects(run, nodeId, false);
-        AdventureBoardDefinition definition = CreateNodeBoard(boardId, actors,
-            new[] { new AdventureBoardObject("encounter", AdventureObjectKind.Battle, new GridPoint(7, 5), false, false) }
-                .Concat(exits).ToArray());
-        _adventureBoard = new GodotAdventureBoardView { Name = "AdventureBattleEntryBoard" };
-        root.AddChild(_adventureBoard); _adventureBoard.SetBoard(definition);
-        WireAdventureMovement(run, definition, changed => ShowAdventureBattleEntry(changed, nodeId, beginBattle));
-        _adventureBoard.ObjectPressed += pressed =>
-        {
-            if (pressed.StartsWith("exit:", StringComparison.Ordinal)) { SetStatus("Win the battle before leaving."); return; }
-            if (pressed != "encounter") return;
-            RunAdventureActorCell leader = run.AdventureState.ActorCells.Single(value => value.ActorId == run.AdventureState.LeaderId);
-            if (!RunAdventureTransitionService.IsAdjacent(leader.Cell, definition.Objects.Single(value => value.ObjectId == "encounter").Cell))
-            { SetStatus("Move the leader next to the encounter first."); return; }
-            beginBattle();
+            "layer_01_battle" or "layer_02_battle" or "layer_03_battle" => BeginReadyEncounter,
+            "layer_04_battle" => BeginLayerFourBattle,
+            "layer_05_battle" => BeginLayerFive,
+            "layer_06_battle" => BeginLayerSixBattle,
+            "layer_07_battle" => BeginBoss,
+            _ => null
         };
-        root.AddChild(PlaceControl(Button("Map Preview", () => ShowRunMap(run)), new Vector2(1130, 720), new Vector2(360, 58)));
-        _status = LabelAt(root, "Encounter pending", new Vector2(470, 810), 18);
+        if (begin is null) { SetStatus("battle_node.route_missing:" + nodeId); return; }
+        begin();
     }
 
     private void ShowResolvedAdventureNode(PureRunState run)
@@ -1763,15 +1908,15 @@ public partial class GodotPlayableRunMain : Control
         ContentId boardId = run.AdventureState!.BoardContentId;
         Control root = NewPage($"{nodeId} — RESOLVED", "Choose one directly reachable exit.");
         AddRunShell(root, run, "Resolved Node");
-        AdventureActorPlacement[] actors = run.AdventureState.ActorCells
-            .Select(value => new AdventureActorPlacement(value.ActorId, value.Cell)).ToArray();
+        AdventureActorPlacement[] actors = AdventurePlacements(run);
         AdventureBoardDefinition definition = CreateNodeBoard(boardId, actors, CreateExitObjects(run, nodeId, true));
         _adventureBoard = new GodotAdventureBoardView { Name = "ResolvedAdventureNodeBoard" };
-        root.AddChild(_adventureBoard); _adventureBoard.SetBoard(definition);
+        root.AddChild(_adventureBoard);
+        ConfigureAdventureBoard(_adventureBoard, run, definition);
         WireAdventureMovement(run, definition, ShowResolvedAdventureNode);
         _adventureBoard.ObjectPressed += pressed => HandleExitPointer(run, definition, pressed);
-        root.AddChild(PlaceControl(Button("Inventory", () => ShowInventory(run)), new Vector2(1130, 650), new Vector2(360, 58)));
-        root.AddChild(PlaceControl(Button("Map Preview", () => ShowRunMap(run)), new Vector2(1130, 720), new Vector2(360, 58)));
+        root.AddChild(PlaceControl(Button("Inventory", AdventureNavigation(() => ShowInventory(run))), new Vector2(1130, 650), new Vector2(360, 58)));
+        root.AddChild(PlaceControl(Button("Map Preview", AdventureNavigation(() => ShowRunMap(run))), new Vector2(1130, 720), new Vector2(360, 58)));
         _status = LabelAt(root, "Node resolved", new Vector2(470, 810), 18);
     }
 
@@ -1791,11 +1936,31 @@ public partial class GodotPlayableRunMain : Control
         RouteRunState(new PureRunSaveSnapshot(run.Revision, run, null));
     }
 
+    private void BindRunUiScope(string runId)
+    {
+        if (string.Equals(_uiRunId, runId, StringComparison.Ordinal)) return;
+        _uiRunId = runId;
+        _progressionDrafts.Clear();
+        _inventoryCharacterId = null;
+        _inventoryEquipmentTab = true;
+        _inventorySelectedInstanceId = null;
+    }
+
+    private void ResetRunUiScope()
+    {
+        _uiRunId = null;
+        _progressionDrafts.Clear();
+        _inventoryCharacterId = null;
+        _inventoryEquipmentTab = true;
+        _inventorySelectedInstanceId = null;
+    }
+
     private void RouteRunState(PureRunSaveSnapshot snapshot)
     {
-        if (snapshot.TerminalSummary is PureRunSummary summary) { ShowSummary(summary); return; }
-        if (snapshot.PendingRunSetup is not null) { ShowNewRunSetup(snapshot); return; }
+        if (snapshot.TerminalSummary is PureRunSummary summary) { ResetRunUiScope(); ShowSummary(summary); return; }
+        if (snapshot.PendingRunSetup is not null) { ResetRunUiScope(); ShowNewRunSetup(snapshot); return; }
         PureRunState run = snapshot.ActiveRun ?? throw new InvalidOperationException("Active run is missing.");
+        BindRunUiScope(run.RunId);
         if(run.Phase==PureRunPhase.ResolvingLayerFourNode){RouteLayerFour(run);return;}
         if(run.Phase==PureRunPhase.ResolvingLayerSixNode){RouteLayerSixNode(run);return;}
         if(run.Phase==PureRunPhase.PendingBattle&&run.Checkpoint is not null)
@@ -1814,15 +1979,7 @@ public partial class GodotPlayableRunMain : Control
                  TryGetAdventureBoardNodeId(adventure.BoardContentId, out string nodeId) &&
                  MapDefinition.Nodes.Single(node => node.NodeId == nodeId).Kind is PureRunNodeKind.Battle or PureRunNodeKind.Elite or PureRunNodeKind.Boss)
         {
-            Action begin = nodeId switch
-            {
-                "layer_04_battle" => BeginLayerFourBattle,
-                "layer_05_battle" => BeginLayerFive,
-                "layer_06_battle" => BeginLayerSixBattle,
-                "layer_07_battle" => BeginBoss,
-                _ => BeginReadyEncounter
-            };
-            ShowAdventureBattleEntry(run, nodeId, begin);
+            BeginDeterministicBattleNode(nodeId);
         }
         else ShowResolvedAdventureNode(run);
     }
@@ -1950,7 +2107,7 @@ public partial class GodotPlayableRunMain : Control
     private void CommitLayerFour(Func<PureRunState,LayerFourNodeResolution> command){RunSessionResult result=_run!.ApplyLayerFourMutation(state=>{LayerFourNodeResolution r=command(state);return new RunMutationResult(r.Succeeded,r.RejectionCode,r.State);});if(!result.Succeeded){SetStatus(result.ErrorCode);return;}if(result.Snapshot?.TerminalSummary is PureRunSummary summary){ShowSummary(summary);return;}result=ResolveAdventureBoard(result);if(!result.Succeeded){SetStatus(result.ErrorCode);return;}RouteRunState(result.Snapshot!);}
 
     private void BeginLayerFive(){RunSessionResult result=_run!.ApplyFullRunTransition(state=>new PureRunFullRunService(_consumables.Keys).BeginLayerFive(state,MapDefinition));if(!result.Succeeded||result.EncounterRequest is null){SetStatus(result.ErrorCode);return;}StartBattle(result.EncounterRequest);}
-    private void RouteLayerSixNode(PureRunState run){switch(run.NodeTransaction?.Kind){case PureRunNodeKind.Battle:ShowAdventureBattleEntry(run,run.NodeTransaction.NodeId,BeginLayerSixBattle);break;case PureRunNodeKind.Rest:ShowAdventureNodeEntry(run,PureRunNodeKind.Rest);break;case PureRunNodeKind.Store:ShowAdventureNodeEntry(run,PureRunNodeKind.Store);break;case PureRunNodeKind.Mystery:ShowAdventureEventEntry(run,"FallenAltarGuardian");break;case PureRunNodeKind.Treasure:ShowAdventureNodeEntry(run,PureRunNodeKind.Treasure);break;default:SetStatus("layer6.route_missing");break;}}
+    private void RouteLayerSixNode(PureRunState run){switch(run.NodeTransaction?.Kind){case PureRunNodeKind.Battle:BeginLayerSixBattle();break;case PureRunNodeKind.Rest:ShowAdventureNodeEntry(run,PureRunNodeKind.Rest);break;case PureRunNodeKind.Store:ShowAdventureNodeEntry(run,PureRunNodeKind.Store);break;case PureRunNodeKind.Mystery:ShowAdventureEventEntry(run,"FallenAltarGuardian");break;case PureRunNodeKind.Treasure:ShowAdventureNodeEntry(run,PureRunNodeKind.Treasure);break;default:SetStatus("layer6.route_missing");break;}}
     private void BeginLayerSixBattle(){RunSessionResult result=_run!.ApplyMutation(state=>{ContentId id=new PureRunMapService(MapDefinition).SelectLateEncounter(state.Seed,"layer_06_battle");LayerFourNodeResolution begun=new PureRunLayerFourNodeService().BeginN4(state,id);return new RunMutationResult(begun.Succeeded,begun.RejectionCode,begun.State);});if(!result.Succeeded||result.Snapshot?.ActiveRun?.Checkpoint is null){SetStatus(result.ErrorCode);return;}PureRunState pending=result.Snapshot.ActiveRun;StartBattle(AdventureEncounterRequest(pending, pending.EncounterContentId));}
 
     private static EncounterRequest AdventureEncounterRequest(PureRunState run, ContentId encounterId) => new(
@@ -1961,6 +2118,7 @@ public partial class GodotPlayableRunMain : Control
 
     private void ShowInventory(PureRunState run, InventoryReturnTarget returnTarget)
     {
+        BindRunUiScope(run.RunId);
         if (_inventoryCharacterId is null || run.Party.All(value => value.CharacterId != _inventoryCharacterId))
             _inventoryCharacterId = run.Party[0].CharacterId;
         ItemInstanceId? selectedItemId = string.IsNullOrEmpty(_inventorySelectedInstanceId) ? null : new ItemInstanceId(_inventorySelectedInstanceId);
@@ -2022,12 +2180,12 @@ public partial class GodotPlayableRunMain : Control
             if(equipped is not null)
             {
                 EquipmentSlot capturedSlot=slot;
-                detail.AddChild(Button($"Unequip {slot}",()=>CommitInventoryMutation(state=>new RunInventoryProgressionService().Unequip(state,state.Revision,selectedCharacter.CharacterId,capturedSlot,_equipment,_units[selectedCharacter.UnitContentId].Speed),returnTarget)));
+                detail.AddChild(Button($"Unequip {slot}",()=>CommitInventoryMutation(run.RunId,state=>new RunInventoryProgressionService().Unequip(state,state.Revision,selectedCharacter.CharacterId,capturedSlot,_equipment,_units[selectedCharacter.UnitContentId].Speed),returnTarget)));
             }
         }
         detail.AddChild(Label($"Carried: {(selectedCharacter.CarriedConsumables.FirstOrDefault() is BattleConsumableState carried?_consumables[carried.DefinitionId].DisplayName:"empty")}",17));
         if(selectedCharacter.CarriedConsumables.Count>0)
-            detail.AddChild(Button("Unload carried consumable",()=>CommitInventoryMutation(state=>new RunInventoryProgressionService().Unload(state,state.Revision,selectedCharacter.CharacterId),returnTarget)));
+            detail.AddChild(Button("Unload carried consumable",()=>CommitInventoryMutation(run.RunId,state=>new RunInventoryProgressionService().Unload(state,state.Revision,selectedCharacter.CharacterId),returnTarget)));
 
         RunEquipmentState? selectedEquipment=run.BackpackEquipment.FirstOrDefault(value=>value.InstanceId.Value==_inventorySelectedInstanceId);
         BattleConsumableState? selectedConsumable=run.BackpackConsumables.FirstOrDefault(value=>value.InstanceId.Value==_inventorySelectedInstanceId);
@@ -2035,20 +2193,22 @@ public partial class GodotPlayableRunMain : Control
         {
             EquipmentDefinition definition=_equipment[selectedEquipment.DefinitionId];
             detail.AddChild(Label($"\n{definition.DisplayName}\n{definition.Slot} | {definition.Rarity} | Price {definition.Price}\nSource: Store / Mystery\nBonuses: STR {definition.AttributeBonuses.Strength} AGI {definition.AttributeBonuses.Agility} CON {definition.AttributeBonuses.Constitution} INT {definition.AttributeBonuses.Intelligence} CHA {definition.AttributeBonuses.Charisma} LUCK {definition.AttributeBonuses.Luck}",17));
-            detail.AddChild(Button(selectedCharacter.Equipment.Any(value=>value.Slot==definition.Slot)?"Replace equipped item":"Equip",()=>CommitInventoryMutation(state=>new RunInventoryProgressionService().Equip(state,state.Revision,selectedCharacter.CharacterId,selectedEquipment.InstanceId,_equipment,_units[selectedCharacter.UnitContentId].Speed),returnTarget)));
+            detail.AddChild(Button(selectedCharacter.Equipment.Any(value=>value.Slot==definition.Slot)?"Replace equipped item":"Equip",()=>CommitInventoryMutation(run.RunId,state=>new RunInventoryProgressionService().Equip(state,state.Revision,selectedCharacter.CharacterId,selectedEquipment.InstanceId,_equipment,_units[selectedCharacter.UnitContentId].Speed),returnTarget)));
         }
         else if(selectedConsumable is not null)
         {
             ConsumableDefinition definition=_consumables[selectedConsumable.DefinitionId];
             detail.AddChild(Label($"\n{definition.DisplayName}\nPrice {definition.Price}\n{definition.Description}\nSource: deterministic Battle drop / Store / Mystery",17));
-            detail.AddChild(Button(selectedCharacter.CarriedConsumables.Count>0?"Replace carried consumable":"Carry",()=>CommitInventoryMutation(state=>new RunInventoryProgressionService().Carry(state,state.Revision,selectedCharacter.CharacterId,selectedConsumable.InstanceId),returnTarget)));
+            detail.AddChild(Button(selectedCharacter.CarriedConsumables.Count>0?"Replace carried consumable":"Carry",()=>CommitInventoryMutation(run.RunId,state=>new RunInventoryProgressionService().Carry(state,state.Revision,selectedCharacter.CharacterId,selectedConsumable.InstanceId),returnTarget)));
         }
         root.AddChild(PlaceControl(Button("Back",()=>ReturnFromInventory(run,returnTarget)),new Vector2(650,815),new Vector2(300,55)));
     }
 
-    private void CommitInventoryMutation(Func<PureRunState,RunMutationResult> mutation, InventoryReturnTarget returnTarget)
+    private void CommitInventoryMutation(string runId, Func<PureRunState,RunMutationResult> mutation, InventoryReturnTarget returnTarget)
     {
-        RunSessionResult result=_run!.ApplyMutation(mutation);
+        RunSessionResult result=_run!.ApplyMutation(state => string.Equals(state.RunId, runId, StringComparison.Ordinal)
+            ? mutation(state)
+            : new RunMutationResult(false, "ui.run_scope_changed", state));
         if(!result.Succeeded||result.Snapshot?.ActiveRun is not PureRunState run){SetStatus(result.ErrorCode);return;}
         _inventorySelectedInstanceId=null;
         ShowInventory(run,returnTarget);
@@ -2083,13 +2243,14 @@ public partial class GodotPlayableRunMain : Control
 
     private void ShowProgression(PureRunState run, PendingProgression pending)
     {
+        BindRunUiScope(run.RunId);
         RunCharacterState character=run.Party.Single(value=>value.CharacterId==pending.CharacterId);
         Control root=NewPage("PROGRESSION",$"{character.CharacterId}: attribute allocation → skill selection");
         AddRunShell(root,run,"Progression");
         PanelAt(root,new Vector2(405,140),new Vector2(790,690)).Name="ProgressionFlowPanel";
         var menu=new VBoxContainer{Position=new Vector2(430,160),Size=new Vector2(740,650)};root.AddChild(menu);
         var progressionService=new RunInventoryProgressionService();
-        if (!_progressionDrafts.TryGetValue(pending.TransactionKey, out UnitAttributes proposed))
+        if (!_progressionDrafts.TryGetValue((run.RunId, pending.TransactionKey), out UnitAttributes proposed))
         {
             menu.AddChild(Label($"Step 1/2 — choose one attribute\nSTR {character.Attributes.Strength}  AGI {character.Attributes.Agility}  CON {character.Attributes.Constitution}\nINT {character.Attributes.Intelligence}  CHA {character.Attributes.Charisma}  LUCK {character.Attributes.Luck}",22));
             foreach (string attribute in new[] { "Strength", "Agility", "Constitution", "Intelligence", "Charisma", "Luck" })
@@ -2117,7 +2278,7 @@ public partial class GodotPlayableRunMain : Control
             foreach((SkillDefinition skill, int index) in candidates.Select((value, index) => (value, index)))
             {
                 Button choice=Button(GrowthChoiceLabel(preview,skill,_skillUi[skill.ContentId]),()=>
-                    CompleteProgression(pending.TransactionKey,proposed,skill.ContentId));
+                    CompleteProgression(run.RunId,pending.TransactionKey,proposed,skill.ContentId));
                 choice.Name = $"ProgressionSkillChoice_{index}";
                 choice.ThemeTypeVariation=GodotTacticsTheme.ActionButton;
                 choice.CustomMinimumSize=new Vector2(720,112);
@@ -2126,7 +2287,7 @@ public partial class GodotPlayableRunMain : Control
             if(candidates.Length==0)
             {
                 menu.AddChild(Label("No skill candidate is legal after this allocation. Attribute-only confirmation is allowed.",18));
-                menu.AddChild(Button("Confirm Attribute",()=>CompleteProgression(pending.TransactionKey,proposed,null)));
+                menu.AddChild(Button("Confirm Attribute",()=>CompleteProgression(run.RunId,pending.TransactionKey,proposed,null)));
             }
         }
     }
@@ -2157,16 +2318,21 @@ public partial class GodotPlayableRunMain : Control
 
     private void PreviewProgressionAttribute(PureRunState run, PendingProgression pending, UnitAttributes attributes)
     {
-        _progressionDrafts[pending.TransactionKey] = attributes;
+        _progressionDrafts[(run.RunId, pending.TransactionKey)] = attributes;
         ShowProgression(run, pending);
     }
 
-    private void CompleteProgression(string transactionKey, UnitAttributes attributes, ContentId? skillId)
+    private void CompleteProgression(string runId, string transactionKey, UnitAttributes attributes, ContentId? skillId)
     {
-        RunSessionResult result = _run!.ApplyMutation(state => new RunInventoryProgressionService()
-            .CompleteProgression(state,state.Revision,transactionKey,attributes,skillId,_skills,_runDefinition!));
+        RunSessionResult result = _run!.ApplyMutation(state =>
+        {
+            if (!string.Equals(state.RunId, runId, StringComparison.Ordinal))
+                return new RunMutationResult(false, "ui.run_scope_changed", state);
+            return new RunInventoryProgressionService()
+                .CompleteProgression(state,state.Revision,transactionKey,attributes,skillId,_skills,_runDefinition!);
+        });
         if(!result.Succeeded){SetStatus(result.ErrorCode);return;}
-        _progressionDrafts.Remove(transactionKey);
+        _progressionDrafts.Remove((runId, transactionKey));
         ShowSettlement(result.Snapshot!);
     }
 
@@ -2176,6 +2342,8 @@ public partial class GodotPlayableRunMain : Control
 
     private void ShowSummary(PureRunSummary summary)
     {
+        _battle = null;
+        ResetRunUiScope();
         Control root = NewPage(summary.Outcome.ToString(), "Three-encounter slice complete");
         PanelAt(root,new Vector2(450,205),new Vector2(700,470)).Name="TerminalSummaryPanel";
         LabelAt(root, $"Battles: {summary.BattlesCompleted}\nKills: {summary.EnemiesDefeated}\nGold: {summary.TotalGoldEarned}\nItems: {string.Join(", ", summary.AcquiredItems.Select(id => id.Value))}\nDead: {string.Join(", ", summary.DeadCharacters)}", new Vector2(520, 260), 30);
@@ -2188,68 +2356,177 @@ public partial class GodotPlayableRunMain : Control
         if (result.Snapshot?.TerminalSummary is PureRunSummary summary) ShowSummary(summary); else SetStatus(result.ErrorCode);
     }
 
+    private void SetInputContext(RunInputContext context)
+    {
+        if (_pauseMenu?.Visible == true) ClosePauseMenu();
+        _inputContext = context;
+        EnsurePauseMenu();
+        ClearPauseMenuContent();
+        _pauseMenuView = PauseMenuView.Root;
+    }
+
     private void BuildPauseMenu(Control root, bool controlsBattlePlayback = true)
     {
-        var overlay = new ColorRect { Color = new Color(0,0,0,.72f), Visible = false, MouseFilter = MouseFilterEnum.Stop, ZIndex = PauseOverlayZIndex };
+        _ = root;
+        SetInputContext(controlsBattlePlayback ? RunInputContext.Battle : RunInputContext.Adventure);
+    }
+
+    private void EnsurePauseMenu()
+    {
+        if (_pauseMenu is not null && GodotObject.IsInstanceValid(_pauseMenu)) return;
+        var overlay = new ColorRect
+        {
+            Name = "GlobalPauseOverlay",
+            Color = new Color(0, 0, 0, .72f),
+            Visible = false,
+            MouseFilter = MouseFilterEnum.Stop,
+            ZIndex = PauseOverlayZIndex
+        };
         overlay.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-        root.AddChild(overlay); _pauseMenu = overlay; _pauseMenuControlsBattlePlayback = controlsBattlePlayback;
+        AddChild(overlay);
         PanelContainer panel = PanelAt(overlay, new Vector2(570, 165), new Vector2(460, 520));
-        var menu = new VBoxContainer(); panel.AddChild(menu);
-        Label title = Label("PAUSED", 36); title.HorizontalAlignment = HorizontalAlignment.Center; menu.AddChild(title);
-        Label subtitle = Label("Game is paused", 16); subtitle.HorizontalAlignment = HorizontalAlignment.Center;
-        subtitle.AddThemeColorOverride("font_color", GodotTacticsTheme.TextSecondary); menu.AddChild(subtitle);
-        menu.AddChild(new ColorRect { Color = GodotTacticsTheme.Accent, CustomMinimumSize = new Vector2(0, 2), MouseFilter = MouseFilterEnum.Ignore });
-        menu.AddChild(Button("CONTINUE",ClosePauseMenu));
-        menu.AddChild(Button("OPTIONS",()=>ShowPauseOptions(menu)));
-        menu.AddChild(Button("ABANDON RUN", ConfirmAbandonRun));
-        menu.AddChild(Button("SAVE AND QUIT", SaveAndQuit));
+        _pauseMenuContent = new VBoxContainer { Name = "GlobalPauseMenuContent" };
+        panel.AddChild(_pauseMenuContent);
+        _pauseMenu = overlay;
+    }
+
+    private void ClearPauseMenuContent()
+    {
+        if (_pauseMenuContent is null || !GodotObject.IsInstanceValid(_pauseMenuContent)) return;
+        if (_pauseMenuDefaultFocus is not null && GodotObject.IsInstanceValid(_pauseMenuDefaultFocus) &&
+            _pauseMenuDefaultFocus.HasFocus()) _pauseMenuDefaultFocus.ReleaseFocus();
+        _pauseMenuDefaultFocus = null;
+        foreach (Node child in _pauseMenuContent.GetChildren())
+        {
+            bool wasInsideTree = child.IsInsideTree();
+            _pauseMenuContent.RemoveChild(child);
+            if (wasInsideTree) child.QueueFree(); else child.Free();
+        }
+    }
+
+    private void RebuildPauseMenuContent()
+    {
+        if (_pauseMenuContent is null || !GodotObject.IsInstanceValid(_pauseMenuContent)) return;
+        ClearPauseMenuContent();
+        _pauseMenuView = PauseMenuView.Root;
+        Label title = Label("PAUSED", 36);
+        title.HorizontalAlignment = HorizontalAlignment.Center;
+        _pauseMenuContent.AddChild(title);
+        Label subtitle = Label(_inputContext.SetupDraftActive
+            ? "New Run setup is not saved until all starting skills are confirmed."
+            : "Game is paused", 16);
+        subtitle.HorizontalAlignment = HorizontalAlignment.Center;
+        subtitle.AddThemeColorOverride("font_color", GodotTacticsTheme.TextSecondary);
+        _pauseMenuContent.AddChild(subtitle);
+        _pauseMenuContent.AddChild(new ColorRect
+        {
+            Color = GodotTacticsTheme.Accent,
+            CustomMinimumSize = new Vector2(0, 2),
+            MouseFilter = MouseFilterEnum.Ignore
+        });
+        _pauseMenuDefaultFocus = Button("CONTINUE", ClosePauseMenu);
+        _pauseMenuContent.AddChild(_pauseMenuDefaultFocus);
+        _pauseMenuContent.AddChild(Button("OPTIONS", ShowPauseOptions));
+        _pauseMenuContent.AddChild(_inputContext.SetupDraftActive
+            ? Button("DISCARD SETUP", DiscardSetupFromPause)
+            : Button("ABANDON RUN", ConfirmAbandonRun));
+        _pauseMenuContent.AddChild(Button(_inputContext.SetupDraftActive ? "QUIT — SETUP NOT SAVED" : "SAVE AND QUIT", SaveAndQuit));
     }
 
     private void ConfirmAbandonRun()
     {
-        ClosePauseMenu();
+        if (_pauseMenu is null || _pauseMenu.Visible == false ||
+            _pauseConfirmation is not null && GodotObject.IsInstanceValid(_pauseConfirmation)) return;
         var confirm = new ConfirmationDialog
         {
             Title = "Abandon Run",
             DialogText = "Abandon this run? This records an Abandoned summary before a fresh camp is created."
         };
-        AddChild(confirm);
-        confirm.Confirmed += () => { confirm.QueueFree(); AbandonRun(); };
-        confirm.Canceled += confirm.QueueFree;
+        _pauseConfirmation = confirm;
+        _pauseMenu.AddChild(confirm);
+        confirm.Confirmed += () =>
+        {
+            _pauseConfirmation = null;
+            confirm.QueueFree();
+            ClosePauseMenu();
+            AbandonRun();
+        };
+        confirm.Canceled += () =>
+        {
+            _pauseConfirmation = null;
+            confirm.QueueFree();
+            RebuildPauseMenuContent();
+            _pauseMenuDefaultFocus?.GrabFocus();
+        };
         confirm.PopupCentered();
+    }
+
+    private void DiscardSetupFromPause()
+    {
+        ClosePauseMenu();
+        RunSessionResult canceled = _run!.CancelNewRunSetup();
+        if (!canceled.Succeeded) { SetStatus(canceled.ErrorCode); return; }
+        if (canceled.Snapshot?.ActiveRun is not null) RouteRunState(canceled.Snapshot);
+        else StartNewRunConfirmed();
     }
 
     private void SaveAndQuit()
     {
         ClosePauseMenu();
-        // Every run/session mutation is already an atomic node-level checkpoint. A
-        // pending battle resumes from its persisted entry checkpoint and seed.
+        if (_inputContext.SetupDraftActive && _run?.HasSetupDraft == true)
+            _ = _run.CancelNewRunSetup();
         RequestQuit();
     }
 
-    private void ShowPauseOptions(VBoxContainer menu)
+    private void ShowPauseOptions()
     {
-        bool ownsPlaybackPause = _pauseMenuPausedPlayback;
-        foreach(Node child in menu.GetChildren())child.QueueFree();
-        menu.AddChild(Label("OPTIONS\nPresentation speed is controlled from the battle HUD.",24));
-        bool controlsBattlePlayback = _pauseMenuControlsBattlePlayback;
-        menu.AddChild(Button("BACK",()=>{_pauseMenu?.QueueFree();_pauseMenu=null;BuildPauseMenu(_page!, controlsBattlePlayback);OpenPauseMenu(false);_pauseMenuPausedPlayback=ownsPlaybackPause;}));
+        if (_pauseMenuContent is null) return;
+        ClearPauseMenuContent();
+        _pauseMenuView = PauseMenuView.Options;
+        _pauseMenuContent.AddChild(Label("OPTIONS\nPresentation speed is controlled from the battle HUD.", 24));
+        _pauseMenuDefaultFocus = Button("BACK", RebuildPauseMenuContent);
+        _pauseMenuContent.AddChild(_pauseMenuDefaultFocus);
+        _pauseMenuDefaultFocus.GrabFocus();
     }
 
-    private void OpenPauseMenu(bool pausePlayback=true)
+    private void OpenPauseMenu()
     {
-        if(_pauseMenu is null)return;
-        _pauseMenu.Visible=true;
-        _pauseMenuPausedPlayback=pausePlayback&&_pauseMenuControlsBattlePlayback&&!_playbackPaused;
-        if(_pauseMenuPausedPlayback)TogglePause();
+        if (!_inputContext.CanPause || _pauseMenu?.Visible == true) return;
+        EnsurePauseMenu();
+        RebuildPauseMenuContent();
+        // Godot GUI hit testing gives later siblings priority independently of CanvasItem ZIndex.
+        // Pages are replaced after this persistent overlay, so restore the overlay to the end of
+        // Main's child order every time it opens or the visible menu can render above a page while
+        // that page's full-screen input surface still receives the click.
+        Control pauseMenu = _pauseMenu!;
+        MoveChild(pauseMenu, GetChildCount() - 1);
+        pauseMenu.Visible = true;
+        _pauseMenuDefaultFocus?.GrabFocus();
+        if (_inputContext.PausesAdventureMovement)
+        {
+            _adventureBoard?.SetMovementPaused(true);
+            _startCampView?.SetMovementPaused(true);
+        }
+        _pauseMenuPausedPlayback = _inputContext.ControlsBattlePlayback && !_playbackPaused;
+        if (_pauseMenuPausedPlayback) TogglePause();
     }
 
     private void ClosePauseMenu()
     {
-        if(_pauseMenu is null)return;
-        _pauseMenu.Visible=false;
-        if(_pauseMenuPausedPlayback&&_playbackPaused)TogglePause();
-        _pauseMenuPausedPlayback=false;
+        if (_pauseMenu is null) return;
+        if (_pauseConfirmation is not null && GodotObject.IsInstanceValid(_pauseConfirmation))
+            _pauseConfirmation.QueueFree();
+        _pauseConfirmation = null;
+        _pauseMenu.Visible = false;
+        if (_inputContext.PausesAdventureMovement)
+        {
+            _adventureBoard?.SetMovementPaused(false);
+            _startCampView?.SetMovementPaused(false);
+        }
+        if (_pauseMenuPausedPlayback && _playbackPaused) TogglePause();
+        _pauseMenuPausedPlayback = false;
+        ClearPauseMenuContent();
+        _pauseMenuView = PauseMenuView.Root;
     }
 
     private Control NewPage(string title, string subtitle, bool battleBackdrop = false) =>
@@ -2257,11 +2534,14 @@ public partial class GodotPlayableRunMain : Control
 
     private Control CreatePage(string title, string subtitle, bool battleBackdrop, bool showHeader)
     {
+        ClosePauseMenu();
+        _inputContext = RunInputContext.Disabled;
         _currentPageTitle = title;
         // The old page owns every actor and meter. Queueing the page frees those
         // children, so page navigation must forget their managed references rather
         // than attempting to QueueFree the disposed children during the next refresh.
         _page?.QueueFree();
+        _status = null;
         _actors.Clear();
         _unitMeters.Clear();
         _visibleSnapshot=null;
@@ -2278,10 +2558,9 @@ public partial class GodotPlayableRunMain : Control
         _eventLog=null;
         _mapView=null;
         _adventureBoard=null;
+        _pendingAdventureExit=null;
         _startCampView=null;
         _mapDetail=null;
-        _pauseMenu=null;
-        _pauseMenuControlsBattlePlayback=false;
         _damageNumbers=null;
         var root = new Control(); root.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect); AddChild(root); _page = root;
         Control background = battleBackdrop ? new GodotBattleBackdrop() : new ColorRect { Color = GodotTacticsTheme.Background };
@@ -2289,10 +2568,12 @@ public partial class GodotPlayableRunMain : Control
         if (!battleBackdrop && showHeader)
         {
             PanelContainer header = PanelAt(root, new Vector2(48, 24), new Vector2(1504, 104));
+            header.Name = "PageHeader";
             header.ZIndex = StartPageUiZIndex;
             var labels = new VBoxContainer(); header.AddChild(labels);
-            labels.AddChild(Label(title, 34));
-            Label detail = Label(subtitle, 16); detail.AddThemeColorOverride("font_color", GodotTacticsTheme.TextSecondary); labels.AddChild(detail);
+            Label pageTitle = Label(title, 34); pageTitle.Name = "PageTitle"; labels.AddChild(pageTitle);
+            Label detail = Label(subtitle, 16); detail.Name = "PageSubtitle";
+            detail.AddThemeColorOverride("font_color", GodotTacticsTheme.TextSecondary); labels.AddChild(detail);
         }
         return root;
     }
@@ -2360,6 +2641,16 @@ public partial class GodotPlayableRunMain : Control
     private static Label LabelAt(Control parent, string text, Vector2 position, int size) { Label label = Label(text, size); label.Position = position; parent.AddChild(label); return label; }
     private void SetStatus(string? text)
     {
+        if ((_status is null || !GodotObject.IsInstanceValid(_status)) &&
+            _page is not null && GodotObject.IsInstanceValid(_page))
+        {
+            _status = LabelAt(_page, string.Empty, new Vector2(400, 852), 15);
+            _status.Name = "PageFallbackStatus";
+            _status.Size = new Vector2(800, 32);
+            _status.HorizontalAlignment = HorizontalAlignment.Center;
+            _status.ZIndex = PauseOverlayZIndex - 1;
+            _status.MouseFilter = MouseFilterEnum.Ignore;
+        }
         if (_status is not null && GodotObject.IsInstanceValid(_status)) _status.Text = text ?? string.Empty;
     }
     private static string SkillTooltip(SkillDefinition skill)=>skill.ExecutionKind==SkillExecutionKind.Fireball

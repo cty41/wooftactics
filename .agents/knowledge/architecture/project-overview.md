@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Tactics Project Overview
 description: Tactics 的 Godot 产品主线、纯 .NET 分层、运行时和主要游戏系统总入口。
 tags: [architecture, godot, agent-first]
-timestamp: "2026-08-28T11:48:06+08:00"
+timestamp: "2026-09-21T11:08:06+08:00"
 status: active
 catalog_scope: project-architecture
 repo_paths:
@@ -19,7 +19,7 @@ repo_paths:
   - godot/export_presets.cfg
   - godot/project.godot
 verified_revision: c56d71ad4ebd
-source_fingerprint: sha256:4169e117c64f8fc886a15d3bdb8b8e6dc4d21b661846377947a1015f78c799a6
+source_fingerprint: sha256:dede4274070e57cfc8412246f76872c7204c6070b5e072643737a73e07bcb0cb
 ---
 
 # Summary
@@ -30,7 +30,7 @@ Tactics 是 Agent 优先维护并准备公开发布的 Godot 4.7 C# 战棋项目
 
 - `Tactics.Core` 与 `Tactics.Application` 是纯 .NET 9；Godot Node、Resource、Scene、文件系统和 UI 只进入 Adapter/Editor 层。
 - 最终内容由 Godot Resource/PackedScene 与轻量 Catalog 驱动；迁移 DTO、Unity GUID 和历史 receipt 不进入运行时。
-- Pure Run 使用确定性 Battle/Run 状态、版本化 Save 与单一 `Main.tscn`；开始营地现在由 engine-neutral 10×10 地图模板和 Godot Resource 适配层驱动，全部候选按声明式槽位实例化为真实 `GodotUnitActor`，选三人的业务事务仍由 Application/Core 裁决。下一版 Save 合同只保留节点级语义、领队和遭遇 checkpoint，不持久化格位或相机表现；新增的魔剑士非大师内容使用魅力主属性、腐化/冥想与附身控制合同；
+- Pure Run 使用确定性 Battle/Run 状态、版本化 Save 与单一 `Main.tscn`；开始营地及全部 Active Adventure Board 由 engine-neutral 10×10 地图规则和 Godot Resource 适配层驱动，角色实例化为真实 `GodotUnitActor`。Core 共享确定性寻路机制但保留 Battle/Adventure 独立政策；Adapter 共享单格 Tween 构造，Adventure负责等距屏幕朝向、格中心改道、交互锁、出口自动接近和最终单次提交；确定性Battle/Elite/Boss节点选择后直接进入encounter，不创建预战斗TileMap。`GodotPlayableRunMain`统一拥有跨页Pause Shell和Esc输入路由，Root/Options内容与Battle暂停权属于单次open session；Run/Page UI状态按RunId和页面生命周期隔离，页面只声明暂停context。选人与起始技能是 Application 实例内草稿，最后一个必需技能才一次 CAS 保存完整 Active Run；V11 只保留节点级语义、领队和遭遇 checkpoint，不持久化 Setup 草稿、格位或相机表现，带 RunId 隔离的 process-local exploration session 从模板入口恢复格位。新增的魔剑士非大师内容使用魅力主属性、腐化/冥想与附身控制合同；
   `battle-layout.pure-run.split-flank` 将原本只在运行时代码中补建的布局闭合为正式 Resource。
 - Battle HUD 由 Godot Adapter 将 Application Snapshot 投影为当前行动者状态卡和鼠标 Hover 浮层；头像来自 typed Unit Resource，HP/MP/腐化只读展示，不参与战斗裁决或输入合法性。
 - `Tools/godot/Verify-GodotProject.ps1` 是本地主线统一产品门禁；Windows RC 使用只读 staging、包审计和双 renderer EXE smoke。
@@ -49,7 +49,7 @@ Tactics 是 Agent 优先维护并准备公开发布的 Godot 4.7 C# 战棋项目
 Session 与批量事务协调器；Godot Adapter 负责 Catalog/UID、EditorUndoRedo、SubViewport 和 ResourceSaver。
 Map、Event、Treasure、Encounter/Layout、AI、Skill 与 Godot-native Presentation Profile 已接入同一
 draft→validate→apply/revert 边界，QA 页显示作者 revision 和正反向引用审计。
-Main Screen 的最外层由无 C# 依赖的 GDScript Bootstrap 承载：它用构造时的启动参数回答 Godot 早于 `_enter_tree()` 的 Main Screen 注册查询；只有受支持的开发入口完成 Build 并传入启动契约后才实例化 C# controller，直接打开项目时保持 Tooling fail-closed 并显示恢复提示。整个 `addons/tactics_tooling` 由 export preset 和包审计排除在运行时 PCK 外。Main Screen 与本机 authoring bridge 在 assembly reload 后先以 untyped probe 验证所有立即使用的 C# Resource；
+Main Screen 的最外层由无 C# 依赖的 GDScript Bootstrap 承载，并始终回答 Godot 早于 `_enter_tree()` 的 Main Screen 注册查询。人工从Project Manager直接打开时，有assembly即实例化C# controller；首次未编译则显示非错误构建页，经用户确认调用固定helper异步Build并优先在当前Editor reload。Prepared参数不再决定Tooling能否加载；可写authoring bridge还要求当前PID/path/worktree/mode及进程启动时间均匹配dev-session，公开参数不能单独授权。Direct Human只保留Workbench UI。整个 `addons/tactics_tooling` 由 export preset 和包审计排除在运行时 PCK 外。Main Screen 与本机 authoring bridge 在 assembly reload 后先以 untyped probe 验证所有立即使用的 C# Resource；
 匹配脚本但尚未恢复 typed 实例时延迟重试，真实脚本/schema 错误则 fail-closed。Presentation Preview 只在 Unit/Profile
 全部 typed ready 后原子建立临时 actor，并在停止、切页或退出时清理。
 

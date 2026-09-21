@@ -10,6 +10,9 @@ $projectRoot = Join-Path $repoRoot 'godot'
 $projectFile = Join-Path $projectRoot 'project.godot'
 $logPath = Join-Path $env:TEMP ('tactics-tooling-reload-' + [guid]::NewGuid().ToString('N') + '.log')
 $descriptorPattern = Join-Path $projectRoot '.godot\tactics-authoring-session-*.json'
+$devSessionPath = Join-Path $projectRoot '.godot\tactics-dev-session.json'
+$devSessionExisted = Test-Path -LiteralPath $devSessionPath -PathType Leaf
+$previousDevSessionBytes = if ($devSessionExisted) { [IO.File]::ReadAllBytes($devSessionPath) } else { $null }
 $sessionModule = Join-Path $PSScriptRoot 'GodotDevSession.psm1'
 Import-Module $sessionModule -Force
 $editorLaunchArgument = Get-TacticsGodotLaunchArgument
@@ -24,6 +27,18 @@ $canonicalEditors = @(Get-CimInstance Win32_Process | Where-Object {
 })
 if ($canonicalEditors.Count -ne 0) {
     throw "Reload smoke requires no canonical Editor. Found PID(s): $($canonicalEditors.ProcessId -join ', ')."
+}
+
+function Assert-NoBridgeDescriptor([int]$processId, [int]$durationMilliseconds = 2000) {
+    $deadline = [DateTime]::UtcNow.AddMilliseconds($durationMilliseconds)
+    do {
+        if (!(Get-Process -Id $processId -ErrorAction SilentlyContinue)) { throw "Godot PID $processId exited during forged-marker denial probe." }
+        $match = Get-ChildItem -Path $descriptorPattern -File -ErrorAction SilentlyContinue |
+            ForEach-Object { try { Get-Content -LiteralPath $_.FullName -Raw | ConvertFrom-Json } catch { $null } } |
+            Where-Object { $_.processId -eq $processId } | Select-Object -First 1
+        if ($match) { throw "Prepared marker without matching dev-session exposed Bridge descriptor for PID $processId." }
+        Start-Sleep -Milliseconds 200
+    } while ([DateTime]::UtcNow -lt $deadline)
 }
 
 function Wait-Descriptor([int]$processId, [string]$differentToken = '') {
@@ -71,6 +86,13 @@ try {
     $quotedLogPath = '"' + $logPath + '"'
     $process = Start-Process -FilePath $GodotExecutable -ArgumentList @('--editor', '--path', $quotedProjectRoot,
         '--log-file', $quotedLogPath, '--', $editorLaunchArgument) -PassThru -WindowStyle Hidden
+    Assert-NoBridgeDescriptor $process.Id
+    $identity = Get-TacticsGodotWorktreeIdentity -RepoRoot $repoRoot
+    [ordered]@{
+        schemaVersion = 1; worktreeKey = $identity.Key; repoRoot = $repoRoot; projectRoot = $projectRoot
+        editorPid = $process.Id; mode = 'Agent'; userDataProfile = 'Worktree'
+        godotAiProfile = 'phase3-observe'; startedAt = [DateTimeOffset]::Now.ToString('o')
+    } | ConvertTo-Json | Set-Content -LiteralPath $devSessionPath -Encoding UTF8
     $before = Wait-Descriptor $process.Id
     $ids = @('presentation.skill.mage.fireball', 'presentation.status.standard-v1', 'presentation.unit.standard-v1')
     foreach ($id in $ids) { $null = Invoke-AuthoringPreview $before $id }
@@ -93,5 +115,11 @@ finally {
         & taskkill /PID $process.Id | Out-Null
         $process.WaitForExit(5000) | Out-Null
         if (!$process.HasExited) { Write-Warning "PID $($process.Id) did not accept normal shutdown; it was not force-killed." }
+    }
+    if ($devSessionExisted) {
+        [IO.File]::WriteAllBytes($devSessionPath, $previousDevSessionBytes)
+    }
+    elseif (Test-Path -LiteralPath $devSessionPath -PathType Leaf) {
+        Remove-Item -LiteralPath $devSessionPath -Force
     }
 }
