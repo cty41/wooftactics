@@ -13,6 +13,7 @@ import io
 import json
 import math
 import os
+import re
 import shutil
 import sys
 import tempfile
@@ -4578,37 +4579,70 @@ def normalize_reviewed_sprite(store: Store, args: argparse.Namespace) -> dict[st
     return {"schemaVersion": 1, "source": source, "artifacts": artifacts}
 
 
+def _runtime_resource_binds_target(store: Store, resource_path: str, target_path: str) -> bool:
+    relative = resource_path[len("res://"):]
+    parts = Path(relative).parts
+    if not relative or any(part in {"", ".", ".."} for part in parts):
+        return False
+    godot_root = (store.root / "godot").resolve()
+    resource_file = (godot_root / relative).resolve()
+    if not resource_file.is_relative_to(godot_root) or not resource_file.is_file():
+        return False
+    target_resource_path = "res://" + target_path[len("godot/"):]
+    ext_resource = re.compile(
+        rf'^\[ext_resource\b[^\]\r\n]*\bpath="{re.escape(target_resource_path)}"(?:\s|\])', re.MULTILINE)
+    return bool(ext_resource.search(resource_file.read_text(encoding="utf-8")))
+
+
 def register_runtime_copy(store: Store, args: argparse.Namespace) -> dict[str, Any]:
+    _iso_timestamp(args.decided_at, "--decided-at")
+    if args.reviewer != "cty41":
+        raise PipelineError("runtime copy reviewer must be cty41")
+    if not args.reason.strip():
+        raise PipelineError("runtime copy reason must not be empty")
+    if not args.manual_qa_boundary.startswith("MQA-"):
+        raise PipelineError("runtime copy manual QA boundary must be a stable MQA- ID")
     source = _bound_artifact(store, args.source)
     target = _bound_artifact(store, args.target)
+    if (source["path"] == target["path"] or source["path"].startswith("godot/assets/")
+            or not source["path"].startswith("Tools/artworks/")):
+        raise PipelineError("runtime copy source must be reviewed artwork outside godot/assets")
+    if not target["path"].startswith("godot/assets/") or not target["path"].lower().endswith(".png"):
+        raise PipelineError("runtime copy target must be a PNG under godot/assets")
+    resources = sorted(set(args.resource or []))
+    if not resources or any(not value.startswith("res://") or not value.endswith(".tres") for value in resources):
+        raise PipelineError("runtime copy must bind at least one res:// Resource path")
+    for resource_path in resources:
+        if not _runtime_resource_binds_target(store, resource_path, target["path"]):
+            raise PipelineError(f"runtime copy Resource must exist and reference target: {resource_path}")
     if source["sha256"] != target["sha256"]:
         raise PipelineError("runtime copy must be byte-identical to its approved source")
     manifest = load_json(store.root / "Tools/public-release/asset-provenance.json")
     source_entry = next((entry for entry in manifest["entries"] if entry.get("path") == source["path"]), None)
     if not source_entry or source_entry.get("status") != "approved":
         raise PipelineError("runtime copy source must have approved public provenance")
-    if not source_entry.get("rightsHolder") or not source_entry.get("license"):
-        raise PipelineError("runtime copy source provenance must bind rights holder and license")
+    if source_entry.get("rightsHolder") != "cty41" or source_entry.get("license") not in {"Apache-2.0", "CC-BY-4.0", "MIT"}:
+        raise PipelineError("runtime copy source must be cty41-owned and bind an allowed public license")
     target_entry = {
         "path": target["path"], "sha256": target["sha256"], "status": "approved",
         "rightsHolder": source_entry["rightsHolder"], "license": source_entry["license"],
-        "provenance": "project-owned-migrated-runtime-art",
+        "provenance": "project-owned-authorized-runtime-art",
     }
     existing = next((entry for entry in manifest["entries"] if entry.get("path") == target["path"]), None)
     if existing and existing != target_entry:
-        normalizable_runtime_copy = (
-            existing.get("sha256") == target["sha256"]
-            and existing.get("status") == "approved"
-            and existing.get("provenance") == "project-owned-migrated-runtime-art"
-        )
-        if not normalizable_runtime_copy:
-            raise PipelineError(f"conflicting provenance entry: {target['path']}")
-        existing.clear()
-        existing.update(target_entry)
-    elif not existing:
+        raise PipelineError(f"conflicting provenance entry: {target['path']}")
+    if not existing:
         manifest["entries"].append(target_entry)
+    payload = {
+        "source": source, "target": target, "resourcePaths": resources,
+        "reviewer": args.reviewer, "reason": args.reason.strip(), "decidedAt": args.decided_at,
+        "manualQaBoundary": args.manual_qa_boundary,
+    }
+    authorization_id = stable_id("runtime-authorization", payload)
+    receipt = {"schemaVersion": 1, "runtimeAuthorizationId": authorization_id, **payload}
+    write_json_idempotent(store.record("runtime-authorizations", authorization_id), receipt, immutable=True)
     write_json_idempotent(store.root / "Tools/public-release/asset-provenance.json", manifest)
-    return {"schemaVersion": 1, "source": source, "target": target}
+    return receipt
 
 
 def render_size_comparison(store: Store, args: argparse.Namespace) -> dict[str, Any]:
@@ -6628,6 +6662,7 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
             if latest.get("maxUniqueOutputs") != limit:
                 issues.append(f"series_limit_change_backlink:{series.get('seriesId')}")
     manifest_path = store.root / "Tools/public-release/asset-provenance.json"
+    manifest_by_path: dict[str, dict[str, Any]] = {}
     if manifest_path.is_file():
         manifest = load_json(manifest_path)
         manifest_by_path = {item["path"]: item for item in manifest.get("entries", [])}
@@ -6724,6 +6759,50 @@ def strict_check(store: Store, strict: bool) -> dict[str, Any]:
                 annotation_path = store.record("annotations", annotation.get("annotationId", ""))
                 if not annotation_path.is_file() or sha256_file(annotation_path) != annotation.get("sha256"):
                     issues.append(f"approval_annotations_hash:{approval.get('approvalId')}")
+    authorized_runtime_targets: dict[str, str] = {}
+    for path in sorted((store.pipeline / "runtime-authorizations").glob("*.json")):
+        receipt = load_json(path)
+        payload = {key: receipt.get(key) for key in (
+            "source", "target", "resourcePaths", "reviewer", "reason", "decidedAt", "manualQaBoundary")}
+        receipt_id = receipt.get("runtimeAuthorizationId")
+        valid = (receipt.get("schemaVersion") == 1 and receipt_id == path.stem
+                 and receipt_id == stable_id("runtime-authorization", payload)
+                 and receipt.get("reviewer") == "cty41" and bool(str(receipt.get("reason", "")).strip())
+                 and str(receipt.get("manualQaBoundary", "")).startswith("MQA-")
+                 and isinstance(receipt.get("resourcePaths"), list) and bool(receipt.get("resourcePaths"))
+                 and all(isinstance(value, str) and value.startswith("res://") and value.endswith(".tres")
+                         for value in receipt.get("resourcePaths", [])))
+        try:
+            _iso_timestamp(receipt.get("decidedAt", ""), "decidedAt")
+        except PipelineError:
+            valid = False
+        source = receipt.get("source", {}); target = receipt.get("target", {})
+        source_path = source.get("path", ""); target_path = target.get("path", "")
+        source_entry = manifest_by_path.get(source_path); target_entry = manifest_by_path.get(target_path)
+        resource_bindings_valid = all(
+            _runtime_resource_binds_target(store, resource_path, target_path)
+            for resource_path in receipt.get("resourcePaths", []))
+        valid = (valid and source_path != target_path and source_path.startswith("Tools/artworks/")
+                 and not source_path.startswith("godot/assets/")
+                 and target_path.startswith("godot/assets/") and target_path.lower().endswith(".png")
+                 and _artifact_binding_matches(store, source) and _artifact_binding_matches(store, target)
+                 and source.get("sha256") == target.get("sha256") and resource_bindings_valid
+                 and source_entry is not None and source_entry.get("status") == "approved"
+                 and source_entry.get("rightsHolder") == "cty41"
+                 and source_entry.get("license") in {"Apache-2.0", "CC-BY-4.0", "MIT"}
+                 and target_entry is not None and target_entry.get("status") == "approved"
+                 and target_entry.get("sha256") == target.get("sha256")
+                 and target_entry.get("rightsHolder") == source_entry.get("rightsHolder")
+                 and target_entry.get("license") == source_entry.get("license")
+                 and target_entry.get("provenance") == "project-owned-authorized-runtime-art")
+        if not valid or target_path in authorized_runtime_targets:
+            issues.append(f"runtime_authorization_invalid:{path.stem}")
+        else:
+            authorized_runtime_targets[target_path] = path.stem
+    for entry in manifest.get("entries", []):
+        if (entry.get("provenance") == "project-owned-authorized-runtime-art"
+                and entry.get("path") not in authorized_runtime_targets):
+            issues.append(f"runtime_authorization_missing:{entry.get('path', '')}")
     result = {"schemaVersion": 1, "strict": strict, "inventoryCount": len(inventory_by_path), "issues": sorted(issues), "ok": not issues}
     if strict and issues:
         raise PipelineError("strict check failed:\n" + "\n".join(issues))
@@ -6987,6 +7066,9 @@ def build_parser() -> argparse.ArgumentParser:
     style_verdict.add_argument("--reason", required=True); style_verdict.add_argument("--decided-at", required=True)
     runtime_copy_p = commands.add_parser("register-runtime-copy")
     runtime_copy_p.add_argument("--source", required=True); runtime_copy_p.add_argument("--target", required=True)
+    runtime_copy_p.add_argument("--resource", action="append", required=True)
+    runtime_copy_p.add_argument("--reviewer", required=True); runtime_copy_p.add_argument("--reason", required=True)
+    runtime_copy_p.add_argument("--decided-at", required=True); runtime_copy_p.add_argument("--manual-qa-boundary", required=True)
     sync_provenance_p = commands.add_parser("sync-attempt-provenance")
     sync_provenance_p.add_argument("--attempt-id", required=True); sync_provenance_p.add_argument("--reviewer", required=True)
     sync_provenance_p.add_argument("--reason", required=True); sync_provenance_p.add_argument("--synced-at", required=True)

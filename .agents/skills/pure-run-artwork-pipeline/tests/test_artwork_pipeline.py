@@ -2231,22 +2231,64 @@ class ArtworkPipelineTests(unittest.TestCase):
         source_entry["license"] = "project-owned"
         pipeline.write_json_idempotent(manifest_path, manifest)
         target = self.root / "godot/assets/units/hero.png"; target.parent.mkdir(parents=True); target.write_bytes(source.read_bytes())
-        result = pipeline.register_runtime_copy(self.store, self.ns(source=str(source), target=str(target)))
+        resource = self.root / "godot/content/hero.tres"; resource.parent.mkdir(parents=True)
+        resource.write_text('[ext_resource type="Texture2D" path="res://assets/units/hero.png" id="1"]\n', encoding="utf-8")
+        args = self.ns(source=str(source), target=str(target), resource=["res://content/hero.tres"],
+                       reviewer="cty41", reason="approved runtime binding",
+                       decided_at="2026-09-18T00:00:00+08:00", manual_qa_boundary="MQA-HERO-RUNTIME")
+        with self.assertRaisesRegex(pipeline.PipelineError, "allowed public license"):
+            pipeline.register_runtime_copy(self.store, args)
+        args.manual_qa_boundary = "invalid-boundary"
+        with self.assertRaisesRegex(pipeline.PipelineError, "stable MQA- ID"):
+            pipeline.register_runtime_copy(self.store, args)
+        args.manual_qa_boundary = "MQA-HERO-RUNTIME"
+        source_entry["license"] = "CC-BY-4.0"
+        manifest = pipeline.load_json(manifest_path)
+        next(entry for entry in manifest["entries"] if entry["path"] == source_entry["path"])["license"] = "CC-BY-4.0"
+        pipeline.write_json_idempotent(manifest_path, manifest)
+        escaped = self.root / "Tools/fake.tres"; escaped.parent.mkdir(parents=True, exist_ok=True)
+        escaped.write_text('[ext_resource path="res://assets/units/hero.png" type="Texture2D" id="1"]\n', encoding="utf-8")
+        args.resource = ["res://../Tools/fake.tres"]
+        with self.assertRaisesRegex(pipeline.PipelineError, "Resource must exist and reference target"):
+            pipeline.register_runtime_copy(self.store, args)
+        fake_binding = self.root / "godot/content/fake-binding.tres"
+        fake_binding.write_text('# res://assets/units/hero.png\nmetadata = "res://assets/units/hero.png.bak"\n', encoding="utf-8")
+        args.resource = ["res://content/fake-binding.tres"]
+        with self.assertRaisesRegex(pipeline.PipelineError, "Resource must exist and reference target"):
+            pipeline.register_runtime_copy(self.store, args)
+        args.resource = ["res://content/hero.tres"]
+        result = pipeline.register_runtime_copy(self.store, args)
         self.assertEqual(result["source"]["sha256"], result["target"]["sha256"])
+        self.assertEqual(result["resourcePaths"], ["res://content/hero.tres"])
+        self.assertEqual(result["manualQaBoundary"], "MQA-HERO-RUNTIME")
+        self.assertTrue(self.store.record("runtime-authorizations", result["runtimeAuthorizationId"]).is_file())
         target_entry = next(entry for entry in pipeline.load_json(manifest_path)["entries"]
                             if entry["path"] == "godot/assets/units/hero.png")
-        self.assertEqual(target_entry["license"], "project-owned")
-        target_entry["license"] = "CC-BY-4.0"
-        manifest = pipeline.load_json(manifest_path)
-        next(entry for entry in manifest["entries"] if entry["path"] == target_entry["path"])["license"] = "CC-BY-4.0"
-        pipeline.write_json_idempotent(manifest_path, manifest)
-        pipeline.register_runtime_copy(self.store, self.ns(source=str(source), target=str(target)))
-        normalized = next(entry for entry in pipeline.load_json(manifest_path)["entries"]
-                          if entry["path"] == target_entry["path"])
-        self.assertEqual(normalized["license"], "project-owned")
+        self.assertEqual(target_entry["license"], "CC-BY-4.0")
+        repeated = pipeline.register_runtime_copy(self.store, args)
+        self.assertEqual(repeated["runtimeAuthorizationId"], result["runtimeAuthorizationId"])
+        original_source = args.source
+        args.source = str(target)
+        with self.assertRaisesRegex(pipeline.PipelineError, "reviewed artwork outside godot/assets"):
+            pipeline.register_runtime_copy(self.store, args)
+        args.source = original_source
+        args.resource = ["res://content/missing.tres"]
+        with self.assertRaisesRegex(pipeline.PipelineError, "Resource must exist and reference target"):
+            pipeline.register_runtime_copy(self.store, args)
+        args.resource = ["res://content/hero.tres"]
+        receipt_path = self.store.record("runtime-authorizations", result["runtimeAuthorizationId"])
+        tampered = pipeline.load_json(receipt_path); tampered["reviewer"] = "pipeline-agent"
+        receipt_path.write_text(json.dumps(tampered, indent=2) + "\n", encoding="utf-8")
+        checked = pipeline.strict_check(self.store, False)
+        self.assertIn(f"runtime_authorization_invalid:{result['runtimeAuthorizationId']}", checked["issues"])
+        pipeline.write_json_idempotent(receipt_path, result)
+        receipt_path.unlink()
+        checked = pipeline.strict_check(self.store, False)
+        self.assertIn("runtime_authorization_missing:godot/assets/units/hero.png", checked["issues"])
+        pipeline.write_json_idempotent(receipt_path, result)
         Image.new("RGBA", (256, 256), (1, 2, 3, 255)).save(target)
         with self.assertRaisesRegex(pipeline.PipelineError, "byte-identical"):
-            pipeline.register_runtime_copy(self.store, self.ns(source=str(source), target=str(target)))
+            pipeline.register_runtime_copy(self.store, args)
 
     def test_reviewed_import_requires_native_rgba_and_matching_comparison_candidate(self):
         contract, _job, _job_args = self.contract_and_job()

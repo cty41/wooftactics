@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "runtimeAuthorizationId": "runtime-authorization-4c8eef086adb5a29",
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_cast_ul_vertical_guard_grip_v01.png",
+    "sha256": "b0a4abd6330b60090edd771fd5c168aaf99c5b9e5c9ecb3e4cd935c4fa4fbfce"
+  },
+  "target": {
+    "path": "godot/assets/units/actions/doge_poet_cast_ul.png",
+    "sha256": "b0a4abd6330b60090edd771fd5c168aaf99c5b9e5c9ecb3e4cd935c4fa4fbfce"
+  },
+  "resourcePaths": [
+    "res://content/poet/PureRunPoet.tres"
+  ],
+  "reviewer": "cty41",
+  "reason": "Integrate the approved Poet action and death pose into the canonical Godot runtime without changing gameplay semantics.",
+  "decidedAt": "2026-09-18T23:57:04.8535581+08:00",
+  "manualQaBoundary": "MQA-GODOT-POET-RUNTIME"
+}

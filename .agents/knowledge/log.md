@@ -1,5 +1,18 @@
 # Tactics Knowledge Update Log
 
+## 2026-09-19
+* **Sync**: `pure-run-artwork` 已同步到来源指纹 `sha256:6afbf2959a75e8c84661df9c594c27b67f9b9105b4d1414e40dbb4ba7c14a9ca`。
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:0afec2261b24bc7cb5242e63b2b59207cb13eb2df6923a1800663a7a3cc8ff4c`。
+* **Sync**: `project-architecture` 已同步到来源指纹 `sha256:4a3e56e3bcbfeec2191778ce7e6076e456bc386eb099ea0a02e35b31a0ae8c19`。
+* **Sync**: `godot-migration` 已同步到来源指纹 `sha256:d425cb8a99f150e8e1e2559f0955731ee5c887954f73a752e8e056bef71cb570`。
+* **Sync**: `godot-agent-workflow` 已同步到来源指纹 `sha256:148bdb1c1e9ef9f3361f9fb5884cce4896cff81933f18e8d02e7fbe7a3973de9`。
+
+## 2026-09-18
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:21c98c31fa0a2983eca85ca0b10a1c5de10c29857443011fceabd25bca1ac3ba`。
+* **Sync**: `pure-run-artwork` 已同步到来源指纹 `sha256:468c73c09f64930ad7d7506c9c69d96771102e68aaec0bebc7cc7a07e90faa26`。
+* **Sync**: `project-architecture` 已同步到来源指纹 `sha256:8bd77ca1ddc8b9fdba42dbaf3ede9bd4ea88906651f78522afe325caeded5e00`。
+* **Sync**: `godot-migration` 已同步到来源指纹 `sha256:3057361c637345be64d0669dc87a1e211eff5dc4bd8c4edd23d754cb3796e6d5`。
+
 ## 2026-09-17
 * **Sync**: `project-documentation` 已同步到来源指纹 `sha256:eaeea37fce4b70429612b2957ee304b52d47594aa28f1fe39345d5aa85e4593a`。
 * **Update**: 用户明确选择将 PR #4 的 Start Camp、Esc Run 生命周期、诗人运行时与动态先攻四项人工门禁记为 deferred（不是 passed），不运行高耗时 GitHub CI，并立即以 merge commit 合入。

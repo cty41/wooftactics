@@ -83,6 +83,34 @@ public sealed class BattlePresentationFrameCompilerTests
     }
 
     [Test]
+    public void PoetExecutionKindsCompileToTheirCanonicalActionPoseFamilies()
+    {
+        UnitInstanceId actor = new("poet"), target = new("target");
+        BattleUiSnapshot snapshot = Snapshot(actor, target, new GridPoint(1, 1), new GridPoint(2, 1), true);
+        var cases = new (SkillExecutionKind Kind, PresentationCueKind Cue, SkillExecutionProfile? Profile)[]
+        {
+            (SkillExecutionKind.PoetCharge, PresentationCueKind.Melee, null),
+            (SkillExecutionKind.PoetSwordRain, PresentationCueKind.Cast, null),
+            (SkillExecutionKind.PoetWineHeal, PresentationCueKind.Cast, new SkillExecutionProfile(HealingTickCount: 1)),
+            (SkillExecutionKind.PoetAgilityVerse, PresentationCueKind.Cast, new SkillExecutionProfile(AttributeModifier: 1)),
+            (SkillExecutionKind.PoetMoonDrink, PresentationCueKind.Cast, null),
+            (SkillExecutionKind.PoetDecoyRetreat, PresentationCueKind.Cast, new SkillExecutionProfile(DirectHitCharges: 1))
+        };
+
+        foreach ((SkillExecutionKind kind, PresentationCueKind expected, SkillExecutionProfile? profile) in cases)
+        {
+            ContentId skillId = new($"skill.poet.presentation.{kind.ToString().ToLowerInvariant()}");
+            var skill = new SkillDefinition(skillId, kind.ToString(), SkillRole.Poet, SkillKind.Active, 1,
+                0, 0, 5, kind, 0, SkillDamageKind.None, executionProfile: profile);
+            BattlePresentationCue cue = BattlePresentationFrameCompiler.Compile(kind.ToString(), snapshot, snapshot,
+                [new SkillUsedEvent(actor, target, skillId)],
+                new Dictionary<ContentId, SkillDefinition> { [skillId] = skill }).Cues.Single();
+
+            Assert.That(cue.Kind, Is.EqualTo(expected), kind.ToString());
+        }
+    }
+
+    [Test]
     public void StatusAndSpearEffectsComeOnlyFromCommittedEvents()
     {
         UnitInstanceId actor=new("amazon"),target=new("enemy");ContentId skillId=new("skill.poison-spear.lv1"),poison=new("buff.poison");

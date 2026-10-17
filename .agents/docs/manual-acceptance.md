@@ -324,6 +324,19 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 - Automated evidence: Escort state, protected-NPC AI, enemy priority target, special victory/failure, reward, current V10 round-trip, and idempotent settlement assertions pass.
 - User verdict: None; pending human acceptance.
 
+### MQA-GODOT-POET-RUNTIME — 诗人开局、技能表现与临时分身
+
+- Status: `pending`
+- Source: 第五职业诗人、六套技能与临时分身功能实现；本轮接入获批 Melee/Cast/Hit DR/UL 与独立 Death 后重开
+- Reopen reason: 诗人战斗表现从 Idle/Death 占位改为正式动作与死亡姿态，原 deferred 结论不能覆盖新的视觉行为。
+- Action: 使用三个 disposable Run，在 Start Camp 确认五名候选均有独立站位；每次选择“诗人”与另外两人，并分别从剑仙、诗仙、酒仙起步。进入战斗后实际使用普攻、侠客行、剑雨、将进酒、行路难、月下独酌和山中与幽人对酌，并让诗人从南/北/东/西朝向发动 Melee/Cast、受到攻击和死亡；观察冲锋/范围攻击、三次回合开始治疗、敏捷提升、自疗净化，以及按施法前朝向后退并在原地留下分身。
+- Expected: 候选和战斗 UI 显示“诗人”，第五候选不重叠或崩溃；Idle、Melee、Cast、Hit 在南/西使用 DR、北/东使用 UL，只有东/西镜像，动作恢复后回到正确 Idle 且无脚底跳位、裁切或额外蓝色 tint。普攻与侠客行显示 Melee，其余主动技能显示 Cast，受击显示 Hit，Death 使用居中且不镜像的独立倒地图；Ranged 缺图仍安全回退方向 Idle。分身只继承 Idle 身份并以半透明青色明显区分，不错误播放本体动作或死亡图。技能反馈、HP/MP/状态变化容易理解；后退和生成原子完成，敌人在合法直接攻击范围内优先攻击分身。
+- Observe: Start Camp 候选区、Battle action bar、棋盘单位/状态层、HP/MP、事件日志、CheatConsole 与 Godot Output。
+- Preserve on failure: Run seed、起始分支、技能等级、双方格子与朝向、具体错误姿态、施法前后 HP/MP/状态、截图或短视频、battle checkpoint/save 副本和完整 Output。
+- Save boundary: 选择队伍、成长和战斗会修改当前 Run；只使用 disposable/隔离存档，不覆盖生产存档。
+- Automated evidence: 7 份不可变 runtime authorization receipt 绑定 approved source→runtime SHA、`PureRunPoet.tres`、cty41 决定与本人工边界；ResourceSaver 重复生成、Poet Resource/Actor 定向 GdUnit 5/5、Melee/Cast/Hit×四方向、Ranged fallback、白色 tint、独立 Death offset、分身字段清理，以及 Application presentation 10/10 对诗人 cue 分类均通过。技能公式与 AI 分身优先仍由既有自动化覆盖；动作可读性、镜像观感、Tile 落点、半透明分身辨识度和职业体验仍需人工判断。统一 Godot verifier 在本轮运行至 manual QA policy 前的 Core 209/209、Application 206/206、FrozenOracle 15/15 均通过；其后修复账本分区并通过 agent-policy 17/17，但按“一次统一 verifier”上限未重复整套。
+- User verdict: none after this visual change; previous 2026-09-17 defer applied only to the Idle/placeholder implementation.
+
 ## Passed
 
 ### MQA-ARTWORK-DEMONBOUND-DEATH — Rounded death Sprite identity and size
@@ -548,18 +561,6 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 - Preserve on failure: Overlay/summary screenshots, exact Esc/menu sequence, Run seed/revision, checkpoint save/backup and the first Output error.
 - Save boundary: Continue and Options are read-only; Abandon and Save and Quit mutate the isolated Run. Preserve a copy before either destructive action.
 - Automated evidence: exact code HEAD `a501b359` passes the unified Godot verifier, 29/29 gameplay journeys and focused restart/quit production-input coverage. Overlay readability, input feel and real process restart remain human-only.
-- User verdict: On 2026-09-17 the user explicitly chose to defer this manual gate and merge PR #4 immediately without treating it as passed.
-
-### MQA-GODOT-POET-RUNTIME — 诗人开局、技能表现与临时分身
-
-- Status: `deferred`
-- Source: 第五职业诗人、六套技能与临时分身功能实现
-- Action: 使用三个 disposable Run，在 Start Camp 确认五名候选均有独立站位；每次选择“诗人”与另外两人，并分别从剑仙、诗仙、酒仙起步。进入战斗后至少实际使用一次侠客行、剑雨、将进酒、行路难、月下独酌和山中与幽人对酌；观察冲锋/范围攻击、三次回合开始治疗、敏捷提升、自疗净化，以及按施法前朝向后退并在原地留下分身。
-- Expected: 候选和战斗 UI 显示“诗人”，第五候选不重叠或崩溃；已批准五红土松 Idle 在南/西使用 DR、北/东使用 UL，只有东/西镜像，正式颜色不受额外蓝色 tint 污染。缺失动作安全回退到相应方向 Idle，Death 暂用不镜像 DR；分身继承同一诗人身份但以半透明青色明显区分。技能按钮、目标范围、动作反馈、HP/MP/状态变化容易理解；后退和生成原子完成，敌人在合法直接攻击范围内优先攻击分身。
-- Observe: Start Camp 候选区、Battle action bar、棋盘单位/状态层、HP/MP、事件日志、CheatConsole 与 Godot Output。
-- Preserve on failure: Run seed、起始分支、技能等级、双方格子与朝向、施法前后 HP/MP/状态、截图或短视频、battle checkpoint/save 副本和完整 Output。
-- Save boundary: 选择队伍、成长和战斗会修改当前 Run；只使用 disposable/隔离存档，不覆盖生产存档。
-- Automated evidence: integrated code HEAD `a501b359` 的统一 Godot verifier 已通过：Core 209/209、Application 206/206、Poet/Initiative/Actor GdUnit、29/29 Gameplay journeys、ResourceSaver 幂等性、artwork 与 Godot tooling 全绿。运行时 DR/UL 副本哈希绑定获批母图，自动化断言白色 tint、方向回退、Death 占位、分身清理、技能公式与硬 AI 分身优先；动作可读性、半透明分身辨识度和职业体验仍需人工判断。
 - User verdict: On 2026-09-17 the user explicitly chose to defer this manual gate and merge PR #4 immediately without treating it as passed.
 
 ### MQA-GODOT-INITIATIVE-HUD — 动态先攻头像条、Hover 联动与输入锁

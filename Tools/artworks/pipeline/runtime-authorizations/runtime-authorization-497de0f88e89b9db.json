@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "runtimeAuthorizationId": "runtime-authorization-497de0f88e89b9db",
+  "source": {
+    "path": "Tools/artworks/poet_five_red_chow/calibrated/poet_five_red_chow_hit_dr_hunter_recoil_v01.png",
+    "sha256": "4d8b87f7407295f9f6c166086acde62d7976393de172a7061fbff77909edb92d"
+  },
+  "target": {
+    "path": "godot/assets/units/actions/doge_poet_hit_dr.png",
+    "sha256": "4d8b87f7407295f9f6c166086acde62d7976393de172a7061fbff77909edb92d"
+  },
+  "resourcePaths": [
+    "res://content/poet/PureRunPoet.tres"
+  ],
+  "reviewer": "cty41",
+  "reason": "Integrate the approved Poet action and death pose into the canonical Godot runtime without changing gameplay semantics.",
+  "decidedAt": "2026-09-18T23:57:04.8535581+08:00",
+  "manualQaBoundary": "MQA-GODOT-POET-RUNTIME"
+}
