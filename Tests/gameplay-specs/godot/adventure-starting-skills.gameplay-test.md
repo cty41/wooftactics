@@ -3,7 +3,7 @@ feature: AdventureBoard
 scenario: StartingSkillsEnterAdventureBoard
 tags: [godot, player-input-e2e, adventure-board, isolated-save]
 requiredAdapters: [Map, PlayerInput, UI]
-contractIds: [ROGUELIKE-SETUP-COMMIT-001]
+contractIds: [ROGUELIKE-SETUP-COMMIT-001, ROGUELIKE-SETUP-FIRST-ENCOUNTER-001]
 setup:
   - kind: initializePlayerInput
     adapter: PlayerInput
@@ -46,7 +46,7 @@ actions:
     parameters: { targetKind: UiElement }
   - kind: waitForPlayerObservable
     adapter: PlayerInput
-    parameters: { observable: adventureBoardReady, maximumFrames: 180 }
+    parameters: { observable: battleReady, maximumFrames: 180 }
 assertions:
   - kind: activePartyStartingSkillIdsEqual
     adapter: Map
@@ -63,6 +63,6 @@ assertions:
 timeoutMs: 30000
 ---
 
-# Starting skills enter the adventure board
+# Starting skills enter the first battle directly
 
-从正式 Home 和 Start Camp 开始，按点击队伍顺序完成起始技能选择；魔剑士的种子技能由正式规则自动选择。最终进入正式 Tile Adventure Board，并从运行状态断言三人的起始技能顺序。
+从 Start Camp 开始，按点击队伍顺序完成起始技能选择；魔剑士的种子技能由正式规则自动选择。最后技能直接进入首战，不再点击占位探索图出口，并从运行状态断言三人的起始技能顺序。保留历史scenario标识以维持隔离测试身份；描述和行为以本规则为准。

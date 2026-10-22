@@ -10,11 +10,13 @@ namespace Tactics.Godot.Adapter.Runtime;
 public partial class AdventureMapTemplateResource : Resource
 {
     [Export] public int SchemaVersion { get; set; } = 1;
+    [Export] public bool IsTerminal { get; set; }
     [Export] public string ContentIdValue { get; set; } = string.Empty;
     [Export] public string BoardContentIdValue { get; set; } = string.Empty;
     [Export] public int Width { get; set; } = 10;
     [Export] public int Height { get; set; } = 10;
     [Export] public string BlockedCellsValue { get; set; } = string.Empty;
+    [Export] public string ShallowWaterCellsValue { get; set; } = string.Empty;
     [Export] public string ObjectsValue { get; set; } = string.Empty;
     [Export] public string ActorsValue { get; set; } = string.Empty;
     [Export] public Vector2I BoardEntryCell { get; set; }
@@ -44,12 +46,13 @@ public partial class AdventureMapTemplateResource : Resource
             ParseSlots(CandidateSlotsValue), ParseSlots(PartyEntrySlotsValue), ParseSlots(PlayerBattleSlotsValue),
             ParseSlots(EnemyBattleSlotsValue), ParseAnchors(EntriesValue), ParseExits(ExitsValue),
             ParseAnchors(ConnectionAnchorsValue), ParseAnchor(CameraFocusAnchorValue),
-            ParseAnchor(AtlasBoundsAnchorValue), StateLayerIds);
+            ParseAnchor(AtlasBoundsAnchorValue), StateLayerIds, IsTerminal, ShallowWaterCells);
         definition.Validate();
         if (TileSet is null) throw new InvalidOperationException("Adventure map template requires a generated TileSet.");
         return definition;
     }
 
+    public IReadOnlyList<GridPoint> ShallowWaterCells => ParseCells(ShallowWaterCellsValue);
     public IReadOnlyList<GridPoint> TerrainCells => ParseCells(TerrainCellsValue);
     public IReadOnlyList<GridPoint> DecorationCells => ParseCells(DecorationCellsValue);
     public IReadOnlyList<GridPoint> MaskCells => ParseCells(MaskCellsValue);

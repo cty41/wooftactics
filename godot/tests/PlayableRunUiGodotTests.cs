@@ -316,7 +316,7 @@ public class PlayableRunUiGodotTests
         var first = new GodotPlayableRunMain();
         first.ConfigureTestContext(new GodotPlayableRunTestContext(store, 37, "setup-draft-first"));
         tree.Root.AddChild(first);
-        await first.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        await WaitForActReady(first, tree);
         PureRunSessionService service = (PureRunSessionService)typeof(GodotPlayableRunMain)
             .GetField("_run", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(first)!;
         AssertThat(service.SelectPartyMember("pure_run_amazon").Succeeded).IsTrue();
@@ -331,7 +331,7 @@ public class PlayableRunUiGodotTests
         var replay = new GodotPlayableRunMain();
         replay.ConfigureTestContext(new GodotPlayableRunTestContext(store, 37, "setup-draft-replay"));
         tree.Root.AddChild(replay);
-        await replay.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        await WaitForActReady(replay, tree);
         GodotPlayableRunProbe probe = replay.CaptureTestProbe();
         AssertThat(probe.PageTitle).Contains("START CAMP");
         AssertThat(probe.SetupDraftActive).IsTrue();
@@ -360,14 +360,67 @@ public class PlayableRunUiGodotTests
 
     [TestCase]
     [RequireGodotRuntime]
-    public async Task EscapeUsesTheSameGlobalPauseOverlayAcrossStartSkillAndInitialAdventure()
+    public async Task CompletedSetupRoutesDirectlyToFirstBattleWithoutAnAdventurePage()
+    {
+        var store = new ProbeRunStore();
+        var ui = new GodotPlayableRunMain();
+        ui.ConfigureTestContext(new GodotPlayableRunTestContext(store, 37, "direct-first-battle"));
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        tree.Root.AddChild(ui);
+        try
+        {
+            await WaitForActReady(ui, tree);
+            ulong campSurfaceId = ui.ActWorld!.Nodes["start"].Surface.GetInstanceId();
+            ulong battleSurfaceId = ui.ActWorld.Nodes["layer_01_battle"].Surface.GetInstanceId();
+            PureRunSessionService service = (PureRunSessionService)typeof(GodotPlayableRunMain)
+                .GetField("_run", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(ui)!;
+            AssertThat(service.ChooseParty(["pure_run_amazon", "pure_run_demonbound", "pure_run_mage"]).Succeeded).IsTrue();
+            AssertThat(service.ChooseStartingSkill("pure_run_amazon", new ContentId("skill.amazon.thrust.lv1")).Succeeded).IsTrue();
+            typeof(GodotPlayableRunMain).GetMethod("ShowNewRunSetup", BindingFlags.Instance | BindingFlags.NonPublic)!
+                .Invoke(ui, new object[] { service.CurrentSetupProjection! });
+            await ui.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+            Button finalSkill = Descendants<Button>(ui).Single(button =>
+                button.Name == "starting_skill__skill_mage_fireball_lv1");
+            await ClickControl(finalSkill, tree);
+            AssertThat(store.Load().Snapshot!.ActiveRun!.Phase).IsEqual(PureRunPhase.PendingBattle);
+            AssertThat(ui.CaptureTestProbe().BattleActive).IsTrue();
+            AssertThat(ui.FindChild("InitialAdventureBoard", true, false)).IsNull();
+            AssertThat(ui.FindChild("AdventureBattleEntryBoard", true, false)).IsNull();
+            AssertThat(store.SaveCount).IsEqual(1);
+            AssertThat(ui.ActWorld!.Nodes["start"].Surface.GetInstanceId()).IsEqual(campSurfaceId);
+            AssertThat(ui.ActWorld.PreparedCount).IsEqual(16);
+            AssertThat(ui.ActWorld.GetParent()).IsEqual(ui);
+            var board = (GodotIsometricBattleBoard)typeof(GodotPlayableRunMain)
+                .GetField("_board", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(ui)!;
+            AssertThat(board.UsesResidentSurface).IsTrue();
+            AssertThat(board.ResidentSurface!.GetInstanceId()).IsEqual(battleSurfaceId);
+            AssertThat(ui.ActWorld.ActiveNodeId).IsEqual("layer_01_battle");
+            for (int x = 0; x < 10; x++)
+            for (int y = 0; y < 10; y++)
+            {
+                var cell = new GridPoint(x, y);
+                Vector2 center = board.CellCenter(cell);
+                AssertThat(center.DistanceTo(IsometricBattleBoardLayout.GridToScreen(cell)) < 0.01f).IsTrue();
+                AssertThat(board.TryPointToCell(center, out var picked) && picked == cell).IsTrue();
+            }
+        }
+        finally
+        {
+            ui.QueueFree();
+            await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        }
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task EscapeUsesTheSameGlobalPauseOverlayAcrossStartSkillAndLegacyAdventure()
     {
         var store = new ProbeRunStore();
         var ui = new GodotPlayableRunMain();
         ui.ConfigureTestContext(new GodotPlayableRunTestContext(store, 37, "pause-shell"));
         SceneTree tree = (SceneTree)Engine.GetMainLoop();
         tree.Root.AddChild(ui);
-        await ui.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        await WaitForActReady(ui, tree);
         GodotPlayableRunProbe start = ui.CaptureTestProbe();
         AssertThat(start.PageTitle).Contains("START CAMP");
         AssertThat(start.InputContext).IsEqual("Setup");
@@ -401,9 +454,19 @@ public class PlayableRunUiGodotTests
         RunSessionResult completed = service.ChooseStartingSkill("pure_run_mage", new ContentId("skill.mage.fireball.lv1"));
         AssertThat(completed.Succeeded).IsTrue();
         AssertThat(store.SaveCount).IsEqual(1);
+        AssertThat(completed.Snapshot!.ActiveRun!.Phase).IsEqual(PureRunPhase.PendingBattle);
+
+        // Keep legacy Adventure pause/resize/exit coverage until the V12 migration replaces it.
+        // This fixture is deliberately injected; newly completed Setup must never produce it.
+        PureRunState firstBattle = completed.Snapshot!.ActiveRun!;
+        var legacy = new PureRunState(firstBattle.RunId, firstBattle.Seed, firstBattle.Revision,
+            PureRunPhase.Ready, 0, firstBattle.EncounterContentId, firstBattle.Party,
+            adventureState: new RunAdventureTransitionService().CreateInitial(firstBattle.Party));
+        var legacySnapshot = new PureRunSaveSnapshot(legacy.Revision, legacy, null);
+        AssertThat(store.Save(legacySnapshot, firstBattle.Revision).Succeeded).IsTrue();
         typeof(GodotPlayableRunMain).GetMethod("RouteRunState", BindingFlags.Instance | BindingFlags.NonPublic)!
-            .Invoke(ui, new object[] { completed.Snapshot! });
-        await ui.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+            .Invoke(ui, new object[] { legacySnapshot });
+        await WaitForActReady(ui, tree);
         AssertThat(ui.CaptureTestProbe().PageTitle).Contains("TILE ADVENTURE");
         AssertThat(ui.CaptureTestProbe().InputContext).IsEqual("Adventure");
         Control page = (Control)typeof(GodotPlayableRunMain)
@@ -441,19 +504,19 @@ public class PlayableRunUiGodotTests
             .GetField("_adventureBoard", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(ui)!;
         GridPoint origin = adventureBoard.ActorCells.Values.First(cell => cell == new GridPoint(2, 5));
         await ClickPoint(adventureBoard, adventureBoard.CellCenter(new GridPoint(8, 5)), tree);
-        for (int frame = 0; frame < 180 && adventureBoard.LastMovementDiagnostic?.CurrentCell == origin; frame++)
-            await ui.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        for (int tick = 0; tick < 150 && adventureBoard.LastMovementDiagnostic?.CurrentCell == origin; tick++)
+            await tree.ToSignal(tree.CreateTimer(.02), SceneTreeTimer.SignalName.Timeout);
         adventureBoard._Notification((int)Control.NotificationResized);
         await ClickPoint(adventureBoard, adventureBoard.CellCenter(new GridPoint(4, 6)), tree);
-        for (int frame = 0; frame < 240 && adventureBoard.IsMovementLocked; frame++)
-            await ui.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        for (int tick = 0; tick < 300 && adventureBoard.IsMovementLocked; tick++)
+            await tree.ToSignal(tree.CreateTimer(.02), SceneTreeTimer.SignalName.Timeout);
         AssertThat(ui.CaptureTestProbe().BattleActive).IsFalse();
         adventureBoard = (GodotAdventureBoardView)typeof(GodotPlayableRunMain)
             .GetField("_adventureBoard", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(ui)!;
 
         await ClickPoint(adventureBoard, adventureBoard.CellCenter(new GridPoint(8, 5)), tree);
-        for (int frame = 0; frame < 360 && !ui.CaptureTestProbe().BattleActive; frame++)
-            await ui.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        for (int tick = 0; tick < 500 && !ui.CaptureTestProbe().BattleActive; tick++)
+            await tree.ToSignal(tree.CreateTimer(.02), SceneTreeTimer.SignalName.Timeout);
         AssertThat(ui.CaptureTestProbe().BattleActive).IsTrue();
         AssertThat(ui.FindChild("AdventureBattleEntryBoard", true, false)).IsNull();
         ui._Input(EscapeKeyEvent());
@@ -1147,6 +1210,184 @@ public class PlayableRunUiGodotTests
         await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
     }
 
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task RepairedLegacyPendingPartyStartsThroughColdAndWarmActWithoutSaving()
+    {
+        var store = new ProbeRunStore();
+        var ui = new GodotPlayableRunMain();
+        ui.ConfigureTestContext(new GodotPlayableRunTestContext(store, 37, "legacy-repair-launch"));
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        tree.Root.AddChild(ui);
+        try
+        {
+            var service = (PureRunSessionService)typeof(GodotPlayableRunMain)
+                .GetField("_run", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(ui)!;
+            service.ChooseParty(["pure_run_amazon", "pure_run_demonbound", "pure_run_mage"]);
+            service.ChooseStartingSkill("pure_run_amazon", new ContentId("skill.amazon.thrust.lv1"));
+            RunSessionResult committed = service.ChooseStartingSkill("pure_run_mage", new ContentId("skill.mage.fireball.lv1"));
+            AssertThat(committed.Succeeded).IsTrue();
+            PureRunState run = committed.Snapshot!.ActiveRun!;
+            RunCharacterState OldMage(RunCharacterState member) => member.CharacterId != "pure_run_mage" ? member : new(
+                member.CharacterId, member.UnitContentId, member.Level, new UnitAttributes(0, 0, 0, 0, 0, 0),
+                member.CurrentHealth, member.MaxHealth, member.CurrentMana, member.MaxMana, member.IsDead,
+                member.LearnedSkills, member.Equipment, member.CarriedConsumables, member.LearnedSkillStates, null);
+            var legacy = new PureRunState(run.RunId, run.Seed, run.Revision, run.Phase, run.EncounterIndex,
+                run.EncounterContentId, run.Party.Select(OldMage).ToArray(), run.BackpackConsumables,
+                run.BackpackEquipment, run.PendingProgression, run.AppliedTransactionKeys, run.Gold,
+                run.BattlesCompleted, run.EnemiesDefeated, run.AcquiredItems,
+                run.Checkpoint! with { Party = run.Checkpoint.Party.Select(OldMage).ToArray() },
+                run.MapState, run.NodeTransaction, run.EscortState, run.AdventureState);
+            store.RestoreForTest(committed.Snapshot with { ActiveRun = legacy });
+            int saves = store.SaveCount;
+            RunSessionResult resumed = service.ResumeRun();
+            AssertThat(resumed.Succeeded).IsTrue();
+            AssertThat(resumed.EncounterRequest!.Party.Single(member => member.CharacterId == "pure_run_mage")
+                .StartingSkillContentId.HasValue).IsTrue();
+            MethodInfo start = typeof(GodotPlayableRunMain).GetMethod("StartBattle", BindingFlags.Instance | BindingFlags.NonPublic)!;
+            start.Invoke(ui, [resumed.EncounterRequest]);
+            await WaitForActReady(ui, tree);
+            AssertThat(ui.CaptureTestProbe().BattleActive).IsTrue();
+            FieldInfo battle = typeof(GodotPlayableRunMain).GetField("_battle", BindingFlags.Instance | BindingFlags.NonPublic)!;
+            object firstBattle = battle.GetValue(ui)!;
+            ulong host = ui.ActWorld!.GetInstanceId();
+            start.Invoke(ui, [service.ResumeRun().EncounterRequest!]);
+            AssertThat(ReferenceEquals(firstBattle, battle.GetValue(ui))).IsFalse();
+            AssertThat(ui.ActWorld.GetInstanceId()).IsEqual(host);
+            AssertThat(store.SaveCount).IsEqual(saves);
+            AssertThat(ReferenceEquals(store.Load().Snapshot!.ActiveRun, legacy)).IsTrue();
+            AssertThat(resumed.EncounterRequest.EffectiveRandomState).IsEqual(committed.EncounterRequest!.EffectiveRandomState);
+        }
+        finally { ui.QueueFree(); await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame); }
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task AlteredRequestRandomStateIsRejectedBeforeActActivation()
+    {
+        var store = new ProbeRunStore();
+        var ui = new GodotPlayableRunMain();
+        ui.ConfigureTestContext(new GodotPlayableRunTestContext(store, 37, "request-rng-guard"));
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        tree.Root.AddChild(ui);
+        try
+        {
+            var service = (PureRunSessionService)typeof(GodotPlayableRunMain)
+                .GetField("_run", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(ui)!;
+            service.ChooseParty(["pure_run_amazon", "pure_run_demonbound", "pure_run_mage"]);
+            service.ChooseStartingSkill("pure_run_amazon", new ContentId("skill.amazon.thrust.lv1"));
+            RunSessionResult committed = service.ChooseStartingSkill("pure_run_mage", new ContentId("skill.mage.fireball.lv1"));
+            AssertThat(committed.Succeeded).IsTrue();
+            EncounterRequest altered = committed.EncounterRequest! with
+            { AdventureRevision = committed.EncounterRequest!.AdventureRevision + 1 };
+            string page = ui.CaptureTestProbe().PageTitle;
+            int saves = store.SaveCount;
+            typeof(GodotPlayableRunMain).GetMethod("StartBattle", BindingFlags.Instance | BindingFlags.NonPublic)!
+                .Invoke(ui, [altered]);
+            var status = (Label)typeof(GodotPlayableRunMain)
+                .GetField("_status", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(ui)!;
+            AssertThat(status.Text.StartsWith("battle.stale_request", StringComparison.Ordinal)).IsTrue();
+            store.FailLoads = true;
+            try
+            {
+                typeof(GodotPlayableRunMain).GetMethod("StartBattle", BindingFlags.Instance | BindingFlags.NonPublic)!
+                    .Invoke(ui, [committed.EncounterRequest!]);
+                AssertThat(status.Text).IsEqual("battle.stale_request");
+            }
+            finally { store.FailLoads = false; }
+            AssertThat(ui.CaptureTestProbe().BattleActive).IsFalse();
+            AssertThat(ui.CaptureTestProbe().PageTitle).IsEqual(page);
+            AssertThat(store.SaveCount).IsEqual(saves);
+        }
+        finally { ui.QueueFree(); await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame); }
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task AbandonDuringActLoadingRejectsLatePreparedAndStaleEncounter()
+    {
+        var store = new ProbeRunStore();
+        var ui = new GodotPlayableRunMain();
+        ui.ConfigureTestContext(new GodotPlayableRunTestContext(store, 37, "abandon-loading"));
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        tree.Root.AddChild(ui);
+        try
+        {
+            PureRunSessionService service = (PureRunSessionService)typeof(GodotPlayableRunMain)
+                .GetField("_run", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(ui)!;
+            service.ChooseParty(["pure_run_amazon", "pure_run_demonbound", "pure_run_mage"]);
+            service.ChooseStartingSkill("pure_run_amazon", new ContentId("skill.amazon.thrust.lv1"));
+            RunSessionResult committed = service.ChooseStartingSkill("pure_run_mage", new ContentId("skill.mage.fireball.lv1"));
+            typeof(GodotPlayableRunMain).GetMethod("RouteRunState", BindingFlags.Instance | BindingFlags.NonPublic)!
+                .Invoke(ui, [committed.Snapshot!]);
+            var loader = (GodotActLoadCoordinator)typeof(GodotPlayableRunMain)
+                .GetField("_actLoader", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(ui)!;
+            if (loader is null)
+            {
+                var status = (Label?)typeof(GodotPlayableRunMain).GetField("_status", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(ui);
+                throw new InvalidOperationException($"Expected pending loader; page={ui.CaptureTestProbe().PageTitle}; status={status?.Text}; commit={committed.Succeeded}:{committed.ErrorCode}");
+            }
+            var late = (Action)typeof(GodotActLoadCoordinator).GetField("Prepared", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(loader)!;
+            AssertThat(loader.IsLoading).IsTrue();
+            typeof(GodotPlayableRunMain).GetMethod("AbandonRun", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(ui, null);
+            string summaryPage = ui.CaptureTestProbe().PageTitle;
+            late();
+            typeof(GodotPlayableRunMain).GetMethod("StartBattle", BindingFlags.Instance | BindingFlags.NonPublic)!
+                .Invoke(ui, [committed.EncounterRequest!]);
+            AssertThat(store.Load().Snapshot!.ActiveRun).IsNull();
+            AssertThat(ui.ActWorld).IsNull();
+            AssertThat(ui.CaptureTestProbe().BattleActive).IsFalse();
+            AssertThat(ui.CaptureTestProbe().PageTitle).IsEqual(summaryPage);
+        }
+        finally { ui.QueueFree(); await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame); }
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task CancelSameSeedSetupCannotAdoptItsWorldIntoThePreviousRun()
+    {
+        var store = new ProbeRunStore();
+        var ui = new GodotPlayableRunMain();
+        ui.ConfigureTestContext(new GodotPlayableRunTestContext(store, 37, "cancel-same-seed"));
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        tree.Root.AddChild(ui);
+        try
+        {
+            await WaitForActReady(ui, tree);
+            PureRunSessionService service = (PureRunSessionService)typeof(GodotPlayableRunMain)
+                .GetField("_run", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(ui)!;
+            service.ChooseParty(["pure_run_amazon", "pure_run_demonbound", "pure_run_mage"]);
+            service.ChooseStartingSkill("pure_run_amazon", new ContentId("skill.amazon.thrust.lv1"));
+            RunSessionResult committed = service.ChooseStartingSkill("pure_run_mage", new ContentId("skill.mage.fireball.lv1"));
+            typeof(GodotPlayableRunMain).GetMethod("RouteCommittedSetup", BindingFlags.Instance | BindingFlags.NonPublic)!
+                .Invoke(ui, [committed]);
+            string previousRun = store.Load().Snapshot!.ActiveRun!.RunId;
+            typeof(GodotPlayableRunMain).GetMethod("StartNewRunConfirmed", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(ui, null);
+            await WaitForActReady(ui, tree);
+            GodotActWorldHost canceledWorld = ui.ActWorld!;
+            ulong canceledId = canceledWorld.GetInstanceId();
+            GodotNodeActivationLease lease = canceledWorld.ActivateNode("start");
+            AssertThat(ui.CaptureTestProbe().BattleActive).IsFalse();
+            typeof(GodotPlayableRunMain).GetMethod("DiscardSetupFromPause", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(ui, null);
+            await WaitForActReady(ui, tree);
+            AssertThat(ui.ActWorld!.GetInstanceId()).IsNotEqual(canceledId);
+            AssertThat(ui.ActWorld.IsLeaseCurrent(lease)).IsFalse();
+            AssertThat(store.Load().Snapshot!.ActiveRun!.RunId).IsEqual(previousRun);
+            AssertThat(ui.CaptureTestProbe().BattleActive).IsTrue();
+        }
+        finally { ui.QueueFree(); await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame); }
+    }
+
+    private static async Task WaitForActReady(GodotPlayableRunMain ui, SceneTree tree)
+    {
+        for (int frame = 0; frame < 180; frame++)
+        {
+            await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+            if (ui.ActWorldReady) return;
+        }
+        AssertThat(ui.ActWorldReady).IsTrue();
+    }
+
     private static async Task ClickControl(Control control, SceneTree tree)
     {
         Vector2 point = control.GetGlobalTransformWithCanvas() * (control.Size * .5f);
@@ -1200,7 +1441,9 @@ public class PlayableRunUiGodotTests
     {
         private PureRunSaveSnapshot? _snapshot;
         public int SaveCount { get; private set; }
-        public RunStoreResult Load() => new(true, null, _snapshot);
+        public bool FailLoads { get; set; }
+        public void RestoreForTest(PureRunSaveSnapshot snapshot) => _snapshot = snapshot;
+        public RunStoreResult Load() => new(!FailLoads, FailLoads ? "test.load_failed" : null, _snapshot);
         public RunStoreResult Save(PureRunSaveSnapshot snapshot, long expectedRevision)
         {
             long actual = _snapshot?.Revision ?? 0;

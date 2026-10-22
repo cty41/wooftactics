@@ -14,12 +14,16 @@ public partial class GodotAdventureBoardView : Control
     private readonly Dictionary<string, GridPoint> _actorCells = new(StringComparer.Ordinal);
     private readonly Dictionary<string, UnitDefinitionResource> _actorDefinitions = new(StringComparer.Ordinal);
     private TileMapLayer? _tiles;
+    private GodotActWorldHost? _residentHost;
+    private GodotNodeActivationLease? _residentLease;
+    private GodotIsometricTileMapSurface? _residentSurface;
     private AdventureBoardDefinition? _definition;
     private GodotAdventureMovementPlayer? _movementPlayer;
     private StandardUnitPresentationResource _movementProfile = new();
     private string? _leaderId;
     private float _movementSpeed = 1f;
     private Rect2 _localBoardBounds;
+    private Transform2D _boardTransform = Transform2D.Identity;
     private float _boardScale = 1f;
 
     public event Action<GridPoint>? CellPressed;
@@ -29,16 +33,21 @@ public partial class GodotAdventureBoardView : Control
     public event Action? ManualMovementRequested;
     public event Action<GodotAdventureMovementCompletion>? MovementCompleted;
     public event Action<GridPoint>? MovementInterruptedAtCell;
-    public TileMapLayer TileLayer => _tiles ?? throw new InvalidOperationException("Adventure board is not ready.");
+    public TileMapLayer TileLayer => _residentSurface?.TerrainLayer ?? _tiles ??
+        throw new InvalidOperationException("Adventure board is not ready.");
+    public bool UsesResidentSurface => _residentSurface is not null;
+    public GodotIsometricTileMapSurface? ResidentSurface => _residentSurface;
     public AdventureBoardDefinition Definition => _definition ?? throw new InvalidOperationException("Adventure board is not configured.");
     public IReadOnlyDictionary<string, GridPoint> ActorCells => _actorCells;
     public IReadOnlyDictionary<string, GodotUnitActor> ActorNodes => _actors;
     public bool IsMovementLocked => _movementPlayer?.IsLocked == true;
+    private bool IsResidentLeaseCurrent => _residentHost is null ||
+        (_residentLease is { } lease && _residentHost.IsLeaseCurrent(lease));
     public GodotAdventureMovementDiagnostic? LastMovementDiagnostic => _movementPlayer?.LastDiagnostic;
     public GridPoint? LastPointerCell { get; private set; }
     public Rect2 FittedBoardBounds => _tiles is null
         ? default
-        : GodotBattleBoardFitter.TransformBounds(_localBoardBounds, _tiles.Transform);
+        : GodotBattleBoardFitter.TransformBounds(_localBoardBounds, _boardTransform);
     public float BoardScale => _boardScale;
 
     public override void _Ready()
@@ -61,7 +70,8 @@ public partial class GodotAdventureBoardView : Control
 
     public override void _Notification(int what)
     {
-        if (what != NotificationResized || _definition is null || _tiles is null || !IsNodeReady()) return;
+        if (what != NotificationResized || _definition is null || _tiles is null || !IsNodeReady() ||
+            !IsResidentLeaseCurrent) return;
         GridPoint? interruptedCell = _movementPlayer?.IsMoving == true ? _movementPlayer.CurrentCell : null;
         _movementPlayer?.Cancel("adventure-board-viewport-resized");
         if (interruptedCell is GridPoint cell) MovementInterruptedAtCell?.Invoke(cell);
@@ -82,6 +92,19 @@ public partial class GodotAdventureBoardView : Control
         EnsureMovementPlayer().Configure(profile, speed);
     }
 
+    public void BindResidentSurface(GodotActWorldHost host, GodotNodeActivationLease lease,
+        GodotIsometricTileMapSurface surface)
+    {
+        ArgumentNullException.ThrowIfNull(host);
+        ArgumentNullException.ThrowIfNull(surface);
+        if (!host.IsPrepared || !host.IsLeaseCurrent(lease) || !GodotObject.IsInstanceValid(surface) || surface.IsQueuedForDeletion())
+            throw new InvalidOperationException("adventure.resident_surface_unavailable");
+        _residentHost = host;
+        _residentLease = lease;
+        _residentSurface = surface;
+        if (_tiles is not null) _tiles.Visible = false;
+    }
+
     public void SetBoard(AdventureBoardDefinition definition)
     {
         ArgumentNullException.ThrowIfNull(definition);
@@ -96,12 +119,16 @@ public partial class GodotAdventureBoardView : Control
         _definition = definition;
         _actorCells.Clear();
         foreach (AdventureActorPlacement actor in definition.Actors) _actorCells[actor.ActorId] = actor.Cell;
-        TileLayer.Clear();
-        foreach (int y in Enumerable.Range(0, definition.Height))
-        foreach (int x in Enumerable.Range(0, definition.Width))
+        if (_residentSurface is null)
         {
-            GridPoint cell = new(x, y);
-            TileLayer.SetCell(new Vector2I(x, y), 0, definition.IsWalkable(cell) ? new Vector2I(0, 0) : new Vector2I(1, 0));
+            TileLayer.Clear();
+            foreach (int y in Enumerable.Range(0, definition.Height))
+            foreach (int x in Enumerable.Range(0, definition.Width))
+            {
+                GridPoint cell = new(x, y);
+                TileLayer.SetCell(new Vector2I(x, y), 0,
+                    definition.IsWalkable(cell) ? new Vector2I(0, 0) : new Vector2I(1, 0));
+            }
         }
         FitBoardToViewport();
         RebuildMarkers();
@@ -147,19 +174,36 @@ public partial class GodotAdventureBoardView : Control
     }
     public void CancelMovement(string reason) => _movementPlayer?.Cancel(reason);
 
-    public Vector2 CellCenter(GridPoint cell) =>
-        TileLayer.Transform * TileLayer.MapToLocal(new Vector2I(cell.X, cell.Y));
+    public Vector2 CellCenter(GridPoint cell)
+    {
+        if (_residentSurface is null)
+            return TileLayer.Transform * TileLayer.MapToLocal(new Vector2I(cell.X, cell.Y));
+        return GetGlobalTransformWithCanvas().AffineInverse() * _residentSurface.GetGlobalTransformWithCanvas() *
+            _residentSurface.CellCenter(cell);
+    }
 
     public bool TryPointToCell(Vector2 point, out GridPoint cell)
     {
-        Vector2 localPoint = TileLayer.Transform.AffineInverse() * point;
-        Vector2I mapped = TileLayer.LocalToMap(localPoint);
+        Vector2I mapped;
+        if (_residentSurface is null)
+        {
+            Vector2 localPoint = TileLayer.Transform.AffineInverse() * point;
+            mapped = TileLayer.LocalToMap(localPoint);
+        }
+        else
+        {
+            Vector2 viewportPoint = GetGlobalTransformWithCanvas() * point;
+            Vector2 surfacePoint = _residentSurface.GetGlobalTransformWithCanvas().AffineInverse() * viewportPoint;
+            if (!_residentSurface.TryPointToCell(surfacePoint, out cell)) return false;
+            return _definition?.Contains(cell) == true;
+        }
         cell = new GridPoint(mapped.X, mapped.Y);
         return _definition?.Contains(cell) == true;
     }
 
     private void OnGuiInput(InputEvent input)
     {
+        if (!IsResidentLeaseCurrent) return;
         if (input is not InputEventMouseButton { ButtonIndex: MouseButton.Left, Pressed: true } button ||
             _definition is null || !TryPointToCell(button.Position, out GridPoint cell)) return;
         LastPointerCell = cell;
@@ -213,11 +257,15 @@ public partial class GodotAdventureBoardView : Control
         _movementPlayer.Configure(_movementProfile, _movementSpeed);
         _movementPlayer.CellCentered += cell =>
         {
-            if (_leaderId is null || !_actors.TryGetValue(_leaderId, out GodotUnitActor? actor)) return;
+            if (!IsResidentLeaseCurrent || _leaderId is null ||
+                !_actors.TryGetValue(_leaderId, out GodotUnitActor? actor)) return;
             _actorCells[_leaderId] = cell;
             actor.ZIndex = ActorZIndex(cell);
         };
-        _movementPlayer.MovementCompleted += completion => MovementCompleted?.Invoke(completion);
+        _movementPlayer.MovementCompleted += completion =>
+        {
+            if (IsResidentLeaseCurrent) MovementCompleted?.Invoke(completion);
+        };
         return _movementPlayer;
     }
 
@@ -231,8 +279,9 @@ public partial class GodotAdventureBoardView : Control
     private void FitBoardToViewport()
     {
         Vector2[] centers = Enumerable.Range(0, Definition.Height)
-            .SelectMany(y => Enumerable.Range(0, Definition.Width)
-                .Select(x => TileLayer.MapToLocal(new Vector2I(x, y))))
+            .SelectMany(y => Enumerable.Range(0, Definition.Width).Select(x => _residentSurface is null
+                ? TileLayer.MapToLocal(new Vector2I(x, y))
+                : _residentSurface.CellCenter(new GridPoint(x, y))))
             .ToArray();
         Vector2 halfTile = new Vector2(TileLayer.TileSet.TileSize.X, TileLayer.TileSet.TileSize.Y) * .5f;
         float minX = centers.Min(value => value.X) - halfTile.X;
@@ -240,8 +289,19 @@ public partial class GodotAdventureBoardView : Control
         float maxX = centers.Max(value => value.X) + halfTile.X;
         float maxY = centers.Max(value => value.Y) + halfTile.Y;
         _localBoardBounds = new Rect2(minX, minY, maxX - minX, maxY - minY);
-        TileLayer.Transform = GodotBattleBoardFitter.Fit(_localBoardBounds, GameplaySafeArea(Size));
-        _boardScale = TileLayer.Transform.X.Length();
+        _boardTransform = GodotBattleBoardFitter.Fit(_localBoardBounds, GameplaySafeArea(Size));
+        _boardScale = _boardTransform.X.Length();
+        if (_residentSurface is null)
+        {
+            TileLayer.Transform = _boardTransform;
+            return;
+        }
+        GodotActWorldHost host = _residentHost ?? throw new InvalidOperationException("adventure.resident_host_missing");
+        Transform2D hostViewport = host.GetGlobalTransformWithCanvas();
+        Transform2D parentViewport = hostViewport * host.Transform.AffineInverse();
+        Transform2D surfaceToHost = hostViewport.AffineInverse() * _residentSurface.GetGlobalTransformWithCanvas();
+        host.Transform = parentViewport.AffineInverse() * GetGlobalTransformWithCanvas() * _boardTransform *
+            surfaceToHost.AffineInverse();
     }
 
     private void RebuildMarkers()

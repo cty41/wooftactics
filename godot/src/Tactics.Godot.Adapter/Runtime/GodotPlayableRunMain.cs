@@ -136,7 +136,7 @@ public partial class GodotPlayableRunMain : Control
         public static readonly RunInputContext Battle = new(true, true, false, false);
     }
 
-    public bool IsReadyForInput => _run is not null && _page is not null && _units.Count == 14 &&
+    public bool IsReadyForInput => !_actPreparationPending && _run is not null && _page is not null && _units.Count == 14 &&
         _skills.Count >= 22 && _ai.Count == 9 && _layouts.Count >= 2 && _encounters.Count >= 3 &&
         _mapDefinition is not null && _treasureDefinition is not null && _catalogCount == 166;
     public string StartupContractSummary =>
@@ -358,7 +358,11 @@ public partial class GodotPlayableRunMain : Control
         if (_testContext?.InterceptQuit != true) GetTree().Quit();
     }
 
-    public override void _ExitTree()=>DisposePresentationPlayer();
+    public override void _ExitTree()
+    {
+        ReleaseActWorld();
+        DisposePresentationPlayer();
+    }
     public override void _Process(double delta)
     {
         if (_presentationPlayer is null) return;
@@ -518,6 +522,8 @@ public partial class GodotPlayableRunMain : Control
         _run = new PureRunSessionService(_runDefinition, SaveStore, mapDefinition: _mapDefinition);
     }
 
+    internal const string StaleSaveResetMessage = "Save is from an older build and was cleared. Start a new run.";
+
     private void ShowHome()
     {
         _logs.Clear();_visibleSnapshot=null;
@@ -601,12 +607,21 @@ public partial class GodotPlayableRunMain : Control
         int seed = _testContext?.FixedSeed ?? System.Security.Cryptography.RandomNumberGenerator.GetInt32(int.MinValue, int.MaxValue);
         RunSessionResult started = _run!.BeginNewRunSetup(seed);
         if (!started.Succeeded) { SetStatus(started.ErrorCode); return; }
+        ReleaseActWorld();
+        _battle = null;
         ShowNewRunSetup(started.Snapshot!);
     }
 
     private void ContinueRun()
     {
         RunSessionResult resumed = _run!.ResumeRun();
+        if (resumed.ErrorCode == PureRunSessionService.StaleSaveReset)
+        {
+            ReleaseActWorld();
+            ShowHome();
+            SetStatus(StaleSaveResetMessage);
+            return;
+        }
         if (!resumed.Succeeded) { SetStatus(resumed.ErrorCode); return; }
         if (resumed.EncounterRequest is EncounterRequest request) StartBattle(request);
         else if (resumed.Snapshot is not null) RouteRunState(resumed.Snapshot);
@@ -636,7 +651,7 @@ public partial class GodotPlayableRunMain : Control
                 RunSessionResult result = _run!.ChooseStartingSkill(template.CharacterId, captured);
                 if (!result.Succeeded) { SetStatus(result.ErrorCode); return; }
                 if (result.Snapshot!.PendingRunSetup is not null) ShowNewRunSetup(result.Snapshot);
-                else RouteRunState(result.Snapshot);
+                else RouteCommittedSetup(result);
             });
             skillButton.Name = $"starting_skill__{captured.Value.Replace('.', '_')}";
             choices.AddChild(skillButton);
@@ -646,24 +661,22 @@ public partial class GodotPlayableRunMain : Control
 
     private void ShowPartySelection()
     {
+        PendingRunSetup setup = _run?.CurrentSetupProjection?.PendingRunSetup ??
+            throw new InvalidOperationException("Transient setup draft is missing.");
+        if (!EnsureSetupActPrepared(setup)) return;
         Control root = NewPage("NEW RUN — START CAMP", "Select exactly 3. Your first choice becomes the leader and can move on camp tiles.");
         SetInputContext(RunInputContext.Setup);
         _partySelectionOrder.Clear();
-        PendingRunSetup setup = _run?.CurrentSetupProjection?.PendingRunSetup ??
-            throw new InvalidOperationException("Transient setup draft is missing.");
         _partySelectionOrder.AddRange(setup.SelectedCharacterIds);
-        AdventureMapTemplateResource template = RequiredResourceLoader.Load<AdventureMapTemplateResource>(
-            "res://content/adventure_maps/StartCampTemplateV1.tres", "Start camp template load failed");
         GodotStartCampCandidate[] candidates = _runDefinition!.Party.Select(value =>
             new GodotStartCampCandidate(value.CharacterId, _unitResources[value.UnitContentId])).ToArray();
         _startCampView = new GodotStartCampView { Name = "StartCampView" };
         root.AddChild(_startCampView);
-        _startCampView.Configure(template, candidates);
+        _actWorld!.ActivateNode("start");
+        _actWorld.Visible = true;
+        _startCampView.ConfigureResidentWorld(_actWorld, candidates, MapDefinition);
         _startCampView.ConfigureMovement(_presentationProfile ?? new StandardUnitPresentationResource(), _playbackSpeed);
         _startCampView.MovementRejected += SetStatus;
-        AdventureMapTemplateResource planningTemplate = RequiredResourceLoader.Load<AdventureMapTemplateResource>(
-            "res://content/adventure_maps/BasicBattleTemplateV1.tres", "Planning preview template load failed");
-        _startCampView.ConfigureRoutePreviews(planningTemplate, MapDefinition);
         _startCampView.PreviewPressed += nodeId =>
         {
             PureRunMapNodeDefinition node = MapDefinition.Nodes.Single(value => value.NodeId == nodeId);
@@ -697,7 +710,7 @@ public partial class GodotPlayableRunMain : Control
             RunSessionResult result = _run!.ChooseParty(_partySelectionOrder);
             if (!result.Succeeded) { SetStatus(result.ErrorCode); return; }
             if (result.Snapshot!.PendingRunSetup is not null) ShowNewRunSetup(result.Snapshot);
-            else RouteRunState(result.Snapshot);
+            else RouteCommittedSetup(result);
         };
         PanelContainer partyPanel = PanelAt(root, new Vector2(1080, 150), new Vector2(460, 220), GodotTacticsTheme.Card);
         partyPanel.Name = "StartCampPartyPanel";
@@ -795,24 +808,53 @@ public partial class GodotPlayableRunMain : Control
 
     private void StartBattle(EncounterRequest request)
     {
+        if (_run is null || _run.HasSetupDraft) { SetStatus("battle.stale_request"); return; }
+        // Resume applies the same zero-write legacy party repair used when the request was issued.
+        RunSessionResult loaded = _run.ResumeRun();
+        if (!loaded.Succeeded || loaded.Snapshot is not { } snapshot)
+        { SetStatus("battle.stale_request"); return; }
+        var validation = PureRunEncounterRequestValidator.Validate(snapshot, request, MapDefinition);
+        if (!validation.Succeeded)
+        { SetStatus($"battle.stale_request:{validation.ErrorCode}"); return; }
+        PureRunState persisted = snapshot.ActiveRun!;
+        // Rendering consumes a proven node projection, not an Encounter-to-node guess. This is
+        // in-memory recovery only; production persistence stays V11 until all transitions migrate.
+        var scene = PureRunPendingSceneRecovery.Recover(snapshot, MapDefinition);
+        if (!scene.Succeeded) { SetStatus(scene.ErrorCode); return; }
+        RunNodeSceneIdentity identity = scene.Snapshot.ActiveRun!.Checkpoint!.SceneIdentity!;
+        EncounterRequest boundRequest = request with { SceneIdentity = identity };
+        var sceneValidation = PureRunEncounterRequestValidator.Validate(scene.Snapshot, boundRequest, MapDefinition);
+        if (!sceneValidation.Succeeded) { SetStatus(sceneValidation.ErrorCode); return; }
+        bool mysteryBattle = MapDefinition.Nodes.Single(node => node.NodeId == identity.NodeId).Kind == PureRunNodeKind.Mystery;
+        if (!EnsureRunActPrepared(persisted, () => StartBattle(request))) return;
+        bool residentTemplate = HasResidentBattleTemplate(identity);
+        bool residentBattle = !mysteryBattle || residentTemplate;
+        if (!mysteryBattle && !residentTemplate)
+        { SetStatus("battle.resident_template_mismatch"); return; }
+        if (mysteryBattle && residentTemplate &&
+            !HasResidentEventTemplate(identity, scene.Snapshot.ActiveRun!.AdventureState!.PendingEventContext))
+        { SetStatus("battle.resident_event_template_mismatch"); return; }
+        EncounterDefinition encounter = _encounters[request.EncounterContentId];
+        if (residentBattle && !HasResidentBattleLayout(identity, _layouts[encounter.LayoutId]))
+        { SetStatus("battle.surface_layout_mismatch"); return; }
         _settlement.Reset();
         _terminalSettlementResult=null;
         _settlementRetryCount=0;
         _settlementNavigationRetryCount=0;
         _presentationNumberHistory.Clear();
         _currentEncounterId=request.EncounterContentId;
-        EncounterDefinition encounter = _encounters[request.EncounterContentId];
-        bool escortBattle = SaveStore.Load().Snapshot?.ActiveRun?.EscortState?.Lifecycle == RunEscortLifecycle.BattlePending;
-        _battle = new PlayableBattleSessionFactory().Create(request, encounter, _layouts[encounter.LayoutId], _units,
+        // Use the same validated snapshot for encounter context; a second load could mix two checkpoints.
+        bool escortBattle = persisted.EscortState?.Lifecycle == RunEscortLifecycle.BattlePending;
+        _battle = new PlayableBattleSessionFactory().Create(boundRequest, encounter, _layouts[encounter.LayoutId], _units,
             _skills, _ai, _balance, _enemySpeed, _equipment,
             escortBattle ? new PlayableBattleSessionFactory.ProtectedNpcBattleConfig(
                 new ContentId("unit.pure-run.mage"), new GridPoint(2, 5)) : null);
-        BuildBattlePage();
+        BuildBattlePage(residentBattle ? identity : null);
         AddLog(new BattleUiLogEntry(BattleUiLogCategory.Gameplay,$"Entered {EncounterLabel(request.EncounterContentId)} ({request.EncounterContentId.Value})","EncounterNavigationEvent"));
         RefreshLog();
     }
 
-    private void BuildBattlePage()
+    private void BuildBattlePage(RunNodeSceneIdentity? residentIdentity)
     {
         ContentId encounterId=_currentEncounterId??throw new InvalidOperationException("Battle encounter identity is missing.");
         Control root = NewPage($"PURE RUN BATTLE — {EncounterLabel(encounterId)}", $"{encounterId.Value}   |   Left click: select/confirm   Right click or Esc: cancel   Enter: end turn", true);
@@ -826,6 +868,7 @@ public partial class GodotPlayableRunMain : Control
         _board.PointerMoved += UpdateHoveredMeter;
         _board.PointerExited += HideUnitMeters;
         root.AddChild(_board);
+        if (residentIdentity is not null) BindResidentBattleSurface(residentIdentity);
         _presentationPlayer = new GodotBattlePresentationPlayer();
         _presentationPlayer.Configure(_presentationProfile ?? new StandardUnitPresentationResource());
         _presentationPlayer.ConfigureSkills(_skillPresentationProfiles);
@@ -1111,23 +1154,10 @@ public partial class GodotPlayableRunMain : Control
             {
                 bool protectedNpcAlive = _battle?.State.Units.Values.Any(unit =>
                     unit.Unit.InstanceId.Value == "escort-lost-villager" && unit.IsAlive) == true;
-                RunSessionResult eventBattle = _run!.ApplyLayerFourBattleResult(battleResult);
+                RunSessionResult eventBattle = _run!.ApplyEventBattleResult(battleResult, protectedNpcAlive);
                 if (!eventBattle.Succeeded) return HandleSettlementFailure(eventBattle);
                 if (eventBattle.Snapshot?.TerminalSummary is PureRunSummary eventSummary)
                     return CompleteSettlementNavigation(eventBattle, () => ShowSummary(eventSummary));
-                if (eventContext == RunAdventureEventContextKind.LostVillagerEscort)
-                {
-                    eventBattle = _run.ApplyMutation(state =>
-                    {
-                        RunEscortTransition resolved = new PureRunEscortService().ResolveBattle(state,
-                            battleResult.PlayerVictory, protectedNpcAlive);
-                        return new RunMutationResult(resolved.Succeeded, resolved.RejectionCode, resolved.State);
-                    });
-                    if (!eventBattle.Succeeded) return HandleSettlementFailure(eventBattle);
-                }
-                eventBattle = _run.ApplyMutation(state => new RunMutationResult(true, null,
-                    new RunAdventureTransitionService().ResolveEventBattle(state)));
-                if (!eventBattle.Succeeded) return HandleSettlementFailure(eventBattle);
                 return CompleteSettlementNavigation(eventBattle, () =>
                 {
                     ShowPostEventScene(eventBattle.Snapshot!.ActiveRun!, eventContext.ToString());
@@ -1504,18 +1534,46 @@ public partial class GodotPlayableRunMain : Control
         string description = escort ? "The lost villager must survive the ambush." : altar ? "The altar is guarded." : "The chest moves when approached.";
         Control root = NewPage($"{LayerLabel(run)} — TILE EVENT", description);
         AddRunShell(root, run, "Event");
-        AdventureActorPlacement[] actors = AdventurePlacements(run);
-        GridPoint[] perimeter = Enumerable.Range(0, 10).SelectMany(value =>
-                new[] { new GridPoint(value, 0), new GridPoint(value, 9) })
-            .Concat(Enumerable.Range(1, 8).SelectMany(value => new[] { new GridPoint(0, value), new GridPoint(9, value) }))
-            .Distinct().ToArray();
-        AdventureBoardObject[] exits = CreateExitObjects(run, run.NodeTransaction?.NodeId ?? RunAdventureTransitionService.CurrentNodeId(run), false);
-        AdventureBoardDefinition definition = new(boardId, 10, 10, perimeter,
-            new[] { new AdventureBoardObject(objectId, kind, new GridPoint(7, 5), false, false) }.Concat(exits).ToArray(), actors,
-            new GridPoint(1, 5), new GridPoint(8, 5));
+        string nodeId = run.NodeTransaction?.NodeId ?? RunAdventureTransitionService.CurrentNodeId(run);
+        AdventureMapTemplateDefinition? residentTemplate = null;
+        GodotAdventureMapInstance? residentMap = null;
+        if (_actContent?.Blueprint.Bindings.TryGetValue(nodeId, out PureRunNodeContentBinding? binding) == true &&
+            binding.EventContext.ToString() == contextKind && _actWorld is { IsPrepared: true } host &&
+            host.Nodes.TryGetValue(nodeId, out GodotAdventureMapInstance? map) &&
+            map.Surface.Template?.ToCoreDefinition().ContentId == binding.TemplateId)
+        {
+            residentTemplate = map.Surface.Template.ToCoreDefinition();
+            residentMap = map;
+        }
+        AdventureActorPlacement[] actors = residentTemplate is null
+            ? AdventurePlacements(run)
+            : EnsureAdventureSession(run, residentTemplate).Placements();
+        AdventureBoardDefinition definition;
+        if (residentTemplate is not null)
+        {
+            definition = residentTemplate.Board with { ContentId = boardId, Actors = actors };
+        }
+        else
+        {
+            GridPoint[] perimeter = Enumerable.Range(0, 10).SelectMany(value =>
+                    new[] { new GridPoint(value, 0), new GridPoint(value, 9) })
+                .Concat(Enumerable.Range(1, 8).SelectMany(value => new[] { new GridPoint(0, value), new GridPoint(9, value) }))
+                .Distinct().ToArray();
+            AdventureBoardObject[] exits = CreateExitObjects(run, nodeId, false);
+            definition = new AdventureBoardDefinition(boardId, 10, 10, perimeter,
+                new[] { new AdventureBoardObject(objectId, kind, new GridPoint(7, 5), false, false) }.Concat(exits).ToArray(), actors,
+                new GridPoint(1, 5), new GridPoint(8, 5));
+        }
         _adventureBoard = new GodotAdventureBoardView { Name = "AdventureEventBoard" };
         _adventureLastBoardContentId = definition.ContentId.Value;
         root.AddChild(_adventureBoard);
+        if (residentMap is not null)
+        {
+            GodotNodeActivationLease lease = _actWorld!.ActivateNode(nodeId);
+            foreach (var node in _actWorld.Nodes) node.Value.Visible = node.Key == nodeId;
+            _actWorld.Visible = true;
+            _adventureBoard.BindResidentSurface(_actWorld, lease, residentMap.Surface);
+        }
         ConfigureAdventureBoard(_adventureBoard, run, definition);
         WireAdventureMovement(run, definition, changed => ShowAdventureEventEntry(changed, contextKind));
         _adventureBoard.ObjectPressed += pressed =>
@@ -1571,14 +1629,50 @@ public partial class GodotPlayableRunMain : Control
             : altar ? "The altar is quiet." : "The mimic has collapsed into an opened chest.";
         Control root = NewPage($"{LayerLabel(run)} — EVENT RESOLVED", resolvedDescription);
         AddRunShell(root, run, "Event Result");
-        AdventureActorPlacement[] actors = AdventurePlacements(run);
-        AdventureBoardObject[] exits = CreateExitObjects(run, run.NodeTransaction?.NodeId ?? RunAdventureTransitionService.CurrentNodeId(run), true);
-        AdventureBoardDefinition definition = new(run.AdventureState!.BoardContentId, 10, 10, [],
-            new[] { new AdventureBoardObject(objectId, escort ? AdventureObjectKind.Npc : altar ? AdventureObjectKind.Altar : AdventureObjectKind.Chest, new GridPoint(7, 5), false, false) }.Concat(exits).ToArray(), actors,
-            new GridPoint(1, 5), new GridPoint(8, 5));
+        string nodeId = run.NodeTransaction?.NodeId ?? RunAdventureTransitionService.CurrentNodeId(run);
+        AdventureMapTemplateDefinition? residentTemplate = null;
+        GodotAdventureMapInstance? residentMap = null;
+        if (_actContent?.Blueprint.Bindings.TryGetValue(nodeId, out PureRunNodeContentBinding? binding) == true &&
+            binding.EventContext.ToString() == contextKind && _actWorld is { IsPrepared: true } host &&
+            host.Nodes.TryGetValue(nodeId, out GodotAdventureMapInstance? map) &&
+            map.Surface.Template?.ToCoreDefinition().ContentId == binding.TemplateId)
+        {
+            residentTemplate = map.Surface.Template.ToCoreDefinition();
+            residentMap = map;
+        }
+        AdventureActorPlacement[] actors = residentTemplate is null
+            ? AdventurePlacements(run)
+            : EnsureAdventureSession(run, residentTemplate).Placements();
+        AdventureBoardDefinition definition;
+        if (residentTemplate is not null)
+        {
+            AdventureBoardObject[] resolvedObjects = escort && run.EscortState?.ProtectedNpcAlive != true
+                ? residentTemplate.Board.Objects.Where(value => value.ObjectId != objectId).ToArray()
+                : residentTemplate.Board.Objects.ToArray();
+            definition = residentTemplate.Board with
+            {
+                ContentId = run.AdventureState!.BoardContentId,
+                Actors = actors,
+                Objects = resolvedObjects
+            };
+        }
+        else
+        {
+            AdventureBoardObject[] exits = CreateExitObjects(run, nodeId, true);
+            definition = new AdventureBoardDefinition(run.AdventureState!.BoardContentId, 10, 10, [],
+                new[] { new AdventureBoardObject(objectId, escort ? AdventureObjectKind.Npc : altar ? AdventureObjectKind.Altar : AdventureObjectKind.Chest, new GridPoint(7, 5), false, false) }.Concat(exits).ToArray(), actors,
+                new GridPoint(1, 5), new GridPoint(8, 5));
+        }
         _adventureBoard = new GodotAdventureBoardView { Name = "ResolvedAdventureEventBoard" };
         _adventureLastBoardContentId = definition.ContentId.Value;
         root.AddChild(_adventureBoard);
+        if (residentMap is not null)
+        {
+            GodotNodeActivationLease lease = _actWorld!.ActivateNode(nodeId);
+            foreach (var node in _actWorld.Nodes) node.Value.Visible = node.Key == nodeId;
+            _actWorld.Visible = true;
+            _adventureBoard.BindResidentSurface(_actWorld, lease, residentMap.Surface);
+        }
         ConfigureAdventureBoard(_adventureBoard, run, definition);
         WireAdventureMovement(run, definition, changed => ShowPostEventScene(changed, contextKind));
         _adventureBoard.ObjectPressed += pressed => HandleExitPointer(run, definition, pressed);
@@ -1655,6 +1749,14 @@ public partial class GodotPlayableRunMain : Control
         if (_adventureSession is null || !_adventureSession.Matches(run))
             _adventureSession = AdventureExplorationSession.Restore(run,
                 [new GridPoint(2, 5), new GridPoint(1, 4), new GridPoint(1, 6)]);
+        return _adventureSession;
+    }
+
+    private AdventureExplorationSession EnsureAdventureSession(PureRunState run,
+        AdventureMapTemplateDefinition template)
+    {
+        if (_adventureSession is null || !_adventureSession.Matches(run))
+            _adventureSession = AdventureExplorationSession.Restore(run, template);
         return _adventureSession;
     }
 
@@ -1960,12 +2062,16 @@ public partial class GodotPlayableRunMain : Control
         if (snapshot.TerminalSummary is PureRunSummary summary) { ResetRunUiScope(); ShowSummary(summary); return; }
         if (snapshot.PendingRunSetup is not null) { ResetRunUiScope(); ShowNewRunSetup(snapshot); return; }
         PureRunState run = snapshot.ActiveRun ?? throw new InvalidOperationException("Active run is missing.");
+        if (!EnsureRunActPrepared(run, () => RouteRunState(snapshot))) return;
         BindRunUiScope(run.RunId);
         if(run.Phase==PureRunPhase.ResolvingLayerFourNode){RouteLayerFour(run);return;}
         if(run.Phase==PureRunPhase.ResolvingLayerSixNode){RouteLayerSixNode(run);return;}
         if(run.Phase==PureRunPhase.PendingBattle&&run.Checkpoint is not null)
         {
-            StartBattle(AdventureEncounterRequest(run, run.Checkpoint.EncounterContentId));
+            RunSessionResult resumed = _run!.ResumeRun();
+            if (!resumed.Succeeded || resumed.EncounterRequest is null || resumed.EncounterRequest.RunId != run.RunId)
+            { SetStatus(resumed.ErrorCode ?? "battle.stale_request"); return; }
+            StartBattle(resumed.EncounterRequest);
             return;
         }
         if (run.PendingProgression.FirstOrDefault() is PendingProgression pending)
@@ -2111,7 +2217,8 @@ public partial class GodotPlayableRunMain : Control
     private void BeginLayerSixBattle(){RunSessionResult result=_run!.ApplyMutation(state=>{ContentId id=new PureRunMapService(MapDefinition).SelectLateEncounter(state.Seed,"layer_06_battle");LayerFourNodeResolution begun=new PureRunLayerFourNodeService().BeginN4(state,id);return new RunMutationResult(begun.Succeeded,begun.RejectionCode,begun.State);});if(!result.Succeeded||result.Snapshot?.ActiveRun?.Checkpoint is null){SetStatus(result.ErrorCode);return;}PureRunState pending=result.Snapshot.ActiveRun;StartBattle(AdventureEncounterRequest(pending, pending.EncounterContentId));}
 
     private static EncounterRequest AdventureEncounterRequest(PureRunState run, ContentId encounterId) => new(
-        run.RunId, run.Checkpoint!.Revision, encounterId, run.Checkpoint.Party, run.AdventureState?.Revision ?? 0);
+        run.RunId, run.Checkpoint!.Revision, encounterId, run.Checkpoint.Party, run.AdventureState?.Revision ?? 0,
+        run.Checkpoint.SceneIdentity);
     private void BeginBoss(){RunSessionResult result=_run!.ApplyFullRunTransition(state=>new PureRunFullRunService(_consumables.Keys).BeginBoss(state,MapDefinition));if(!result.Succeeded||result.EncounterRequest is null){SetStatus(result.ErrorCode);return;}StartBattle(result.EncounterRequest);}
 
     private void ShowInventory(PureRunState run) => ShowInventory(run, InventoryReturnTarget.RunRoute);
@@ -2342,6 +2449,7 @@ public partial class GodotPlayableRunMain : Control
 
     private void ShowSummary(PureRunSummary summary)
     {
+        ReleaseActWorld();
         _battle = null;
         ResetRunUiScope();
         Control root = NewPage(summary.Outcome.ToString(), "Three-encounter slice complete");
@@ -2466,6 +2574,7 @@ public partial class GodotPlayableRunMain : Control
         ClosePauseMenu();
         RunSessionResult canceled = _run!.CancelNewRunSetup();
         if (!canceled.Succeeded) { SetStatus(canceled.ErrorCode); return; }
+        ReleaseActWorld();
         if (canceled.Snapshot?.ActiveRun is not null) RouteRunState(canceled.Snapshot);
         else StartNewRunConfirmed();
     }
@@ -2475,6 +2584,7 @@ public partial class GodotPlayableRunMain : Control
         ClosePauseMenu();
         if (_inputContext.SetupDraftActive && _run?.HasSetupDraft == true)
             _ = _run.CancelNewRunSetup();
+        ReleaseActWorld();
         RequestQuit();
     }
 
@@ -2534,6 +2644,7 @@ public partial class GodotPlayableRunMain : Control
 
     private Control CreatePage(string title, string subtitle, bool battleBackdrop, bool showHeader)
     {
+        HideActWorldForPage();
         ClosePauseMenu();
         _inputContext = RunInputContext.Disabled;
         _currentPageTitle = title;
@@ -2564,6 +2675,8 @@ public partial class GodotPlayableRunMain : Control
         _damageNumbers=null;
         var root = new Control(); root.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect); AddChild(root); _page = root;
         Control background = battleBackdrop ? new GodotBattleBackdrop() : new ColorRect { Color = GodotTacticsTheme.Background };
+        background.ZIndex = -100; // Persistent Act maps render above the page-owned backdrop.
+        background.MouseFilter = MouseFilterEnum.Ignore;
         background.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect); root.AddChild(background);
         if (!battleBackdrop && showHeader)
         {

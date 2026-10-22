@@ -1,30 +1,856 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "batchId": "roguelike-map-templates-v1",
   "state": "Generated",
   "ownership": "GodotOwned",
+  "manualQaStatus": "manual_qa_pending",
   "contractId": "ROGUELIKE-MAP-TEMPLATE-001",
-  "catalogCount": 2,
+  "variantCount": 22,
+  "catalogCount": 24,
+  "sourceAuthority": "canonical-godot-catalog",
+  "sourceCommit": "5d1a73c169856fa42656fda561c81b096b6518c6",
+  "sources": [
+    {
+      "resourcePath": "repo://godot/src/Tactics.Godot.Adapter/Editor/AdventureMapAssetBuilder.cs",
+      "sourceHash": "sha256:671dd58b6c1ff3a323a5a081b81cd4cf4923ee7eff8606084d8576b57653ba96"
+    },
+    {
+      "resourcePath": "repo://godot/src/Tactics.Godot.Adapter/Editor/AdventureMapAssetFactory.cs",
+      "sourceHash": "sha256:362b022b927dbc22d5b0907e2fb0dde5504fec594e8213a93c0504f5e0da5d9b"
+    },
+    {
+      "resourcePath": "repo://src/Tactics.Core/Runs/AdventureMapContracts.cs",
+      "sourceHash": "sha256:195e3710b2e4d9afe2657693db9c75da1b1055b0b3897d9338e31c6d9f37bfa3"
+    },
+    {
+      "resourcePath": "repo://src/Tactics.Core/Runs/PureRunActBlueprint.cs",
+      "sourceHash": "sha256:eb6e1f702720afbde554316c057bd6226b70399c1b4d16f635e2286626b49666"
+    },
+    {
+      "resourcePath": "res://content/ContentCatalog.tres",
+      "sourceHash": "sha256:c9a58e5ae0277482624e49d4a33d9db01c900f2087f833c5679b723e9cfe102f"
+    },
+    {
+      "resourcePath": "res://content/ai_encounters/AiPureRunAoe.tres",
+      "sourceHash": "sha256:5404e937dcbfa10ab4bed148437c12e99bfe6f30e31921f07b4c7bf3ffc34f48"
+    },
+    {
+      "resourcePath": "res://content/ai_encounters/AiPureRunCharger.tres",
+      "sourceHash": "sha256:c4433e9b8e6b2a07f3ffe0c07cbe92f421d44abd217f9456998225083c66f926"
+    },
+    {
+      "resourcePath": "res://content/ai_encounters/AiPureRunEliteCharger.tres",
+      "sourceHash": "sha256:d878bc2e4200f213b7eaee783334288a9957649a91ac91a0fa2d5ff6f111fc3f"
+    },
+    {
+      "resourcePath": "res://content/ai_encounters/AiPureRunElitePoisonCaster.tres",
+      "sourceHash": "sha256:ca144fabf8fe45621ed7ce0572902d544619ccc10e40108da587d0488cad9de5"
+    },
+    {
+      "resourcePath": "res://content/ai_encounters/AiPureRunMawBatPredatoryDiver.tres",
+      "sourceHash": "sha256:392aaaa31c62c11ad711085508467e7e1bd889d6ec2d7c6e3e805e2c884fa2ec"
+    },
+    {
+      "resourcePath": "res://content/ai_encounters/AiPureRunRanged.tres",
+      "sourceHash": "sha256:0dd78248d5226aa4aaef0964f45e3907aedde64a53e7810c54992b801ef8ea11"
+    },
+    {
+      "resourcePath": "res://content/ai_encounters/AiPureRunSupport.tres",
+      "sourceHash": "sha256:09dd788f6a80a38981ddbc2c67a288ac7d358c347c8ffb448ae622ec943f5e9b"
+    },
+    {
+      "resourcePath": "res://content/ai_encounters/BattleLayoutPureRunCenterBlocker.tres",
+      "sourceHash": "sha256:55791e4bea8fe5e307d8db9631ca6ab5f4a8dfcbc08b4b2da649ad8e546296e8"
+    },
+    {
+      "resourcePath": "res://content/ai_encounters/BattleLayoutPureRunN2ShallowWater.tres",
+      "sourceHash": "sha256:7208315ace759a77bd9bbe1389aba7017e8fd6be95539cac65a96eaf88018738"
+    },
+    {
+      "resourcePath": "res://content/ai_encounters/BattleLayoutPureRunOpen.tres",
+      "sourceHash": "sha256:d610b0a73ef9b1e4d85141141834fe325fbbab73c408c0ddee8abdb0b0be7408"
+    },
+    {
+      "resourcePath": "res://content/ai_encounters/EncounterPureRunN1.tres",
+      "sourceHash": "sha256:bfd5361c6bb14c14ac725458c94c89209976a1f37d9bc899c9d437af0559429c"
+    },
+    {
+      "resourcePath": "res://content/ai_encounters/EncounterPureRunN2.tres",
+      "sourceHash": "sha256:98b1cf6be30d8f98a29e78fbf4e9fe257cb76fd8c9114af168725624a21b2f6e"
+    },
+    {
+      "resourcePath": "res://content/ai_encounters/EncounterPureRunN3.tres",
+      "sourceHash": "sha256:f3a477d36ca7f737170d19bb02acee70fdc5ed6f6f50bd4eb002c8f1dbe917fc"
+    },
+    {
+      "resourcePath": "res://content/ai_encounters/SkillEnemyAreaBlastLv1.tres",
+      "sourceHash": "sha256:02201576f6e1727818e2b907e00166abd9363189e08e12a8a0cba804898a9ca4"
+    },
+    {
+      "resourcePath": "res://content/ai_encounters/SkillEnemyChargeStrikeLv1.tres",
+      "sourceHash": "sha256:f9b6f4ce4dc886e4ebddc0cafd286b414ea125c7843b5b5a05f23071a65b02f5"
+    },
+    {
+      "resourcePath": "res://content/ai_encounters/SkillEnemyHeavyShotLv1.tres",
+      "sourceHash": "sha256:f32a8c16215c484c34feb90c001c2b18ba9c9cbd964834c8ed040ea6a610f45e"
+    },
+    {
+      "resourcePath": "res://content/ai_encounters/SkillEnemyMawBatBiteLv1.tres",
+      "sourceHash": "sha256:976c6cb5bad8382ec86ce8c227da857d0e5761eef446a25daa0724eb3f1ea6a2"
+    },
+    {
+      "resourcePath": "res://content/ai_encounters/SkillEnemyRangedAttackLv1.tres",
+      "sourceHash": "sha256:72e1d9257fe9a589b6c18fe22d9eabd8488d81d8846c61296315c7d167e6fd6c"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/BuffCounter.tres",
+      "sourceHash": "sha256:aafe197fa15305cde8df01cf3a2ddbc1b7ddc16e9ec975a4682af48336eb3005"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/BuffCurseDamageAmplifier.tres",
+      "sourceHash": "sha256:6cfdf72b3a7b6bf856ec65238cd704518498ae76124e3f755221827207a55013"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/BuffEventDamageReduction.tres",
+      "sourceHash": "sha256:cab441bee49540757da220ee7ec1aefd87123dd8615696743bba2790edb2841e"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/BuffEventDamageTakenUp.tres",
+      "sourceHash": "sha256:22833946568bb26c7b87a6a36bda7ec992c7396adad71edc6df9f8e1f7c6966b"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/BuffFear.tres",
+      "sourceHash": "sha256:ba95a4272216613c67d30c9695d7d9ec69a2fdf66e442e655d6a2497de0ba564"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/BuffFrozen.tres",
+      "sourceHash": "sha256:02cf7b9c638da36cebeb72d5d41c472cc45ec69662fad914546f4fc6472bad36"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/BuffIceArmor.tres",
+      "sourceHash": "sha256:03b0ef863a4999f584331c7b821b7473c1af28a32ec43c05e01cb4cd9848d0ff"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/BuffIceArmorLv1.tres",
+      "sourceHash": "sha256:5688ad618741dace1ec94f1e5c526ca6f90710ec395758c394c50e3a97bc44a5"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/BuffIceArmorLv2.tres",
+      "sourceHash": "sha256:6d15090ab36a6e1d7f2594caabe37ec652395dcb14797210bbc3876eab76b191"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/BuffIgnite.tres",
+      "sourceHash": "sha256:893437c946d50eddfa744d2342a50ce9076533b0f5f0cf3a434ce76e5decc7d9"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/BuffMark.tres",
+      "sourceHash": "sha256:dd05327ca8c2da057adc9b983744f1512a1b0a7833d1c4e7e6381ff75fadb093"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/BuffSlow.tres",
+      "sourceHash": "sha256:8d3cdec02933f16978a9c0b9bf19a4ae9559bcdcd27a18236a8d0b7415835eb0"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/BuffStun.tres",
+      "sourceHash": "sha256:94893298b84da5ca18711263aa94641006f5d0d2c37276e35b70f04e3b6a1f8e"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/ConsumableCleansingPotion.tres",
+      "sourceHash": "sha256:382ae1c098f72768409fd11ce5b73314cf6d1808d5b16de3ddefa498fd718721"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/ConsumableLifePotion.tres",
+      "sourceHash": "sha256:e29741b37591636190f671de327d2b7865c33d127d71e6a4c7730295c6ef4a8f"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/ConsumableManaPotion.tres",
+      "sourceHash": "sha256:13dba837fe83a11a49492e2e2fb321d524d1f5090697ca2b3fd6366f7d74a8a7"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/EquipmentBow01.tres",
+      "sourceHash": "sha256:3660471cf23d99194514db114569bccd6d1ebf6202e3bd3a4c1b74d5922663e7"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/EquipmentIronHelmet01.tres",
+      "sourceHash": "sha256:8ee39de931a3047bb5623c29e870b22fc582891cf5fa96eb542b4adae50aa468"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/EquipmentLeatherArmor01.tres",
+      "sourceHash": "sha256:dd4791eff783ec55bca4e8fc950a7a7584893dfd835722b7cf7f97c19cf1495a"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/EquipmentLeatherBoots01.tres",
+      "sourceHash": "sha256:17fa0d8278430ce6e8d1a725df99b9f6f8caaefe97f80607a24a0cc415886eac"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/EquipmentLuckyRing01.tres",
+      "sourceHash": "sha256:66638f57657f5fab88e07da026bbdec0539af385a5785f8ef9c394a69135fa9b"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/EquipmentShadowCloak01.tres",
+      "sourceHash": "sha256:9b284349aae3dd9dc4ba8de4a238fe8c3c7f36ab3af4e3ef9745a83c3c2aa4e0"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/EquipmentShield01.tres",
+      "sourceHash": "sha256:22f11396e67b524aab6fd174d0177bcbc2d7f2b03cdab3642d4bec1cde97eefb"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/EquipmentSilverRing01.tres",
+      "sourceHash": "sha256:03170c3b603db3846381fc741ea4f24043dbc2fca1680bdea6654a9359a4a3eb"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/EquipmentStaff01.tres",
+      "sourceHash": "sha256:f33ea10022061802ad8ae631ed1acbe243ea41b248a9efafcc02a2a417fe29f8"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/EquipmentSteelSword01.tres",
+      "sourceHash": "sha256:a7294cf48fb02197c4bd2423c1d15184f721840552d453310bb04d2e13ac1c3d"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/EquipmentSword01.tres",
+      "sourceHash": "sha256:d72f8d3a5350e7d41b0a0ff03d39d1185e860cf8ef3fca1dd539f2bafa0bc00b"
+    },
+    {
+      "resourcePath": "res://content/buffs_items/EquipmentWizardHat01.tres",
+      "sourceHash": "sha256:d25046efa446eeab2bef93abbb32ec3dffbca8ef46e6e5f18924df6fdedd1e8c"
+    },
+    {
+      "resourcePath": "res://content/demonbound/BaneDamageOutputReduction.tres",
+      "sourceHash": "sha256:a0344765e7503a1397685a2d03f5554863472fe0c0713d1e891834e2b4381721"
+    },
+    {
+      "resourcePath": "res://content/demonbound/BanePresentation.tres",
+      "sourceHash": "sha256:f7c00ef5e506a6478872e67dbe449e51bad079dbe81dd946a2bf4a10f1797338"
+    },
+    {
+      "resourcePath": "res://content/demonbound/DemonboundBaneLv1.tres",
+      "sourceHash": "sha256:f58dc52b66988e07eb796e3731170d3e8cb0e542b6ac884c4a2d96fc992d3487"
+    },
+    {
+      "resourcePath": "res://content/demonbound/DemonboundBaneLv2.tres",
+      "sourceHash": "sha256:35157e232875d8a2b36eb759d51c4f955d12018208ac59cf1b2b61d9ef9aa2d1"
+    },
+    {
+      "resourcePath": "res://content/demonbound/DemonboundBaneLv3.tres",
+      "sourceHash": "sha256:28f900f81934a21a104d075fc68b3e4b1659f4197e4d6e8897aa94e0990dcc6b"
+    },
+    {
+      "resourcePath": "res://content/demonbound/DemonboundCleaveLv1.tres",
+      "sourceHash": "sha256:09a8601e9629d1cc2e470b2ee756047bca5ce1f221f23855419fa1035fb9544d"
+    },
+    {
+      "resourcePath": "res://content/demonbound/DemonboundCleaveLv2.tres",
+      "sourceHash": "sha256:e9e717f4a2c4b77ca4cfd8569e9057ed76f6579d5df5aad23d8644a2584e8a6f"
+    },
+    {
+      "resourcePath": "res://content/demonbound/DemonboundHellfireLv1.tres",
+      "sourceHash": "sha256:6a34b30f70385018e50aa8a75743d6bbeff82022935c91f81afa7bcd29fe6174"
+    },
+    {
+      "resourcePath": "res://content/demonbound/DemonboundHellfireLv2.tres",
+      "sourceHash": "sha256:d541dd7c106dded6445d0b8a982d91a8ddf8a4728683f21e12068820860080ab"
+    },
+    {
+      "resourcePath": "res://content/demonbound/DemonboundInfernalBlastLv1.tres",
+      "sourceHash": "sha256:af4c74b1d9ec8e912af4ef3ec267ad555bea32a6d06ca51f621627b342dd8f9b"
+    },
+    {
+      "resourcePath": "res://content/demonbound/DemonboundInfernalBlastLv2.tres",
+      "sourceHash": "sha256:56a5746e5387178ae7d2c0d8263980b9f43174272e662537d1df6f5c41983c1d"
+    },
+    {
+      "resourcePath": "res://content/demonbound/DemonboundInfernalBlastLv3.tres",
+      "sourceHash": "sha256:d180aaa40f7afcf99bfcc53bc5d405d0b70ebd0681556d8fdcf9da6eb6915ee2"
+    },
+    {
+      "resourcePath": "res://content/demonbound/DemonboundMeditation.tres",
+      "sourceHash": "sha256:c25a18b9242c8b50021b2c3114e9c12d237ecbec4623b828901f4461cd18081a"
+    },
+    {
+      "resourcePath": "res://content/demonbound/DemonboundMindfulnessLv1.tres",
+      "sourceHash": "sha256:352febf2188e199ff8db6938032031e4f1c89049863ad131417f61c366095b5e"
+    },
+    {
+      "resourcePath": "res://content/demonbound/DemonboundMindfulnessLv2.tres",
+      "sourceHash": "sha256:f4358b64c601285305056d91886ebeaffaf7528d7c280d5b7b787aedd38e5213"
+    },
+    {
+      "resourcePath": "res://content/demonbound/DemonboundMindfulnessLv3.tres",
+      "sourceHash": "sha256:2f24ea2685223f93365d364bf7f42414c4a8194b345a847b6fdbce7723402661"
+    },
+    {
+      "resourcePath": "res://content/demonbound/DemonboundRegenerationLv1.tres",
+      "sourceHash": "sha256:896c34864b3e4024b52f43e0cb173027547455da9249ed89fe5fbd4ab33b6868"
+    },
+    {
+      "resourcePath": "res://content/demonbound/DemonboundRegenerationLv2.tres",
+      "sourceHash": "sha256:744a34d464be83396b850bdf86895794808c4a562131b3db16ca3a1b6a641972"
+    },
+    {
+      "resourcePath": "res://content/demonbound/PureRunDemonbound.tres",
+      "sourceHash": "sha256:0ab9d88954be1d32c4934b13642250543912c99dc609dd4cf20296d2bfd07a5c"
+    },
+    {
+      "resourcePath": "res://content/full_run/BattleLayoutPureRunSpecialOpen.tres",
+      "sourceHash": "sha256:a0333c8563b87a1423887843380e7f46205b7ef685bbff371b07c99401bc138e"
+    },
+    {
+      "resourcePath": "res://content/full_run/BattleLayoutPureRunSplitFlank.tres",
+      "sourceHash": "sha256:30cdcc95f1246bbdfc3050ae4fe25d12c4d7287d16cb23745b9a71fbd7b859fc"
+    },
+    {
+      "resourcePath": "res://content/full_run/encounter_pure_run_e1.tres",
+      "sourceHash": "sha256:e8bc0feea9c3b76c53f7408afbe2cd2d0565021756a634e85e4eae95a101ef3f"
+    },
+    {
+      "resourcePath": "res://content/full_run/encounter_pure_run_e2.tres",
+      "sourceHash": "sha256:18d5abf52c57b220354a5ef4682ac31db55ec7cd87aea40f4fb0924b25fca0a9"
+    },
+    {
+      "resourcePath": "res://content/full_run/encounter_pure_run_n5.tres",
+      "sourceHash": "sha256:19873def6e6da02c04a30a006c38fcda2339ea9285a3830b92493f68ddb83faa"
+    },
+    {
+      "resourcePath": "res://content/full_run/encounter_pure_run_n6.tres",
+      "sourceHash": "sha256:7b0f73886740a6248c186ffd25a7f15c28d5450900dcc77863515cf6f0503c3b"
+    },
+    {
+      "resourcePath": "res://content/full_run/encounter_pure_run_special.tres",
+      "sourceHash": "sha256:8552bd37cbfc3c4860f4e9e1ca4b7092b60a3e155012d6faef4659b7f61eb5d1"
+    },
+    {
+      "resourcePath": "res://content/layer4/encounter_pure_run_n4.tres",
+      "sourceHash": "sha256:eb443c2312ab4516e46b9427dd384633ecb8d09bf7b1bc6f6ffea3d1945121ce"
+    },
+    {
+      "resourcePath": "res://content/layer4/event_pure_run_cursed_chest.tres",
+      "sourceHash": "sha256:f0af636439c5dea92b7661e2b412557e51093076a3b5904197b90309b4d18642"
+    },
+    {
+      "resourcePath": "res://content/layer4/event_pure_run_fallen_altar.tres",
+      "sourceHash": "sha256:2b3a0793b4f7d60d27ab8da926bb06cc999a499de5e3c439ec1168c98f10e453"
+    },
+    {
+      "resourcePath": "res://content/layer4/event_pure_run_lost_villager.tres",
+      "sourceHash": "sha256:fccd939a61212fdfbb753a558431b41a3da5e9722915a8611867d94974540064"
+    },
+    {
+      "resourcePath": "res://content/layer4/rest_pure_run_standard_v1.tres",
+      "sourceHash": "sha256:3a2e551a6ce72ad7942f901025af26107761ebaa4898c959823b955ea05bfe0d"
+    },
+    {
+      "resourcePath": "res://content/layer4/store_pure_run_standard_v1.tres",
+      "sourceHash": "sha256:8e83405e6cd358cac3dcd4cdbae3be6b7c1be54755ffcd600c7f08c5e0cc6681"
+    },
+    {
+      "resourcePath": "res://content/map/PureRunDefaultMap.tres",
+      "sourceHash": "sha256:e61288586e8457e93036bf00ad06c6e4e4249e0beb4fa586d3b4af49af629b5d"
+    },
+    {
+      "resourcePath": "res://content/map/PureRunStandardTreasure.tres",
+      "sourceHash": "sha256:8ffb4c9cfdc73c6bcbb269c5aad0a6480954e2d9bd0f58f178495b044e108781"
+    },
+    {
+      "resourcePath": "res://content/poison_spear/PoisonBuff.tres",
+      "sourceHash": "sha256:2b6dcec960c7d4ddae43a5b17f5103ea9390995b59129446d8294ea4a5669387"
+    },
+    {
+      "resourcePath": "res://content/poison_spear/PoisonSpear10x10Fixture.tres",
+      "sourceHash": "sha256:560b1d2b1bd164ef18b93a78fe0e3d4ed3fb7e0ecb68a600ef145e2c2e57792e"
+    },
+    {
+      "resourcePath": "res://content/poison_spear/PoisonSpearImpact.tscn",
+      "sourceHash": "sha256:1f27a954982ffee0d39991b23ca2824a3495e616c2485afcbc593167c39bef48"
+    },
+    {
+      "resourcePath": "res://content/poison_spear/PoisonSpearPresentationLv1.tres",
+      "sourceHash": "sha256:7e24030e72769306197b66b0217b21ee76dd0a571258068116a3e246a39eb106"
+    },
+    {
+      "resourcePath": "res://content/poison_spear/PoisonSpearProjectile.tscn",
+      "sourceHash": "sha256:046dd78c1cc1bd790adeca58a27ef7fb1ba7545370211971b6def39bcd13e92b"
+    },
+    {
+      "resourcePath": "res://content/poison_spear/PoisonSpearSkillLv1.tres",
+      "sourceHash": "sha256:8ca6ce84b8c782342e89c282231f3503dcf9574fd86e476aa85f75b88f1b3f2d"
+    },
+    {
+      "resourcePath": "res://content/presentation/AmplifyDamagePresentation.tres",
+      "sourceHash": "sha256:84bdad2bda93ddbe945f6e29d94ab530ff969f110fbddfe8fe3aaf0380ed581b"
+    },
+    {
+      "resourcePath": "res://content/presentation/BattleBoardPureRunIsometricV1.tres",
+      "sourceHash": "sha256:298ccf33f315de9c051d12a6d2f148322d8e823b3feb87b080c017ab17017943"
+    },
+    {
+      "resourcePath": "res://content/presentation/BoneSpearPresentation.tres",
+      "sourceHash": "sha256:39d97a23b0e5d6f067d18888247dd33382b8b1e08955ecd38c991ac47da9a423"
+    },
+    {
+      "resourcePath": "res://content/presentation/FireballPresentation.tres",
+      "sourceHash": "sha256:2c6ae52d9ad744743364bdbde35eb5742d8850c502aaea337671cccfd0beac0c"
+    },
+    {
+      "resourcePath": "res://content/presentation/IceBoltPresentation.tres",
+      "sourceHash": "sha256:2e93aeb7ded955082f4c13effd940f8a8060d4bb7e8ee62c9c837256734a70ae"
+    },
+    {
+      "resourcePath": "res://content/presentation/LightningPresentation.tres",
+      "sourceHash": "sha256:5b4dbbdf84acdf9c6b8900a03391709fecc3fd0a3a93acfdd55c571b00d7acc0"
+    },
+    {
+      "resourcePath": "res://content/presentation/PoisonSpearPresentation.tres",
+      "sourceHash": "sha256:eda932817b0cdcbf364a5a30dadfb8e12e80bafd07ba1da42b1b066a3af2dc52"
+    },
+    {
+      "resourcePath": "res://content/presentation/StandardStatusPresentationV1.tres",
+      "sourceHash": "sha256:f8e7372aa65a352637cdd1ff2ac1a256e9aad104f106c28bca0ef6eab60a6981"
+    },
+    {
+      "resourcePath": "res://content/presentation/StandardUnitPresentationV1.tres",
+      "sourceHash": "sha256:0ca6f16fcb9c970d06abd3d59f41f0dcb0336a53d16a696285f98e9f909c8b08"
+    },
+    {
+      "resourcePath": "res://content/presentation/ThrustPresentation.tres",
+      "sourceHash": "sha256:4e92e03248b353c20382b968c828ab0065b4c2b50f1947a75fcf4a61a5193494"
+    },
+    {
+      "resourcePath": "res://content/runs/PureRunThreeEncounterV1.tres",
+      "sourceHash": "sha256:c3a3518e88d44ab7b2c33fb05242b838be1bd092ee21b8ed529d07a28d349237"
+    },
+    {
+      "resourcePath": "res://content/skills/AmazonCombatTechniquesLv1.tres",
+      "sourceHash": "sha256:285713171696ea59c2dd5cd62a65cea37a88e6b8123638cfc137d720b79334a8"
+    },
+    {
+      "resourcePath": "res://content/skills/AmazonCombatTechniquesLv2.tres",
+      "sourceHash": "sha256:9fc3e5481028317979e96606c0e0badb2195b17c4acceda489c427df5125f797"
+    },
+    {
+      "resourcePath": "res://content/skills/AmazonCombatTechniquesLv3.tres",
+      "sourceHash": "sha256:d6aa742f45d962e17f4be358d7369f748e41f9b024e161492b5391a3b1a6d557"
+    },
+    {
+      "resourcePath": "res://content/skills/AmazonDecoyLv1.tres",
+      "sourceHash": "sha256:62b213386e0428482fe0f051fa327af6e45e1abf96a935396b5afe77601861dd"
+    },
+    {
+      "resourcePath": "res://content/skills/AmazonDecoyLv2.tres",
+      "sourceHash": "sha256:ba12a35c285c8b11474d24bb1c1b2ad7dd53ded3e045ad896b8b64ab24e3648f"
+    },
+    {
+      "resourcePath": "res://content/skills/AmazonMultiStabLv1.tres",
+      "sourceHash": "sha256:b769e45a696bd822e85ad404dd05ce95045937404dd754cb3e89d391cf0a3aed"
+    },
+    {
+      "resourcePath": "res://content/skills/AmazonMultiStabLv2.tres",
+      "sourceHash": "sha256:03ec87d789b0b22615a2179b550269ee1abea7e9cf369c9a8dac75a6f9babfb0"
+    },
+    {
+      "resourcePath": "res://content/skills/AmazonPickupSpearLv1.tres",
+      "sourceHash": "sha256:a337167661fef6155a372f110be0d8393abfe6848fa618a47333f644449d8aea"
+    },
+    {
+      "resourcePath": "res://content/skills/AmazonPoisonSpearLv2.tres",
+      "sourceHash": "sha256:d106de3acb1841cad285ae9043c8e514a05fc83f273f48dc3a11e5287c3738ad"
+    },
+    {
+      "resourcePath": "res://content/skills/AmazonPoisonSpearLv3.tres",
+      "sourceHash": "sha256:3fefaead893b8653034174658ab73b5c17e6c8f88ba4a3591091346ad8e54d32"
+    },
+    {
+      "resourcePath": "res://content/skills/AmazonRecoverSpearLv1.tres",
+      "sourceHash": "sha256:d72fed81e94ca23170b45dea9d8e9f9ea593c643c1796cd91c0015ee9580b076"
+    },
+    {
+      "resourcePath": "res://content/skills/AmazonRecoverSpearLv2.tres",
+      "sourceHash": "sha256:e64471ee71ff6d5cc040080a336ca6628b3ed978419b5a4bcc987ba37003e730"
+    },
+    {
+      "resourcePath": "res://content/skills/AmazonThrustLv1.tres",
+      "sourceHash": "sha256:d4447961a3e44d77e82f887120a8f2a1cc37de738006c99d6de42e5dcb7fd2c5"
+    },
+    {
+      "resourcePath": "res://content/skills/AmazonThrustLv2.tres",
+      "sourceHash": "sha256:3b9397f077ebf76e123fc74762d46951534c4b4d580c2fe422183c15186af3ea"
+    },
+    {
+      "resourcePath": "res://content/skills/AmazonThrustLv3.tres",
+      "sourceHash": "sha256:31b1134d879f0d384e61c111f8e5245edc5a27b5ef9786debf2f21ce2d4a5a00"
+    },
+    {
+      "resourcePath": "res://content/skills/BasicMagic.tres",
+      "sourceHash": "sha256:326bc0f766da66c1d670eb8404d91b573e4150c1290e385c1f9e2cbdf284f2f6"
+    },
+    {
+      "resourcePath": "res://content/skills/BasicMelee.tres",
+      "sourceHash": "sha256:807005e6d4cfd85218087b461aee3ed0da8ab5a9f18d92fed16ade6190b439be"
+    },
+    {
+      "resourcePath": "res://content/skills/MageFireballLv1.tres",
+      "sourceHash": "sha256:a98c3872e5d78c080d4d36e9fe44e951ee8b868d9695eb2f4a95383fa7e4a8d4"
+    },
+    {
+      "resourcePath": "res://content/skills/MageFireballLv2.tres",
+      "sourceHash": "sha256:835dd333fe0d2b75892930ca0d997f5010a1cd5e6f49924cd9bbe3ce520e0ddd"
+    },
+    {
+      "resourcePath": "res://content/skills/MageFireballLv3.tres",
+      "sourceHash": "sha256:2155fadae161b604c6aeefcb63f7fbc0d4d69c6cdef928c799376f41826273c2"
+    },
+    {
+      "resourcePath": "res://content/skills/MageIceArmorLv1.tres",
+      "sourceHash": "sha256:c904879c0a8520807fdba471d38b2b478df9b781e3a901dbd5e570f84d18193b"
+    },
+    {
+      "resourcePath": "res://content/skills/MageIceArmorLv2.tres",
+      "sourceHash": "sha256:0154373809cf01436f034612d91a985fae54968366d743475fb8d4a38a1ffc6d"
+    },
+    {
+      "resourcePath": "res://content/skills/MageIceBoltLv1.tres",
+      "sourceHash": "sha256:17381c64065409481a5482e08c3e78dbd69fb91d274e1734d3767bd641ce7635"
+    },
+    {
+      "resourcePath": "res://content/skills/MageIceBoltLv2.tres",
+      "sourceHash": "sha256:2cdf5ff6cdbffd93c32913522065ad131ef9668a2687f82ab493a2a36facff25"
+    },
+    {
+      "resourcePath": "res://content/skills/MageIceBoltLv3.tres",
+      "sourceHash": "sha256:97774a33454e6fed20cd6adef5945e43f1cda055cd4bca438ac490cbad118961"
+    },
+    {
+      "resourcePath": "res://content/skills/MageLightningLv1.tres",
+      "sourceHash": "sha256:38dddf23aabbb9e52a1787acaa1a55b657befb50dbb882bfefb1ddac2c18957b"
+    },
+    {
+      "resourcePath": "res://content/skills/MageLightningLv2.tres",
+      "sourceHash": "sha256:94d4e05125d8f5908195913a0e1199382bddee64d33937e2d4efed359d4c1c0f"
+    },
+    {
+      "resourcePath": "res://content/skills/MageLightningLv3.tres",
+      "sourceHash": "sha256:39f70841b0c8cd546bd1a784c947b42e252e1bba80637f1c03335aedd2987668"
+    },
+    {
+      "resourcePath": "res://content/skills/MageSummonFireDemonLv1.tres",
+      "sourceHash": "sha256:cec8cdbc6012e7d877d5c5320949ae5cdcb05d85a4054e3d90edd15a1ebb78b9"
+    },
+    {
+      "resourcePath": "res://content/skills/MageSummonFireDemonLv2.tres",
+      "sourceHash": "sha256:758d2211a0ed0473926edfdf81bc6a2c76a56b280db6d71fc1a6ce81b369d293"
+    },
+    {
+      "resourcePath": "res://content/skills/MageTeleportLv1.tres",
+      "sourceHash": "sha256:e3e79cc93aaf2aaaa1a8a69a1e53b0bf0df17d2a73060f2d64de6ed6999b8b0a"
+    },
+    {
+      "resourcePath": "res://content/skills/MageTeleportLv2.tres",
+      "sourceHash": "sha256:aae423f401c875f4f173355e0ce59267d706a9fa20b95050748ad90be8b4b7ad"
+    },
+    {
+      "resourcePath": "res://content/skills/NecromancerAmplifyDamageLv1.tres",
+      "sourceHash": "sha256:c192f05e5c6d466d42f799297c004251a502d4a54cbd83dc880c6de0e4ce39ef"
+    },
+    {
+      "resourcePath": "res://content/skills/NecromancerAmplifyDamageLv2.tres",
+      "sourceHash": "sha256:47b5f5641e9c27e4e54de711c94998c808998ff7e7386b242628de939b554c38"
+    },
+    {
+      "resourcePath": "res://content/skills/NecromancerAmplifyDamageLv3.tres",
+      "sourceHash": "sha256:842e334ea909cb3f2fb4b1bdaf361d678d1aff51c5a04f279693918418468e53"
+    },
+    {
+      "resourcePath": "res://content/skills/NecromancerBoneShieldLv1.tres",
+      "sourceHash": "sha256:515ce6cebfe2add4ccbacd23abf9ac9e486e128f3cbe71525e09c67f55f49fac"
+    },
+    {
+      "resourcePath": "res://content/skills/NecromancerBoneShieldLv2.tres",
+      "sourceHash": "sha256:aca70f3fe1c73c4334d5ae8748368ec3547a13316163e7b65481a165f6941ca9"
+    },
+    {
+      "resourcePath": "res://content/skills/NecromancerBoneSpearLv1.tres",
+      "sourceHash": "sha256:7ef0acffc1c8c68c7c9420a5ec755df1f34107a0b590d099a1f2aba004887d8c"
+    },
+    {
+      "resourcePath": "res://content/skills/NecromancerBoneSpearLv2.tres",
+      "sourceHash": "sha256:489f9b2811d1fdb84182b56c814bf8b2900ea800f04fb28c19171f8d2ea8aa8d"
+    },
+    {
+      "resourcePath": "res://content/skills/NecromancerBoneSpearLv3.tres",
+      "sourceHash": "sha256:b1edeb1aafaee4184da00915889cc0ab0815c1450a1a2179816bf2b5658c406a"
+    },
+    {
+      "resourcePath": "res://content/skills/NecromancerFearCurseLv1.tres",
+      "sourceHash": "sha256:2663711468df2c6b8413aabcd9422a171ae1fbd7db0e241d0e5d791334a3c118"
+    },
+    {
+      "resourcePath": "res://content/skills/NecromancerFearCurseLv2.tres",
+      "sourceHash": "sha256:f766eda55548dcdb97d1a65245c9ab865ff01dd2568b7fa83054743f07ee9374"
+    },
+    {
+      "resourcePath": "res://content/skills/NecromancerSkeletonMageLv1.tres",
+      "sourceHash": "sha256:59ec4769e007f3a91166296557f2c74553eb86e23901081017ca314be11bb7bf"
+    },
+    {
+      "resourcePath": "res://content/skills/NecromancerSkeletonMageLv2.tres",
+      "sourceHash": "sha256:862198c7305b985f723c14578d47e5b9bb8f0702a0db796c3129b407c3c20fb0"
+    },
+    {
+      "resourcePath": "res://content/skills/NecromancerSummonSkeletonLv1.tres",
+      "sourceHash": "sha256:fa195d1dab75e17c11b8267e66a85e647f1712593a59783382c2b4b7e119d11e"
+    },
+    {
+      "resourcePath": "res://content/skills/NecromancerSummonSkeletonLv2.tres",
+      "sourceHash": "sha256:4539d50630f9c30c22648323530e5f86d0aab9cdbdf2d514f61f120dbf03a127"
+    },
+    {
+      "resourcePath": "res://content/skills/NecromancerSummonSkeletonLv3.tres",
+      "sourceHash": "sha256:afd00f9c98d080f03a58c39852596c37906b043abdbbd7028f5839731524e5d4"
+    },
+    {
+      "resourcePath": "res://content/skills/SummonBasicMeleeAi.tres",
+      "sourceHash": "sha256:d61f32475c03b6631548fc61e346e4ca0613b104b3c4fe4841e6335e10dbc526"
+    },
+    {
+      "resourcePath": "res://content/skills/SummonFireDemonAi.tres",
+      "sourceHash": "sha256:b3843bb651a3d068a1aae5e98e843fd93480f1da89b58a3c0ff6806e5a4799e7"
+    },
+    {
+      "resourcePath": "res://content/skills/SummonFireDemonAttack.tres",
+      "sourceHash": "sha256:456ae6770663324a5781a52372b10df95ae6e227915491c5897d8ca9a97b923c"
+    },
+    {
+      "resourcePath": "res://content/skills/SummonSkeletonAttackLv1.tres",
+      "sourceHash": "sha256:d24f0166b3057cd5fb7216b52d6fbabcf3c3f47dbc3f6fd3b06a4f348e8945b0"
+    },
+    {
+      "resourcePath": "res://content/skills/SummonSkeletonAttackLv2.tres",
+      "sourceHash": "sha256:fb93687c71b6eca487ce678e62846ce447d4f57d6240fd45279bc3e1dd3a0d98"
+    },
+    {
+      "resourcePath": "res://content/skills/SummonSkeletonAttackLv3.tres",
+      "sourceHash": "sha256:3defc1d9d862d0b7d30747a2110f8ca757a0cf2f5d6410bdf707278bc7bb4598"
+    },
+    {
+      "resourcePath": "res://content/skills/SummonSkeletonMageFireballLv1.tres",
+      "sourceHash": "sha256:2bab7287afce964afc28ce5b5eb8488a5d393b3545e2f45641a1f7453fac8b39"
+    },
+    {
+      "resourcePath": "res://content/skills/SummonSkeletonMageFireballLv2.tres",
+      "sourceHash": "sha256:1cee6866dd7be0a815e747b17662bc2d5a0d1fef7896eb3712fc7633ffae4c33"
+    },
+    {
+      "resourcePath": "res://content/units/PureRunAmazon.tres",
+      "sourceHash": "sha256:cf3669bb2a5fd37438db70ee7ff0a9375078336a144b9dba50664f1d779a5fa2"
+    },
+    {
+      "resourcePath": "res://content/units/PureRunFireDemon.tres",
+      "sourceHash": "sha256:41cb0cf7ab1096c5fd534791ef4e43258d298ef02b285a777a6866717b080576"
+    },
+    {
+      "resourcePath": "res://content/units/PureRunGoatAoe.tres",
+      "sourceHash": "sha256:7a08aae4aad2c6ec44afaeb7e686fdd27c0edbe96a81b596c47744455440abbb"
+    },
+    {
+      "resourcePath": "res://content/units/PureRunGoatCharger.tres",
+      "sourceHash": "sha256:5a8bc3898b5a3d8fe07d33ec7010f7b0fe5a07c4c59b1d050fc35e6d30fb48ef"
+    },
+    {
+      "resourcePath": "res://content/units/PureRunGoatEliteCharger.tres",
+      "sourceHash": "sha256:065ec14a973446a27c9d5b97ee8d88c2857afc918fd1459a92383c29dd4db553"
+    },
+    {
+      "resourcePath": "res://content/units/PureRunGoatElitePoisonCaster.tres",
+      "sourceHash": "sha256:f95e6d7febd9ed5cdee5ccb1734d41fdef1fa340a234f25291090a6452209e23"
+    },
+    {
+      "resourcePath": "res://content/units/PureRunGoatRanged.tres",
+      "sourceHash": "sha256:cd34dbfa19e2fc9d6be4fe421125d1a04a49d8cd46552a7faecdc5851d556763"
+    },
+    {
+      "resourcePath": "res://content/units/PureRunGoatSupport.tres",
+      "sourceHash": "sha256:ef5ea498dde3cf576880319e88d151335a336a7cca566fa407010744c9766fb1"
+    },
+    {
+      "resourcePath": "res://content/units/PureRunMage.tres",
+      "sourceHash": "sha256:f40b40a2e645273ee67f534da1c4969619324c3f9799179f96f72b3b1f502d32"
+    },
+    {
+      "resourcePath": "res://content/units/PureRunMawBat.tres",
+      "sourceHash": "sha256:ec395f51f25dcd1669a6716dbfc118a00b7e176d8b53e08d2eaf476bf0221ddb"
+    },
+    {
+      "resourcePath": "res://content/units/PureRunNecromancer.tres",
+      "sourceHash": "sha256:ff9aa16d4c9f964e2c5eab4cb8bbd2ab28ff802c9b6c5a1e7894ad4a0f22c37e"
+    },
+    {
+      "resourcePath": "res://content/units/PureRunSkeletonMage.tres",
+      "sourceHash": "sha256:613682879ea9cb6e9d324bc1234b6e475ce8e5331c671cf0da251246cf008c56"
+    },
+    {
+      "resourcePath": "res://content/units/PureRunSkeletonWarrior.tres",
+      "sourceHash": "sha256:ad497238e844fc64ae5d5f71e8ad1128537043331508760aa2cd379a1da39db6"
+    },
+    {
+      "resourcePath": "res://content/units/UnitActor.tscn",
+      "sourceHash": "sha256:e968501faf62549d5cf0f26774c0deed128395a0cea205b809966506956f2822"
+    }
+  ],
   "artifacts": [
     {
       "resourcePath": "res://content/adventure_maps/AdventureMapTileSetV1.tres",
       "resourceUid": "uid://dsp2ybrc0vxay",
-      "semanticFingerprint": null
-    },
-    {
-      "resourcePath": "res://content/adventure_maps/StartCampTemplateV1.tres",
-      "resourceUid": "uid://b3m7aevx135rv",
-      "semanticFingerprint": "sha256:87429637862c25f0f8760c45a6d4d2ebe313d5f5c25ee95fca49d716bb19a4e1"
+      "targetHash": "sha256:6b1d854bd89815ed772d98b16b16465e10aa06465245f8da4e2d1e5599af3636",
+      "semanticFingerprint": "sha256:3a8c3f74ff44a7cc3b879f34b6411c3da7c7145a240436ab87366ee5421e7b76"
     },
     {
       "resourcePath": "res://content/adventure_maps/BasicBattleTemplateV1.tres",
       "resourceUid": "uid://cmy865eeymqss",
+      "targetHash": "sha256:9e637c567fe2beddacc34d1535d0c3f6420de038847ac16a3ca8a1f1689a858a",
       "semanticFingerprint": "sha256:e5178d0ca3715d11bdb0a632c0b0607869524af1ee56c32bcd02d06f3fa7ae81"
     },
     {
       "resourcePath": "res://content/adventure_maps/ContentCatalog.tres",
       "resourceUid": "uid://d0pd8f783qad2",
-      "semanticFingerprint": null
+      "targetHash": "sha256:019d67a284eb7373072390e790c18bc094a197aa20c9f1fd3888e3982f602cf6",
+      "semanticFingerprint": "sha256:4b4bfa54e1b3004313bec8cf6cda9570e5410410efb6b496b38126be57ada99b"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/StartCampTemplateV1.tres",
+      "resourceUid": "uid://b3m7aevx135rv",
+      "targetHash": "sha256:26ce73afc001ec5d6cf4efd788c016d2c5b414a47256856071108b0cb95933b2",
+      "semanticFingerprint": "sha256:87429637862c25f0f8760c45a6d4d2ebe313d5f5c25ee95fca49d716bb19a4e1"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/nodes/layer-01-battle.tres",
+      "resourceUid": "uid://b3pfgbginmplm",
+      "targetHash": "sha256:52db376b1acefc3d18df11814d6c521a2a732bd146953951cc032cc614a42a4e",
+      "semanticFingerprint": "sha256:71fe8cd394c75d02592c68f785dc5b7b5b6e541ad1a53f809f54ded499725d18"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/nodes/layer-02-battle.tres",
+      "resourceUid": "uid://iah0icr6d28",
+      "targetHash": "sha256:308e86a00e20fa8b2f9dc35d3551d93ebca10d6dbefa3aa159197968d6f29c5f",
+      "semanticFingerprint": "sha256:744c56c40c53491796e606c86e9ac7492df753a502f29311d2381b92201fe3c5"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/nodes/layer-03-battle.tres",
+      "resourceUid": "uid://dnia2pjwmjbmu",
+      "targetHash": "sha256:73596d46f8429ea040ef8705b392a5dc1e172b0bc0c0644a5edd5c0155c6af60",
+      "semanticFingerprint": "sha256:1d60350e4da948e1e39847811cd5c1bb93d6e091c2f660165f2e7a33e08ece0a"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/nodes/layer-04-battle.tres",
+      "resourceUid": "uid://c37rupy2ustkv",
+      "targetHash": "sha256:205ebca44db7e1f8e494db42cbf1c6b49af3b626f8418dd0da94508e47b63f25",
+      "semanticFingerprint": "sha256:51c24e81b31e6212685ee5d61a1c814239733af9ddc65e66c52a5979a9c43acc"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/nodes/layer-04-event.cursedchestmimic.tres",
+      "resourceUid": "uid://hpwfjw54k11c",
+      "targetHash": "sha256:9a56d8ba5c7119b36a50ade0229bb14eadbbd278cb3ddc79001c8037dcf92edc",
+      "semanticFingerprint": "sha256:549d4065853a2cf00d1d46aad52c6e061d8c3c46f52d2dbefa1a7b905980e86a"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/nodes/layer-04-event.fallenaltarguardian.tres",
+      "resourceUid": "uid://b22t1a8mo5mtv",
+      "targetHash": "sha256:4877430e311a468894371cd0be829874deb9fee2cc506bd2b2e1eb734299ae6a",
+      "semanticFingerprint": "sha256:5d5341dd5068a49f3e80aba58f316dffacf1873b3b82b60819b07b4c79e98a3e"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/nodes/layer-04-event.lostvillagerescort.tres",
+      "resourceUid": "uid://c8m7n2tgnybq3",
+      "targetHash": "sha256:495617b536830f929f3789f3bb65c0a5c117619f582ab48ee211e3fe83bca586",
+      "semanticFingerprint": "sha256:96fe7e01e7cd341e06d4b198df480e4f03766e719d18533183553d7a9c2c4651"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/nodes/layer-04-rest.tres",
+      "resourceUid": "uid://dwui1pmd6ij8n",
+      "targetHash": "sha256:15b984e82c50676903e893cdb8666d77656621fa71ed446414f6e835f0e24651",
+      "semanticFingerprint": "sha256:79856208ebe66eb961e360415cbf15ca49e7f459db1a9d510f76131233fc82a6"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/nodes/layer-04-store.tres",
+      "resourceUid": "uid://wok508qryehp",
+      "targetHash": "sha256:193475acdd902535100386a8f7b98bb6efaa74f5478fbf32aa87d22709cb5e8b",
+      "semanticFingerprint": "sha256:9caf9c7a4ee9c83a7c2c9931ede427dcf56c26148801d8150aae8e125971d645"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/nodes/layer-04-treasure.tres",
+      "resourceUid": "uid://mh6ys4obijb6",
+      "targetHash": "sha256:60014d0ff9cb2183ce8dc75a69016eb73068e5d316d1ef69b0352ba1de7fd6d9",
+      "semanticFingerprint": "sha256:116adb8edcc6b7e194acbc4d6cac7efd4e300b9b61ea9e0447d1525074257a93"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/nodes/layer-05-battle.e1.tres",
+      "resourceUid": "uid://h5yv638shrys",
+      "targetHash": "sha256:6d32714e3810e787ef81f158495ba5a301ea47a886887aa49688eeb58c8fd387",
+      "semanticFingerprint": "sha256:0a98344d2e3677c396db7770a03f7b25bdaa52c44eafe0aa60cfd7acce9e45cb"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/nodes/layer-05-battle.e2.tres",
+      "resourceUid": "uid://c8hxtfrlfkvrg",
+      "targetHash": "sha256:efbc9fda487e4be441000929ae0948af9a5d2c1fa213671af4202ef66c3ba32c",
+      "semanticFingerprint": "sha256:677ec4babeecb8de0eeb06fbc1db5721a01d5658f9709a02cd9988e27ef88b3b"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/nodes/layer-06-battle.e1.tres",
+      "resourceUid": "uid://dkcx8b3yj52ue",
+      "targetHash": "sha256:5d5f41f7b072ccc24911645aec8f9802c8ed945553ddfa7bb4f4468e44608311",
+      "semanticFingerprint": "sha256:ea2c56c53a392a64b86c9891db1ed70152d165006040dc0c6e481d78e6cf33c0"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/nodes/layer-06-battle.e2.tres",
+      "resourceUid": "uid://dmw2eejohnowl",
+      "targetHash": "sha256:882332eb1722d5403d26d0ca033062ddd888ee3e2371ff58b94fd00fd157657d",
+      "semanticFingerprint": "sha256:902549c5133c23fa1e4bd0d7103bb2c0df92cea6293d5e61343c30d7a6f3dbb1"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/nodes/layer-06-event.cursedchestmimic.tres",
+      "resourceUid": "uid://dwu6dw8fj7e7y",
+      "targetHash": "sha256:974f10f2063d8f96cb65e658e44eda6b21f10ac885f9ec2dd14928d6dbd62cd7",
+      "semanticFingerprint": "sha256:23f22c9b762239e786f8afec0196635c2396acf48fbee003fdec469faf131626"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/nodes/layer-06-event.fallenaltarguardian.tres",
+      "resourceUid": "uid://6s51msp0w3qj",
+      "targetHash": "sha256:ad215c816f134d93130640d2a2be5de42a5907c380605bebc48738b70660afa3",
+      "semanticFingerprint": "sha256:0c581dc9b4b75f652df318f63027a1c843fcc2aea9f22b3b10603c6adad95afc"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/nodes/layer-06-event.lostvillagerescort.tres",
+      "resourceUid": "uid://gp3um8d17vvk",
+      "targetHash": "sha256:b613f99080ba6ba014c54d664e5890ef57d5dc37d40ece4e33c0fc8e26706ee0",
+      "semanticFingerprint": "sha256:2e6f2e8d5275d284aca259c8de643aabb38b51457dde4e0f995b6db9bbf64203"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/nodes/layer-06-rest.tres",
+      "resourceUid": "uid://dv353limgllaj",
+      "targetHash": "sha256:fc7708cb1e5fddbf1ace1b370e2ce1a9267c4414bb4c9bd615c5aac80cca77ce",
+      "semanticFingerprint": "sha256:23fedf32e4660d58caa8309bb459666f7df53df2267ac85d7392df3aaf3eebed"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/nodes/layer-06-store.tres",
+      "resourceUid": "uid://cs40hwv3bdbx4",
+      "targetHash": "sha256:1ed22e66c3fffa61507272f4530ce3c7f4f6b63eacdec564238e2d8f0fa42b95",
+      "semanticFingerprint": "sha256:4c8df07de6fd058c517079b2395e03096944665bc08b10e0b5e97b93c5be0b8b"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/nodes/layer-06-treasure.tres",
+      "resourceUid": "uid://b1uxo3ys1ikre",
+      "targetHash": "sha256:9026594f83473bdfadb4e85492f2301e716711614f2d8c8a74f79036c99d0b97",
+      "semanticFingerprint": "sha256:39dba49c4a482a81f8baa6e5326cd5feb9e50538be5e3840ad0dd62ab3e715d5"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/nodes/layer-07-battle.tres",
+      "resourceUid": "uid://dkrksxjcahrb1",
+      "targetHash": "sha256:67d7cf6538408f21dea6ad749868956df3acf9d2da09825fae583332746c0961",
+      "semanticFingerprint": "sha256:23d93d0583efe0006b7dac6ed25a9e2157e7feb68e2560240936f91b81089add"
+    },
+    {
+      "resourcePath": "res://content/adventure_maps/nodes/start.tres",
+      "resourceUid": "uid://uxcjyudnjki5",
+      "targetHash": "sha256:07afb7572eabc5efccd59789100cadf2c377a85eba85332465ac11bf2e6dd1a4",
+      "semanticFingerprint": "sha256:9388f06317d7002d5480a8a8607c6a58875aa175a167191c33378dca4bcfe83d"
     }
   ]
 }

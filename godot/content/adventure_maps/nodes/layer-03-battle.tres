@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="AdventureMapTemplateResource" format=3 uid="uid://dnia2pjwmjbmu"]
+
+[ext_resource type="TileSet" path="res://content/adventure_maps/AdventureMapTileSetV1.tres" id="1_e1ond"]
+[ext_resource type="Script" path="res://src/Tactics.Godot.Adapter/Runtime/AdventureMapTemplateResource.cs" id="2_x8dp4"]
+
+[resource]
+script = ExtResource("2_x8dp4")
+ContentIdValue = "adventure-map-template.pure-run.node.layer-03-battle"
+BoardContentIdValue = "adventure-board.pure-run.node.layer-03-battle"
+BlockedCellsValue = "4,4;4,5;5,4;5,5"
+ObjectsValue = "exit:layer_04_battle@Exit@9,1@False@False@layer_04_battle@False;exit:layer_04_event@Exit@9,2@False@False@layer_04_event@False;exit:layer_04_rest@Exit@9,3@False@False@layer_04_rest@False;exit:layer_04_store@Exit@9,4@False@False@layer_04_store@False;exit:layer_04_treasure@Exit@9,5@False@False@layer_04_treasure@False"
+BoardEntryCell = Vector2i(0, 5)
+BoardExitCell = Vector2i(9, 1)
+CandidateSlotsValue = "candidate-1@1,6"
+PartyEntrySlotsValue = "party-1@1,1;party-2@1,2;party-3@1,3"
+PlayerBattleSlotsValue = "player-1@1,4;player-2@1,5;player-3@2,4"
+EnemyBattleSlotsValue = "enemy-1@6,3;enemy-2@6,6;enemy-3@7,4;enemy-4@7,5"
+EntriesValue = "entry-main@0,5"
+ExitsValue = "exit:layer_04_battle@9,1@layer_04_battle@entry-main;exit:layer_04_event@9,2@layer_04_event@entry-main;exit:layer_04_rest@9,3@layer_04_rest@entry-main;exit:layer_04_store@9,4@layer_04_store@entry-main;exit:layer_04_treasure@9,5@layer_04_treasure@entry-main"
+ConnectionAnchorsValue = "connection-1@9,1;connection-2@9,2;connection-3@9,3;connection-4@9,4;connection-5@9,5"
+CameraFocusAnchorValue = "camera-focus@5,5"
+AtlasBoundsAnchorValue = "atlas-bounds@9,9"
+StateLayerIds = PackedStringArray("planning", "tactical-preview", "current", "completed", "combat", "resolved")
+TerrainCellsValue = "0,0;1,0;2,0;3,0;4,0;5,0;6,0;7,0;8,0;9,0;0,1;1,1;2,1;3,1;4,1;5,1;6,1;7,1;8,1;9,1;0,2;1,2;2,2;3,2;4,2;5,2;6,2;7,2;8,2;9,2;0,3;1,3;2,3;3,3;4,3;5,3;6,3;7,3;8,3;9,3;0,4;1,4;2,4;3,4;4,4;5,4;6,4;7,4;8,4;9,4;0,5;1,5;2,5;3,5;4,5;5,5;6,5;7,5;8,5;9,5;0,6;1,6;2,6;3,6;4,6;5,6;6,6;7,6;8,6;9,6;0,7;1,7;2,7;3,7;4,7;5,7;6,7;7,7;8,7;9,7;0,8;1,8;2,8;3,8;4,8;5,8;6,8;7,8;8,8;9,8;0,9;1,9;2,9;3,9;4,9;5,9;6,9;7,9;8,9;9,9"
+DecorationCellsValue = "4,4;4,5;5,4;5,5"
+MaskCellsValue = "0,0;1,0;2,0;3,0;4,0;5,0;6,0;7,0;8,0;9,0;0,1;1,1;2,1;3,1;4,1;5,1;6,1;7,1;8,1;9,1;0,2;1,2;2,2;3,2;4,2;5,2;6,2;7,2;8,2;9,2;0,3;1,3;2,3;3,3;4,3;5,3;6,3;7,3;8,3;9,3;0,4;1,4;2,4;3,4;4,4;5,4;6,4;7,4;8,4;9,4;0,5;1,5;2,5;3,5;4,5;5,5;6,5;7,5;8,5;9,5;0,6;1,6;2,6;3,6;4,6;5,6;6,6;7,6;8,6;9,6;0,7;1,7;2,7;3,7;4,7;5,7;6,7;7,7;8,7;9,7;0,8;1,8;2,8;3,8;4,8;5,8;6,8;7,8;8,8;9,8;0,9;1,9;2,9;3,9;4,9;5,9;6,9;7,9;8,9;9,9"
+TileSet = ExtResource("1_e1ond")

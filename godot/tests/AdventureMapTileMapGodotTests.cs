@@ -243,8 +243,9 @@ public sealed class AdventureMapTileMapGodotTests
         AssertThat(view.IsMovementLocked).IsTrue();
         AssertThat(view.CandidateCells[leaderId]).IsEqual(origin);
         AssertThat(view.CandidateActors[leaderId].Position).IsNotEqual(view.MapInstance.Surface.CellCenter(destination));
-        for (int frame = 0; frame < 240 && view.IsMovementLocked; frame++)
-            await view.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        // Headless frames are uncapped: 240 frames can finish before a 0.1s-per-cell tween.
+        for (int tick = 0; tick < 120 && view.IsMovementLocked; tick++)
+            await tree.ToSignal(tree.CreateTimer(.02), SceneTreeTimer.SignalName.Timeout);
         AssertThat(view.IsMovementLocked).IsFalse();
         AssertThat(view.CandidateCells[leaderId]).IsEqual(destination);
         AssertThat(view.CandidateActors[leaderId].Position).IsEqual(view.MapInstance.Surface.CellCenter(destination));

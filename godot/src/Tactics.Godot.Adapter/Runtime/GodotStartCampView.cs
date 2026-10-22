@@ -55,6 +55,11 @@ public partial class GodotStartCampView : Control
     private AdventureMapTemplateDefinition? _planningDefinition;
     private Node2D? _atlasWorldRoot;
     private Node2D? _mapRoot;
+    private bool _residentWorld;
+    private Node2D? _ownedActors;
+    private Node2D? _ownedAtlasDecorations;
+    private Transform2D AtlasToViewTransform => _atlasWorldRoot is null ? Transform2D.Identity :
+        _residentWorld ? GetGlobalTransform().AffineInverse() * _atlasWorldRoot.GetGlobalTransform() : _atlasWorldRoot.Transform;
     private GodotStartCampfireActor? _campfire;
     private GodotStartCampExitActor? _exit;
     private readonly Dictionary<string, Rect2> _routePreviewRects = new(StringComparer.Ordinal);
@@ -124,6 +129,7 @@ public partial class GodotStartCampView : Control
             _inputSurface.GuiInput -= OnInputSurfaceGuiInput;
         _inputSurfaceConnected = false;
         _movementPlayer?.Cancel("start-camp-exit-tree");
+        if (_residentWorld) ReleaseOwnedPresentation();
     }
 
     private Control EnsureInputSurface()
@@ -205,7 +211,14 @@ public partial class GodotStartCampView : Control
             throw new InvalidOperationException($"Start camp template has {definition.CandidateSlots.Count} candidate slots for {candidates.Count} candidates.");
 
         EnsureMovementPlayer().Cancel("start-camp-reconfigure");
-        _atlasWorldRoot?.QueueFree();
+        if (_residentWorld) ReleaseOwnedPresentation();
+        else _atlasWorldRoot?.QueueFree();
+        _residentWorld = false;
+        _ownedActors = null;
+        _ownedAtlasDecorations = null;
+        RoutePreviews = Array.Empty<GodotAdventureMapInstance>();
+        _planningDefinition = null;
+        _connectionEndpoints.Clear();
         _candidates.Clear();
         _candidateCells.Clear();
         _selected.Clear();
@@ -233,12 +246,18 @@ public partial class GodotStartCampView : Control
         ResetAtlasCamera(false);
         FittedMapBounds = GodotBattleBoardFitter.TransformBounds(_atlasBounds, _atlasWorldRoot.Transform);
 
+        PopulateCampActors(definition, candidates);
+    }
+
+    private void PopulateCampActors(AdventureMapTemplateDefinition definition, IReadOnlyList<GodotStartCampCandidate> candidates)
+    {
+        Node2D actorParent = _ownedActors ?? _mapRoot!;
         AdventureBoardObject campfire = definition.Board.Objects.Single(value => value.Kind == AdventureObjectKind.Campfire);
         _campfire = new GodotStartCampfireActor { Name = "StartCampfire", Position = MapInstance.Surface.CellCenter(campfire.Cell), ZIndex = 20 };
-        _mapRoot.AddChild(_campfire);
+        actorParent.AddChild(_campfire);
         AdventureMapExitAnchor exit = definition.Exits.Single();
         _exit = new GodotStartCampExitActor { Name = "StartCampExit", Position = MapInstance.Surface.CellCenter(exit.Cell), ZIndex = 15 };
-        _mapRoot.AddChild(_exit);
+        actorParent.AddChild(_exit);
 
         for (int index = 0; index < candidates.Count; index++)
         {
@@ -251,17 +270,102 @@ public partial class GodotStartCampView : Control
             actor.Position = MapInstance.Surface.CellCenter(slot.Cell);
             actor.Scale = Vector2.One * .34f;
             actor.ZIndex = 30 + slot.Cell.X + slot.Cell.Y;
-            _mapRoot.AddChild(actor);
+            actorParent.AddChild(actor);
             _candidates.Add(candidate.CharacterId, actor);
             _candidateCells.Add(candidate.CharacterId, slot.Cell);
         }
         SetSelection(Array.Empty<string>(), false);
     }
 
+    /// <summary>Borrow the prepared Act without reparenting, reconfiguring, or owning its maps.</summary>
+    public void ConfigureResidentWorld(GodotActWorldHost host, IReadOnlyList<GodotStartCampCandidate> candidates,
+        PureRunMapDefinition map)
+    {
+        ArgumentNullException.ThrowIfNull(host);
+        ArgumentNullException.ThrowIfNull(candidates);
+        ArgumentNullException.ThrowIfNull(map);
+        if (!host.IsPrepared || host.IsQueuedForDeletion() || host.Definition.StartNodeId != GodotAdventureAtlasLayout.StartNodeId ||
+            host.Nodes.Count != map.Nodes.Count || map.Nodes.Any(node => !host.Nodes.ContainsKey(node.NodeId)))
+            throw new InvalidOperationException("start.resident_world_not_ready");
+        if (IsAncestorOf(host)) throw new InvalidOperationException("start.resident_world_must_outlive_view");
+        GodotAdventureMapInstance start = host.Nodes[GodotAdventureAtlasLayout.StartNodeId];
+        AdventureMapTemplateDefinition definition = start.Surface.Template!.ToCoreDefinition();
+        if (candidates.Select(value => value.CharacterId).Distinct(StringComparer.Ordinal).Count() != candidates.Count)
+            throw new ArgumentException("Start camp candidates require unique character ids.", nameof(candidates));
+        if (definition.CandidateSlots.Count < candidates.Count)
+            throw new InvalidOperationException("start.resident_candidate_slots_insufficient");
+        EnsureMovementPlayer().Cancel("start-camp-resident-rebind");
+        if (_residentWorld) ReleaseOwnedPresentation();
+        else _atlasWorldRoot?.QueueFree();
+        _residentWorld = true;
+        _atlasWorldRoot = host;
+        _mapRoot = start;
+        MapInstance = start;
+        _definition = definition;
+        _planningDefinition = null;
+        _candidates.Clear(); _candidateCells.Clear(); _selected.Clear();
+        _routePreviewRects.Clear(); _nodeTransforms.Clear(); _connectionEndpoints.Clear();
+        _ownedActors = new Node2D { Name = $"StartActors_{GetInstanceId()}" };
+        start.AddChild(_ownedActors);
+        _ownedAtlasDecorations = new Node2D { Name = $"StartAtlasDecorations_{GetInstanceId()}" };
+        host.AddChild(_ownedAtlasDecorations);
+
+        Rect2 boardBounds = GodotBattleBoardFitter.BoardBounds();
+        Transform2D fit = GodotBattleBoardFitter.Fit(boardBounds, SafeMapArea);
+        Transform2D scaleOnly = new(fit.X, fit.Y, Vector2.Zero);
+        Rect2 scaledBounds = GodotBattleBoardFitter.TransformBounds(boardBounds, scaleOnly);
+        Transform2D baseTransform = new(scaleOnly.X, scaleOnly.Y, -scaledBounds.Position);
+        IReadOnlyDictionary<string, GodotAdventureAtlasNodeLayout> layout = GodotAdventureAtlasLayout.Project(map, scaledBounds.Size);
+        foreach (PureRunMapNodeDefinition node in map.Nodes)
+        {
+            Rect2 bounds = layout[node.NodeId].WorldBounds;
+            Transform2D transform = new(baseTransform.X, baseTransform.Y, baseTransform.Origin + bounds.Position);
+            host.Nodes[node.NodeId].Transform = transform;
+            host.Nodes[node.NodeId].ZIndex = node.NodeId == GodotAdventureAtlasLayout.StartNodeId ? 3 : 2;
+            _nodeTransforms[node.NodeId] = transform;
+            _routePreviewRects[node.NodeId] = bounds;
+            AddAtlasBadge(node, bounds);
+        }
+        _mapWorldTransform = start.Transform;
+        foreach (PureRunMapConnectionDefinition edge in map.Connections)
+        {
+            GodotAdventureMapInstance source = host.Nodes[edge.FromNodeId], target = host.Nodes[edge.ToNodeId];
+            AdventureMapExitAnchor exit = source.Surface.Template!.ToCoreDefinition().Exits.Single(value => value.TargetNodeId == edge.ToNodeId);
+            AdventureMapAnchor entry = target.Surface.Template!.ToCoreDefinition().Entries.Single(value => value.AnchorId == exit.TargetEntryId);
+            Vector2 from = source.Transform * source.Surface.CellCenter(exit.Cell);
+            Vector2 to = target.Transform * target.Surface.CellCenter(entry.Cell);
+            _connectionEndpoints[$"{edge.FromNodeId}->{edge.ToNodeId}"] = (from, to);
+            _ownedAtlasDecorations.AddChild(new Line2D { Name = $"Route_{edge.FromNodeId}_{edge.ToNodeId}", Width = 6f,
+                DefaultColor = new Color("657b86d0"), Points = [from, to], ZIndex = 1 });
+        }
+        RoutePreviews = map.Nodes.Where(node => node.NodeId != GodotAdventureAtlasLayout.StartNodeId)
+            .Select(node => host.Nodes[node.NodeId]).ToArray();
+        _atlasBounds = GodotAdventureAtlasLayout.Union(layout.Values.Select(value => value.WorldBounds));
+        _localViewBounds = layout[GodotAdventureAtlasLayout.StartNodeId].WorldBounds;
+        _initialOverviewBounds = GodotAdventureAtlasLayout.Union(map.Nodes.Where(value => value.Layer <= 2)
+            .Select(value => layout[value.NodeId].WorldBounds));
+        ResetAtlasCamera(false);
+        PopulateCampActors(definition, candidates);
+    }
+
+    private void ReleaseOwnedPresentation()
+    {
+        foreach (Node2D? root in new[] { _ownedActors, _ownedAtlasDecorations })
+        {
+            if (root is null || !GodotObject.IsInstanceValid(root)) continue;
+            root.Hide();
+            root.ProcessMode = ProcessModeEnum.Disabled;
+            root.QueueFree();
+        }
+        _ownedActors = null;
+        _ownedAtlasDecorations = null;
+    }
+
     public void ConfigureRoutePreviews(AdventureMapTemplateResource planningTemplate, PureRunMapDefinition map)
     {
         ArgumentNullException.ThrowIfNull(planningTemplate);
         ArgumentNullException.ThrowIfNull(map);
+        if (_residentWorld) throw new InvalidOperationException("start.resident_world_cannot_create_previews");
         if (_atlasWorldRoot is null || _mapRoot is null || _definition is null)
             throw new InvalidOperationException("Start camp must be configured before route previews.");
         _planningDefinition = planningTemplate.ToCoreDefinition();
@@ -375,7 +479,7 @@ public partial class GodotStartCampView : Control
         if (input is InputEventMouseButton { ButtonIndex: MouseButton.WheelUp or MouseButton.WheelDown })
         { AcceptInput(source); return; }
         if (input is not InputEventMouseButton { ButtonIndex: MouseButton.Left, Pressed: true }) return;
-        Vector2 atlasPoint = _atlasWorldRoot is null ? Vector2.Zero : _atlasWorldRoot.Transform.AffineInverse() * viewPoint;
+        Vector2 atlasPoint = _atlasWorldRoot is null ? Vector2.Zero : AtlasToViewTransform.AffineInverse() * viewPoint;
         Vector2 mapPoint = _mapRoot.Transform.AffineInverse() * atlasPoint;
         string? previewNode = _routePreviewRects.FirstOrDefault(value =>
             value.Key != GodotAdventureAtlasLayout.StartNodeId && value.Value.HasPoint(atlasPoint)).Key;
@@ -540,12 +644,13 @@ public partial class GodotStartCampView : Control
         if (_atlasWorldRoot is not null)
         {
             _atlasPan = ClampAtlasPan(_atlasPan);
-            _atlasWorldRoot.Transform = new Transform2D(0f, Vector2.One * _atlasZoom, 0f,
-                _cameraOrigin + _atlasPan);
+            Transform2D camera = new(0f, Vector2.One * _atlasZoom, 0f, _cameraOrigin + _atlasPan);
+            if (_residentWorld) _atlasWorldRoot.GlobalTransform = GetGlobalTransform() * camera;
+            else _atlasWorldRoot.Transform = camera;
         }
         FittedMapBounds = GodotBattleBoardFitter.TransformBounds(
             _routePreviewRects.GetValueOrDefault(GodotAdventureAtlasLayout.StartNodeId, _atlasBounds),
-            _atlasWorldRoot?.Transform ?? Transform2D.Identity);
+            AtlasToViewTransform);
         QueueRedraw();
     }
 
@@ -576,13 +681,13 @@ public partial class GodotStartCampView : Control
             MouseFilter = MouseFilterEnum.Ignore
         };
         badge.AddThemeFontSizeOverride("font_size", 22);
-        _atlasWorldRoot!.AddChild(badge);
+        (_ownedAtlasDecorations ?? _atlasWorldRoot!).AddChild(badge);
     }
 
     internal string? ResolveCandidateAt(Vector2 viewPoint)
     {
         if (_atlasWorldRoot is null || _mapRoot is null) return null;
-        Vector2 atlasPoint = _atlasWorldRoot.Transform.AffineInverse() * viewPoint;
+        Vector2 atlasPoint = AtlasToViewTransform.AffineInverse() * viewPoint;
         return ResolveCandidateAtMapPoint(_mapRoot.Transform.AffineInverse() * atlasPoint);
     }
 

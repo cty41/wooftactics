@@ -3,7 +3,8 @@
   "runtime": "Godot",
   "scenarioName": "AdventureBoard.StartingSkillsEnterAdventureBoard",
   "contractIds": [
-    "ROGUELIKE-SETUP-COMMIT-001"
+    "ROGUELIKE-SETUP-COMMIT-001",
+    "ROGUELIKE-SETUP-FIRST-ENCOUNTER-001"
   ],
   "requiredAdapters": [
     "Map",
@@ -106,7 +107,7 @@
       "adapter": "PlayerInput",
       "kind": "waitForPlayerObservable",
       "parameters": {
-        "observable": "adventureBoardReady",
+        "observable": "battleReady",
         "maximumFrames": 180
       }
     }
