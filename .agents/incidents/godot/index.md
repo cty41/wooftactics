@@ -15,6 +15,7 @@
 | [direct-editor-launch-missing-adapter](direct-editor-launch-missing-adapter.md) | `Unable to load addon script` + `TacticsEditorPlugin.cs` after direct Editor launch | verified |
 | [parallel-build-obj-contention](parallel-build-obj-contention.md) | Core/Godot 并行构建争抢 `obj`/DLL | verified |
 | [gdu4-conditional-package-release-contamination](gdu4-conditional-package-release-contamination.md) | Release `.deps.json` 含 GdUnit/TestPlatform | verified |
+| [gdunit-native-illegal-instruction](gdunit-native-illegal-instruction.md) | `GodotRuntimeTestRunner ends with exit code: -1073741795` | observed |
 | [headless-resource-uid-cache](headless-resource-uid-cache.md) | `unregistered Resource UID` + standalone ResourceSaver process | verified |
 | [godot-ai-project-run-cold-timeout](godot-ai-project-run-cold-timeout.md) | `Command run_project timed out after 5.0s` 但 Editor 已进入 live | observed |
 

@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Battle System
 description: Godot Pure Run 的棋盘、回合、技能、状态、AI 合法性、结算与表现投影主链。
 tags: [gameplay, battle, turn-based, godot]
-timestamp: "2026-09-21T10:55:43+08:00"
+timestamp: "2026-09-24T14:39:21+08:00"
 status: active
 catalog_scope: battle-system
 repo_paths:
@@ -25,10 +25,12 @@ repo_paths:
   - godot/src/Tactics.Godot.Adapter/Runtime/GodotPlayableRunMain.cs
   - godot/tests/CoreGoldenVectorGodotTests.cs
 verified_revision: 04c75ec4
-source_fingerprint: sha256:b12c5d6b3de42a8245ca4f7d66503367419e5d1bf117bf9d1943710122fc14b0
+source_fingerprint: sha256:2e080f30a60e64778860d4f979b1466f1294edc36b4c2684112571f0994a14fb
 ---
 
 # Current State
+
+Main开战现在必须匹配当前PendingBattle的RunId、checkpoint/Encounter、AdventureRevision和队伍完整值；任一绑定身份还须三端及Act/模板一致。启动、Act准备回调和Pending路由统一读取Application零写修复投影，避免将修复后的旧队伍请求误比原始存档；护送上下文来自同一投影，失败Load带旧Snapshot也拒绝。终局释放Host，防止放弃后迟到回调重开旧战斗。此处仅改变入口与生命周期防线，未改变战斗规则。`GodotIsometricBattleBoard`借用Surface模式现在已接入Main的普通、Elite与Boss生产入口，并支持证据完整且Host模板匹配的Pending事件战：先由Pending Recovery证明节点身份，再校验模板、事件对象、有序战斗出生槽及runtime blocked/water，激活唯一lease并用世界仿射对齐既有Actor/VFX坐标；不改Surface/node/terrain本体。普通战生产回归4项、事件战4项覆盖冷/热路由、Lost保护NPC、100格正反投影、实例不变及布局冲突失败原子性；组件4项与UI49项同时通过。Host binding/context匹配的事件探索也借正式Surface、template Board和PartyEntrySlots，并以lease fence保证探索页失活后的迟到输入不污染新战斗；Cursed warm生产回归证明正式对象点击到Pending战斗保持同一Surface InstanceId。全部结算保存成功的warm事件战后页也回到同一正式Surface；Cursed/Altar保留已解决对象，Lost失败/死亡不再投影活NPC。变体不匹配的warm护送仍保留legacy板；事件结算仍有2—3次CAS的崩溃中间态P0，冷Resolved恢复和页级Actor/VFX长期归属尚未迁移，不能宣称所有事件从进入到结算均已闭环。
 
 当前产品战斗主线分为三层：`Tactics.Core` 持有不可变战斗状态、命令、事件、技能解释、回合、路径和视线；
 `Tactics.Application` 组合遭遇、玩家意图、AI 候选和 UI Snapshot；Godot Adapter 只负责输入、Resource 映射、

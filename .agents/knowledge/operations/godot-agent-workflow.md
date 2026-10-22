@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Godot agent workflow
 description: Godot 4.7 C# 主线的项目、分层、Editor 生命周期、验证和发布边界。
 tags: [godot, agent, workflow, testing]
-timestamp: "2026-09-12T12:17:43+08:00"
+timestamp: "2026-09-22T16:04:50+08:00"
 status: active
 catalog_scope: godot-agent-workflow
 repo_paths:
@@ -22,10 +22,12 @@ repo_paths:
   - Tools/godot/Build-GodotWindows.ps1
   - Tools/migration/manifest/godot-tooling.json
 verified_revision: d092a955
-source_fingerprint: sha256:1f65c870913676f763601ce5a72fed9f824615df7ccde0ff8b159ac0f69bda73
+source_fingerprint: sha256:b8d265fa087b6f4ff8edfbfb508c903f61bba0e93edc1635678442be4ecc21ab
 ---
 
 # Current State
+
+本机4.7.1已验证ResourceLoader的UID查询可能保留旧正/负缓存；生成器以只读磁盘头部验证ResourceSaver写出的UID，再执行Editor扫描与独立Runtime验证，见`.agents/incidents/godot/headless-resource-uid-cache.md`。不可把内存AddId或一次API返回值当作持久化证据。Act准备阶段现与主目录共用RequiredResourceLoader的CacheMode.Ignore及精确类型诊断；缓存替身测试验证不采信旧缓存对象，但不能据此宣称已修复所有原生runner异常。
 
 Godot 4.7 C# 与 `godot/project.godot` 是唯一产品和编辑权威。Core/Application 保持纯 .NET；Adapter 承载 Node、Resource、文件系统、UI、EditorPlugin 与运行时集成。godot-ai v4.1.0 与 `addons/tactics_tooling` 作为 Editor-only 工具保留在源码树中，但均由 export preset 从游戏 PCK 与 Windows 运行时包排除。godot-ai v4 只允许经过 capability 认证的 `godot-ai attach` stdio bridge，项目级启动固定使用隔离的 public-PyPI uvx 解析策略。godot-ai manifest 是 tag、commit、vendor tree 与 license digest 的单一真相源；显式 refresh 只准备待 review 的升级 diff，日常 Godot 门禁验证 vendor 完整性，依赖清单与第三方声明由独立 public-release 门禁验证。
 

@@ -1,5 +1,9 @@
 # Roguelike Map 全节点真实等距 TileMapLayer 改造计划
 
+## 当前执行入口
+
+本计划的架构与执行顺序由 [单 Act 全节点常驻宿主改造计划](roguelike-act-node-scene-architecture.md) 修订：当前 Demo 只一个 Act，初始化全部正式地图，Preview/Active 为同一实例模式；原图探索/战斗/战后切换，不保留开局占位地图。下文 Current State 为历史快照，不代表全部当前实现。内容覆盖和人工验收要求继续保留，冲突时以新架构计划为准。
+
 ## Summary
 
 把 Pure Run 当前彼此割裂的“自绘战斗棋盘、占位 Adventure TileMap、圆点路线总览”统一为一套真实 Godot 等距 `TileMapLayer` 地图系统：路线范围内所有节点以轻量 Preview 地图组成可拖动的地图集，当前节点以相同模板切换为唯一 Active 地图；战斗、事件、角色、对象、出口、迷雾和残局都投影在同一地图基础设施上。

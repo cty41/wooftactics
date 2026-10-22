@@ -315,7 +315,7 @@ Roguelike Map 分阶段操作步骤见 [真实 TileMap 人工验收 Checklist](r
 - Preserve on failure: 从首次点击开始的短视频、目标格序列、移动前后 revision、页面标题、save/backup 副本和完整 `[AdventureMovement]` Output 行；失败后不要再次移动或切页。
 - Save boundary: Start Camp 移动非持久化；普通 Adventure 最终落点会提交一次。请使用隔离存档并在测试普通 Board 前保留副本。
 - Automated evidence: Core 155/155与目标Godot 72/72通过；真实`Viewport.PushInput`覆盖远处出口自动接近、resize中断/retarget不误触发、随后再次点击直接进入真实Battle且不存在`AdventureBattleEntryBoard`。四方向等距朝向、MoveActor移动锁/占位、Pause及UI回归通过；21/21 Godot gameplay specs校验并由compiler重建。真实视觉连续性和输入手感仍只能人工判断。
-- User verdict: 2026-09-02用户明确确认“屏占比也ok了”；地图居中、近全屏占比及四角HUD视觉通过。2026-09-17用户明确报告右上直线移动实际使用DR图，预期为UL图水平镜像；移动朝向子项失败并在修复后重新pending。
+- User verdict: 2026-09-02用户明确确认“屏占比也ok了”；地图居中、近全屏占比及四角HUD视觉通过。2026-09-17用户明确报告右上直线移动实际使用DR图，预期为UL图水平镜像；移动朝向子项失败并在修复后重新pending。2026-09-21用户明确确认移动朝向已验证OK（右上UL镜像等四方向按真实等距投影显示）；屏占比与朝向子项通过，本项其余子项（逐格移动手感、半格改道、出口自动接近、移动中交互锁、Pause/Resume/resize、Battle/Elite/Boss直达）仍待人工复验，整体保持pending。
 
 ### MQA-GODOT-START-FLOW — Automatic startup and recovery
 
@@ -367,6 +367,18 @@ Roguelike Map 分阶段操作步骤见 [真实 TileMap 人工验收 Checklist](r
 - Save boundary: Accepting, battle turns, and settlement mutate the Run; use the pre-battle checkpoint for replay and keep production backup unchanged.
 - Automated evidence: Escort state, protected-NPC AI, enemy priority target, special victory/failure, reward, current V10 round-trip, and idempotent settlement assertions pass.
 - User verdict: None; pending human acceptance.
+
+### MQA-GODOT-STALE-SAVE-RESET — Act-state resume check and stale-save clearing
+
+- Status: `pending`
+- Source: S1 Act 状态推导接入 `ResumeRun`；开发期矛盾存档清档决策（2026-10-22）
+- Action: 用当前构建分别在 N1–N3 节点探索中、L4 商店/事件选择后、L5–L6 节点各 Save and Quit 一次，重启后点 Continue；再用一份由结算完成但 Board 未 `.resolved` 的旧构建隔离存档启动。
+- Expected: 当前构建产生的所有存档都直接 Continue 到原节点，不被清除；旧半截存档回到主页，状态栏显示 "Save is from an older build and was cleared. Start a new run."，Continue 变灰，New Run 正常。
+- Observe: 主页状态栏、Continue 按钮、恢复后的页面/节点、`user://pure-run` 存档与 `.bak`、Godot Output。
+- Preserve on failure: 被误清前的 save/backup 副本（先复制再点 Continue）、节点 ID、Run seed/revision 和 Output。
+- Save boundary: 清档会覆盖当前存档；每次测试前复制 `user://pure-run`，不得用唯一生产存档测试。
+- Automated evidence: 清档只针对 `act_state.inconsistent_resolution`（其他推导拒绝仍走旧恢复流程，避免误删）。Core 265、Application 398；隔离 GdUnit 10 套件 95/95（含常驻普通/事件战斗冷热恢复），过程中修复了事件战斗 PendingBattle 被误判的推导缺陷。正式门禁在任务外 public-release 工具测试处中断。真实各阶段存档是否被误判只能人工确认。
+- User verdict: none.
 
 ## Passed
 
@@ -596,4 +608,4 @@ Roguelike Map 分阶段操作步骤见 [真实 TileMap 人工验收 Checklist](r
 
 ## Last Emitted Order
 
-1. `MQA-GODOT-ADVENTURE-MOVEMENT`
+1. `MQA-GODOT-STALE-SAVE-RESET`

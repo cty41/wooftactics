@@ -41,7 +41,7 @@ dsl_support: partial
 ## Failure and recovery semantics
 
 - Incomplete setup performs no `IRunSaveStore.Save` and does not advance the persisted revision.
-- The final required skill uses the draft's base revision for one compare-and-swap save. Failure leaves the prior save authoritative.
+- The final required skill uses the draft's base revision for one compare-and-swap save, including the first battle checkpoint and PendingBattle state. Failure leaves the prior save authoritative, retains the draft and publishes no EncounterRequest. See [node-scene contract](roguelike-act-node-scene-contract.md).
 - A replacement draft never hides or overwrites an existing Active Run until final commit.
 - Historical persisted `PendingRunSetup` is discarded during compatibility recovery.
 - Setup quit/discard creates neither an Active Run nor an Abandoned summary.

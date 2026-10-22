@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Tactics Project Overview
 description: Tactics 的 Godot 产品主线、纯 .NET 分层、运行时和主要游戏系统总入口。
 tags: [architecture, godot, agent-first]
-timestamp: "2026-09-21T11:08:06+08:00"
+timestamp: "2026-10-22T16:00:44+08:00"
 status: active
 catalog_scope: project-architecture
 repo_paths:
@@ -19,7 +19,7 @@ repo_paths:
   - godot/export_presets.cfg
   - godot/project.godot
 verified_revision: c56d71ad4ebd
-source_fingerprint: sha256:dede4274070e57cfc8412246f76872c7204c6070b5e072643737a73e07bcb0cb
+source_fingerprint: sha256:5dddd6c5d69e51c8399fc7e89a3f916d0709503be026c9c4745a2b03646d6207
 ---
 
 # Summary
@@ -27,6 +27,8 @@ source_fingerprint: sha256:dede4274070e57cfc8412246f76872c7204c6070b5e072643737a
 Tactics 是 Agent 优先维护并准备公开发布的 Godot 4.7 C# 战棋项目。根 `README.md` 面向访问仓库的玩家与开发者介绍 Pure Run、环境、运行、验证、许可和两档 Windows 构建入口；本页继续负责架构综合。远程 `main` 是产品与治理权威，运行时由纯 .NET Core/Application、Godot Adapter 和唯一 `godot/project.godot` 组成。公开根采用 Apache-2.0 代码许可、逐文件登记的 CC BY 4.0 项目资产与独立商标边界；完整 Unity 历史仅保存在私有归档，Frozen Oracle、Golden、迁移 receipt 和 OKF 作为公开历史/测试证据。当前设计保存在 `.agents/docs/`，仍需执行的活跃计划保存在 `.agents/plans/`，当前行为由代码、Resource 和测试证明。
 
 # Runtime Foundation
+
+Run/Act/Node 改造正在按 `.agents/plans/roguelike-act-node-scene-architecture.md` 实施（2026-10-21 起按缺口审查重排为“先状态骨架、后页面”，S1 Core节点状态机已就绪但未接调用方）：Core提供Act/模板映射校验，Setup原子保存首战checkpoint；Main准备期创建独立于页面的16节点Host，营地借用正式地图，成功提交保留实例、取消和终局隔离生命周期。22个正式模板变体已生成；Demo仅一个Act。战斗棋盘借用已由Pending身份投影接入Main的普通、Elite、Boss及证据完整且Host模板匹配的Pending事件入口：只激活对应宿主节点，用世界仿射复用旧Actor/VFX局部坐标，且在建战斗前校验正式模板与runtime布局。V12已具备显式身份codec与Resume透传，并有Pending只读投影与保修订的内存归一化；未切生产Store；完整旧Pending已支持实际变体优先于默认seed，资源目录可按恢复蓝图加载，Main冷Pending Host已按已证明的当前节点实际变体准备，Ready/Resolved和护送Offer/Travel仍待解决。生产启动防线已校验请求队伍/随机修订/身份，恢复与准备回调统一采用Application零写修复投影。事件探索到战斗同实例、Adventure控制器、战后状态和完整V12恢复仍未完成，不能把营地常驻切片视为整架构已验收。
 
 - `Tactics.Core` 与 `Tactics.Application` 是纯 .NET 9；Godot Node、Resource、Scene、文件系统和 UI 只进入 Adapter/Editor 层。
 - 最终内容由 Godot Resource/PackedScene 与轻量 Catalog 驱动；迁移 DTO、Unity GUID 和历史 receipt 不进入运行时。
