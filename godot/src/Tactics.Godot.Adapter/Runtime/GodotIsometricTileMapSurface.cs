@@ -31,10 +31,16 @@ public partial class GodotIsometricTileMapSurface : Node2D
     {
         ArgumentNullException.ThrowIfNull(template);
         template.ToCoreDefinition();
+        IReadOnlyList<GridPoint> water = template.ShallowWaterCells;
+        // Legacy five-tile sets remain valid for dry maps. Never silently render water as grass.
+        if (water.Count > 0 && (!template.TileSet!.HasSource(0) ||
+            template.TileSet.GetSource(0) is not TileSetAtlasSource source || !source.HasTile(new Vector2I(5, 0))))
+            throw new InvalidOperationException("adventure.shallow_water_atlas_missing:source=0,atlas=5,0");
         EnsureLayers();
         Template = template;
         foreach (TileMapLayer layer in Layers()) { layer.Clear(); layer.TileSet = template.TileSet; }
         Fill(TerrainLayer, template.TerrainCells, 0);
+        Fill(TerrainLayer, water, 5);
         Fill(DecorationLayer, template.DecorationCells, 2);
         Fill(MaskLayer, template.MaskCells, 3);
     }
