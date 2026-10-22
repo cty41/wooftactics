@@ -22,6 +22,8 @@ public static class RunSaveDocumentV11
         ArgumentNullException.ThrowIfNull(snapshot);
         if (snapshot.PendingRunSetup is not null)
             throw new ArgumentException("Pending run setup is process-local and cannot be persisted.", nameof(snapshot));
+        if (snapshot.ActiveRun?.AdventureState?.SceneIdentity is not null || snapshot.ActiveRun?.Checkpoint?.SceneIdentity is not null)
+            throw new ArgumentException("Node scene identities require schema V12; implicit downgrade is forbidden.", nameof(snapshot));
         PureRunSaveSnapshot recovered = NormalizeRecovery(snapshot);
         JsonObject root = ParseObject(RunSaveDocumentV10.Encode(recovered));
         root["schemaVersion"] = SchemaVersion;
