@@ -121,15 +121,23 @@ class WindowsRcPipelineTests(unittest.TestCase):
             root = pathlib.Path(temp)
             source = root / "source"
             destination = root / "public-root"
-            validator = source / "Tools" / "public-release" / "validate_public_candidate.py"
-            validator.parent.mkdir(parents=True)
+            public_release = source / "Tools" / "public-release"
+            public_release.mkdir(parents=True)
             (source / ".gitignore").write_text("*.slnx\n", encoding="utf-8")
             (source / "Tactics.Godot.slnx").write_text("<Solution />\n", encoding="utf-8")
-            validator.write_text("raise SystemExit(0)\n", encoding="utf-8")
+            (public_release / "validate_public_candidate.py").write_text(
+                "raise SystemExit(0)\n", encoding="utf-8")
+            # New-PublicRootCandidate invokes this on source and destination; stub it like the validator.
+            (public_release / "Verify-PublicRelease.ps1").write_text(
+                "param([string]$Root, [switch]$Candidate)\nexit 0\n", encoding="utf-8")
             subprocess.run(["git", "init", "-q"], cwd=source, check=True)
             subprocess.run(["git", "config", "user.name", "test"], cwd=source, check=True)
             subprocess.run(["git", "config", "user.email", "test@invalid"], cwd=source, check=True)
-            subprocess.run(["git", "add", ".gitignore", str(validator.relative_to(source))], cwd=source, check=True)
+            subprocess.run([
+                "git", "add", ".gitignore",
+                "Tools/public-release/validate_public_candidate.py",
+                "Tools/public-release/Verify-PublicRelease.ps1",
+            ], cwd=source, check=True)
             subprocess.run(["git", "add", "--force", "Tactics.Godot.slnx"], cwd=source, check=True)
             subprocess.run(["git", "commit", "-qm", "fixture"], cwd=source, check=True)
 
@@ -144,7 +152,8 @@ class WindowsRcPipelineTests(unittest.TestCase):
                 text=True, stdout=subprocess.PIPE,
             ).stdout.splitlines()
             self.assertIn("Tactics.Godot.slnx", tracked)
-            self.assertEqual(3, len(tracked))
+            self.assertIn("Tools/public-release/Verify-PublicRelease.ps1", tracked)
+            self.assertEqual(4, len(tracked))
             self.assertEqual("1", subprocess.run(
                 ["git", "rev-list", "--count", "HEAD"], cwd=destination, check=True,
                 text=True, stdout=subprocess.PIPE,
