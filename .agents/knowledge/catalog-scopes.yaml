@@ -185,6 +185,17 @@ scopes:
   roguelike-run:
     concept: systems/roguelike-run.md
     paths:
+      - src/Tactics.Core/Runs
+      - src/Tactics.Application/Runs
+      - src/Tactics.Core.Tests/RunAdventureTransitionServiceTests.cs
+      - src/Tactics.Core.Tests/PureRunActBlueprintTests.cs
+      - src/Tactics.Application.Tests/PureRunSessionServiceTests.cs
+      - src/Tactics.Application.Tests/RunSaveDocumentV11Tests.cs
+      - src/Tactics.Application.Tests/RunSaveDocumentV12Tests.cs
+      - src/Tactics.Application.Tests/PureRunNodeSceneProjectorTests.cs
+      - src/Tactics.Application.Tests/PureRunPendingSceneRecoveryTests.cs
+      - src/Tactics.Application.Tests/PureRunEncounterRequestValidatorTests.cs
+      - .agents/docs/roguelike-act-node-scene-contract.md
       - .agents/docs/2026-06-24-pure-run-squad-prototype-design.md
       - godot/src/Tactics.Godot.Adapter/Runtime
       - godot/src/Tactics.Godot.Adapter/Authoring
