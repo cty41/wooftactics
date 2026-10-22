@@ -64,7 +64,9 @@ internal static class RunSaveNormalizer
 
     private static string? NullIfWhiteSpace(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 
-    private static RunCharacterState Normalize(RunCharacterState character) => new(
+    private static RunCharacterState Normalize(RunCharacterState character) => character is null
+        ? throw new ArgumentException("Run party entries cannot be null.", nameof(character))
+        : new(
         character.CharacterId,
         character.UnitContentId,
         character.Level,

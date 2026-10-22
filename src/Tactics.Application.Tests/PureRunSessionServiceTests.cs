@@ -279,6 +279,41 @@ public sealed class PureRunSessionServiceTests
         });
     }
     [Test]
+    public void FinalSetupChoice_CreatesFirstEncounterCheckpointInOneSave()
+    {
+        var store = new MemoryRunStore();
+        var service = new PureRunSessionService(DefinitionWithChoices(), store);
+        service.BeginNewRunSetup(9);
+        service.ChooseStartingSkill("mage", new ContentId("skill.mage.fireball.lv1"));
+        service.ChooseStartingSkill("necromancer", new ContentId("skill.necromancer.bone-spear.lv1"));
+        RunSessionResult completed = service.ChooseStartingSkill("amazon", new ContentId("skill.poison-spear.lv1"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(completed.Succeeded, Is.True, completed.ErrorCode);
+            Assert.That(completed.Snapshot!.ActiveRun!.Phase, Is.EqualTo(PureRunPhase.PendingBattle));
+            Assert.That(completed.EncounterRequest, Is.Not.Null);
+            Assert.That(completed.Snapshot.ActiveRun.Checkpoint!.Revision, Is.EqualTo(store.Snapshot!.Revision));
+            Assert.That(completed.Snapshot.ActiveRun.AdventureState!.Lifecycle, Is.EqualTo(RunAdventureLifecycle.MapActive));
+        });
+    }
+
+    [Test]
+    public void SetupMutationsWithoutDraft_ReturnNotPending()
+    {
+        var service = new PureRunSessionService(DefinitionWithChoices(), new MemoryRunStore());
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(service.SelectPartyMember("mage").ErrorCode, Is.EqualTo("run_setup.not_pending"));
+            Assert.That(service.ChooseParty(["mage", "necromancer", "amazon"]).ErrorCode,
+                Is.EqualTo("run_setup.not_pending"));
+            Assert.That(service.ChooseStartingSkill("mage", new ContentId("skill.mage.fireball.lv1")).ErrorCode,
+                Is.EqualTo("run_setup.not_pending"));
+            Assert.That(service.CancelNewRunSetup().ErrorCode, Is.EqualTo("run_setup.not_pending"));
+        });
+    }
+
+    [Test]
     public void BeginEncounter_PersistsCheckpointBeforeReturningRequest()
     {
         var store = new MemoryRunStore();
@@ -457,6 +492,69 @@ public sealed class PureRunSessionServiceTests
             Assert.That(duplicate.WasDuplicate, Is.True);
             Assert.That(duplicate.Snapshot!.Revision, Is.EqualTo(terminalRevision));
             Assert.That(duplicate.Snapshot.TerminalSummary!.Outcome, Is.EqualTo(PureRunOutcome.SliceCompleted));
+        });
+    }
+
+    [TestCase(RunAdventureEventContextKind.CursedChestMimic, true)]
+    [TestCase(RunAdventureEventContextKind.FallenAltarGuardian, true)]
+    [TestCase(RunAdventureEventContextKind.LostVillagerEscort, true)]
+    [TestCase(RunAdventureEventContextKind.LostVillagerEscort, false)]
+    public void EventBattleSettlement_CommitsEventAndEscortInOneSave(
+        RunAdventureEventContextKind context, bool protectedNpcAlive)
+    {
+        PureRunDefinition definition = DefinitionWithMap();
+        var store = new MemoryRunStore();
+        PureRunState pending = EventPending(definition, LayerFourMap(), context);
+        store.Snapshot = new PureRunSaveSnapshot(pending.Revision, pending, null);
+        var service = new PureRunSessionService(definition, store, mapDefinition: LayerFourMap());
+        PureRunBattleResult result = Victory(pending);
+
+        RunSessionResult settled = service.ApplyEventBattleResult(result, protectedNpcAlive);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(settled.Succeeded, Is.True);
+            Assert.That(store.SaveCount, Is.EqualTo(1));
+            Assert.That(settled.Snapshot!.ActiveRun!.AdventureState!.PendingEventContext,
+                Is.EqualTo(RunAdventureEventContextKind.None));
+            Assert.That(settled.Snapshot.ActiveRun.AdventureState.BoardContentId.Value,
+                Does.EndWith(".resolved"));
+            Assert.That(settled.Snapshot.ActiveRun.NodeTransaction!.Committed, Is.True);
+            if (context == RunAdventureEventContextKind.LostVillagerEscort)
+            {
+                Assert.That(settled.Snapshot.ActiveRun.EscortState!.Lifecycle,
+                    Is.EqualTo(protectedNpcAlive ? RunEscortLifecycle.Completed : RunEscortLifecycle.Failed));
+                Assert.That(settled.Snapshot.ActiveRun.EscortState.ProtectedNpcAlive, Is.EqualTo(protectedNpcAlive));
+            }
+        });
+    }
+
+    [Test]
+    public void EventBattleSettlement_SaveFailurePreservesPendingSnapshotAndRetryAppliesOnce()
+    {
+        PureRunDefinition definition = DefinitionWithMap();
+        var store = new MemoryRunStore();
+        PureRunState pending = EventPending(definition, LayerFourMap(), RunAdventureEventContextKind.LostVillagerEscort);
+        PureRunSaveSnapshot original = new(pending.Revision, pending, null);
+        store.Snapshot = original;
+        store.FailNextSave = true;
+        var service = new PureRunSessionService(definition, store, mapDefinition: LayerFourMap());
+        PureRunBattleResult result = Victory(pending);
+
+        RunSessionResult failed = service.ApplyEventBattleResult(result, protectedNpcAlive: true);
+        RunSessionResult retried = service.ApplyEventBattleResult(result, protectedNpcAlive: true);
+        int gold = retried.Snapshot!.ActiveRun!.Gold;
+        RunSessionResult duplicate = service.ApplyEventBattleResult(result, protectedNpcAlive: true);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(failed.ErrorCode, Is.EqualTo("save.write_failed"));
+            Assert.That(failed.Snapshot, Is.SameAs(original));
+            Assert.That(retried.Succeeded, Is.True);
+            Assert.That(duplicate.Succeeded, Is.True);
+            Assert.That(duplicate.WasDuplicate, Is.True);
+            Assert.That(duplicate.Snapshot!.ActiveRun!.Gold, Is.EqualTo(gold));
+            Assert.That(store.SaveCount, Is.EqualTo(2));
         });
     }
 
@@ -741,6 +839,29 @@ public sealed class PureRunSessionServiceTests
         });
     }
 
+    [Test]
+    public void FullRunTransition_SaveConflictDoesNotPublishEncounter()
+    {
+        var store = new MemoryRunStore();
+        var session = new PureRunSessionService(Definition(), store);
+        session.StartNewRun(42);
+        PureRunSaveSnapshot concurrent = store.Snapshot! with { Revision = store.Snapshot!.Revision + 1 };
+        RunSessionResult result = session.ApplyFullRunTransition(run =>
+        {
+            // A competing writer wins after this command read its expected revision.
+            store.Snapshot = concurrent;
+            return new FullRunTransitionResult(true, null, run,
+                new EncounterRequest(run.RunId, run.Revision + 1, run.EncounterContentId, run.Party));
+        });
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.Succeeded, Is.False);
+            Assert.That(result.ErrorCode, Is.EqualTo("save.revision_conflict"));
+            Assert.That(result.EncounterRequest, Is.Null);
+            Assert.That(store.Snapshot, Is.SameAs(concurrent));
+        });
+    }
+
     private static PureRunBattleResult Victory(PureRunState run) => new(
         run.RunId, run.Checkpoint!.Revision, run.EncounterContentId, true, 3, 3,
         run.Party.Select(member => new BattlePartyResult(
@@ -801,6 +922,85 @@ public sealed class PureRunSessionServiceTests
                 new ContentId("skill.poet.moon-drink.lv1")],
             SeededStartingSkill: true)));
 
+    [Test]
+    public void ResumeRun_ClearsSettledRunWhoseBoardWasNeverResolved()
+    {
+        var store = new MemoryRunStore { Snapshot = new PureRunSaveSnapshot(5, SettledFirstBattle(resolved: false), null) };
+        var session = new PureRunSessionService(DefinitionWithMap(), store, mapDefinition: DemoMap());
+
+        RunSessionResult resumed = session.ResumeRun();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(resumed.Succeeded, Is.False);
+            Assert.That(resumed.ErrorCode, Is.EqualTo(PureRunSessionService.StaleSaveReset));
+            Assert.That(resumed.Diagnostics, Does.Contain("act_state.inconsistent_resolution"));
+            Assert.That(store.Snapshot!.ActiveRun, Is.Null);
+            Assert.That(store.Snapshot.TerminalSummary, Is.Null);
+            Assert.That(store.Snapshot.Revision, Is.EqualTo(6));
+            Assert.That(session.ResumeRun().ErrorCode, Is.EqualTo("run.no_active_run"));
+        });
+    }
+
+    [Test]
+    public void ResumeRun_KeepsSettledRunWithResolvedBoard()
+    {
+        var store = new MemoryRunStore { Snapshot = new PureRunSaveSnapshot(5, SettledFirstBattle(resolved: true), null) };
+
+        RunSessionResult resumed = new PureRunSessionService(DefinitionWithMap(), store, mapDefinition: DemoMap()).ResumeRun();
+
+        Assert.That(resumed.Succeeded, Is.True, resumed.ErrorCode);
+        Assert.That(store.SaveCount, Is.Zero);
+    }
+
+    private static PureRunState SettledFirstBattle(bool resolved)
+    {
+        PureRunDefinition definition = DefinitionWithMap();
+        RunCharacterState[] party = definition.Party.Select(template => new RunCharacterState(
+            template.CharacterId, template.UnitContentId, 1, template.Attributes, 20, 20, 10, 15, false,
+            [template.StartingSkillContentId], startingSkillContentId: template.StartingSkillContentId)).ToArray();
+        var board = new ContentId("adventure-board.pure-run.node.layer-01-battle" + (resolved ? ".resolved" : string.Empty));
+        var adventure = new RunAdventureState(RunAdventureLifecycle.MapActive, board, "mage",
+            party.Select((member, index) => new RunAdventureActorCell(member.CharacterId, new(1, index))).ToArray(),
+            RunAdventureEventContextKind.None, null, null, 0, 0, 0, 0, 0);
+        return new PureRunState("stale", 37, 5, PureRunPhase.Ready, 1, definition.Encounters[1], party,
+            battlesCompleted: 1, adventureState: adventure);
+    }
+
+    private static PureRunMapDefinition DemoMap()
+    {
+        var nodes = new List<PureRunMapNodeDefinition>
+        {
+            new("start", 0, PureRunNodeKind.Battle, new ContentId("run.pure-run.three-encounter-v1")),
+            new("layer_01_battle", 1, PureRunNodeKind.Battle, new ContentId("encounter.pure-run.n1")),
+            new("layer_02_battle", 2, PureRunNodeKind.Battle, new ContentId("encounter.pure-run.n2")),
+            new("layer_03_battle", 3, PureRunNodeKind.Battle, new ContentId("encounter.pure-run.n3")),
+            new("layer_05_battle", 5, PureRunNodeKind.Elite, new ContentId("encounter.pure-run.e1")),
+            new("layer_07_battle", 7, PureRunNodeKind.Boss, new ContentId("encounter.pure-run.special"))
+        };
+        var edges = new List<PureRunMapConnectionDefinition>
+        {
+            new("start", "layer_01_battle"), new("layer_01_battle", "layer_02_battle"), new("layer_02_battle", "layer_03_battle")
+        };
+        foreach (int layer in new[] { 4, 6 })
+        {
+            string prefix = $"layer_{layer:00}";
+            nodes.Add(new(prefix + "_battle", layer, PureRunNodeKind.Battle, new ContentId(layer == 4 ? "encounter.pure-run.n4" : "encounter.pure-run.e1")));
+            nodes.Add(new(prefix + "_rest", layer, PureRunNodeKind.Rest, new ContentId("rest.pure-run.standard-v1")));
+            nodes.Add(new(prefix + "_store", layer, PureRunNodeKind.Store, new ContentId("store.pure-run.standard-v1")));
+            nodes.Add(new(prefix + "_event", layer, PureRunNodeKind.Mystery, new ContentId("event.pure-run.cursed-chest")));
+            nodes.Add(new(prefix + "_treasure", layer, PureRunNodeKind.Treasure, new ContentId("treasure.pure-run.standard-v1")));
+        }
+        foreach (string suffix in new[] { "battle", "rest", "store", "event", "treasure" })
+        {
+            edges.Add(new("layer_03_battle", $"layer_04_{suffix}"));
+            edges.Add(new($"layer_04_{suffix}", "layer_05_battle"));
+            edges.Add(new("layer_05_battle", $"layer_06_{suffix}"));
+            edges.Add(new($"layer_06_{suffix}", "layer_07_battle"));
+        }
+        return new PureRunMapDefinition(new ContentId("run-map.pure-run.layer4-v1"), 3, nodes, edges);
+    }
+
     private static PureRunMapDefinition LayerFourMap() => new(new ContentId("run-map.pure-run.layer4-v1"), 2,
     [
         new PureRunMapNodeDefinition("layer_04_battle", 4, PureRunNodeKind.Battle, new ContentId("encounter.pure-run.n4")),
@@ -809,14 +1009,52 @@ public sealed class PureRunSessionServiceTests
         new PureRunMapNodeDefinition("layer_04_event", 4, PureRunNodeKind.Mystery, new ContentId("event.mystery"))
     ]);
 
+    private static PureRunState EventPending(PureRunDefinition definition, PureRunMapDefinition map,
+        RunAdventureEventContextKind context)
+    {
+        var store = new MemoryRunStore();
+        var session = new PureRunSessionService(definition, store, mapDefinition: map);
+        session.StartNewRun(29);
+        session.BeginEncounter();
+        PureRunState source = store.Snapshot!.ActiveRun!;
+        PureRunMapResult selected = new PureRunMapService(map).BeginNode(
+            new PureRunMapService(map).UnlockLayerFour(source.Seed), "layer_04_event");
+        string objectId = context switch
+        {
+            RunAdventureEventContextKind.CursedChestMimic => "cursed-chest",
+            RunAdventureEventContextKind.FallenAltarGuardian => "fallen-altar",
+            RunAdventureEventContextKind.LostVillagerEscort => "lost-villager",
+            _ => throw new ArgumentOutOfRangeException(nameof(context))
+        };
+        RunAdventureState adventure = new RunAdventureTransitionService().BeginEventBattle(source,
+            context, "layer_04_event", objectId).AdventureState!;
+        RunEscortState? escort = context == RunAdventureEventContextKind.LostVillagerEscort
+            ? new RunEscortState("escort-test", RunEscortLifecycle.BattlePending, true,
+                "layer_02_event", "layer_04_event", source.Revision)
+            : null;
+        return new PureRunState(source.RunId, source.Seed, source.Revision, PureRunPhase.PendingBattle,
+            source.EncounterIndex, source.EncounterContentId, source.Party, source.BackpackConsumables,
+            source.BackpackEquipment, source.PendingProgression, source.AppliedTransactionKeys, source.Gold,
+            source.BattlesCompleted, source.EnemiesDefeated, source.AcquiredItems, source.Checkpoint,
+            selected.State with { NodeLifecycle = RunNodeLifecycle.Pending }, selected.Transaction, escort, adventure);
+    }
+
     private sealed class MemoryRunStore : IRunSaveStore
     {
         public PureRunSaveSnapshot? Snapshot { get; set; }
+        public int SaveCount { get; private set; }
+        public bool FailNextSave { get; set; }
 
         public RunStoreResult Load() => new(true, null, Snapshot ?? new PureRunSaveSnapshot(0, null, null));
 
         public RunStoreResult Save(PureRunSaveSnapshot snapshot, long expectedRevision)
         {
+            SaveCount++;
+            if (FailNextSave)
+            {
+                FailNextSave = false;
+                return new RunStoreResult(false, "save.write_failed", Snapshot);
+            }
             long current = Snapshot?.Revision ?? 0;
             if (current != expectedRevision)
                 return new RunStoreResult(false, "save.revision_conflict", Snapshot);
