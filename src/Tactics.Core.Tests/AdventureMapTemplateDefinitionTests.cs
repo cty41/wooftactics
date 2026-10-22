@@ -41,6 +41,30 @@ public sealed class AdventureMapTemplateDefinitionTests
         Assert.Throws<ArgumentException>(() => (template with { StateLayerIds = ["current", "unknown-layer"] }).Validate());
     }
 
+    [Test]
+    public void TerminalTemplateHasNoOutgoingRouteButStillRequiresAnEntry()
+    {
+        AdventureMapTemplateDefinition terminal = Template() with { IsTerminal = true, Exits = [], ConnectionAnchors = [] };
+        Assert.DoesNotThrow(terminal.Validate);
+        Assert.Throws<ArgumentException>(() => (terminal with { Entries = [] }).Validate());
+        Assert.Throws<ArgumentException>(() => (terminal with { Exits = Template().Exits }).Validate());
+        Assert.Throws<ArgumentException>(() => (terminal with { ConnectionAnchors = Template().ConnectionAnchors }).Validate());
+        Assert.Throws<ArgumentException>(() => (terminal with { IsTerminal = false }).Validate());
+    }
+
+    [Test]
+    public void ExplorationSlotsCannotBeInsideAnIsolatedPocket()
+    {
+        AdventureMapTemplateDefinition template = Template() with
+        {
+            CandidateSlots = [new("candidate-1", new(1, 1))],
+            Board = Template().Board with { BlockedCells = [new(0, 1), new(1, 0), new(2, 1), new(1, 2)] }
+        };
+        Assert.That(AdventureBoardPathfinder.FindPath(template.Board, template.Entries[0].Cell,
+            template.Exits[0].Cell), Is.Not.Empty);
+        Assert.Throws<ArgumentException>(template.Validate);
+    }
+
     private static AdventureMapTemplateDefinition Template()
     {
         var board = new AdventureBoardDefinition(new ContentId("adventure-map.test"), 10, 10, [], [], [], new(1, 5), new(8, 5));

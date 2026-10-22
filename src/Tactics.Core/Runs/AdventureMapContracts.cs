@@ -48,18 +48,31 @@ public sealed record AdventureMapTemplateDefinition(
     IReadOnlyList<AdventureMapAnchor> ConnectionAnchors,
     AdventureMapAnchor CameraFocusAnchor,
     AdventureMapAnchor AtlasBoundsAnchor,
-    IReadOnlyList<string> StateLayerIds)
+    IReadOnlyList<string> StateLayerIds,
+    bool IsTerminal = false,
+    IReadOnlyList<GridPoint>? ShallowWaterCells = null)
 {
     public void Validate()
     {
         ArgumentNullException.ThrowIfNull(Board);
         Board.Validate();
+        IReadOnlyList<GridPoint> water = ShallowWaterCells ?? Array.Empty<GridPoint>();
+        if (water.Distinct().Count() != water.Count ||
+            water.Any(cell => !Board.Contains(cell) || Board.BlockedCells.Contains(cell)))
+            throw new ArgumentException("Shallow water cells must be unique, inside the board and not blocked.", nameof(ShallowWaterCells));
         RequireSlots(CandidateSlots, nameof(CandidateSlots));
         RequireSlots(PartyEntrySlots, nameof(PartyEntrySlots));
         RequireSlots(PlayerBattleSlots, nameof(PlayerBattleSlots));
         RequireSlots(EnemyBattleSlots, nameof(EnemyBattleSlots));
-        if (Entries.Count == 0 || Exits.Count == 0 || ConnectionAnchors.Count == 0)
-            throw new ArgumentException("Map templates require entry, exit, and connection anchors.");
+        if (Entries.Count == 0)
+            throw new ArgumentException("Map templates require entry anchors.");
+        if (IsTerminal)
+        {
+            if (Exits.Count != 0 || ConnectionAnchors.Count != 0 || Board.Objects.Any(value => value.Kind == AdventureObjectKind.Exit))
+                throw new ArgumentException("Terminal map templates cannot have outgoing exits or connection anchors.");
+        }
+        else if (Exits.Count == 0 || ConnectionAnchors.Count == 0)
+            throw new ArgumentException("Non-terminal map templates require exit and connection anchors.");
 
         AdventureMapSlot[] slots = CandidateSlots.Concat(PartyEntrySlots).Concat(PlayerBattleSlots)
             .Concat(EnemyBattleSlots).ToArray();
@@ -82,6 +95,11 @@ public sealed record AdventureMapTemplateDefinition(
             StateLayerIds.Any(value => !AdventureMapStateLayers.Known.Contains(value)) ||
             AdventureMapStateLayers.Required.Any(required => !StateLayerIds.Contains(required, StringComparer.Ordinal)))
             throw new ArgumentException("Map template state layers are missing, duplicated, or unknown.");
+
+        foreach (AdventureMapAnchor entry in Entries)
+        foreach (AdventureMapSlot slot in CandidateSlots.Concat(PartyEntrySlots))
+            if (AdventureBoardPathfinder.FindPath(Board, entry.Cell, slot.Cell).Count == 0)
+                throw new ArgumentException("Exploration slots must be reachable from every entry.");
 
         foreach (AdventureMapAnchor entry in Entries)
         foreach (AdventureMapExitAnchor exit in Exits)
