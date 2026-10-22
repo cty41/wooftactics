@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Tactics.Core.Content;
 using Tactics.Core.Board;
 using Tactics.Core.Items;
@@ -189,13 +190,16 @@ public sealed record PureRunSummary(
     bool BossDefeated = false,
     ContentId? TerminalEncounterId = null);
 
+// V1–V11 serialize these domain records directly. SceneIdentity belongs to V12's explicit wire boundary,
+// so the legacy serializer must neither add a null field nor interpret injected identity metadata.
 public sealed record RunEncounterCheckpoint(
     ContentId EncounterContentId,
     int EncounterIndex,
     long Revision,
     IReadOnlyList<RunCharacterState> Party,
     IReadOnlyList<BattleConsumableState> BackpackConsumables,
-    IReadOnlyList<RunEquipmentState> BackpackEquipment);
+    IReadOnlyList<RunEquipmentState> BackpackEquipment,
+    [property: JsonIgnore] RunNodeSceneIdentity? SceneIdentity = null);
 
 public enum RunEscortLifecycle { Accepted, Traveling, BattlePending, Completed, Failed }
 
@@ -236,7 +240,8 @@ public sealed record RunAdventureState(
     long LeaderRevision,
     long InteractionRevision,
     long ExitRevision,
-    long SceneRevision);
+    long SceneRevision,
+    [property: JsonIgnore] RunNodeSceneIdentity? SceneIdentity = null);
 
 public sealed record PureRunState
 {
@@ -273,7 +278,7 @@ public sealed record PureRunState
         EncounterIndex = encounterIndex;
         EncounterContentId = encounterContentId;
         Party = party?.ToArray() ?? throw new ArgumentNullException(nameof(party));
-        if (Party.Count != 3 || Party.Select(item => item.CharacterId).Distinct(StringComparer.Ordinal).Count() != 3)
+        if (Party.Count != 3 || Party.Any(item => item is null) || Party.Select(item => item.CharacterId).Distinct(StringComparer.Ordinal).Count() != 3)
             throw new ArgumentException("Run party must contain three unique characters.", nameof(party));
         BackpackConsumables = backpackConsumables?.OrderBy(value => value.InstanceId.Value, StringComparer.Ordinal).ToArray()
             ?? Array.Empty<BattleConsumableState>();
