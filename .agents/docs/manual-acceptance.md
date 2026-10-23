@@ -377,7 +377,7 @@ Roguelike Map 分阶段操作步骤见 [真实 TileMap 人工验收 Checklist](r
 - Observe: 主页状态栏、Continue 按钮、恢复后的页面/节点、`user://pure-run` 存档与 `.bak`、Godot Output。
 - Preserve on failure: 被误清前的 save/backup 副本（先复制再点 Continue）、节点 ID、Run seed/revision 和 Output。
 - Save boundary: 清档会覆盖当前存档；每次测试前复制 `user://pure-run`，不得用唯一生产存档测试。
-- Automated evidence: 清档只针对 `act_state.inconsistent_resolution`（其他推导拒绝仍走旧恢复流程，避免误删）。Core 265、Application 398；隔离 GdUnit 10 套件 95/95（含常驻普通/事件战斗冷热恢复），过程中修复了事件战斗 PendingBattle 被误判的推导缺陷。正式门禁在任务外 public-release 工具测试处中断。真实各阶段存档是否被误判只能人工确认。
+- Automated evidence: 清档只针对 `act_state.inconsistent_resolution`（其他推导拒绝仍走旧恢复流程，避免误删）。Core 265、Application 398；隔离 GdUnit 10 套件 95/95（含常驻普通/事件战斗冷热恢复），过程中修复了事件战斗 PendingBattle 被误判的推导缺陷。正式门禁在任务外 public-release 工具测试处中断。2026-10-23 新增 `StaleSaveColdResumeGodotTests` 3/3：脚本玩家经 `GodotRunSaveStore` 写真实 V11 文档（固定 seed 37，调用界面结算、出口与成长按钮同一路径），在第一场结算后、L4 休息选中后、L5 战斗检查点与 L5 结算后分别新建 Main 冷启动，断言局仍在、revision 不变、未显示清档提示、未回主页。商店/事件选择、L6 节点、进程级退出与旧构建半截存档清档仍需人工确认。
 - User verdict: none.
 
 ## Passed
