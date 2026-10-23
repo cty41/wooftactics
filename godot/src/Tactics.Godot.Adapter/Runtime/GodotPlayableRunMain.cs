@@ -25,14 +25,11 @@ public partial class GodotPlayableRunMain : Control
     public const int StartPageUiZIndex = 1200;
     public const string StartCurrentControlsHint = "[LMB] select/move   [M] route overview   [F/Home] leader";
     public const string StartOverviewControlsHint = "[LMB] inspect node   [RMB/WASD] browse route   [M] return to camp";
+    // Only panels that own their content. Empty framing cards around turn/actions/end-turn were removed.
     internal static IReadOnlyDictionary<string, Rect2> BattleHudPanelRects { get; } =
         new Dictionary<string, Rect2>(StringComparer.Ordinal)
         {
-            ["BattleTurnPanel"] = new(new Vector2(455, 18), new Vector2(690, 108)),
             ["BattleUnitPanel"] = new(new Vector2(18, 18), new Vector2(430, 190)),
-            ["BattlePlaybackPanel"] = new(new Vector2(1148, 18), new Vector2(434, 82)),
-            ["BattleActionPanel"] = new(new Vector2(18, 744), new Vector2(1170, 144)),
-            ["BattleEndTurnPanel"] = new(new Vector2(1305, 785), new Vector2(277, 103)),
         };
     internal static IReadOnlyList<GridPoint> StartCampCandidateCells { get; } =
         [new(2, 4), new(5, 4), new(8, 4), new(3, 7), new(7, 7)];
@@ -67,7 +64,7 @@ public partial class GodotPlayableRunMain : Control
     private RichTextLabel? _eventLog;
     private GodotBattleCheatConsole? _cheatConsole;
     private GodotBattleActiveUnitPanel? _activeUnitPanel;
-    private GodotBattleHoverTooltip? _hoverTooltip;
+    private Label? _cellDebug;
     private Label? _turnOrder;
     private Button? _speedButton;
     private Button? _stepButton;
@@ -114,6 +111,8 @@ public partial class GodotPlayableRunMain : Control
     private Control? _pauseMenu;
     private bool _pauseMenuPausedPlayback;
     private bool _pauseMenuControlsBattlePlayback;
+    private readonly List<(string Tag, Action Dismiss)> _escapeLayers = new();
+    private RunInputContext _inputContext = RunInputContext.Disabled;
     private GodotPlayableRunTestContext? _testContext;
     private IRunSaveStore? _saveStore;
     private bool _readyEntered;
@@ -363,11 +362,86 @@ public partial class GodotPlayableRunMain : Control
 
     public override void _Input(InputEvent inputEvent)
     {
+        if (TryHandleGlobalEscape(inputEvent))
+        {
+            GetViewport().SetInputAsHandled();
+            return;
+        }
         if (_startCampView is null || _pauseMenu?.Visible == true || _cheatConsole?.Visible == true) return;
         if (!_startCampView.HandleAtlasKey(inputEvent)) return;
         GetViewport().SetInputAsHandled();
     }
 
+    internal sealed record RunInputContext(bool CanPause, bool ControlsBattlePlayback,
+        bool PausesAdventureMovement, bool SetupDraftActive)
+    {
+        public static readonly RunInputContext Disabled = new(false, false, false, false);
+        public static readonly RunInputContext Setup = new(true, false, true, true);
+        public static readonly RunInputContext Adventure = new(true, false, true, false);
+        public static readonly RunInputContext Battle = new(true, true, false, false);
+    }
+
+    private void SetInputContext(RunInputContext context) => _inputContext = context;
+
+    private bool TryHandleGlobalEscape(InputEvent inputEvent)
+    {
+        if (inputEvent is not InputEventKey { Pressed: true, Echo: false } key ||
+            key.Keycode != Key.Escape && key.PhysicalKeycode != Key.Escape) return false;
+        if (_cheatConsole?.Visible == true)
+        {
+            _cheatConsole.SetOpen(false);
+            return true;
+        }
+        if (_battle is not null && _visibleSnapshot?.TargetingMode != BattleTargetingMode.None)
+        {
+            ApplyIntent(new CancelTargetingIntent());
+            return true;
+        }
+        // One ESC dismisses only the top registered layer (Options, confirm, inventory, …).
+        if (TryDismissTopEscapeLayer()) return true;
+        if (_pauseMenu?.Visible == true)
+        {
+            ClosePauseMenu();
+            return true;
+        }
+        if (_pauseMenu is null) return false;
+        OpenPauseMenu();
+        return true;
+    }
+
+    private void PushEscapeLayer(string tag, Action dismiss)
+    {
+        RemoveEscapeLayer(tag);
+        _escapeLayers.Add((tag, dismiss));
+    }
+
+    private void EnsureEscapeLayer(string tag, Action dismiss)
+    {
+        if (_escapeLayers.Any(layer => layer.Tag == tag)) return;
+        if (tag == "pause.close") _escapeLayers.Insert(0, (tag, dismiss));
+        else _escapeLayers.Add((tag, dismiss));
+    }
+
+    private void RemoveEscapeLayer(string tag)
+    {
+        for (int index = _escapeLayers.Count - 1; index >= 0; index--)
+        {
+            if (_escapeLayers[index].Tag != tag) continue;
+            _escapeLayers.RemoveAt(index);
+            return;
+        }
+    }
+
+    private void ClearEscapeLayers() => _escapeLayers.Clear();
+
+    private bool TryDismissTopEscapeLayer()
+    {
+        if (_escapeLayers.Count == 0) return false;
+        Action dismiss = _escapeLayers[^1].Dismiss;
+        _escapeLayers.RemoveAt(_escapeLayers.Count - 1);
+        dismiss();
+        return true;
+    }
     public override void _UnhandledInput(InputEvent inputEvent)
     {
         if (_battle is not null && inputEvent.IsActionPressed("toggle_console"))
@@ -382,25 +456,16 @@ public partial class GodotPlayableRunMain : Control
             { _cheatConsole.Visible = false; GetViewport().SetInputAsHandled(); }
             return;
         }
-        if (_pauseMenu?.Visible == true)
+        if (TryHandleGlobalEscape(inputEvent))
         {
-            if (inputEvent is InputEventKey { Pressed: true, Echo: false, Keycode: Key.Escape }) ClosePauseMenu();
+            GetViewport().SetInputAsHandled();
             return;
         }
-        if (_battle is null)
-        {
-            if (inputEvent is InputEventKey { Pressed: true, Echo: false, Keycode: Key.Escape } && _pauseMenu is not null)
-            { OpenPauseMenu(); GetViewport().SetInputAsHandled(); }
-            return;
-        }
+        if (_pauseMenu?.Visible == true) return;
+        if (_battle is null) return;
         if (inputEvent is InputEventKey { Pressed: true, Echo: false } key)
         {
-            if (key.Keycode == Key.Escape)
-            {
-                if (_visibleSnapshot?.TargetingMode != BattleTargetingMode.None) ApplyIntent(new CancelTargetingIntent());
-                else OpenPauseMenu();
-            }
-            else if (key.Keycode is Key.Enter or Key.KpEnter) ApplyIntent(new EndTurnIntent());
+            if (key.Keycode is Key.Enter or Key.KpEnter) ApplyIntent(new EndTurnIntent());
         }
         else if (inputEvent is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Right })
             ApplyIntent(new CancelTargetingIntent());
@@ -554,6 +619,7 @@ public partial class GodotPlayableRunMain : Control
         menu.AddChild(fullscreen);
         menu.AddChild(Label("Battle playback speed is controlled from the battle HUD.", 16));
         menu.AddChild(Button("Back", ShowHome));
+        PushEscapeLayer("home.options", ShowHome);
     }
 
     private string FullscreenButtonText() => GetWindow().Mode == Window.ModeEnum.Fullscreen
@@ -905,9 +971,12 @@ public partial class GodotPlayableRunMain : Control
             ZIndex = 1201
         };
         root.AddChild(_activeUnitPanel);
-        _hoverTooltip = new GodotBattleHoverTooltip();
-        root.AddChild(_hoverTooltip);
-        _settlementStatus=LabelAt(root,string.Empty,new Vector2(475,82),16);_settlementStatus.Size=new Vector2(650,34);_settlementStatus.HorizontalAlignment=HorizontalAlignment.Center;_settlementStatus.ZIndex=1201;
+        _cellDebug=LabelAt(root,string.Empty,new Vector2(475,78),15);
+        _cellDebug.Name="BattleCellDebug";
+        _cellDebug.Size=new Vector2(660,24);
+        _cellDebug.HorizontalAlignment=HorizontalAlignment.Center;
+        _cellDebug.ZIndex=1201;
+        _settlementStatus=LabelAt(root,string.Empty,new Vector2(475,100),16);_settlementStatus.Size=new Vector2(660,34);_settlementStatus.HorizontalAlignment=HorizontalAlignment.Center;_settlementStatus.ZIndex=1201;
         var controls=new HBoxContainer{Position=new Vector2(1160,32),Size=new Vector2(410,55),ZIndex=1201};root.AddChild(controls);
         controls.AddChild(SmallButton("Pause/Resume",TogglePause));_stepButton=SmallButton("Step",()=>{if(_playbackPaused)PlaybackStep(true);});_stepButton.Disabled=true;controls.AddChild(_stepButton);_speedButton=SmallButton($"Speed {_playbackSpeed:0.#}x",ToggleSpeed);controls.AddChild(_speedButton);
         _cheatConsole=new GodotBattleCheatConsole();_cheatConsole.ClearRequested+=()=>{_logs.Clear();RefreshLog();};root.AddChild(_cheatConsole);
@@ -1058,33 +1127,23 @@ public partial class GodotPlayableRunMain : Control
     private void HoverCell(GridPoint cell)
     {
         RestoreTargetingFacing();
-        _hoveredCell=cell;if(_visibleSnapshot is not BattleUiSnapshot snapshot)return;
-        BattleUiUnitSnapshot? unit=snapshot.Units.FirstOrDefault(value=>value.Cell==cell);
-        string detail=unit is null?$"Cell {cell}":$"Cell {cell} | {unit.UnitId.Value} | HP {unit.CurrentHealth}/{unit.MaxHealth} MP {unit.CurrentMana}/{unit.MaxMana} | {string.Join(',',unit.StatusIds.Select(id=>id.Value))}";
-        if(snapshot.Corpses.Contains(cell))detail+=" | Corpse";
-        if(snapshot.ShallowWaterCells?.Contains(cell)==true)detail+=" | 浅水";
-        if(snapshot.TargetingMode==BattleTargetingMode.Move)detail+=snapshot.LegalMoveCells.Contains(cell)?$" | Legal move, path {_battle?.PreviewMovePath(cell).Count??0}":" | Illegal move";
-        if(snapshot.TargetingMode==BattleTargetingMode.Skill&&snapshot.SelectedSkillId is ContentId skillId)
-        {
-            BattleUiImpactPreview? preview=_battle?.PreviewSkillTarget(cell);
-            if(preview is not null)
-            {
-                detail+=preview.IsInRange?" | In range":" | Out of range";
-                detail+=preview.IsLegal?" | Legal target":$" | Blocked: {preview.FailureCode??"invalid_target"}";
-                if(preview.LineOfSight is { BlockingCell: GridPoint blocked, BlockingKind: { } kind })
-                    detail+=$" | LOS {kind} at ({blocked.X},{blocked.Y})"+(preview.LineOfSight.BlockingUnitId is UnitInstanceId blockingUnit?$" [{blockingUnit.Value}]":string.Empty);
-                if(preview.PrimaryImpactUnitId is UnitInstanceId primary)detail+=$" | First hit: {primary.Value}";
-                if(preview.ImpactUnitIds.Count>1||_skills[skillId].ExecutionKind==SkillExecutionKind.AreaBlast)detail+=$" | AOE targets {preview.ImpactUnitIds.Count}";
-            }
-        }
+        _hoveredCell = cell;
+        if (_cellDebug is not null) _cellDebug.Text = $"Cell ({cell.X},{cell.Y})";
+        if (_visibleSnapshot is not BattleUiSnapshot snapshot) return;
         PreviewTargetingFacing(snapshot, cell);
-        _hoverTooltip?.ShowDetail(detail, GetViewport().GetMousePosition());ApplyHighlights(snapshot);
+        ApplyHighlights(snapshot);
     }
-    private void ClearHover(){RestoreTargetingFacing();_hoveredCell=null;_hoverTooltip?.HideDetail();if(_visibleSnapshot is not null)ApplyHighlights(_visibleSnapshot);}
+
+    private void ClearHover()
+    {
+        RestoreTargetingFacing();
+        _hoveredCell = null;
+        if (_cellDebug is not null) _cellDebug.Text = string.Empty;
+        if (_visibleSnapshot is not null) ApplyHighlights(_visibleSnapshot);
+    }
 
     private void UpdateHoveredMeter(Vector2 pointer)
     {
-        _hoverTooltip?.MoveTo(GetViewport().GetMousePosition());
         UnitInstanceId? hovered = GodotUnitPointerResolver.Resolve(_actors, pointer);
         if (hovered is UnitInstanceId unitId && _visibleSnapshot?.Units.FirstOrDefault(unit => unit.UnitId == unitId) is BattleUiUnitSnapshot unit)
             HoverCell(unit.Cell);
@@ -2198,6 +2257,7 @@ public partial class GodotPlayableRunMain : Control
             detail.AddChild(Button(selectedCharacter.CarriedConsumables.Count>0?"Replace carried consumable":"Carry",()=>CommitInventoryMutation(state=>new RunInventoryProgressionService().Carry(state,state.Revision,selectedCharacter.CharacterId,selectedConsumable.InstanceId),returnTarget)));
         }
         root.AddChild(PlaceControl(Button("Back",()=>ReturnFromInventory(run,returnTarget)),new Vector2(650,815),new Vector2(300,55)));
+        PushEscapeLayer("inventory", () => ReturnFromInventory(run, returnTarget));
     }
 
     private void CommitInventoryMutation(Func<PureRunState,RunMutationResult> mutation, InventoryReturnTarget returnTarget)
@@ -2282,6 +2342,11 @@ public partial class GodotPlayableRunMain : Control
                 menu.AddChild(Label("No skill candidate is legal after this allocation. Attribute-only confirmation is allowed.",18));
                 menu.AddChild(Button("Confirm Attribute",()=>CompleteProgression(pending.TransactionKey,proposed,null)));
             }
+            PushEscapeLayer("progression.step2", () =>
+            {
+                _progressionDrafts.Remove(pending.TransactionKey);
+                ShowProgression(run, pending);
+            });
         }
     }
 
@@ -2370,8 +2435,9 @@ public partial class GodotPlayableRunMain : Control
             DialogText = "Abandon this run? This records an Abandoned summary before a fresh camp is created."
         };
         AddChild(confirm);
-        confirm.Confirmed += () => { confirm.QueueFree(); AbandonRun(); };
-        confirm.Canceled += confirm.QueueFree;
+        confirm.Confirmed += () => { RemoveEscapeLayer("pause.abandon"); confirm.QueueFree(); AbandonRun(); };
+        confirm.Canceled += () => { RemoveEscapeLayer("pause.abandon"); confirm.QueueFree(); };
+        PushEscapeLayer("pause.abandon", confirm.QueueFree);
         confirm.PopupCentered();
     }
 
@@ -2400,13 +2466,24 @@ public partial class GodotPlayableRunMain : Control
         foreach(Node child in menu.GetChildren())child.QueueFree();
         menu.AddChild(Label("OPTIONS\nPresentation speed is controlled from the battle HUD.",24));
         bool controlsBattlePlayback = _pauseMenuControlsBattlePlayback;
-        menu.AddChild(Button("BACK",()=>{_pauseMenu?.QueueFree();_pauseMenu=null;BuildPauseMenu(_page!, controlsBattlePlayback);OpenPauseMenu(false);_pauseMenuPausedPlayback=ownsPlaybackPause;}));
+        void RestorePauseRoot()
+        {
+            RemoveEscapeLayer("pause.options");
+            _pauseMenu?.QueueFree();
+            _pauseMenu=null;
+            BuildPauseMenu(_page!, controlsBattlePlayback);
+            OpenPauseMenu(false);
+            _pauseMenuPausedPlayback=ownsPlaybackPause;
+        }
+        menu.AddChild(Button("BACK", RestorePauseRoot));
+        PushEscapeLayer("pause.options", RestorePauseRoot);
     }
 
     private void OpenPauseMenu(bool pausePlayback=true)
     {
         if(_pauseMenu is null)return;
         _pauseMenu.Visible=true;
+        EnsureEscapeLayer("pause.close", ClosePauseMenu);
         _pauseMenuPausedPlayback=pausePlayback&&_pauseMenuControlsBattlePlayback&&!_playbackPaused;
         if(_pauseMenuPausedPlayback)TogglePause();
     }
@@ -2414,6 +2491,9 @@ public partial class GodotPlayableRunMain : Control
     private void ClosePauseMenu()
     {
         if(_pauseMenu is null)return;
+        RemoveEscapeLayer("pause.close");
+        RemoveEscapeLayer("pause.options");
+        RemoveEscapeLayer("pause.abandon");
         _pauseMenu.Visible=false;
         if(_pauseMenuPausedPlayback&&_playbackPaused)TogglePause();
         _pauseMenuPausedPlayback=false;
@@ -2426,6 +2506,8 @@ public partial class GodotPlayableRunMain : Control
     {
         HideActWorldForPage();
         ClosePauseMenu();
+        ClearEscapeLayers();
+        _inputContext = RunInputContext.Disabled;
         _currentPageTitle = title;
         // The old page owns every actor and meter. Queueing the page frees those
         // children, so page navigation must forget their managed references rather
@@ -2439,9 +2521,9 @@ public partial class GodotPlayableRunMain : Control
         DisposePresentationPlayer();_board=null;
         _skillPanel=null;
         _turnOrder=null;
+        _cellDebug=null;
         _speedButton=null;
         _activeUnitPanel=null;
-        _hoverTooltip=null;
         _settlementStatus=null;
         _cheatConsole=null;
         _eventLog=null;
