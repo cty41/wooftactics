@@ -224,4 +224,3 @@ public partial class GodotBattleActiveUnitPanel : Control
         AntiAliasing = true
     };
 }
-
