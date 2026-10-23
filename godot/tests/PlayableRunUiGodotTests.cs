@@ -170,7 +170,8 @@ public class PlayableRunUiGodotTests
     [TestCase]
     public void BattleHudPanelsStayInsideTheLogicalCanvas()
     {
-        AssertThat(GodotPlayableRunMain.BattleHudPanelRects.Count).IsEqual(5);
+        AssertThat(GodotPlayableRunMain.BattleHudPanelRects.Count).IsEqual(1);
+        AssertThat(GodotPlayableRunMain.BattleHudPanelRects.ContainsKey("BattleUnitPanel")).IsTrue();
         foreach (Rect2 rect in GodotPlayableRunMain.BattleHudPanelRects.Values)
         {
             AssertThat(rect.Position.X).IsGreaterEqual(0);
@@ -264,23 +265,6 @@ public class PlayableRunUiGodotTests
         {
             ActiveUnitId = new UnitInstanceId("missing")
         })).IsNull();
-    }
-
-    [TestCase]
-    [RequireGodotRuntime]
-    public void BattleHoverTooltipClampsToCanvasAndNeverInterceptsPointerInput()
-    {
-        var tooltip = new GodotBattleHoverTooltip();
-        tooltip._Ready();
-        tooltip.ShowDetail("Cell detail", new Vector2(1590, 890));
-
-        AssertThat(tooltip.MouseFilter).IsEqual(Control.MouseFilterEnum.Ignore);
-        AssertThat(tooltip.Position).IsEqual(new Vector2(1180, 782));
-        AssertThat(Descendants<Label>(tooltip).Single().MouseFilter).IsEqual(Control.MouseFilterEnum.Ignore);
-        AssertThat(tooltip.Visible).IsTrue();
-        tooltip.HideDetail();
-        AssertThat(tooltip.Visible).IsFalse();
-        tooltip.Free();
     }
 
     [TestCase]
@@ -486,6 +470,11 @@ public class PlayableRunUiGodotTests
         await ClickControl(optionsButton, tree);
         AssertThat(ui.CaptureTestProbe().PauseMenuView).IsEqual("Options");
         await ToggleEscape(ui, tree);
+        AssertThat(ui.CaptureTestProbe().PauseMenuVisible).IsTrue();
+        AssertThat(ui.CaptureTestProbe().PauseMenuView).IsEqual("Root");
+        AssertThat(Descendants<Button>((Node)overlay).Select(value => value.Text).ToArray()).NotContains("BACK");
+        AssertThat(Descendants<Button>((Node)overlay).Select(value => value.Text).ToArray()).Contains("CONTINUE");
+        await ToggleEscape(ui, tree);
         AssertThat(ui.CaptureTestProbe().PauseMenuVisible).IsFalse();
         await ToggleEscape(ui, tree);
         AssertThat(ui.CaptureTestProbe().PauseMenuView).IsEqual("Root");
@@ -549,9 +538,13 @@ public class PlayableRunUiGodotTests
         AssertThat(ReferenceEquals(confirmation.GetParent(), overlay)).IsTrue();
         AssertThat(ui.CaptureTestProbe().PauseMenuVisible).IsTrue();
         AssertThat(ui.CaptureTestProbe().PlaybackPaused).IsTrue();
-        confirmation.EmitSignal(ConfirmationDialog.SignalName.Canceled);
-        await ui.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        // ESC dismisses only the confirm layer and returns to the pause root without abandoning.
+        await ToggleEscape(ui, tree);
+        AssertThat(ui.CaptureTestProbe().PauseMenuVisible).IsTrue();
         AssertThat(ui.CaptureTestProbe().PauseMenuView).IsEqual("Root");
+        AssertThat(typeof(GodotPlayableRunMain).GetField("_pauseConfirmation",
+            BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(ui)).IsNull();
+        AssertThat(store.Load().Snapshot!.ActiveRun).IsNotNull();
         continueButton = Descendants<Button>((Node)overlay).Single(value => value.Text == "CONTINUE");
         await ClickControl(continueButton, tree);
         AssertThat(ui.CaptureTestProbe().PlaybackPaused).IsFalse();
@@ -1007,6 +1000,8 @@ public class PlayableRunUiGodotTests
     public void InventoryRendersSingleBackpackAndActionableLoadoutColumns()
     {
         var ui = ReadyForStaticUiTest();
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        tree.Root.AddChild(ui);
         UnitAttributes attributes = new(5, 5, 5, 6, 5, 5);
         RunCharacterState Character(string id, string unit) => new(id, new ContentId(unit), 1, attributes,
             20, 20, 5, 15, false, Array.Empty<ContentId>());
@@ -1036,7 +1031,32 @@ public class PlayableRunUiGodotTests
         AssertThat(inventoryCards.Select(panel => panel.Name.ToString()).OrderBy(value => value).ToArray())
             .ContainsExactly("InventoryBackpackPanel", "InventoryCharacterPanel", "InventoryDetailPanel");
         foreach (PanelContainer panel in inventoryCards) AssertFormalPanel(panel);
-        ui.Free();
+        FieldInfo escapeField = typeof(GodotPlayableRunMain).GetField("_escapeLayers",
+            BindingFlags.Instance | BindingFlags.NonPublic)!;
+        var escapeLayers = (System.Collections.IList)escapeField.GetValue(ui)!;
+        AssertThat(escapeLayers.Count).IsEqual(1);
+        ui._Input(EscapeKeyEvent());
+        AssertThat(ui.CaptureTestProbe().PauseMenuVisible).IsFalse();
+        AssertThat(escapeLayers.Count).IsEqual(0);
+        ui.QueueFree();
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task EscapeOnHomeOptionsReturnsToHomeWithoutOpeningPause()
+    {
+        var ui = ReadyForStaticUiTest();
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        tree.Root.AddChild(ui);
+        typeof(GodotPlayableRunMain).GetMethod("ShowHomeOptions", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .Invoke(ui, null);
+        AssertThat(ui.CaptureTestProbe().PageTitle).Contains("OPTIONS");
+        await ToggleEscape(ui, tree);
+        AssertThat(ui.CaptureTestProbe().PageTitle).IsEqual("PURE RUN");
+        AssertThat(ui.CaptureTestProbe().PauseMenuVisible).IsFalse();
+        AssertThat(Descendants<Button>(ui).Select(value => value.Text).ToArray()).Contains("New Run");
+        ui.QueueFree();
+        await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
     }
 
     [TestCase]
