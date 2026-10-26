@@ -177,6 +177,29 @@ public sealed class PureRunEncounterRequestValidatorTests
 
     private static PureRunEncounterRequestValidationResult Validate(PureRunSaveSnapshot snapshot, EncounterRequest request) =>
         PureRunEncounterRequestValidator.Validate(snapshot, request, Map());
+    [Test]
+    public void LivingCheckpointPartyValidatesWhenTheFullRosterStillContainsDeadMembers()
+    {
+        var (snapshot, _, _) = Pending();
+        PureRunState run = snapshot.ActiveRun!;
+        RunCharacterState[] party = run.Party.Select(member => member.CharacterId == "amazon"
+            ? member
+            : new RunCharacterState(member.CharacterId, member.UnitContentId, member.Level, member.Attributes,
+                0, member.MaxHealth, member.CurrentMana, member.MaxMana, true, member.LearnedSkills,
+                member.Equipment, member.CarriedConsumables, member.LearnedSkillStates,
+                member.StartingSkillContentId)).ToArray();
+        RunCharacterState[] living = party.Where(member => !member.IsDead).ToArray();
+        RunEncounterCheckpoint checkpoint = run.Checkpoint! with { Party = living };
+        PureRunState pending = new(run.RunId, run.Seed, run.Revision, run.Phase, run.EncounterIndex,
+            run.EncounterContentId, party, run.BackpackConsumables, run.BackpackEquipment, run.PendingProgression,
+            run.AppliedTransactionKeys, run.Gold, run.BattlesCompleted, run.EnemiesDefeated, run.AcquiredItems,
+            checkpoint, run.MapState, run.NodeTransaction, run.EscortState, run.AdventureState);
+        var reduced = snapshot with { ActiveRun = pending };
+        var request = new EncounterRequest(pending.RunId, checkpoint.Revision, checkpoint.EncounterContentId,
+            living, pending.AdventureState?.Revision ?? 0, checkpoint.SceneIdentity);
+        Assert.That(Validate(reduced, request).Succeeded, Is.True);
+    }
+
     private static PureRunMapDefinition Map() => PureRunNodeSceneProjectorTests.DemoMap();
     private static EncounterRequest Request(PureRunState run) => new(run.RunId, run.Checkpoint!.Revision,
         run.Checkpoint.EncounterContentId, run.Checkpoint.Party, run.AdventureState?.Revision ?? 0, run.Checkpoint.SceneIdentity);

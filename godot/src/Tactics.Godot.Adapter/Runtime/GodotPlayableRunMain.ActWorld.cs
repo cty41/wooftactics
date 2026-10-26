@@ -37,11 +37,13 @@ public partial class GodotPlayableRunMain
         {
             var source = new PureRunSaveSnapshot(pendingRun.Revision, pendingRun, null);
             PureRunPendingSceneRecoveryResult recovery = PureRunPendingSceneRecovery.Recover(source, MapDefinition);
-            if (!recovery.Succeeded)
-                throw new InvalidOperationException(recovery.ErrorCode ?? "run.scene_identity_invalid");
-            RunNodeSceneIdentity current = recovery.Snapshot.ActiveRun!.Checkpoint!.SceneIdentity!;
-            identities.RemoveAll(value => value.NodeId == current.NodeId);
-            identities.Add(current);
+            // First-battle InitialExploration can be identity-less; keep seed defaults instead of
+            // aborting Act preparation when Recover cannot prove a later node.
+            if (recovery.Succeeded && recovery.Snapshot.ActiveRun?.Checkpoint?.SceneIdentity is { } current)
+            {
+                identities.RemoveAll(value => value.NodeId == current.NodeId);
+                identities.Add(current);
+            }
         }
         else if (pendingRun is not null && TryResolveTravelingEscortPresentation(pendingRun, variants,
                      defaults, out RunNodeSceneIdentity? escortIdentity))

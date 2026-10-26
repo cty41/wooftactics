@@ -51,6 +51,7 @@ public sealed class ProductionInputDecisionSource(int maximumActions) : IGodotGa
 {
     public async Task ExecuteAsync(GodotGameplayRuntimeContext context, CancellationToken cancellationToken)
     {
+        await context.WaitUntilProductionSurfaceAsync(cancellationToken);
         int actions = 0;
         while (context.HasActiveBattle && !context.IsTerminal && !context.IsAdventureEventResolved && actions < maximumActions)
         {
@@ -866,6 +867,7 @@ public sealed class GodotGameplayRuntimeContext(GodotGameplayScenarioPlan plan, 
 
     public async Task SetPausedAsync(bool paused, CancellationToken token)
     {
+        await WaitUntilProductionSurfaceAsync(token);
         if (Main.CaptureTestProbe().PlaybackPaused == paused) return;
         await ClickButtonAsync("Pause/Resume", token);
         await WaitUntilAsync(() => Main.CaptureTestProbe().PlaybackPaused == paused, token);
@@ -873,6 +875,7 @@ public sealed class GodotGameplayRuntimeContext(GodotGameplayScenarioPlan plan, 
 
     public async Task SetSpeedAsync(float speed, CancellationToken token)
     {
+        await WaitUntilProductionSurfaceAsync(token);
         for (int index = 0; index < 4; index++)
         {
             if (Math.Abs(Main.CaptureTestProbe().PlaybackSpeed - speed) < .001f) return;

@@ -25,11 +25,13 @@ public static class PureRunEncounterRequestValidator
         long adventureRevision = run.AdventureState?.Revision ?? 0;
         if (adventureRevision < 0 || request.AdventureRevision != adventureRevision)
             return Fail("encounter.adventure_revision_conflict");
+        RunCharacterState[] living = run.Party.Where(member => !member.IsDead).ToArray();
         if (request.Party is null || checkpoint.Party is null || request.Party.Any(member => member is null) ||
-            checkpoint.Party.Any(member => member is null) || request.Party.Count != run.Party.Count ||
-            checkpoint.Party.Count != run.Party.Count ||
+            checkpoint.Party.Any(member => member is null) || request.Party.Count != living.Length ||
+            checkpoint.Party.Count != living.Length ||
             checkpoint.Party.Select(member => member.CharacterId).Distinct(StringComparer.Ordinal).Count() != checkpoint.Party.Count ||
-            JsonSerializer.Serialize(request.Party) != JsonSerializer.Serialize(checkpoint.Party))
+            JsonSerializer.Serialize(request.Party) != JsonSerializer.Serialize(checkpoint.Party) ||
+            JsonSerializer.Serialize(checkpoint.Party) != JsonSerializer.Serialize(living))
             return Fail("encounter.party_conflict");
 
         RunNodeSceneIdentity? current = run.AdventureState?.SceneIdentity;
