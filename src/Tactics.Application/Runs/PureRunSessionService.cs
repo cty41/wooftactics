@@ -464,18 +464,11 @@ public sealed class PureRunSessionService
             string runId = $"run-{unchecked((uint)PureRunSettlementService.DeriveSeed(pending.Seed, "run-id")):x8}";
             RunCharacterState[] party = templates.Select((value, index) =>
                 CreateCharacter(value, pending.Choices[index].SkillContentId)).ToArray();
-            // The final setup choice owns one CAS, including the first encounter checkpoint.
-            RunAdventureState adventure = new RunAdventureTransitionService().CreateInitial(party) with
-            {
-                Lifecycle = RunAdventureLifecycle.MapActive,
-                BoardContentId = new ContentId("adventure-board.pure-run.node.layer-01-battle")
-            };
-            var checkpoint = new RunEncounterCheckpoint(_definition.Encounters[0], 0, revision,
-                party, Array.Empty<BattleConsumableState>(), Array.Empty<RunEquipmentState>());
-            var run = new PureRunState(runId, pending.Seed, revision, PureRunPhase.PendingBattle, 0,
-                _definition.Encounters[0], party, checkpoint: checkpoint, adventureState: adventure);
-            RunSessionResult saved = Save(new PureRunSaveSnapshot(revision, run, null), snapshot.Revision);
-            return saved.Succeeded ? saved with { EncounterRequest = CreateRequest(run) } : saved;
+            // Main keeps the first encounter behind TILE ADVENTURE / BeginReadyEncounter.
+            // Node-scene identity is bound when that battle is actually opened, not at setup CAS.
+            var run = new PureRunState(runId, pending.Seed, revision, PureRunPhase.Ready, 0,
+                _definition.Encounters[0], party, adventureState: new RunAdventureTransitionService().CreateInitial(party));
+            return Save(new PureRunSaveSnapshot(revision, run, null), snapshot.Revision);
         }
         PureRunState? preserved = snapshot.ActiveRun is null ? null : CopyRevision(snapshot.ActiveRun, revision);
         return Save(new PureRunSaveSnapshot(revision, preserved, snapshot.TerminalSummary, pending), snapshot.Revision);

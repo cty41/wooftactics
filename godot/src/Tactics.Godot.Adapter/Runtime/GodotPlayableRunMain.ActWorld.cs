@@ -107,7 +107,7 @@ public partial class GodotPlayableRunMain
     private void RouteCommittedSetup(RunSessionResult result)
     {
         PureRunState? run = result.Snapshot?.ActiveRun;
-        if (!result.Succeeded || run is null || result.EncounterRequest is null)
+        if (!result.Succeeded || run is null)
             throw new InvalidOperationException("act.setup_commit_proof_missing");
         if (_actBelongsToSetup && _actSeed == run.Seed && ActWorldReady)
         {
@@ -128,6 +128,7 @@ public partial class GodotPlayableRunMain
         Control page = NewPage("PREPARING ACT", "Loading all formal maps for this Act. No later node loads during selection.");
         SetInputContext(runId is null ? RunInputContext.Setup : RunInputContext.Adventure);
         _status = LabelAt(page, "Resolving node content…", new Vector2(470, 430), 22);
+        BuildPauseMenu(page, false);
         try
         {
             // The host content plan is presentation authority only. Recovery/projector evidence remains

@@ -279,7 +279,7 @@ public sealed class PureRunSessionServiceTests
         });
     }
     [Test]
-    public void FinalSetupChoice_CreatesFirstEncounterCheckpointInOneSave()
+    public void FinalSetupChoice_StartsReadyExplorationWithoutEncounterRequest()
     {
         var store = new MemoryRunStore();
         var service = new PureRunSessionService(DefinitionWithChoices(), store);
@@ -290,10 +290,11 @@ public sealed class PureRunSessionServiceTests
         Assert.Multiple(() =>
         {
             Assert.That(completed.Succeeded, Is.True, completed.ErrorCode);
-            Assert.That(completed.Snapshot!.ActiveRun!.Phase, Is.EqualTo(PureRunPhase.PendingBattle));
-            Assert.That(completed.EncounterRequest, Is.Not.Null);
-            Assert.That(completed.Snapshot.ActiveRun.Checkpoint!.Revision, Is.EqualTo(store.Snapshot!.Revision));
-            Assert.That(completed.Snapshot.ActiveRun.AdventureState!.Lifecycle, Is.EqualTo(RunAdventureLifecycle.MapActive));
+            Assert.That(completed.Snapshot!.ActiveRun!.Phase, Is.EqualTo(PureRunPhase.Ready));
+            Assert.That(completed.EncounterRequest, Is.Null);
+            Assert.That(completed.Snapshot.ActiveRun.Checkpoint, Is.Null);
+            Assert.That(completed.Snapshot.ActiveRun.AdventureState!.Lifecycle,
+                Is.EqualTo(RunAdventureLifecycle.InitialExploration));
         });
     }
 

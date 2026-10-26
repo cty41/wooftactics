@@ -60,14 +60,17 @@ public sealed class ResidentBattleProductionGodotTests
             service.ChooseParty(["pure_run_amazon", "pure_run_demonbound", "pure_run_mage"]);
             service.ChooseStartingSkill("pure_run_amazon", new ContentId("skill.amazon.thrust.lv1"));
             RunSessionResult setup = service.ChooseStartingSkill("pure_run_mage", new ContentId("skill.mage.fireball.lv1"));
-            if (!setup.Succeeded || setup.Snapshot?.ActiveRun?.Checkpoint is null)
+            if (!setup.Succeeded || setup.Snapshot?.ActiveRun is null)
                 throw new InvalidOperationException($"Setup fixture failed: {setup.ErrorCode}");
+            RunSessionResult pending = service.BeginEncounter();
+            if (!pending.Succeeded || pending.Snapshot?.ActiveRun?.Checkpoint is null)
+                throw new InvalidOperationException($"Pending fixture failed: {pending.ErrorCode}");
 
             var map = RequiredResourceLoader.Load<PureRunMapResource>(
                 "res://content/map/PureRunDefaultMap.tres", "resident production map").ToCoreDefinition();
             PureRunActBlueprint blueprint = PureRunActBlueprint.Resolve(map, seed);
-            PureRunSaveSnapshot fixture = encounterIndex == 0 ? setup.Snapshot :
-                LatePresentationCheckpoint(setup.Snapshot, blueprint.Bindings[nodeId].EncounterId!.Value, encounterIndex);
+            PureRunSaveSnapshot fixture = encounterIndex == 0 ? pending.Snapshot :
+                LatePresentationCheckpoint(pending.Snapshot, blueprint.Bindings[nodeId].EncounterId!.Value, encounterIndex);
             store.RestoreFixture(fixture);
             PureRunPendingSceneRecoveryResult recovered = PureRunPendingSceneRecovery.Recover(fixture, map);
             if (!recovered.Succeeded)
@@ -247,6 +250,12 @@ public sealed class ResidentBattleProductionGodotTests
         {
             await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
             if (ui.ActWorldReady && ui.CaptureTestProbe().BattleActive) return;
+            string? page = ui.CaptureTestProbe().PageTitle;
+            if (ui.ActWorldReady && page is not null &&
+                (page.Contains("TILE ADVENTURE", StringComparison.Ordinal) ||
+                 page.Contains("TILE BATTLE", StringComparison.Ordinal)))
+                typeof(GodotPlayableRunMain).GetMethod("BeginReadyEncounter",
+                    BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(ui, null);
         }
         string? status = Field<Label>(ui, "_status")?.Text;
         throw new InvalidOperationException($"Resident production battle not ready: page={ui.CaptureTestProbe().PageTitle}, status={status}");

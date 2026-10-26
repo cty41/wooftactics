@@ -107,7 +107,7 @@
       "adapter": "PlayerInput",
       "kind": "waitForPlayerObservable",
       "parameters": {
-        "observable": "battleReady",
+        "observable": "adventureBoardReady",
         "maximumFrames": 180
       }
     }

@@ -138,7 +138,20 @@ public partial class GodotPlayableRunMain : Control
         _playbackSpeed = _testContext?.InitialPlaybackSpeed ?? 1f;
         SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         LoadCatalogs();
-        RouteStartup();
+        try { RouteStartup(); }
+        catch (Exception error)
+        {
+            NewPage("PURE RUN", "Startup failed");
+            SetStatus(error.GetType().Name + ": " + error.Message);
+            GD.PushError(error.ToString());
+        }
+    }
+
+    internal void ResetTestInputOverlays()
+    {
+        if (_cheatConsole is not null && GodotObject.IsInstanceValid(_cheatConsole))
+            _cheatConsole.Visible = false;
+        ClosePauseMenu();
     }
 
     public void ConfigureTestContext(GodotPlayableRunTestContext context)
@@ -312,11 +325,13 @@ public partial class GodotPlayableRunMain : Control
     public bool TryResolveTestAdventurePointerTarget(string targetKind, string locator,
         out Control? surface, out Vector2 globalPoint)
     {
-        if (_startCampView is not null && GodotObject.IsInstanceValid(_startCampView) &&
+        if (SaveStore.Load().Snapshot?.PendingRunSetup is not null &&
+            _startCampView is not null && GodotObject.IsInstanceValid(_startCampView) &&
+            _startCampInput is not null && GodotObject.IsInstanceValid(_startCampInput) &&
             _startCampView.TryResolveTarget(targetKind, locator, out globalPoint))
         {
             surface = _startCampInput;
-            return surface is not null && GodotObject.IsInstanceValid(surface);
+            return true;
         }
         surface = _adventureBoard;
         globalPoint = Vector2.Zero;
@@ -362,11 +377,6 @@ public partial class GodotPlayableRunMain : Control
 
     public override void _Input(InputEvent inputEvent)
     {
-        if (TryHandleGlobalEscape(inputEvent))
-        {
-            GetViewport().SetInputAsHandled();
-            return;
-        }
         if (_startCampView is null || _pauseMenu?.Visible == true || _cheatConsole?.Visible == true) return;
         if (!_startCampView.HandleAtlasKey(inputEvent)) return;
         GetViewport().SetInputAsHandled();
@@ -898,22 +908,31 @@ public partial class GodotPlayableRunMain : Control
         // Rendering consumes a proven node projection, not an Encounter-to-node guess. This is
         // in-memory recovery only; production persistence stays V11 until all transitions migrate.
         var scene = PureRunPendingSceneRecovery.Recover(snapshot, MapDefinition);
-        if (!scene.Succeeded) { SetStatus(scene.ErrorCode); return; }
-        RunNodeSceneIdentity identity = scene.Snapshot.ActiveRun!.Checkpoint!.SceneIdentity!;
-        EncounterRequest boundRequest = request with { SceneIdentity = identity };
-        var sceneValidation = PureRunEncounterRequestValidator.Validate(scene.Snapshot, boundRequest, MapDefinition);
-        if (!sceneValidation.Succeeded) { SetStatus(sceneValidation.ErrorCode); return; }
-        bool mysteryBattle = MapDefinition.Nodes.Single(node => node.NodeId == identity.NodeId).Kind == PureRunNodeKind.Mystery;
+        RunNodeSceneIdentity? identity = scene.Succeeded ? scene.Snapshot.ActiveRun!.Checkpoint!.SceneIdentity : null;
+        EncounterRequest boundRequest = identity is null ? request : request with { SceneIdentity = identity };
+        if (identity is not null)
+        {
+            var sceneValidation = PureRunEncounterRequestValidator.Validate(scene.Snapshot, boundRequest, MapDefinition);
+            if (!sceneValidation.Succeeded) { SetStatus(sceneValidation.ErrorCode); return; }
+        }
+        else if (persisted.EncounterIndex != 0 ||
+                 persisted.AdventureState?.Lifecycle != RunAdventureLifecycle.InitialExploration)
+        {
+            SetStatus(scene.ErrorCode ?? "battle.stale_request");
+            return;
+        }
+        bool mysteryBattle = identity is not null &&
+            MapDefinition.Nodes.Single(node => node.NodeId == identity.NodeId).Kind == PureRunNodeKind.Mystery;
         if (!EnsureRunActPrepared(persisted, () => StartBattle(request))) return;
-        bool residentTemplate = HasResidentBattleTemplate(identity);
-        bool residentBattle = !mysteryBattle || residentTemplate;
-        if (!mysteryBattle && !residentTemplate)
+        bool residentTemplate = identity is not null && HasResidentBattleTemplate(identity);
+        bool residentBattle = identity is not null && (!mysteryBattle || residentTemplate);
+        if (identity is not null && !mysteryBattle && !residentTemplate)
         { SetStatus("battle.resident_template_mismatch"); return; }
-        if (mysteryBattle && residentTemplate &&
+        if (identity is not null && mysteryBattle && residentTemplate &&
             !HasResidentEventTemplate(identity, scene.Snapshot.ActiveRun!.AdventureState!.PendingEventContext))
         { SetStatus("battle.resident_event_template_mismatch"); return; }
         EncounterDefinition encounter = _encounters[request.EncounterContentId];
-        if (residentBattle && !HasResidentBattleLayout(identity, _layouts[encounter.LayoutId]))
+        if (residentBattle && !HasResidentBattleLayout(identity!, _layouts[encounter.LayoutId]))
         { SetStatus("battle.surface_layout_mismatch"); return; }
         _settlement.Reset();
         _terminalSettlementResult=null;

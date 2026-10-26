@@ -445,7 +445,7 @@ public sealed class ResidentEventBattleProductionGodotTests
         service.ChooseParty(["pure_run_amazon", "pure_run_demonbound", "pure_run_mage"]);
         service.ChooseStartingSkill("pure_run_amazon", new ContentId("skill.amazon.thrust.lv1"));
         RunSessionResult result = service.ChooseStartingSkill("pure_run_mage", new ContentId("skill.mage.fireball.lv1"));
-        if (!result.Succeeded || result.Snapshot?.ActiveRun?.Checkpoint is null)
+        if (!result.Succeeded || result.Snapshot?.ActiveRun is null)
             throw new InvalidOperationException($"Setup fixture failed: {result.ErrorCode}");
         return result;
     }
@@ -487,6 +487,11 @@ public sealed class ResidentEventBattleProductionGodotTests
         {
             await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
             if (ui.ActWorldReady && ui.CaptureTestProbe().BattleActive) return;
+            string? page = ui.CaptureTestProbe().PageTitle;
+            if (ui.ActWorldReady && page is not null &&
+                (page.Contains("TILE ADVENTURE", StringComparison.Ordinal) ||
+                 page.Contains("TILE BATTLE", StringComparison.Ordinal)))
+                InvokePrivate(ui, "BeginReadyEncounter");
         }
         string? status = Field<Label>(ui, "_status")?.Text;
         throw new InvalidOperationException($"Resident event battle not ready: page={ui.CaptureTestProbe().PageTitle}, status={status}");

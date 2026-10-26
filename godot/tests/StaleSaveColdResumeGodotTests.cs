@@ -227,6 +227,11 @@ public sealed class StaleSaveColdResumeGodotTests
         {
             await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
             if (ui.ActWorldReady && ui.CaptureTestProbe().BattleActive) return;
+            string? page = ui.CaptureTestProbe().PageTitle;
+            if (ui.ActWorldReady && page is not null &&
+                (page.Contains("TILE ADVENTURE", StringComparison.Ordinal) ||
+                 page.Contains("TILE BATTLE", StringComparison.Ordinal)))
+                InvokePrivate(ui, "BeginReadyEncounter");
         }
         throw new InvalidOperationException(
             $"Battle not ready: page={ui.CaptureTestProbe().PageTitle}, status={Field<Label?>(ui, "_status")?.Text}");
