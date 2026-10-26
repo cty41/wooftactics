@@ -48,7 +48,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File `
   -Action Open
 ```
 
-   The visible Editor may briefly receive focus; do not activate it and do not inject input. Poll for up to 120 seconds without starting a second process. Require exactly one new MCP session with the canonical path, Godot `4.7.1`, plugin `3.1.2`, and readiness `ready`.
+   The visible Editor may briefly receive focus; do not activate it and do not inject input. Poll for up to 120 seconds without starting a second process. Require exactly one new MCP session with the canonical path, Godot `4.7.1`, plugin `4.3.1`, and readiness `ready`.
 7. If the restored `current_scene` differs from the snapshot, reopen the recorded `res://` scene through `scene_open`. Read editor/plugin logs without clearing them. Report lifecycle restoration separately from the task's build/test result.
 
 ## Anti-patterns

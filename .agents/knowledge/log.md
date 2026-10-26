@@ -1,8 +1,9 @@
 # Tactics Knowledge Update Log
 ## 2026-10-26
-* **Sync**: `godot-agent-workflow` 已同步到来源指纹 `sha256:fe4680bfe6dcdf6ab73f5a6c326de0e82cb2057fc32d9687da728863f3228ebf`。
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:ed2320d758b8dc60e8e485b499212cfd4de2b8f67a2f78ae0da49925e01981eb`。
+* **Sync**: `godot-migration` 已同步到来源指纹 `sha256:05c1fcec90954fd6a5bc32165ecf7d18a3dd44573a9ed27e75e150c78e73551b`。
+* **Sync**: `godot-agent-workflow` 已同步到来源指纹 `sha256:e34a5fee4a025376213eade042c191d9d1dc87e4c15babf2c03c14b20386f40c`。
 * **Sync**: `okf-maintenance` 已同步到来源指纹 `sha256:878fed9f1c5c4bd6edfe4dbd9ca575d6c78327c90377b34a6cf5068ac09efac5`。
-* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:01093a607468df7048b2a4b910c907f1f7d9e4e49a80865849ad094ab8a00293`。
 * **Sync**: `project-architecture` 已同步到来源指纹 `sha256:9cfcafe01c578089d5a18053b40368a81763113106f4d426441596ae6f0fea9f`。
 * **Update**: 默认开发改为当前 workspace checkout，不另开 worktree；新增 	actics-git-workspace skill，always-on 规则只留指针。
 

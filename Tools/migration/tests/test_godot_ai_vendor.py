@@ -21,9 +21,9 @@ class GodotAiVendorTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             vendor = Path(temporary)
             sample = vendor / "plugin.cfg"
-            sample.write_bytes(b"[plugin]\r\nversion=\"3.1.2\"\r\n")
+            sample.write_bytes(b"[plugin]\r\nversion=\"4.3.1\"\r\n")
             windows = tree_digest(vendor)
-            sample.write_bytes(b"[plugin]\nversion=\"3.1.2\"\n")
+            sample.write_bytes(b"[plugin]\nversion=\"4.3.1\"\n")
             self.assertEqual(windows, tree_digest(vendor))
 
     def test_validate_accepts_exact_manifest_and_rejects_drift(self):
@@ -33,7 +33,7 @@ class GodotAiVendorTests(unittest.TestCase):
             manifest_dir = root / "Tools/migration/manifest"
             vendor.mkdir(parents=True)
             manifest_dir.mkdir(parents=True)
-            (vendor / "plugin.cfg").write_text('version="3.1.2"\n', encoding="utf-8")
+            (vendor / "plugin.cfg").write_text('version="4.3.1"\n', encoding="utf-8")
             (vendor / "LICENSE").write_text("MIT\n", encoding="utf-8")
             count, digest = tree_digest(vendor)
             policy = {

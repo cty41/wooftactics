@@ -24,4 +24,4 @@ Get-ChildItem -LiteralPath $pluginTarget -Force |
 Get-ChildItem -LiteralPath $pluginSource -Force |
     Copy-Item -Destination $pluginTarget -Recurse -Force
 Copy-Item -LiteralPath (Join-Path $sourcePath 'LICENSE') -Destination (Join-Path $pluginTarget 'LICENSE') -Force
-Write-Output "godot-ai v3.1.2 copied to $pluginTarget. Review and commit the exact vendor diff; in-Dock self-update is unsupported."
+Write-Output "godot-ai v4.3.1 copied to $pluginTarget. Review and commit the exact vendor diff; in-Dock self-update is unsupported."

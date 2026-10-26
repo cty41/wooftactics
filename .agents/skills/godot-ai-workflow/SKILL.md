@@ -1,13 +1,13 @@
 ---
 name: godot-ai-workflow
-description: Use when configuring or operating the canonical Godot project through the pinned project-scoped godot-ai v3.1.2 Attach server for scene, resource, run, log, screenshot, or lightweight editor smoke tasks.
+description: Use when configuring or operating the canonical Godot project through the pinned project-scoped godot-ai v4.3.1 Attach server for scene, resource, run, log, screenshot, or lightweight editor smoke tasks.
 ---
 
 # Godot AI Workflow
 
 ## Quick Reference
 
-- Baseline: tracked `godot/addons/godot_ai`, vendored from tag `v3.1.2` and pinned by `Tools/migration/manifest/godot-tooling.json`.
+- Baseline: tracked `godot/addons/godot_ai`, vendored from tag `v4.3.1` and pinned by `Tools/migration/manifest/godot-tooling.json`.
 - Project: `godot/project.godot` only.
 - Config: local ignored `.codex/config.toml`; never leave godot-ai in the user-level Codex config.
 - Profiles: `phase3-observe`, `content-authoring`, `ui-input`, `presentation`; each is cumulative.

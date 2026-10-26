@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Godot agent workflow
 description: Godot 4.7 C# 主线的项目、分层、Editor 生命周期、验证和发布边界。
 tags: [godot, agent, workflow, testing]
-timestamp: "2026-10-26T10:33:23+08:00"
+timestamp: "2026-10-26T13:11:56+08:00"
 status: active
 catalog_scope: godot-agent-workflow
 repo_paths:
@@ -21,14 +21,14 @@ repo_paths:
   - Tools/godot/Build-GodotWindows.ps1
   - Tools/migration/manifest/godot-tooling.json
 verified_revision: d092a955
-source_fingerprint: sha256:fe4680bfe6dcdf6ab73f5a6c326de0e82cb2057fc32d9687da728863f3228ebf
+source_fingerprint: sha256:e34a5fee4a025376213eade042c191d9d1dc87e4c15babf2c03c14b20386f40c
 ---
 
 # Current State
 
 本机4.7.1已验证ResourceLoader的UID查询可能保留旧正/负缓存；生成器以只读磁盘头部验证ResourceSaver写出的UID，再执行Editor扫描与独立Runtime验证，见`.agents/incidents/godot/headless-resource-uid-cache.md`。不可把内存AddId或一次API返回值当作持久化证据。Act准备阶段现与主目录共用RequiredResourceLoader的CacheMode.Ignore及精确类型诊断；缓存替身测试验证不采信旧缓存对象，但不能据此宣称已修复所有原生runner异常。
 
-Godot 4.7 C# 与 `godot/project.godot` 是唯一产品和编辑权威。Core/Application 保持纯 .NET；Adapter 承载 Node、Resource、文件系统、UI、EditorPlugin 与运行时集成。godot-ai v4.1.0 与 `addons/tactics_tooling` 作为 Editor-only 工具保留在源码树中，但均由 export preset 从游戏 PCK 与 Windows 运行时包排除。godot-ai v4 只允许经过 capability 认证的 `godot-ai attach` stdio bridge，项目级启动固定使用隔离的 public-PyPI uvx 解析策略。godot-ai manifest 是 tag、commit、vendor tree 与 license digest 的单一真相源；显式 refresh 只准备待 review 的升级 diff，日常 Godot 门禁验证 vendor 完整性，依赖清单与第三方声明由独立 public-release 门禁验证。
+Godot 4.7 C# 与 `godot/project.godot` 是唯一产品和编辑权威。Core/Application 保持纯 .NET；Adapter 承载 Node、Resource、文件系统、UI、EditorPlugin 与运行时集成。godot-ai v4.3.1 与 `addons/tactics_tooling` 作为 Editor-only 工具保留在源码树中，但均由 export preset 从游戏 PCK 与 Windows 运行时包排除。godot-ai v4 只允许经过 capability 认证的 `godot-ai attach` stdio bridge，项目级启动固定使用隔离的 public-PyPI uvx 解析策略。godot-ai manifest 是 tag、commit、vendor tree 与 license digest 的单一真相源；显式 refresh 只准备待 review 的升级 diff，日常 Godot 门禁验证 vendor 完整性，依赖清单与第三方声明由独立 public-release 门禁验证。
 
 Editor 采用 Human Direct / Prepared Agent 双入口。人工可以从 Project Manager 直接打开 canonical 项目：GDScript Bootstrap 始终注册 Tactics Main Screen；有 production Adapter assembly 时直接挂载 C# Workbench，无 assembly 时显示显式 `BUILD C# AND RELOAD` 状态页。用户确认后由固定 build-only helper 异步串行 Build、验证 assembly identity并写token化结果；成功优先在同一Editor PID完成reload，失败保留首条错误、日志、复制命令和Retry。prepared启动参数不再作为Controller/Main Screen准入条件，也不能单独授权bridge；controller还必须核对dev-session中的当前PID、canonical路径、派生worktree key、mode及与进程启动时间关联的startedAt，才创建可写authoring named-pipe bridge。Direct Human保留Workbench UI而不暴露Agent bridge。
 

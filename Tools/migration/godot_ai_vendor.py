@@ -30,7 +30,7 @@ def tree_digest(root: Path) -> tuple[int, str]:
     return len(files), digest.hexdigest()
 
 
-def validate(root: Path) -> None:
+def validate(root: Path) -> dict:
     manifest = json.loads((root / "Tools/migration/manifest/godot-tooling.json").read_text(encoding="utf-8"))
     policy = manifest["godotAi"]
     vendor = root / policy["vendorPath"]
@@ -47,6 +47,7 @@ def validate(root: Path) -> None:
     license_hash = hashlib.sha256(canonical_bytes(vendor / "LICENSE")).hexdigest()
     if license_hash != policy["vendorLicenseSha256"]:
         raise ValueError(f"vendored Godot AI license drifted: sha256={license_hash}")
+    return policy
 
 
 def main() -> int:
@@ -54,11 +55,13 @@ def main() -> int:
     parser.add_argument("--root", type=Path, default=Path.cwd())
     args = parser.parse_args()
     try:
-        validate(args.root.resolve())
+        policy = validate(args.root.resolve())
     except (OSError, KeyError, ValueError, json.JSONDecodeError) as error:
         print(f"GODOT_AI_VENDOR_ERROR: {error}")
         return 1
-    print("GODOT_AI_VENDOR_OK version=3.1.2 files=247")
+    tag = policy["tag"].removeprefix("v")
+    files = policy["vendorFileCount"]
+    print(f"GODOT_AI_VENDOR_OK version={tag} files={files}")
     return 0
 
 

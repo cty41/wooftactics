@@ -215,7 +215,7 @@ class GodotAiCodexConfigTests(unittest.TestCase):
         server = self._project_server()
         self.assertEqual(server["command"], r"C:\Tools\pythonw.exe")
         self.assertIn("creationflags=0x08000000", server["args"][1])
-        self.assertIn("godot-ai==3.1.2", server["args"])
+        self.assertIn("godot-ai==4.3.1", server["args"])
         self.assertEqual(server["enabled_tools"], sorted(self._observe_tools()))
 
     def test_bootstrap_rejects_user_level_entry(self) -> None:
@@ -272,7 +272,7 @@ class GodotAiCodexConfigTests(unittest.TestCase):
         return {
             "schemaVersion": 1,
             "godotAi": {
-                "tag": "v3.1.2",
+                "tag": "v4.3.1",
                 "codexMcp": {
                     "scope": "project",
                     "configPath": ".codex/config.toml",
@@ -340,7 +340,7 @@ class GodotAiCodexConfigTests(unittest.TestCase):
         *,
         command: str = r"C:\Tools\pythonw.exe",
         uvx: str = r"C:\Tools\uvx.exe",
-        version: str = "3.1.2",
+        version: str = "4.3.1",
         http_port: int = 8000,
         websocket_port: int = 9500,
         bootstrap: str = (
@@ -352,6 +352,13 @@ class GodotAiCodexConfigTests(unittest.TestCase):
             "-c",
             bootstrap,
             uvx,
+            "--isolated",
+            "--no-config",
+            "--no-env-file",
+            "--no-sources",
+            "--no-build",
+            "--index",
+            "https://pypi.org/simple",
             "--link-mode",
             "copy",
             "--from",
