@@ -98,6 +98,11 @@ public sealed class StaleSaveColdResumeGodotTests
         RunSessionResult setup = service.ChooseStartingSkill("pure_run_mage", new ContentId("skill.mage.fireball.lv1"));
         if (!setup.Succeeded) throw new InvalidOperationException($"Setup failed: {setup.ErrorCode}");
         InvokePrivate(ui, "RouteCommittedSetup", setup);
+        for (int frame = 0; frame < 180 && !ui.ActWorldReady; frame++)
+            await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        PureRunState ready = store.Load().Snapshot?.ActiveRun
+            ?? throw new InvalidOperationException($"Setup did not persist a ready run: {SafeStatus(ui)}");
+        InvokePrivate(ui, "HandleAdventureExit", ready, "layer_01_battle");
         await WaitForBattle(ui, tree);
         return ui;
     }
@@ -143,7 +148,7 @@ public sealed class StaleSaveColdResumeGodotTests
             long before = store.Load().Snapshot!.Revision;
             await Press(ui, tree, button => button.Name == "ProgressionSkillChoice_0" || button.Text == "Confirm Attribute");
             if (store.Load().Snapshot!.Revision <= before)
-                throw new InvalidOperationException($"Progression did not save: {Field<Label?>(ui, "_status")?.Text}");
+                throw new InvalidOperationException($"Progression did not save: {SafeStatus(ui)}");
         }
         throw new InvalidOperationException("Pending progression did not drain.");
     }
@@ -173,7 +178,7 @@ public sealed class StaleSaveColdResumeGodotTests
         InvokePrivate(ui, "HandleAdventureExit", store.Load().Snapshot!.ActiveRun!, node);
         for (int frame = 0; frame < 4; frame++) await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
         if (store.Load().Snapshot!.Revision <= before)
-            throw new InvalidOperationException($"Exit to {node} did not save: {Field<Label?>(ui, "_status")?.Text}");
+            throw new InvalidOperationException($"Exit to {node} did not save: {SafeStatus(ui)}");
         if (!ui.CaptureTestProbe().BattleActive &&
             ui.CaptureTestProbe().PageTitle.Contains("TILE BATTLE", StringComparison.Ordinal))
         {
@@ -229,12 +234,11 @@ public sealed class StaleSaveColdResumeGodotTests
             if (ui.ActWorldReady && ui.CaptureTestProbe().BattleActive) return;
             string? page = ui.CaptureTestProbe().PageTitle;
             if (ui.ActWorldReady && page is not null &&
-                (page.Contains("TILE ADVENTURE", StringComparison.Ordinal) ||
-                 page.Contains("TILE BATTLE", StringComparison.Ordinal)))
+                page.Contains("TILE BATTLE", StringComparison.Ordinal))
                 InvokePrivate(ui, "BeginReadyEncounter");
         }
         throw new InvalidOperationException(
-            $"Battle not ready: page={ui.CaptureTestProbe().PageTitle}, status={Field<Label?>(ui, "_status")?.Text}");
+            $"Battle not ready: page={ui.CaptureTestProbe().PageTitle}, status={SafeStatus(ui)}");
     }
 
     private static async Task Free(GodotPlayableRunMain ui, SceneTree tree)
@@ -243,6 +247,14 @@ public sealed class StaleSaveColdResumeGodotTests
         ui.QueueFree();
         for (int frame = 0; frame < 4 && GodotObject.IsInstanceValid(ui); frame++)
             await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+    }
+
+    private static string SafeStatus(GodotPlayableRunMain ui)
+    {
+        Label? status = Field<Label?>(ui, "_status");
+        return status is not null && GodotObject.IsInstanceValid(status)
+            ? status.Text
+            : ui.CaptureTestProbe().PageTitle;
     }
 
     private static T Field<T>(GodotPlayableRunMain target, string name) => (T)typeof(GodotPlayableRunMain)
