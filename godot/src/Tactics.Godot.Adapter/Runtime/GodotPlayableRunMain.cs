@@ -705,7 +705,8 @@ public partial class GodotPlayableRunMain : Control
     {
         PendingRunSetup setup = SaveStore.Load().Snapshot?.PendingRunSetup ??
             throw new InvalidOperationException("Pending setup is missing.");
-        if (!EnsureSetupActPrepared(setup)) return;
+        bool useResidentWorld = IsInsideTree();
+        if (useResidentWorld && !EnsureSetupActPrepared(setup)) return;
         Control root = NewPage("NEW RUN — START CAMP", "Select exactly 3. Your first choice becomes the leader and can move on camp tiles.");
         _partySelectionOrder.Clear();
         _partySelectionOrder.AddRange(setup.SelectedCharacterIds);
@@ -713,9 +714,21 @@ public partial class GodotPlayableRunMain : Control
             new GodotStartCampCandidate(value.CharacterId, _unitResources[value.UnitContentId])).ToArray();
         _startCampView = new GodotStartCampView { Name = "StartCampView" };
         root.AddChild(_startCampView);
-        _actWorld!.ActivateNode("start");
-        _actWorld.Visible = true;
-        _startCampView.ConfigureResidentWorld(_actWorld, candidates, MapDefinition);
+        if (useResidentWorld && _actWorld is not null)
+        {
+            _actWorld.ActivateNode("start");
+            _actWorld.Visible = true;
+            _startCampView.ConfigureResidentWorld(_actWorld, candidates, MapDefinition);
+        }
+        else
+        {
+            AdventureMapTemplateResource template = RequiredResourceLoader.Load<AdventureMapTemplateResource>(
+                "res://content/adventure_maps/StartCampTemplateV1.tres", "Start camp template load failed");
+            _startCampView.Configure(template, candidates);
+            AdventureMapTemplateResource planningTemplate = RequiredResourceLoader.Load<AdventureMapTemplateResource>(
+                "res://content/adventure_maps/BasicBattleTemplateV1.tres", "Planning preview template load failed");
+            _startCampView.ConfigureRoutePreviews(planningTemplate, MapDefinition);
+        }
         _startCampView.PreviewPressed += nodeId =>
         {
             PureRunMapNodeDefinition node = MapDefinition.Nodes.Single(value => value.NodeId == nodeId);
