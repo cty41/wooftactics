@@ -23,6 +23,14 @@ from pathlib import Path
 from typing import Any
 
 
+_PUBLIC_PYPI_INDEX = "https://pypi.org/simple"
+# 与 godot-ai 4.x uv_resolution_policy.gd 的生产参数保持一致。
+_UVX_ISOLATION_ARGS = (
+    "--isolated", "--no-config", "--no-env-file", "--no-sources", "--no-build",
+    "--index-strategy", "first-index", "--keyring-provider", "disabled",
+    "--index", _PUBLIC_PYPI_INDEX, "--default-index", _PUBLIC_PYPI_INDEX,
+    "--find-links", "https://pypi.org/simple/godot-ai/",
+)
 SERVER_NAME = "godot-ai"
 SERVER_HEADER = '[mcp_servers."godot-ai"]'
 _SERVER_HEADER_PATTERN = re.compile(
@@ -293,6 +301,7 @@ def bootstrap_configuration(
         "command": str(pythonw),
         "args": [
             "-c", _WINDOWS_NO_CONSOLE_BOOTSTRAP, str(uvx_value),
+            *_UVX_ISOLATION_ARGS,
             "--from", f"godot-ai=={policy.version}", "godot-ai", "attach",
             "--port", str(policy.http_port), "--ws-port", str(policy.websocket_port),
         ],
@@ -508,6 +517,11 @@ def _validate_launch(
         raise CodexGodotAiConfigError("godot-ai args must be a string array")
     if "-c" not in args or not any("creationflags=0x08000000" in value for value in args):
         raise CodexGodotAiConfigError("godot-ai command is missing the Windows no-console bootstrap")
+    # godot-ai 4.x 要求 uvx 隔离解析：忽略用户/项目 uv 配置并只使用公共 PyPI。
+    for flag in ("--isolated", "--no-config", "--no-sources"):
+        if flag not in args:
+            raise CodexGodotAiConfigError(f"godot-ai launcher is missing isolation flag {flag}")
+    _require_argument(args, "--index", _PUBLIC_PYPI_INDEX)
     _require_argument(args, "--from", f"godot-ai=={policy.version}")
     if "godot-ai" not in args or "attach" not in args:
         raise CodexGodotAiConfigError("godot-ai command is not the pinned attach launcher")

@@ -1,6 +1,6 @@
 # godot-ai 边界
 
-当前只使用 v3.1.2 通用接口。版本、端口、Profile 与精确工具集合以 `Tools/migration/manifest/godot-tooling.json` 为准，项目配置由 `Tools/godot/Sync-GodotAiCodexConfig.ps1` 生成和检查。
+当前使用 v4.3.1 通用接口；`script_*` 在 4.2+ 可接受 `.cs`，仍保持禁止，C# 一律走项目代码与 Build 门禁。版本、端口、Profile 与精确工具集合以 `Tools/migration/manifest/godot-tooling.json` 为准，项目配置由 `Tools/godot/Sync-GodotAiCodexConfig.ps1` 生成和检查。
 
 ## 分阶段白名单
 

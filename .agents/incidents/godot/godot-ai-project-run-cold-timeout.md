@@ -29,8 +29,8 @@ The cause is not established. Treat this signature as an ambiguous command deadl
 - `verified_local`: the initial tool result returned the exact 5.0-second timeout while the immediate `editor_state` reported the run live and capture-ready.
 - `verified_local`: plugin logs recorded `run_project`, deferred execution, `play_state_changed -> playing`, and the matching game-helper hello.
 - `verified_local`: game logs contained `Tactics Godot migration runtime ready`; the 1280×720 capture returned `stale_frame=false`, and `project_manage(op="stop")` restored Editor readiness.
-- `upstream_source`: pinned godot-ai v3.1.2 `tools/project.py` documents helper-readiness waiting and state polling for late transitions.
+- `upstream_source`: godot-ai v3.1.2 `tools/project.py`（观察时的版本；仓库现已钉到 v4.3.1，未重新复现） documents helper-readiness waiting and state polling for late transitions.
 
 ## Scope and invalidation
 
-This applies only to the project-scoped godot-ai v3.1.2 Attach path on Windows. It does not establish a Godot runtime failure or a general retry policy. Re-evaluate after a stable reproduction, a godot-ai version change, or a change to command/helper readiness deadlines.
+This applies only to the project-scoped godot-ai v3.1.2 Attach path (observed before the v4.3.1 refresh) on Windows. It does not establish a Godot runtime failure or a general retry policy. Re-evaluate after a stable reproduction, a godot-ai version change, or a change to command/helper readiness deadlines.

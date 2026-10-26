@@ -45,7 +45,7 @@ class DependencyInventoryTests(unittest.TestCase):
             godot_ai_vendor.mkdir(parents=True)
             maliang_vendor.mkdir(parents=True)
             (manifest / "godot-tooling.json").write_text(
-                json.dumps({"godotAi": {"tag": "v3.1.2", "vendorPath": "godot/addons/godot_ai"}}),
+                json.dumps({"godotAi": {"tag": "v4.3.1", "vendorPath": "godot/addons/godot_ai"}}),
                 encoding="utf-8",
             )
             (adapter / "maliang.adapter.json").write_text(
@@ -54,7 +54,7 @@ class DependencyInventoryTests(unittest.TestCase):
             )
             report = MODULE.build_report(root)
             self.assertIn(
-                {"ecosystem": "Vendored", "name": "godot-ai", "version": "3.1.2"},
+                {"ecosystem": "Vendored", "name": "godot-ai", "version": "4.3.1"},
                 report["dependencies"],
             )
             self.assertIn(
