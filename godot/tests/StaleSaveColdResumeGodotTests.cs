@@ -174,6 +174,18 @@ public sealed class StaleSaveColdResumeGodotTests
         for (int frame = 0; frame < 4; frame++) await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
         if (store.Load().Snapshot!.Revision <= before)
             throw new InvalidOperationException($"Exit to {node} did not save: {Field<Label?>(ui, "_status")?.Text}");
+        if (!ui.CaptureTestProbe().BattleActive &&
+            ui.CaptureTestProbe().PageTitle.Contains("TILE BATTLE", StringComparison.Ordinal))
+        {
+            string begin = node switch
+            {
+                "layer_05_battle" => "BeginLayerFive",
+                "layer_07_battle" => "BeginBoss",
+                _ => "BeginReadyEncounter"
+            };
+            InvokePrivate(ui, begin);
+            for (int frame = 0; frame < 4; frame++) await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        }
     }
 
     private static async Task<GodotPlayableRunMain> AssertColdResume(IRunSaveStore store, SceneTree tree, string id,
