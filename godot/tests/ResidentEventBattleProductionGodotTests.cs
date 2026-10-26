@@ -422,12 +422,20 @@ public sealed class ResidentEventBattleProductionGodotTests
             SceneIdentity = null,
             ActorCells = Array.Empty<RunAdventureActorCell>()
         };
-        RunEncounterCheckpoint checkpoint = source.Checkpoint! with
-        {
-            EncounterContentId = encounter,
-            EncounterIndex = encounterIndex,
-            SceneIdentity = null
-        };
+        RunEncounterCheckpoint checkpoint = source.Checkpoint is { } existing
+            ? existing with
+            {
+                EncounterContentId = encounter,
+                EncounterIndex = encounterIndex,
+                SceneIdentity = null
+            }
+            : new RunEncounterCheckpoint(
+                encounter,
+                encounterIndex,
+                source.Revision,
+                source.Party.Where(character => !character.IsDead).ToArray(),
+                source.BackpackConsumables.ToArray(),
+                source.BackpackEquipment.ToArray());
         RunEscortState? escort = context == RunAdventureEventContextKind.LostVillagerEscort
             ? new RunEscortState("escort-test", RunEscortLifecycle.BattlePending, true, "layer_04_event", nodeId, 7)
             : null;
