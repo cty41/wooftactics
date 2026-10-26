@@ -389,7 +389,7 @@ public partial class GodotPlayableRunMain : Control
             key.Keycode != Key.Escape && key.PhysicalKeycode != Key.Escape) return false;
         if (_cheatConsole?.Visible == true)
         {
-            _cheatConsole.SetOpen(false);
+            _cheatConsole.Visible = false;
             return true;
         }
         if (_battle is not null && _visibleSnapshot?.TargetingMode != BattleTargetingMode.None)

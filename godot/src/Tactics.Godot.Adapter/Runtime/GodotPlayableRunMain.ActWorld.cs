@@ -158,7 +158,7 @@ public partial class GodotPlayableRunMain
                 loader.QueueFree();
                 if (runId is null)
                 {
-                    if (_run?.CurrentSetupProjection?.PendingRunSetup?.Seed != seed) { ReleaseActWorld(); return; }
+                    if (SaveStore.Load().Snapshot?.PendingRunSetup?.Seed != seed) { ReleaseActWorld(); return; }
                     resume();
                 }
                 else

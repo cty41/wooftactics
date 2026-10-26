@@ -74,8 +74,7 @@ public sealed class ResidentEventBattleProductionGodotTests
             AssertThat(ownedTiles.Visible).IsFalse();
             AssertThat(ownedTiles.GetUsedCells().Count).IsEqual(0);
             AssertTemplatesUnchanged(host, baseline);
-            AdventureExplorationSession session = Field<AdventureExplorationSession>(ui, "_adventureSession");
-            session.SetCell(fixture.ActiveRun!.AdventureState!.LeaderId, new GridPoint(4, 5));
+            exploration.MoveActor(fixture.ActiveRun!.AdventureState!.LeaderId, new GridPoint(4, 5));
 
             var click = new InputEventMouseButton
             {
@@ -187,8 +186,7 @@ public sealed class ResidentEventBattleProductionGodotTests
             AssertThat(exploration.UsesResidentSurface).IsTrue();
             ulong surfaceId = map.Surface.GetInstanceId();
             AssertThat(exploration.ResidentSurface!.GetInstanceId()).IsEqual(surfaceId);
-            AdventureExplorationSession session = Field<AdventureExplorationSession>(ui, "_adventureSession");
-            session.SetCell(fixture.ActiveRun!.AdventureState!.LeaderId, new GridPoint(4, 5));
+            exploration.MoveActor(fixture.ActiveRun!.AdventureState!.LeaderId, new GridPoint(4, 5));
             int before = store.SaveCount;
             var click = new InputEventMouseButton
             {
