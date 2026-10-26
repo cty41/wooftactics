@@ -1,17 +1,15 @@
 # Tactics Knowledge Update Log
+## 2026-10-26
+* **Sync**: `godot-agent-workflow` 已同步到来源指纹 `sha256:fe4680bfe6dcdf6ab73f5a6c326de0e82cb2057fc32d9687da728863f3228ebf`。
+* **Sync**: `okf-maintenance` 已同步到来源指纹 `sha256:878fed9f1c5c4bd6edfe4dbd9ca575d6c78327c90377b34a6cf5068ac09efac5`。
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:01093a607468df7048b2a4b910c907f1f7d9e4e49a80865849ad094ab8a00293`。
+* **Sync**: `project-architecture` 已同步到来源指纹 `sha256:9cfcafe01c578089d5a18053b40368a81763113106f4d426441596ae6f0fea9f`。
+* **Update**: 默认开发改为当前 workspace checkout，不另开 worktree；新增 	actics-git-workspace skill，always-on 规则只留指针。
 
-## 2026-09-19
-* **Sync**: `pure-run-artwork` 已同步到来源指纹 `sha256:6afbf2959a75e8c84661df9c594c27b67f9b9105b4d1414e40dbb4ba7c14a9ca`。
-* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:0afec2261b24bc7cb5242e63b2b59207cb13eb2df6923a1800663a7a3cc8ff4c`。
-* **Sync**: `project-architecture` 已同步到来源指纹 `sha256:4a3e56e3bcbfeec2191778ce7e6076e456bc386eb099ea0a02e35b31a0ae8c19`。
-* **Sync**: `godot-migration` 已同步到来源指纹 `sha256:d425cb8a99f150e8e1e2559f0955731ee5c887954f73a752e8e056bef71cb570`。
-* **Sync**: `godot-agent-workflow` 已同步到来源指纹 `sha256:148bdb1c1e9ef9f3361f9fb5884cce4896cff81933f18e8d02e7fbe7a3973de9`。
+## 单 Act 节点宿主改造首切片
 
-## 2026-09-18
-* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:21c98c31fa0a2983eca85ca0b10a1c5de10c29857443011fceabd25bca1ac3ba`。
-* **Sync**: `pure-run-artwork` 已同步到来源指纹 `sha256:468c73c09f64930ad7d7506c9c69d96771102e68aaec0bebc7cc7a07e90faa26`。
-* **Sync**: `project-architecture` 已同步到来源指纹 `sha256:8bd77ca1ddc8b9fdba42dbaf3ede9bd4ea88906651f78522afe325caeded5e00`。
-* **Sync**: `godot-migration` 已同步到来源指纹 `sha256:3057361c637345be64d0669dc87a1e211eff5dc4bd8c4edd23d754cb3796e6d5`。
+* **Update**: 明确全Act常驻/同宿主为批准目标而非现状；补纯Core节点映射、前进型DAG安全校验；Setup最终选择一次CAS保存首战checkpoint；FullRunTransition保存失败不发遭遇请求。旧InitialExploration/StartNewRun、全Act运行时和V12仍待迁移，人工验收未晋升。
+
 ## 2026-10-22
 * **Sync**: `godot-migration` 已同步到来源指纹 `sha256:d683fa906f9b88264d5913b2267b912ed36b5a9b8e882e7019c86e03be84cfa7`。
 * **Sync**: `project-architecture` 已同步到来源指纹 `sha256:5dddd6c5d69e51c8399fc7e89a3f916d0709503be026c9c4745a2b03646d6207`。
@@ -46,10 +44,6 @@
 * **Sync**: `godot-agent-workflow` 已同步到来源指纹 `sha256:b8d265fa087b6f4ff8edfbfb508c903f61bba0e93edc1635678442be4ecc21ab`。
 * **Sync**: `battle-system` 已同步到来源指纹 `sha256:09c5aed099e7b8c77ab99808e4afeb8420ae0202b463bbc071a9af2f01a1eb44`。
 
-## 单 Act 节点宿主改造首切片
-
-* **Update**: 明确全Act常驻/同宿主为批准目标而非现状；补纯Core节点映射、前进型DAG安全校验；Setup最终选择一次CAS保存首战checkpoint；FullRunTransition保存失败不发遭遇请求。旧InitialExploration/StartNewRun、全Act运行时和V12仍待迁移，人工验收未晋升。
-
 ## 2026-09-21
 * **Sync**: `project-documentation` 已同步到来源指纹 `sha256:8781d239edc506ae75b2e02ff4a257d969d0b4d261c9ff25aff61f4a1b66617f`。
 * **Sync**: `godot-migration` 已同步到来源指纹 `sha256:b5c3ecb5aa32d8eb2edff506d4d78e17eeffdb471ce6ecaaceca6b6f5737bddc`。
@@ -60,6 +54,18 @@
 * **Sync**: `gameplay-test-framework` 已同步到来源指纹 `sha256:9a0d4e4943fbcb07a5ef83075469800e9a61801ad5789dc9319b6df1f9e012d7`。
 * **Sync**: `battle-system` 已同步到来源指纹 `sha256:b12c5d6b3de42a8245ca4f7d66503367419e5d1bf117bf9d1943710122fc14b0`。
 
+## 2026-09-19
+* **Sync**: `pure-run-artwork` 已同步到来源指纹 `sha256:6afbf2959a75e8c84661df9c594c27b67f9b9105b4d1414e40dbb4ba7c14a9ca`。
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:0afec2261b24bc7cb5242e63b2b59207cb13eb2df6923a1800663a7a3cc8ff4c`。
+* **Sync**: `project-architecture` 已同步到来源指纹 `sha256:4a3e56e3bcbfeec2191778ce7e6076e456bc386eb099ea0a02e35b31a0ae8c19`。
+* **Sync**: `godot-migration` 已同步到来源指纹 `sha256:d425cb8a99f150e8e1e2559f0955731ee5c887954f73a752e8e056bef71cb570`。
+* **Sync**: `godot-agent-workflow` 已同步到来源指纹 `sha256:148bdb1c1e9ef9f3361f9fb5884cce4896cff81933f18e8d02e7fbe7a3973de9`。
+
+## 2026-09-18
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:21c98c31fa0a2983eca85ca0b10a1c5de10c29857443011fceabd25bca1ac3ba`。
+* **Sync**: `pure-run-artwork` 已同步到来源指纹 `sha256:468c73c09f64930ad7d7506c9c69d96771102e68aaec0bebc7cc7a07e90faa26`。
+* **Sync**: `project-architecture` 已同步到来源指纹 `sha256:8bd77ca1ddc8b9fdba42dbaf3ede9bd4ea88906651f78522afe325caeded5e00`。
+* **Sync**: `godot-migration` 已同步到来源指纹 `sha256:3057361c637345be64d0669dc87a1e211eff5dc4bd8c4edd23d754cb3796e6d5`。
 ## 2026-09-17
 * **Sync**: `project-documentation` 已同步到来源指纹 `sha256:eaeea37fce4b70429612b2957ee304b52d47594aa28f1fe39345d5aa85e4593a`。
 * **Update**: 用户明确选择将 PR #4 的 Start Camp、Esc Run 生命周期、诗人运行时与动态先攻四项人工门禁记为 deferred（不是 passed），不运行高耗时 GitHub CI，并立即以 merge commit 合入。

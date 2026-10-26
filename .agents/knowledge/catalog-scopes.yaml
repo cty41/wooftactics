@@ -148,6 +148,7 @@ scopes:
       - .agents/skills/godot-editor-lifecycle
       - .agents/skills/godot-testing-diagnostics
       - .agents/skills/godot-ai-workflow
+      - .agents/skills/tactics-git-workspace
       - .agents/incidents/godot
       - global.json
       - Tactics.Godot.slnx

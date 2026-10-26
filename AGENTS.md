@@ -6,7 +6,7 @@
 
 | 规则 | 说明 |
 |---|---|
-| 唯一 Godot 项目 | 只使用 `godot/project.godot`，不得创建第二个项目或切换 worktree |
+| 唯一 Godot 项目 | 只使用 `godot/project.godot`；开发在当前 workspace checkout，不另开 worktree。步骤见 `tactics-git-workspace` |
 | C# 分层 | Core/Application 不引用 Godot；Adapter 承载 Node、Resource、文件系统与 UI |
 | 资源写入 | `.tres/.tscn` 只能通过 ResourceSaver、Editor API 或受测转换器生成 |
 | 主线验证 | 默认先跑最小本地门禁；产品代码收口时至多运行一次 `Tools/godot/Verify-GodotProject.ps1`。未经用户明确要求，不主动触发 GitHub Actions、远程导出或同类高耗时任务 |
@@ -21,7 +21,7 @@
 
 - `.agents/rules/godot-agent-workflow.md`：Godot 项目、C#、Resource、EditorPlugin 和测试边界。
 - `.agents/rules/foreground-interaction.md`：窗口、真实输入和人工验证边界。
-- `.agents/rules/agent-worktree.md`：复用当前 worktree，不自动创建、删除或切换。
+- `.agents/rules/agent-worktree.md`：默认当前 workspace checkout；细节见 `tactics-git-workspace`。
 - `.agents/rules/code-documentation.md`：代码注释与系统规则说明。
 - `.agents/rules/knowledge-maintenance.md`：OKF 查询、写回、替代和校验。
 - `.agents/rules/godot-migration.md`：退役完成前的历史迁移与来源审计边界。
@@ -33,7 +33,7 @@ Unity-only rules、skills、MCP 和工具的退役证据保存在 `Tools/migrati
 通用技能（`grill-me`、`grilling`、`brainstorming`、`eli5`、`make-dev-plan`、`plan-mode-plan-writer`、`project-doc-organization`、`skill-writing`）来自公共仓 `cty41/skills`（[github.com/cty41/skills](https://github.com/cty41/skills)，MIT），经其 `scripts/install-user.ps1` 全局安装到 `~/.agents/skills`（Windows junction / macOS-Linux symlink）。本机已安装；更新 = `git -C <skills-checkout> pull` + 重跑安装脚本。任何读取用户级技能根的工具（DSH、Codex、OpenCode、Claude）在所有项目中都能看到这些技能。
 
 - **优先级**：项目本地 `.agents/skills/<技能名>` 覆盖用户级全局安装（DSH 发现顺序为 project-agents 先于 user-agents）。
-- **本地技能边界**：仅项目专属技能（`godot-*`、`gameplay-*`、`artworks-prompt-library`、`pure-run-artwork-pipeline`）与两个有意特化 —— `knowledge-maintenance`（完整 `Tools/okf` 工具链，替代全局 OKF-lite 版）、`manual-qa-handoff`（含 `agents/openai.yaml`，被 `Tools/agent-policy/validate_manual_qa_handoff.py` 硬引用）。
+- **本地技能边界**：仅项目专属技能（`godot-*`、`gameplay-*`、`artworks-prompt-library`、`pure-run-artwork-pipeline`、`tactics-git-workspace`）与两个有意特化 —— `knowledge-maintenance`（完整 `Tools/okf` 工具链，替代全局 OKF-lite 版）、`manual-qa-handoff`（含 `agents/openai.yaml`，被 `Tools/agent-policy/validate_manual_qa_handoff.py` 硬引用）。
 - **约定映射**：`.agents/plans/`、`.agents/docs/`、`.agents/knowledge/` 与共享仓默认一致；OKF 命令以本地 `Tools/okf/` 为准（见 `.agents/rules/knowledge-maintenance.md`），不使用全局 `tools/okf-lite` 的默认路径。
 - **禁止**：不得把通用技能复制回 `.agents/skills/`（避免双源漂移）；删除本地技能前先确认没有 `Tools/*` 门禁或文档硬引用其路径。
 

@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Tactics Project Overview
 description: Tactics 的 Godot 产品主线、纯 .NET 分层、运行时和主要游戏系统总入口。
 tags: [architecture, godot, agent-first]
-timestamp: "2026-10-22T16:00:44+08:00"
+timestamp: "2026-10-26T10:33:23+08:00"
 status: active
 catalog_scope: project-architecture
 repo_paths:
@@ -19,7 +19,7 @@ repo_paths:
   - godot/export_presets.cfg
   - godot/project.godot
 verified_revision: c56d71ad4ebd
-source_fingerprint: sha256:5dddd6c5d69e51c8399fc7e89a3f916d0709503be026c9c4745a2b03646d6207
+source_fingerprint: sha256:9cfcafe01c578089d5a18053b40368a81763113106f4d426441596ae6f0fea9f
 ---
 
 # Summary
@@ -38,7 +38,7 @@ Run/Act/Node 改造正在按 `.agents/plans/roguelike-act-node-scene-architectur
 - `Tools/godot/Verify-GodotProject.ps1` 是本地主线统一产品门禁；Windows RC 使用只读 staging、包审计和双 renderer EXE smoke。
 - `Tools/public-release/Verify-PublicRelease.ps1` 独立验证公开文件策略、资产来源哈希、依赖清单与第三方声明，并由单 root 候选重建入口在源树和候选树各调用一次；运行时不依赖这些审计工具。
 - 固定的 godot-ai v3.2.5 源码是公开可审计的 MIT Editor-only 依赖；manifest 是 tag、commit、vendor tree 与 license digest 的单一真相源，显式 refresh 只生成待 review 的候选 diff。导出与 Windows 运行时包继续排除该插件。
-- Agent 默认在用户指定的 worktree 中完成审计和修复；新建、删除或切换 worktree 必须有活跃计划或用户明确授权。
+- Agent 默认在当前 workspace checkout 开发，不另开 worktree；新建 worktree 仅限计划要求、用户明确要求或当前树无法安全保留。步骤见 `tactics-git-workspace`。
 - Godot 只使用 `godot/project.godot`；未知 Godot 行为先研究与本地复现，详细路由见 [Godot Agent Workflow](../operations/godot-agent-workflow.md)。
 - Agent 默认禁止 Computer Use、窗口激活和真实鼠标键盘等前台交互；实现、截图、视觉 QA、测试或连接恢复不构成例外授权。后台验证不足时停止为人工验证待办，完整规则由 [Godot Agent Workflow](../operations/godot-agent-workflow.md) 导航。
 

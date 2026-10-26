@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Godot agent workflow
 description: Godot 4.7 C# 主线的项目、分层、Editor 生命周期、验证和发布边界。
 tags: [godot, agent, workflow, testing]
-timestamp: "2026-09-22T16:04:50+08:00"
+timestamp: "2026-10-26T10:33:23+08:00"
 status: active
 catalog_scope: godot-agent-workflow
 repo_paths:
@@ -12,17 +12,16 @@ repo_paths:
   - .agents/rules/godot-agent-workflow.md
   - .agents/skills/godot-workflow
   - .agents/skills/godot-editor-lifecycle
+  - .agents/skills/tactics-git-workspace
   - .agents/incidents/godot
   - Tactics.Godot.slnx
   - godot/addons/tactics_tooling
   - Tools/godot/Open-GodotDev.ps1
-  - Tools/godot/Build-GodotDevAssembly.ps1
-  - Tools/godot/Test-TacticsToolingBootstrap.ps1
   - Tools/godot/Verify-GodotProject.ps1
   - Tools/godot/Build-GodotWindows.ps1
   - Tools/migration/manifest/godot-tooling.json
 verified_revision: d092a955
-source_fingerprint: sha256:b8d265fa087b6f4ff8edfbfb508c903f61bba0e93edc1635678442be4ecc21ab
+source_fingerprint: sha256:fe4680bfe6dcdf6ab73f5a6c326de0e82cb2057fc32d9687da728863f3228ebf
 ---
 
 # Current State
@@ -33,7 +32,7 @@ Godot 4.7 C# 与 `godot/project.godot` 是唯一产品和编辑权威。Core/App
 
 Editor 采用 Human Direct / Prepared Agent 双入口。人工可以从 Project Manager 直接打开 canonical 项目：GDScript Bootstrap 始终注册 Tactics Main Screen；有 production Adapter assembly 时直接挂载 C# Workbench，无 assembly 时显示显式 `BUILD C# AND RELOAD` 状态页。用户确认后由固定 build-only helper 异步串行 Build、验证 assembly identity并写token化结果；成功优先在同一Editor PID完成reload，失败保留首条错误、日志、复制命令和Retry。prepared启动参数不再作为Controller/Main Screen准入条件，也不能单独授权bridge；controller还必须核对dev-session中的当前PID、canonical路径、派生worktree key、mode及与进程启动时间关联的startedAt，才创建可写authoring named-pipe bridge。Direct Human保留Workbench UI而不暴露Agent bridge。
 
-Agent、自动化、godot-ai/MCP和严格worktree隔离仍只使用`Tools/godot/Open-GodotDev.ps1`。入口复用`Build-GodotDevAssembly.ps1`，并继续校验Godot/.NET、隔离`user://`、生成项目级Codex Attach配置和记录Editor session。直接人工入口不产生这些Agent/MCP readiness证据。首次生成配置会要求重启一次Codex任务；Agent不得使用共享人工QA用户数据，同worktree的prepared启动与统一verifier继续由同一命名mutex串行化。
+开发在当前 workspace checkout，不另开 worktree；切分支、无关历史切换和对照旧文件见 `tactics-git-workspace`。Agent、自动化、godot-ai/MCP和严格worktree隔离仍只使用`Tools/godot/Open-GodotDev.ps1`。入口复用`Build-GodotDevAssembly.ps1`，并继续校验Godot/.NET、隔离`user://`、生成项目级Codex Attach配置和记录Editor session。直接人工入口不产生这些Agent/MCP readiness证据。首次生成配置会要求重启一次Codex任务；Agent不得使用共享人工QA用户数据，同worktree的prepared启动与统一verifier继续由同一命名mutex串行化。
 
 Godot 修改先由 `godot-workflow` 路由到最小 Specialist Skill。C#、ResourceSaver、生成器和 reload-sensitive 工作遵循 `godot-editor-lifecycle`；只正常关闭该流程确认的 canonical Editor，并只恢复由本流程关闭的会话。恢复动作本身也必须委托 `Tools/godot/Open-GodotDev.ps1`，不得裸启动 Godot；因此恢复仍会完成 production Adapter 串行 Build、worktree 用户数据、bootstrap 参数、互斥锁和 session 记录。Python 策略测试固定检查 lifecycle 脚本没有重新引入 raw `Start-Process godot --editor --path`。
 
