@@ -52,7 +52,7 @@ public sealed class GodotGameplayIsolatedRunStore : IRunSaveStore
         {
             string absolute = ProjectSettings.GlobalizePath(SavePath);
             Directory.CreateDirectory(Path.GetDirectoryName(absolute)!);
-            File.WriteAllText(absolute, RunSaveDocumentV10.Encode(initial), Encoding.UTF8);
+            File.WriteAllText(absolute, RunSaveDocumentV11.Encode(initial), Encoding.UTF8);
             RunStoreResult seed = _inner.Load();
             if (!seed.Succeeded || seed.Snapshot?.Revision != initial.Revision)
                 throw new InvalidOperationException("Unable to seed isolated checkpoint: " + seed.ErrorCode);

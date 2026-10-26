@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics/tree/main/.agents/docs
 title: Project Documentation
 description: 当前设计、活跃计划、统一缺口与 OKF 综合层的文档生命周期。
 tags: [operations, documentation, plans, knowledge]
-timestamp: "2026-09-19T00:10:53+08:00"
+timestamp: "2026-10-26T10:33:24+08:00"
 status: active
 catalog_scope: project-documentation
 repo_paths:
@@ -12,7 +12,7 @@ repo_paths:
   - .agents/plans
   - .agents/skills/manual-qa-handoff/SKILL.md
 verified_revision: c9ff3a710fd9
-source_fingerprint: sha256:0afec2261b24bc7cb5242e63b2b59207cb13eb2df6923a1800663a7a3cc8ff4c
+source_fingerprint: sha256:01093a607468df7048b2a4b910c907f1f7d9e4e49a80865849ad094ab8a00293
 ---
 
 # Current State
@@ -31,7 +31,7 @@ Pure Run 新装备的独立生产策略记录在 `.agents/docs/2026-08-25-pure-r
 
 `.agents/plans/` 只保存仍需执行且 decision-complete 的计划。实现完成并验证后，长期规则回写 docs，未实施项进入已知缺口或经批准的新计划，completed plan 随后删除并由 Git 保留历史。
 
-通用 Agent 技能（`brainstorming`、`make-dev-plan`、`plan-mode-plan-writer`、`project-doc-organization` 等）由用户级全局安装 `~/.agents/skills`（`cty41/skills`）提供；本仓库 `.agents/skills/` 只保留项目专属技能与两个特化技能（`knowledge-maintenance` 使用完整 `Tools/okf`、`manual-qa-handoff` 被 `Tools/agent-policy` 硬引用），契约见根 `AGENTS.md`。
+通用 Agent 技能（`brainstorming`、`make-dev-plan`、`plan-mode-plan-writer`、`project-doc-organization` 等）由用户级全局安装 `~/.agents/skills`（`cty41/skills`）提供；本仓库 `.agents/skills/` 只保留项目专属技能与两个特化技能（`knowledge-maintenance` 使用完整 `Tools/okf`、`manual-qa-handoff` 被 `Tools/agent-policy` 硬引用），契约见根 `AGENTS.md`。Git / workspace 默认是当前 workspace checkout、不另开 worktree，步骤见 `tactics-git-workspace`。
 
 `.agents/knowledge/` 负责跨系统摘要、关系和导航，不复制完整设计或已完成计划。代码、Godot Resource 和测试仍是当前行为的最终事实源。
 

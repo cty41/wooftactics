@@ -337,6 +337,18 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 - Automated evidence: 7 份不可变 runtime authorization receipt 绑定 approved source→runtime SHA、`PureRunPoet.tres`、cty41 决定与本人工边界；ResourceSaver 重复生成、Poet Resource/Actor 定向 GdUnit 5/5、Melee/Cast/Hit×四方向、Ranged fallback、白色 tint、独立 Death offset、分身字段清理，以及 Application presentation 10/10 对诗人 cue 分类均通过。技能公式与 AI 分身优先仍由既有自动化覆盖；动作可读性、镜像观感、Tile 落点、半透明分身辨识度和职业体验仍需人工判断。统一 Godot verifier 在本轮运行至 manual QA policy 前的 Core 209/209、Application 206/206、FrozenOracle 15/15 均通过；其后修复账本分区并通过 agent-policy 17/17，但按“一次统一 verifier”上限未重复整套。
 - User verdict: none after this visual change; previous 2026-09-17 defer applied only to the Idle/placeholder implementation.
 
+### MQA-GODOT-STALE-SAVE-RESET — 当前构建存档冷恢复与旧半截档清档
+
+- Status: `pending`
+- Source: S1 Act 状态推导接入 `ResumeRun`；开发期矛盾存档清档决策（2026-10-22）
+- Action: 用当前构建分别在 N1–N3 节点探索中、L4 商店/事件选择后、L5–L6 节点各 Save and Quit 一次，重启后点 Continue；再用一份由结算完成但 Board 未 `.resolved` 的旧构建隔离存档启动。
+- Expected: 当前构建产生的所有存档都直接 Continue 到原节点，不被清除；旧半截存档回到主页，状态栏显示 "Save is from an older build and was cleared. Start a new run."，Continue 变灰，New Run 正常。
+- Observe: 主页状态栏、Continue 按钮、恢复后的页面/节点、`user://pure-run` 存档与 `.bak`、Godot Output。
+- Preserve on failure: 被误清前的 save/backup 副本（先复制再点 Continue）、节点 ID、Run seed/revision 和 Output。
+- Save boundary: 清档会覆盖当前存档；每次测试前复制 `user://pure-run`，不得用唯一生产存档测试。
+- Automated evidence: 清档只针对 `act_state.inconsistent_resolution`（其他推导拒绝仍走旧恢复流程，避免误删）。Core 265、Application 398；隔离 GdUnit 10 套件 95/95（含常驻普通/事件战斗冷热恢复），过程中修复了事件战斗 PendingBattle 被误判的推导缺陷。正式门禁在任务外 public-release 工具测试处中断。2026-10-23 新增 `StaleSaveColdResumeGodotTests` 3/3：脚本玩家经 `GodotRunSaveStore` 写真实 V11 文档（固定 seed 37，调用界面结算、出口与成长按钮同一路径），在第一场结算后、L4 休息选中后、L5 战斗检查点与 L5 结算后分别新建 Main 冷启动，断言局仍在、revision 不变、未显示清档提示、未回主页。商店/事件选择、L6 节点、进程级退出与旧构建半截存档清档仍需人工确认。
+- User verdict: none.
+
 ## Passed
 
 ### MQA-ARTWORK-DEMONBOUND-DEATH — Rounded death Sprite identity and size

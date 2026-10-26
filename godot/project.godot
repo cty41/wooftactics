@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Tactics Godot Migration"
+config/name="gd1"
 run/main_scene="res://scenes/Main.tscn"
 config/features=PackedStringArray("4.7", "C#")
 
@@ -25,7 +25,6 @@ window/size/viewport_height=900
 window/size/window_width_override=1600
 window/size/window_height_override=900
 window/stretch/mode="canvas_items"
-window/stretch/aspect="keep"
 
 [dotnet]
 

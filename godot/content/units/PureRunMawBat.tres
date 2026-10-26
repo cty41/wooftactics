@@ -1,15 +1,15 @@
 [gd_resource type="Resource" script_class="UnitDefinitionResource" format=3 uid="uid://qrqjaq5engdr"]
 
-[ext_resource type="PackedScene" uid="uid://c1frlvegnpcpp" path="res://content/units/UnitActor.tscn" id="1_wb6tf"]
-[ext_resource type="Texture2D" uid="uid://c11ywicrwistl" path="res://assets/units/tomb_maw_bat_ranged_death_color_v02.png" id="2_afujx"]
-[ext_resource type="Texture2D" uid="uid://b7uadv3ym8574" path="res://assets/units/tomb_maw_bat_ranged_color_v06.png" id="3_nn5j5"]
-[ext_resource type="Texture2D" uid="uid://cl8xbpa2pj04y" path="res://assets/units/actions/tomb_maw_bat_hit_dr_v01.png" id="4_2u7fi"]
-[ext_resource type="Texture2D" uid="uid://ckc5qfjhx4dxk" path="res://assets/units/actions/tomb_maw_bat_hit_ul_v01.png" id="5_qaiwi"]
-[ext_resource type="Texture2D" uid="uid://bdyy8pq5v65lk" path="res://assets/units/actions/tomb_maw_bat_melee_bite_attack_dr_v01.png" id="6_uosxi"]
-[ext_resource type="Texture2D" uid="uid://cyvw5i1g76rcy" path="res://assets/units/actions/tomb_maw_bat_melee_bite_attack_ul_v01.png" id="7_wqw7e"]
-[ext_resource type="Texture2D" uid="uid://xp7ingaqaacg" path="res://assets/units/pure_run_unit_shadow_1x1_v01.png" id="8_ncigh"]
-[ext_resource type="Texture2D" uid="uid://cdjoe873ofhbl" path="res://assets/units/tomb_maw_bat_ranged_color_ul_v01.png" id="9_6ulr4"]
-[ext_resource type="Script" uid="uid://1wi07ox2an7" path="res://src/Tactics.Godot.Adapter/Runtime/UnitDefinitionResource.cs" id="10_2ss6o"]
+[ext_resource type="PackedScene" path="res://content/units/UnitActor.tscn" id="1_wb6tf"]
+[ext_resource type="Texture2D" path="res://assets/units/tomb_maw_bat_ranged_death_color_v02.png" id="2_afujx"]
+[ext_resource type="Texture2D" path="res://assets/units/tomb_maw_bat_ranged_color_v06.png" id="3_nn5j5"]
+[ext_resource type="Texture2D" path="res://assets/units/actions/tomb_maw_bat_hit_dr_v01.png" id="4_2u7fi"]
+[ext_resource type="Texture2D" path="res://assets/units/actions/tomb_maw_bat_hit_ul_v01.png" id="5_qaiwi"]
+[ext_resource type="Texture2D" path="res://assets/units/actions/tomb_maw_bat_melee_bite_attack_dr_v01.png" id="6_uosxi"]
+[ext_resource type="Texture2D" path="res://assets/units/actions/tomb_maw_bat_melee_bite_attack_ul_v01.png" id="7_wqw7e"]
+[ext_resource type="Texture2D" path="res://assets/units/pure_run_unit_shadow_1x1_v01.png" id="8_ncigh"]
+[ext_resource type="Texture2D" path="res://assets/units/tomb_maw_bat_ranged_color_ul_v01.png" id="9_6ulr4"]
+[ext_resource type="Script" path="res://src/Tactics.Godot.Adapter/Runtime/UnitDefinitionResource.cs" id="10_2ss6o"]
 
 [resource]
 script = ExtResource("10_2ss6o")
@@ -45,6 +45,8 @@ MeleeUpLeftTexture = ExtResource("7_wqw7e")
 HitDownRightTexture = ExtResource("4_2u7fi")
 HitUpLeftTexture = ExtResource("5_qaiwi")
 ShadowTexture = ExtResource("8_ncigh")
+DownRightBodyOffset = Vector2(0, -108)
+UpLeftBodyOffset = Vector2(0, -108)
 ShadowOffset = Vector2(0, 3.84)
 ShadowScale = Vector2(1.6, 1.6)
 ShadowOpacity = 0.9

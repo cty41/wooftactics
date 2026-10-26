@@ -1,18 +1,194 @@
 [gd_resource type="Resource" script_class="GodotResourceCatalog" format=3 uid="uid://d0pd8f783qad2"]
 
-[ext_resource type="Script" path="res://src/Tactics.Godot.Adapter/Runtime/GodotResourceEntry.cs" id="1_5t7oo"]
-[ext_resource type="Script" path="res://src/Tactics.Godot.Adapter/Runtime/GodotResourceCatalog.cs" id="2_e7vru"]
+[ext_resource type="Script" path="res://src/Tactics.Godot.Adapter/Runtime/GodotResourceEntry.cs" id="1_lb7ww"]
+[ext_resource type="Script" path="res://src/Tactics.Godot.Adapter/Runtime/GodotResourceCatalog.cs" id="2_w84k6"]
 
-[sub_resource type="Resource" id="Resource_o4sjk"]
-script = ExtResource("1_5t7oo")
+[sub_resource type="Resource" id="Resource_lxkcs"]
+script = ExtResource("1_lb7ww")
 ContentIdValue = "adventure-map-template.pure-run.basic-battle-v1"
 ResourceTypeIdValue = "adventure-map-template"
 ResourceUidValue = "uid://cmy865eeymqss"
 DiagnosticPathValue = "res://content/adventure_maps/BasicBattleTemplateV1.tres"
 SchemaVersion = 1
 
-[sub_resource type="Resource" id="Resource_scnc2"]
-script = ExtResource("1_5t7oo")
+[sub_resource type="Resource" id="Resource_3jhge"]
+script = ExtResource("1_lb7ww")
+ContentIdValue = "adventure-map-template.pure-run.node.layer-01-battle"
+ResourceTypeIdValue = "adventure-map-template"
+ResourceUidValue = "uid://b3pfgbginmplm"
+DiagnosticPathValue = "res://content/adventure_maps/nodes/layer-01-battle.tres"
+SchemaVersion = 1
+
+[sub_resource type="Resource" id="Resource_ilinw"]
+script = ExtResource("1_lb7ww")
+ContentIdValue = "adventure-map-template.pure-run.node.layer-02-battle"
+ResourceTypeIdValue = "adventure-map-template"
+ResourceUidValue = "uid://iah0icr6d28"
+DiagnosticPathValue = "res://content/adventure_maps/nodes/layer-02-battle.tres"
+SchemaVersion = 1
+
+[sub_resource type="Resource" id="Resource_8rlxe"]
+script = ExtResource("1_lb7ww")
+ContentIdValue = "adventure-map-template.pure-run.node.layer-03-battle"
+ResourceTypeIdValue = "adventure-map-template"
+ResourceUidValue = "uid://dnia2pjwmjbmu"
+DiagnosticPathValue = "res://content/adventure_maps/nodes/layer-03-battle.tres"
+SchemaVersion = 1
+
+[sub_resource type="Resource" id="Resource_im50w"]
+script = ExtResource("1_lb7ww")
+ContentIdValue = "adventure-map-template.pure-run.node.layer-04-battle"
+ResourceTypeIdValue = "adventure-map-template"
+ResourceUidValue = "uid://c37rupy2ustkv"
+DiagnosticPathValue = "res://content/adventure_maps/nodes/layer-04-battle.tres"
+SchemaVersion = 1
+
+[sub_resource type="Resource" id="Resource_hh6lv"]
+script = ExtResource("1_lb7ww")
+ContentIdValue = "adventure-map-template.pure-run.node.layer-04-event.cursedchestmimic"
+ResourceTypeIdValue = "adventure-map-template"
+ResourceUidValue = "uid://hpwfjw54k11c"
+DiagnosticPathValue = "res://content/adventure_maps/nodes/layer-04-event.cursedchestmimic.tres"
+SchemaVersion = 1
+
+[sub_resource type="Resource" id="Resource_dcunm"]
+script = ExtResource("1_lb7ww")
+ContentIdValue = "adventure-map-template.pure-run.node.layer-04-event.fallenaltarguardian"
+ResourceTypeIdValue = "adventure-map-template"
+ResourceUidValue = "uid://b22t1a8mo5mtv"
+DiagnosticPathValue = "res://content/adventure_maps/nodes/layer-04-event.fallenaltarguardian.tres"
+SchemaVersion = 1
+
+[sub_resource type="Resource" id="Resource_dhheh"]
+script = ExtResource("1_lb7ww")
+ContentIdValue = "adventure-map-template.pure-run.node.layer-04-event.lostvillagerescort"
+ResourceTypeIdValue = "adventure-map-template"
+ResourceUidValue = "uid://c8m7n2tgnybq3"
+DiagnosticPathValue = "res://content/adventure_maps/nodes/layer-04-event.lostvillagerescort.tres"
+SchemaVersion = 1
+
+[sub_resource type="Resource" id="Resource_oggnp"]
+script = ExtResource("1_lb7ww")
+ContentIdValue = "adventure-map-template.pure-run.node.layer-04-rest"
+ResourceTypeIdValue = "adventure-map-template"
+ResourceUidValue = "uid://dwui1pmd6ij8n"
+DiagnosticPathValue = "res://content/adventure_maps/nodes/layer-04-rest.tres"
+SchemaVersion = 1
+
+[sub_resource type="Resource" id="Resource_3lmr4"]
+script = ExtResource("1_lb7ww")
+ContentIdValue = "adventure-map-template.pure-run.node.layer-04-store"
+ResourceTypeIdValue = "adventure-map-template"
+ResourceUidValue = "uid://wok508qryehp"
+DiagnosticPathValue = "res://content/adventure_maps/nodes/layer-04-store.tres"
+SchemaVersion = 1
+
+[sub_resource type="Resource" id="Resource_r05xv"]
+script = ExtResource("1_lb7ww")
+ContentIdValue = "adventure-map-template.pure-run.node.layer-04-treasure"
+ResourceTypeIdValue = "adventure-map-template"
+ResourceUidValue = "uid://mh6ys4obijb6"
+DiagnosticPathValue = "res://content/adventure_maps/nodes/layer-04-treasure.tres"
+SchemaVersion = 1
+
+[sub_resource type="Resource" id="Resource_1bjgt"]
+script = ExtResource("1_lb7ww")
+ContentIdValue = "adventure-map-template.pure-run.node.layer-05-battle.e1"
+ResourceTypeIdValue = "adventure-map-template"
+ResourceUidValue = "uid://h5yv638shrys"
+DiagnosticPathValue = "res://content/adventure_maps/nodes/layer-05-battle.e1.tres"
+SchemaVersion = 1
+
+[sub_resource type="Resource" id="Resource_f7chv"]
+script = ExtResource("1_lb7ww")
+ContentIdValue = "adventure-map-template.pure-run.node.layer-05-battle.e2"
+ResourceTypeIdValue = "adventure-map-template"
+ResourceUidValue = "uid://c8hxtfrlfkvrg"
+DiagnosticPathValue = "res://content/adventure_maps/nodes/layer-05-battle.e2.tres"
+SchemaVersion = 1
+
+[sub_resource type="Resource" id="Resource_8gg0x"]
+script = ExtResource("1_lb7ww")
+ContentIdValue = "adventure-map-template.pure-run.node.layer-06-battle.e1"
+ResourceTypeIdValue = "adventure-map-template"
+ResourceUidValue = "uid://dkcx8b3yj52ue"
+DiagnosticPathValue = "res://content/adventure_maps/nodes/layer-06-battle.e1.tres"
+SchemaVersion = 1
+
+[sub_resource type="Resource" id="Resource_v0rwt"]
+script = ExtResource("1_lb7ww")
+ContentIdValue = "adventure-map-template.pure-run.node.layer-06-battle.e2"
+ResourceTypeIdValue = "adventure-map-template"
+ResourceUidValue = "uid://dmw2eejohnowl"
+DiagnosticPathValue = "res://content/adventure_maps/nodes/layer-06-battle.e2.tres"
+SchemaVersion = 1
+
+[sub_resource type="Resource" id="Resource_u6afe"]
+script = ExtResource("1_lb7ww")
+ContentIdValue = "adventure-map-template.pure-run.node.layer-06-event.cursedchestmimic"
+ResourceTypeIdValue = "adventure-map-template"
+ResourceUidValue = "uid://dwu6dw8fj7e7y"
+DiagnosticPathValue = "res://content/adventure_maps/nodes/layer-06-event.cursedchestmimic.tres"
+SchemaVersion = 1
+
+[sub_resource type="Resource" id="Resource_t5p43"]
+script = ExtResource("1_lb7ww")
+ContentIdValue = "adventure-map-template.pure-run.node.layer-06-event.fallenaltarguardian"
+ResourceTypeIdValue = "adventure-map-template"
+ResourceUidValue = "uid://6s51msp0w3qj"
+DiagnosticPathValue = "res://content/adventure_maps/nodes/layer-06-event.fallenaltarguardian.tres"
+SchemaVersion = 1
+
+[sub_resource type="Resource" id="Resource_ld3un"]
+script = ExtResource("1_lb7ww")
+ContentIdValue = "adventure-map-template.pure-run.node.layer-06-event.lostvillagerescort"
+ResourceTypeIdValue = "adventure-map-template"
+ResourceUidValue = "uid://gp3um8d17vvk"
+DiagnosticPathValue = "res://content/adventure_maps/nodes/layer-06-event.lostvillagerescort.tres"
+SchemaVersion = 1
+
+[sub_resource type="Resource" id="Resource_ci6ux"]
+script = ExtResource("1_lb7ww")
+ContentIdValue = "adventure-map-template.pure-run.node.layer-06-rest"
+ResourceTypeIdValue = "adventure-map-template"
+ResourceUidValue = "uid://dv353limgllaj"
+DiagnosticPathValue = "res://content/adventure_maps/nodes/layer-06-rest.tres"
+SchemaVersion = 1
+
+[sub_resource type="Resource" id="Resource_3le11"]
+script = ExtResource("1_lb7ww")
+ContentIdValue = "adventure-map-template.pure-run.node.layer-06-store"
+ResourceTypeIdValue = "adventure-map-template"
+ResourceUidValue = "uid://cs40hwv3bdbx4"
+DiagnosticPathValue = "res://content/adventure_maps/nodes/layer-06-store.tres"
+SchemaVersion = 1
+
+[sub_resource type="Resource" id="Resource_vggg7"]
+script = ExtResource("1_lb7ww")
+ContentIdValue = "adventure-map-template.pure-run.node.layer-06-treasure"
+ResourceTypeIdValue = "adventure-map-template"
+ResourceUidValue = "uid://b1uxo3ys1ikre"
+DiagnosticPathValue = "res://content/adventure_maps/nodes/layer-06-treasure.tres"
+SchemaVersion = 1
+
+[sub_resource type="Resource" id="Resource_oj2rx"]
+script = ExtResource("1_lb7ww")
+ContentIdValue = "adventure-map-template.pure-run.node.layer-07-battle"
+ResourceTypeIdValue = "adventure-map-template"
+ResourceUidValue = "uid://dkrksxjcahrb1"
+DiagnosticPathValue = "res://content/adventure_maps/nodes/layer-07-battle.tres"
+SchemaVersion = 1
+
+[sub_resource type="Resource" id="Resource_hh2q1"]
+script = ExtResource("1_lb7ww")
+ContentIdValue = "adventure-map-template.pure-run.node.start"
+ResourceTypeIdValue = "adventure-map-template"
+ResourceUidValue = "uid://uxcjyudnjki5"
+DiagnosticPathValue = "res://content/adventure_maps/nodes/start.tres"
+SchemaVersion = 1
+
+[sub_resource type="Resource" id="Resource_jmihb"]
+script = ExtResource("1_lb7ww")
 ContentIdValue = "adventure-map-template.pure-run.start-camp-v1"
 ResourceTypeIdValue = "adventure-map-template"
 ResourceUidValue = "uid://b3m7aevx135rv"
@@ -20,5 +196,5 @@ DiagnosticPathValue = "res://content/adventure_maps/StartCampTemplateV1.tres"
 SchemaVersion = 1
 
 [resource]
-script = ExtResource("2_e7vru")
-Entries = [SubResource("Resource_o4sjk"), SubResource("Resource_scnc2")]
+script = ExtResource("2_w84k6")
+Entries = [SubResource("Resource_lxkcs"), SubResource("Resource_3jhge"), SubResource("Resource_ilinw"), SubResource("Resource_8rlxe"), SubResource("Resource_im50w"), SubResource("Resource_hh6lv"), SubResource("Resource_dcunm"), SubResource("Resource_dhheh"), SubResource("Resource_oggnp"), SubResource("Resource_3lmr4"), SubResource("Resource_r05xv"), SubResource("Resource_1bjgt"), SubResource("Resource_f7chv"), SubResource("Resource_8gg0x"), SubResource("Resource_v0rwt"), SubResource("Resource_u6afe"), SubResource("Resource_t5p43"), SubResource("Resource_ld3un"), SubResource("Resource_ci6ux"), SubResource("Resource_3le11"), SubResource("Resource_vggg7"), SubResource("Resource_oj2rx"), SubResource("Resource_hh2q1"), SubResource("Resource_jmihb")]

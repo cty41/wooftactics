@@ -1,4 +1,58 @@
 # Tactics Knowledge Update Log
+## 2026-10-26
+* **Sync**: `godot-agent-workflow` 已同步到来源指纹 `sha256:fe4680bfe6dcdf6ab73f5a6c326de0e82cb2057fc32d9687da728863f3228ebf`。
+* **Sync**: `okf-maintenance` 已同步到来源指纹 `sha256:878fed9f1c5c4bd6edfe4dbd9ca575d6c78327c90377b34a6cf5068ac09efac5`。
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:01093a607468df7048b2a4b910c907f1f7d9e4e49a80865849ad094ab8a00293`。
+* **Sync**: `project-architecture` 已同步到来源指纹 `sha256:9cfcafe01c578089d5a18053b40368a81763113106f4d426441596ae6f0fea9f`。
+* **Update**: 默认开发改为当前 workspace checkout，不另开 worktree；新增 	actics-git-workspace skill，always-on 规则只留指针。
+
+## 单 Act 节点宿主改造首切片
+
+* **Update**: 明确全Act常驻/同宿主为批准目标而非现状；补纯Core节点映射、前进型DAG安全校验；Setup最终选择一次CAS保存首战checkpoint；FullRunTransition保存失败不发遭遇请求。旧InitialExploration/StartNewRun、全Act运行时和V12仍待迁移，人工验收未晋升。
+
+## 2026-10-22
+* **Sync**: `godot-migration` 已同步到来源指纹 `sha256:d683fa906f9b88264d5913b2267b912ed36b5a9b8e882e7019c86e03be84cfa7`。
+* **Sync**: `project-architecture` 已同步到来源指纹 `sha256:5dddd6c5d69e51c8399fc7e89a3f916d0709503be026c9c4745a2b03646d6207`。
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:d2557e410860f5f4d93ce23bdaedcd2cdc40d346d4f37677f159bd228d7307be`。
+* **Sync**: `roguelike-run` 已同步到来源指纹 `sha256:e84efc7d3a1aab9a0748ab7d3177615888e9ec6b60ed57ffec5372ec54ad07b9`。
+
+## 2026-10-21
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:d6549c230f47d14f8e8971fdfaef1e3185e4f1ea2eec138f8db2242ff517bee1`。
+* **Sync**: `godot-migration` 已同步到来源指纹 `sha256:14edf231a4b59d9cd87ad242d61d47747499f66edff95b5964ef40973e88837a`。
+* **Sync**: `project-architecture` 已同步到来源指纹 `sha256:451ffbee4812174be28bb2e42455aa33033596fa71df8680c4282c1a69c34f05`。
+* **Sync**: `roguelike-run` 已同步到来源指纹 `sha256:0fb38e6dd86c9f42fd624436d7319d1541ab95fee73a7c0e664f71377ca61036`。
+
+## 2026-09-24
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:9a316a85594028519ed6a1839fa336e275b5993b06b81a03c834aaafe7d1a147`。
+* **Sync**: `project-architecture` 已同步到来源指纹 `sha256:33e5b38d16e64f816aa3d2c01ff06ad0f2ce37b682929034db02e05316001307`。
+* **Sync**: `godot-migration` 已同步到来源指纹 `sha256:452285493661a300b9292d92222e312ddda899f4716095b7112ce1e06ac0e3b6`。
+* **Sync**: `roguelike-run` 已同步到来源指纹 `sha256:6d8a1534eabc76fe8fda2f16093f66a1716fa3b604a9e33e2bd3ffb5dbd0c961`。
+* **Sync**: `battle-system` 已同步到来源指纹 `sha256:2e080f30a60e64778860d4f979b1466f1294edc36b4c2684112571f0994a14fb`。
+
+## 2026-09-23
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:54959954cdb7766ab3f0ebc3b7d0c617c90444d5842072c60ba0bd1f95969757`。
+* **Sync**: `project-architecture` 已同步到来源指纹 `sha256:2033c5452d1206f1aeceda7c003ab8ad216c55061beb746b87d6f297bce621d4`。
+* **Sync**: `godot-migration` 已同步到来源指纹 `sha256:467037c0288d5da5f7bb00376171d143c9b54236b25dd62b5c11b2f6750e92fa`。
+* **Sync**: `roguelike-run` 已同步到来源指纹 `sha256:a7679221b769ed867019ae744f29e92c5d00f0cf327190365e1c6972b0ae0ae5`。
+* **Sync**: `battle-system` 已同步到来源指纹 `sha256:93cd81f361805512c5906ea27196212b7f01c820d21d021e10076cbc7b9df1ed`。
+
+## 2026-09-22
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:974162370afce085aabefc66e87e76447f0dbd4452669fc92376205b6a11a502`。
+* **Sync**: `roguelike-run` 已同步到来源指纹 `sha256:06f3370caf1610d254ac0742605b377cea24e40d0439f4d15c57601cb15c1fc1`。
+* **Sync**: `project-architecture` 已同步到来源指纹 `sha256:b706e3ad109d8cf5726e3f49a0df99589683a57254966cfed08ee27a65525648`。
+* **Sync**: `godot-migration` 已同步到来源指纹 `sha256:44a29e259ba26373b94eac0475a277655b5b63e5c3562bd6fcc8fcab33fa303a`。
+* **Sync**: `godot-agent-workflow` 已同步到来源指纹 `sha256:b8d265fa087b6f4ff8edfbfb508c903f61bba0e93edc1635678442be4ecc21ab`。
+* **Sync**: `battle-system` 已同步到来源指纹 `sha256:09c5aed099e7b8c77ab99808e4afeb8420ae0202b463bbc071a9af2f01a1eb44`。
+
+## 2026-09-21
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:8781d239edc506ae75b2e02ff4a257d969d0b4d261c9ff25aff61f4a1b66617f`。
+* **Sync**: `godot-migration` 已同步到来源指纹 `sha256:b5c3ecb5aa32d8eb2edff506d4d78e17eeffdb471ce6ecaaceca6b6f5737bddc`。
+* **Sync**: `project-architecture` 已同步到来源指纹 `sha256:b8f2ac2e93d4cdd9ee3d4f841a9703a88ad4acde042a100c31e7fefdcf3b2087`。
+* **Sync**: `roguelike-run` 已同步到来源指纹 `sha256:ec378fdba989acd77c9c42d13b873f443ca84ca13ef83f4d837685d6f8c305cc`。
+* **Sync**: `okf-maintenance` 已同步到来源指纹 `sha256:cb345f5d516be73265b15b4f1e3505ef7713397cb3a9d3c82b71cd348b45f696`。
+* **Sync**: `godot-agent-workflow` 已同步到来源指纹 `sha256:1f65c870913676f763601ce5a72fed9f824615df7ccde0ff8b159ac0f69bda73`。
+* **Sync**: `gameplay-test-framework` 已同步到来源指纹 `sha256:9a0d4e4943fbcb07a5ef83075469800e9a61801ad5789dc9319b6df1f9e012d7`。
+* **Sync**: `battle-system` 已同步到来源指纹 `sha256:b12c5d6b3de42a8245ca4f7d66503367419e5d1bf117bf9d1943710122fc14b0`。
 
 ## 2026-09-19
 * **Sync**: `pure-run-artwork` 已同步到来源指纹 `sha256:6afbf2959a75e8c84661df9c594c27b67f9b9105b4d1414e40dbb4ba7c14a9ca`。
@@ -12,7 +66,6 @@
 * **Sync**: `pure-run-artwork` 已同步到来源指纹 `sha256:468c73c09f64930ad7d7506c9c69d96771102e68aaec0bebc7cc7a07e90faa26`。
 * **Sync**: `project-architecture` 已同步到来源指纹 `sha256:8bd77ca1ddc8b9fdba42dbaf3ede9bd4ea88906651f78522afe325caeded5e00`。
 * **Sync**: `godot-migration` 已同步到来源指纹 `sha256:3057361c637345be64d0669dc87a1e211eff5dc4bd8c4edd23d754cb3796e6d5`。
-
 ## 2026-09-17
 * **Sync**: `project-documentation` 已同步到来源指纹 `sha256:eaeea37fce4b70429612b2957ee304b52d47594aa28f1fe39345d5aa85e4593a`。
 * **Update**: 用户明确选择将 PR #4 的 Start Camp、Esc Run 生命周期、诗人运行时与动态先攻四项人工门禁记为 deferred（不是 passed），不运行高耗时 GitHub CI，并立即以 merge commit 合入。

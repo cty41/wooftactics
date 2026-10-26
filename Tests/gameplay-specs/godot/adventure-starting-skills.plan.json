@@ -2,6 +2,10 @@
   "schemaVersion": 3,
   "runtime": "Godot",
   "scenarioName": "AdventureBoard.StartingSkillsEnterAdventureBoard",
+  "contractIds": [
+    "ROGUELIKE-SETUP-COMMIT-001",
+    "ROGUELIKE-SETUP-FIRST-ENCOUNTER-001"
+  ],
   "requiredAdapters": [
     "Map",
     "PlayerInput",

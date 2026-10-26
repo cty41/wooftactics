@@ -15,6 +15,9 @@ public static class MawBatAssetFactory
     private const string AiPath = "res://content/ai_encounters/AiPureRunMawBatPredatoryDiver.tres";
     private const string LayoutPath = "res://content/ai_encounters/BattleLayoutPureRunN2ShallowWater.tres";
     private const string EncounterPath = "res://content/ai_encounters/EncounterPureRunN2.tres";
+    // Same living virtual-landing pivot as UnitDefinitionDraft / UnitAssetFactory (foot of 256 canvas).
+    private const float LivingPivotX = 0.5f;
+    private const float LivingPivotY = 0.078125f;
 
     public static void Build()
     {
@@ -37,7 +40,10 @@ public static class MawBatAssetFactory
         unit.UnarmedDownRightTexture = unit.UnarmedUpLeftTexture = null;
         unit.RangedDownRightTexture = unit.RangedUpLeftTexture = unit.CastDownRightTexture = unit.CastUpLeftTexture = null;
         unit.BodyTintModeValue = "multiply"; unit.BodyTintMaterial = null; unit.BodyTint = Colors.White; unit.BaseBodyColor = Colors.White;
-        unit.DownRightBodyOffset = Vector2.Zero; unit.UpLeftBodyOffset = Vector2.Zero; unit.DeathBodyOffset = Vector2.Zero;
+        // Living poses share the ground-unit virtual landing pivot; death uses corpse AABB center (zero offset).
+        unit.DownRightBodyOffset = SpriteOffset(unit.DownRightTexture!, LivingPivotX, LivingPivotY);
+        unit.UpLeftBodyOffset = SpriteOffset(unit.UpLeftTexture!, LivingPivotX, LivingPivotY);
+        unit.DeathBodyOffset = Vector2.Zero;
         unit.ToCoreDefinition(); Save(unit, UnitPath);
 
         var skill = new SkillDefinitionResource
@@ -133,5 +139,9 @@ public static class MawBatAssetFactory
         if (!ResourceUid.HasId(uid)) ResourceUid.AddId(uid, path); return uid;
     }
     private static void Save(Resource value, string path) => DeterministicResourceSaver.Save(value, path, Uid(path));
+
+    private static Vector2 SpriteOffset(Texture2D texture, float pivotX, float pivotY) => new(
+        texture.GetWidth() * (0.5f - pivotX),
+        texture.GetHeight() * (pivotY - 0.5f));
 }
 #endif

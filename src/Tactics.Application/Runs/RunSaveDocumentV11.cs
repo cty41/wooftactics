@@ -20,6 +20,8 @@ public static class RunSaveDocumentV11
     public static string Encode(PureRunSaveSnapshot snapshot)
     {
         ArgumentNullException.ThrowIfNull(snapshot);
+        if (snapshot.ActiveRun?.AdventureState?.SceneIdentity is not null || snapshot.ActiveRun?.Checkpoint?.SceneIdentity is not null)
+            throw new ArgumentException("Node scene identities require schema V12; implicit downgrade is forbidden.", nameof(snapshot));
         PureRunSaveSnapshot recovered = NormalizeRecovery(snapshot);
         JsonObject root = ParseObject(RunSaveDocumentV10.Encode(recovered));
         root["schemaVersion"] = SchemaVersion;

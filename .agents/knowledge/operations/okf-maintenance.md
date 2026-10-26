@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics/tree/main/Tools/okf
 title: OKF Maintenance
 description: 将工作区变更映射到 catalog_scope，并由 Agent 同步受影响知识概念的维护流程。
 tags: [agent, okf, knowledge, automation]
-timestamp: "2026-09-17T00:07:58+08:00"
+timestamp: "2026-10-26T10:33:24+08:00"
 status: active
 catalog_scope: okf-maintenance
 repo_paths:
@@ -14,7 +14,7 @@ repo_paths:
   - Tools/okf/catalog_impact.py
   - Tools/okf/validate_bundle.py
 verified_revision: c56d71ad4ebd
-source_fingerprint: sha256:6fe1ef2aac5e0f0dac5479e110f0a562dd23c81d115b17adb637f54a2e5fdaa8
+source_fingerprint: sha256:878fed9f1c5c4bd6edfe4dbd9ca575d6c78327c90377b34a6cf5068ac09efac5
 ---
 
 # Current State

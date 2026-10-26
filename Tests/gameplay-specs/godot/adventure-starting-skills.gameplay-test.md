@@ -3,6 +3,7 @@ feature: AdventureBoard
 scenario: StartingSkillsEnterAdventureBoard
 tags: [godot, player-input-e2e, adventure-board, isolated-save]
 requiredAdapters: [Map, PlayerInput, UI]
+contractIds: [ROGUELIKE-SETUP-COMMIT-001, ROGUELIKE-SETUP-FIRST-ENCOUNTER-001]
 setup:
   - kind: initializePlayerInput
     adapter: PlayerInput
@@ -62,6 +63,6 @@ assertions:
 timeoutMs: 30000
 ---
 
-# Starting skills enter the adventure board
+# Starting skills enter the initial adventure board
 
-从正式 Home 和 Start Camp 开始，按点击队伍顺序完成起始技能选择；魔剑士的种子技能由正式规则自动选择。最终进入正式 Tile Adventure Board，并从运行状态断言三人的起始技能顺序。
+从 Start Camp 开始，按点击队伍顺序完成起始技能选择；魔剑士的种子技能由正式规则自动选择。最后技能进入 TILE ADVENTURE，并从运行状态断言三人的起始技能顺序。

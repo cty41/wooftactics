@@ -8,6 +8,7 @@ using Tactics.Godot.Adapter.Runtime;
 using Tactics.Core.Battle;
 using Tactics.Core.Board;
 using Tactics.Core.Content;
+using Tactics.Core.Runs;
 using Tactics.Core.Skills;
 using Tactics.Core.Units;
 
@@ -50,6 +51,7 @@ public sealed class ProductionInputDecisionSource(int maximumActions) : IGodotGa
 {
     public async Task ExecuteAsync(GodotGameplayRuntimeContext context, CancellationToken cancellationToken)
     {
+        await context.WaitUntilProductionSurfaceAsync(cancellationToken);
         int actions = 0;
         while (context.HasActiveBattle && !context.IsTerminal && !context.IsAdventureEventResolved && actions < maximumActions)
         {
@@ -324,7 +326,9 @@ public sealed class GodotGameplayRuntimeRunner
             switch (step.Kind)
             {
                 case "loadValidatedCheckpoint": await context.ValidateCheckpointAsync(timeout.Token); break;
-                case "initializePlayerInput": await context.WaitFramesAsync(1, timeout.Token); break;
+                case "initializePlayerInput":
+                    await context.WaitUntilProductionSurfaceAsync(timeout.Token);
+                    break;
                 case "movePointerToTarget": await context.MovePointerAsync(PointerLocator(step), step.Parameters, timeout.Token); break;
                 case "clickPointerTarget": await context.ClickPointerAsync(PointerLocator(step), step.Parameters, timeout.Token); break;
                 case "rightClickPointerTarget": await context.RightClickAsync(PointerLocator(step), step.Parameters, timeout.Token); break;
@@ -776,7 +780,7 @@ public sealed class GodotGameplayRuntimeContext(GodotGameplayScenarioPlan plan, 
                 "battleReady" => probe.BattleSnapshot is not null,
                 "humanTurn" => probe.BattleSnapshot?.Phase == Tactics.Application.Battle.PlayableBattlePhase.PlayerTurn,
                 "battleEnded" => IsTerminal,
-                "adventureBoardReady" => probe.Adventure is not null,
+                "adventureBoardReady" => probe.Adventure is not null && HasAdventureSurface(),
                 "adventureLeaderChanged" => probe.Adventure is not null && probe.Adventure.LeaderRevision > _lastActionAdventure.Leader,
                 "adventureInteractionResolved" => probe.Adventure is not null && probe.Adventure.InteractionRevision > _lastActionAdventure.Interaction,
                 "exitCommitted" => probe.Adventure is not null && probe.Adventure.ExitRevision > _lastActionAdventure.Route,
@@ -814,6 +818,7 @@ public sealed class GodotGameplayRuntimeContext(GodotGameplayScenarioPlan plan, 
         tree.Root.AddChild(Root);
         await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
         Main = Root.PlayableRun ?? throw new GodotGameplayScenarioException(GodotGameplayFailureKind.Action, "main_restart_failed");
+        await WaitUntilProductionSurfaceAsync(token);
         token.ThrowIfCancellationRequested();
     }
 
@@ -862,6 +867,7 @@ public sealed class GodotGameplayRuntimeContext(GodotGameplayScenarioPlan plan, 
 
     public async Task SetPausedAsync(bool paused, CancellationToken token)
     {
+        await WaitUntilProductionSurfaceAsync(token);
         if (Main.CaptureTestProbe().PlaybackPaused == paused) return;
         await ClickButtonAsync("Pause/Resume", token);
         await WaitUntilAsync(() => Main.CaptureTestProbe().PlaybackPaused == paused, token);
@@ -869,6 +875,7 @@ public sealed class GodotGameplayRuntimeContext(GodotGameplayScenarioPlan plan, 
 
     public async Task SetSpeedAsync(float speed, CancellationToken token)
     {
+        await WaitUntilProductionSurfaceAsync(token);
         for (int index = 0; index < 4; index++)
         {
             if (Math.Abs(Main.CaptureTestProbe().PlaybackSpeed - speed) < .001f) return;
@@ -952,6 +959,34 @@ public sealed class GodotGameplayRuntimeContext(GodotGameplayScenarioPlan plan, 
         }
         token.ThrowIfCancellationRequested();
     }
+
+    public async Task WaitUntilProductionSurfaceAsync(CancellationToken token)
+    {
+        Main.ResetTestInputOverlays();
+        await WaitUntilAsync(IsProductionSurfaceReady, token);
+        await WaitFramesAsync(1, token);
+    }
+
+    private bool IsProductionSurfaceReady()
+    {
+        GodotPlayableRunProbe probe = Main.CaptureTestProbe();
+        if (string.IsNullOrWhiteSpace(probe.PageTitle) ||
+            probe.PageTitle.Contains("PREPARING ACT", StringComparison.Ordinal) ||
+            probe.PauseMenuVisible)
+            return false;
+        if (probe.SaveSnapshot?.ActiveRun?.Phase == PureRunPhase.PendingBattle)
+            return probe.BattleActive && probe.BattleSnapshot is not null;
+        if (probe.BattleActive) return probe.BattleSnapshot is not null;
+        if (probe.PageTitle.Contains("START CAMP", StringComparison.Ordinal) ||
+            probe.PageTitle.Contains("STARTING SKILL", StringComparison.Ordinal))
+            return true;
+        if (probe.Adventure is not null) return HasAdventureSurface();
+        return true;
+    }
+
+    private bool HasAdventureSurface() =>
+        Descendants<GodotStartCampView>(Main).Any(view => GodotObject.IsInstanceValid(view) && view.IsInsideTree()) ||
+        Descendants<GodotAdventureBoardView>(Main).Any(view => GodotObject.IsInstanceValid(view) && view.IsInsideTree());
 
     public async Task WaitFramesAsync(int count, CancellationToken token)
     {

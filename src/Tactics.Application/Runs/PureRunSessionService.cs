@@ -1,5 +1,6 @@
 using Tactics.Core.Board;
 using Tactics.Core.Content;
+using Tactics.Core.Items;
 using Tactics.Core.Runs;
 using Tactics.Core.Units;
 
@@ -24,7 +25,8 @@ public sealed record EncounterRequest(
     long CheckpointRevision,
     ContentId EncounterContentId,
     IReadOnlyList<RunCharacterState> Party,
-    long AdventureRevision = 0)
+    long AdventureRevision = 0,
+    RunNodeSceneIdentity? SceneIdentity = null)
 {
     public ulong EffectiveRandomState => unchecked((ulong)Math.Max(0, CheckpointRevision - AdventureRevision));
 }
@@ -43,6 +45,7 @@ public sealed class PureRunSessionService
     private readonly IRunSaveStore _store;
     private readonly PureRunSettlementService _settlement;
     private readonly IReadOnlyList<ContentId> _dropPool;
+    public const string StaleSaveReset = "run.reset_stale_save";
     private readonly PureRunMapDefinition? _mapDefinition;
     private ContentId? _sessionAdventureBoardId;
     private IReadOnlyList<RunAdventureActorCell>? _sessionAdventureActorCells;
@@ -203,6 +206,14 @@ public sealed class PureRunSessionService
         if (HasPendingSetup(loaded)) return Fail("run_setup.pending", loaded.Snapshot);
         if (!loaded.Succeeded || loaded.Snapshot?.ActiveRun is not PureRunState run)
             return Fail(loaded.ErrorCode ?? "run.no_active_run", loaded.Snapshot);
+        if (StaleActStateCode(run) is string staleCode)
+        {
+            // Development builds discard contradictory runs instead of guessing a recovery point.
+            RunSessionResult cleared = Save(new PureRunSaveSnapshot(run.Revision + 1, null, null), run.Revision);
+            return cleared.Succeeded
+                ? Fail(StaleSaveReset, cleared.Snapshot) with { Diagnostics = diagnostics.Append(staleCode).ToArray() }
+                : cleared;
+        }
         return run.Phase switch
         {
             PureRunPhase.Ready => new RunSessionResult(true, null, loaded.Snapshot, null, Diagnostics: diagnostics),
@@ -256,6 +267,58 @@ public sealed class PureRunSessionService
         long revision = settlement.ActiveRun?.Revision ?? run.Revision + 1;
         return Save(new PureRunSaveSnapshot(revision, settlement.ActiveRun, settlement.TerminalSummary), run.Revision)
             with { Diagnostics = diagnostics };
+    }
+
+    public RunSessionResult ApplyEventBattleResult(PureRunBattleResult battleResult, bool protectedNpcAlive)
+    {
+        RunStoreResult loaded = LoadWithAttributeRepair(out string[] diagnostics);
+        if (HasPendingSetup(loaded)) return Fail("run_setup.pending", loaded.Snapshot);
+        if (!loaded.Succeeded || loaded.Snapshot?.ActiveRun is not PureRunState run)
+            return Fail(loaded.ErrorCode ?? "run.no_active_run", loaded.Snapshot);
+
+        RunAdventureEventContextKind context = run.AdventureState?.PendingEventContext
+            ?? RunAdventureEventContextKind.None;
+        PureRunSettlementResult settlement = _settlement.ApplyLayerFour(run, battleResult, _dropPool);
+        if (!settlement.Succeeded) return Fail(settlement.RejectionCode, loaded.Snapshot);
+        if (context == RunAdventureEventContextKind.None)
+        {
+            if (settlement.WasDuplicate && run.AdventureState?.BoardContentId.Value.EndsWith(
+                    ".resolved", StringComparison.Ordinal) == true)
+                return new RunSessionResult(true, null, loaded.Snapshot, null, true, diagnostics);
+            return Fail("adventure.event_not_pending", loaded.Snapshot);
+        }
+        if (settlement.TerminalSummary is not null)
+        {
+            long terminalRevision = run.Revision + 1;
+            return Save(new PureRunSaveSnapshot(terminalRevision, null, settlement.TerminalSummary), run.Revision)
+                with { Diagnostics = diagnostics };
+        }
+
+        PureRunState resolved = settlement.ActiveRun!;
+        if (context == RunAdventureEventContextKind.LostVillagerEscort)
+        {
+            RunEscortLifecycle expectedLifecycle = battleResult.PlayerVictory && protectedNpcAlive
+                ? RunEscortLifecycle.Completed
+                : RunEscortLifecycle.Failed;
+            if (resolved.EscortState?.Lifecycle == RunEscortLifecycle.BattlePending)
+            {
+                RunEscortTransition escort = new PureRunEscortService().ResolveBattle(
+                    resolved, battleResult.PlayerVictory, protectedNpcAlive);
+                if (!escort.Succeeded) return Fail(escort.RejectionCode, loaded.Snapshot);
+                resolved = escort.State;
+            }
+            else if (resolved.EscortState is not { } existing ||
+                     existing.Lifecycle != expectedLifecycle ||
+                     existing.ProtectedNpcAlive != protectedNpcAlive)
+            {
+                return Fail("escort.battle_result_conflict", loaded.Snapshot);
+            }
+        }
+
+        resolved = new RunAdventureTransitionService().ResolveEventBattle(resolved);
+        RunSessionResult saved = Save(
+            new PureRunSaveSnapshot(resolved.Revision, resolved, loaded.Snapshot.TerminalSummary), run.Revision);
+        return saved with { Diagnostics = diagnostics };
     }
 
     public RunSessionResult AbandonRun()
@@ -325,7 +388,20 @@ public sealed class PureRunSessionService
             ? new PureRunSaveSnapshot(result.State.Revision, result.State, loaded.Snapshot.TerminalSummary)
             : new PureRunSaveSnapshot(result.State.Revision, null, result.TerminalSummary);
         RunSessionResult saved = Save(snapshot, run.Revision);
-        return saved with { EncounterRequest = result.EncounterRequest, WasDuplicate = result.WasDuplicate, Diagnostics = diagnostics };
+        return saved.Succeeded
+            ? saved with { EncounterRequest = result.EncounterRequest, WasDuplicate = result.WasDuplicate, Diagnostics = diagnostics }
+            : saved with { Diagnostics = diagnostics };
+    }
+
+    private string? StaleActStateCode(PureRunState run)
+    {
+        if (_mapDefinition is null) return null;
+        PureRunActDefinition act;
+        try { act = PureRunActBlueprint.Resolve(_mapDefinition, run.Seed).ActDefinition; }
+        catch (NotSupportedException) { return null; } // Only the current Demo topology has an Act definition.
+        PureRunActTransitionResult projected = PureRunLegacyActStateProjector.Project(run, act);
+        // Other projector rejections still cover legacy shapes the pending-scene recovery accepts.
+        return projected.RejectionCode == "act_state.inconsistent_resolution" ? projected.RejectionCode : null;
     }
 
     private RunSessionResult Save(PureRunSaveSnapshot snapshot, long expectedRevision)
@@ -341,7 +417,7 @@ public sealed class PureRunSessionService
 
     private static EncounterRequest CreateRequest(PureRunState run) => new(
         run.RunId, run.Checkpoint!.Revision, run.EncounterContentId, run.Checkpoint.Party,
-        run.AdventureState?.Revision ?? 0);
+        run.AdventureState?.Revision ?? 0, run.Checkpoint.SceneIdentity);
 
     private static RunCharacterState CreateCharacter(PureRunPartyTemplate template) =>
         CreateCharacter(template, template.StartingSkillContentId);
@@ -388,6 +464,8 @@ public sealed class PureRunSessionService
             string runId = $"run-{unchecked((uint)PureRunSettlementService.DeriveSeed(pending.Seed, "run-id")):x8}";
             RunCharacterState[] party = templates.Select((value, index) =>
                 CreateCharacter(value, pending.Choices[index].SkillContentId)).ToArray();
+            // Main keeps the first encounter behind TILE ADVENTURE / BeginReadyEncounter.
+            // Node-scene identity is bound when that battle is actually opened, not at setup CAS.
             var run = new PureRunState(runId, pending.Seed, revision, PureRunPhase.Ready, 0,
                 _definition.Encounters[0], party, adventureState: new RunAdventureTransitionService().CreateInitial(party));
             return Save(new PureRunSaveSnapshot(revision, run, null), snapshot.Revision);

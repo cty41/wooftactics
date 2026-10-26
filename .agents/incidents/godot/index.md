@@ -14,6 +14,7 @@
 | [wrong-project-root](wrong-project-root.md) | Build 成功但看不到 tooling/内容 | verified |
 | [parallel-build-obj-contention](parallel-build-obj-contention.md) | Core/Godot 并行构建争抢 `obj`/DLL | verified |
 | [gdu4-conditional-package-release-contamination](gdu4-conditional-package-release-contamination.md) | Release `.deps.json` 含 GdUnit/TestPlatform | verified |
+| [gdunit-native-illegal-instruction](gdunit-native-illegal-instruction.md) | `GodotRuntimeTestRunner ends with exit code: -1073741795` | observed |
 | [headless-resource-uid-cache](headless-resource-uid-cache.md) | `unregistered Resource UID` + standalone ResourceSaver process | verified |
 | [godot-ai-project-run-cold-timeout](godot-ai-project-run-cold-timeout.md) | `Command run_project timed out after 5.0s` 但 Editor 已进入 live | observed |
 | [gdunit-gameplay-journey-native-host-hang](gdunit-gameplay-journey-native-host-hang.md) | `GodotGameplayRuntimeRunnerTests` 长场景套件 Godot host 退出后 testhost 满载无输出挂起 | reproduced |
