@@ -377,6 +377,11 @@ public partial class GodotPlayableRunMain : Control
 
     public override void _Input(InputEvent inputEvent)
     {
+        if (TryHandleGlobalEscape(inputEvent))
+        {
+            GetViewport().SetInputAsHandled();
+            return;
+        }
         if (_startCampView is null || _pauseMenu?.Visible == true || _cheatConsole?.Visible == true) return;
         if (!_startCampView.HandleAtlasKey(inputEvent)) return;
         GetViewport().SetInputAsHandled();
@@ -464,11 +469,6 @@ public partial class GodotPlayableRunMain : Control
         {
             if (inputEvent is InputEventKey { Pressed: true, Echo: false, Keycode: Key.Escape })
             { _cheatConsole.Visible = false; GetViewport().SetInputAsHandled(); }
-            return;
-        }
-        if (TryHandleGlobalEscape(inputEvent))
-        {
-            GetViewport().SetInputAsHandled();
             return;
         }
         if (_pauseMenu?.Visible == true) return;
