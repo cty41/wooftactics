@@ -309,6 +309,13 @@ public partial class GodotStartCampView : Control
             globalPoint = _mapRoot.GlobalTransform * _exit.Position;
             return true;
         }
+        if (targetKind == "AdventureCell" && locator.Split(',') is { Length: 2 } parts &&
+            int.TryParse(parts[0], out int x) && int.TryParse(parts[1], out int y) &&
+            MapInstance?.Surface is GodotIsometricTileMapSurface surface)
+        {
+            globalPoint = MapInstance.GlobalTransform * surface.CellCenter(new GridPoint(x, y));
+            return true;
+        }
         return false;
     }
 
