@@ -103,6 +103,8 @@ public sealed class StaleSaveColdResumeGodotTests
         PureRunState ready = store.Load().Snapshot?.ActiveRun
             ?? throw new InvalidOperationException($"Setup did not persist a ready run: {SafeStatus(ui)}");
         InvokePrivate(ui, "HandleAdventureExit", ready, "layer_01_battle");
+        for (int frame = 0; frame < 4; frame++) await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        if (!ui.CaptureTestProbe().BattleActive) await EnterBattle(ui, store, tree, "layer_01_battle");
         await WaitForBattle(ui, tree);
         return ui;
     }
@@ -181,16 +183,25 @@ public sealed class StaleSaveColdResumeGodotTests
             throw new InvalidOperationException($"Exit to {node} did not save: {SafeStatus(ui)}");
         if (!ui.CaptureTestProbe().BattleActive &&
             ui.CaptureTestProbe().PageTitle.Contains("TILE BATTLE", StringComparison.Ordinal))
+            await EnterBattle(ui, store, tree, node);
+    }
+
+    /// <summary>
+    /// The scripted player's "Begin battle" click. It is explicit, runs once, and must write exactly
+    /// one checkpoint CAS so waiting can never hide a battle the game failed to open.
+    /// </summary>
+    private static async Task EnterBattle(GodotPlayableRunMain ui, IRunSaveStore store, SceneTree tree, string node)
+    {
+        string begin = node switch
         {
-            string begin = node switch
-            {
-                "layer_05_battle" => "BeginLayerFive",
-                "layer_07_battle" => "BeginBoss",
-                _ => "BeginReadyEncounter"
-            };
-            InvokePrivate(ui, begin);
-            for (int frame = 0; frame < 4; frame++) await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
-        }
+            "layer_05_battle" => "BeginLayerFive",
+            "layer_07_battle" => "BeginBoss",
+            _ => "BeginReadyEncounter"
+        };
+        long before = store.Load().Snapshot!.Revision;
+        InvokePrivate(ui, begin);
+        for (int frame = 0; frame < 4; frame++) await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        AssertThat(store.Load().Snapshot!.Revision).IsEqual(before + 1);
     }
 
     private static async Task<GodotPlayableRunMain> AssertColdResume(IRunSaveStore store, SceneTree tree, string id,
@@ -232,10 +243,6 @@ public sealed class StaleSaveColdResumeGodotTests
         {
             await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
             if (ui.ActWorldReady && ui.CaptureTestProbe().BattleActive) return;
-            string? page = ui.CaptureTestProbe().PageTitle;
-            if (ui.ActWorldReady && page is not null &&
-                page.Contains("TILE BATTLE", StringComparison.Ordinal))
-                InvokePrivate(ui, "BeginReadyEncounter");
         }
         throw new InvalidOperationException(
             $"Battle not ready: page={ui.CaptureTestProbe().PageTitle}, status={SafeStatus(ui)}");

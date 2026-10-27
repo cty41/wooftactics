@@ -797,6 +797,34 @@ public class PlayableRunUiGodotTests
 
     [TestCase]
     [RequireGodotRuntime]
+    public async Task EscapeWithCheatConsoleOpenClosesOnlyTheConsole()
+    {
+        GodotPlayableRunMain ui = ReadyUi();
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        tree.Root.AddChild(ui);
+        typeof(GodotPlayableRunMain).GetMethod("ShowHomeOptions", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .Invoke(ui, null);
+        var console = new GodotBattleCheatConsole();
+        ui.AddChild(console);
+        console.Visible = true; // the console hides itself while building, so open it after it joins the tree
+        typeof(GodotPlayableRunMain).GetField("_cheatConsole", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .SetValue(ui, console);
+        var layers = (System.Collections.IList)typeof(GodotPlayableRunMain)
+            .GetField("_escapeLayers", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(ui)!;
+        AssertThat(layers.Count).IsEqual(1);
+
+        ui._Input(EscapeKeyEvent());
+
+        AssertThat(console.Visible).IsFalse();
+        AssertThat(layers.Count).IsEqual(1);
+        AssertThat(ui.CaptureTestProbe().PageTitle).Contains("OPTIONS");
+        AssertThat(ui.CaptureTestProbe().PauseMenuVisible).IsFalse();
+        ui.QueueFree();
+        await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
     public void InventoryEntryExistsOnlyOnRogueMap()
     {
         GodotPlayableRunMain ui = ReadyUi();
