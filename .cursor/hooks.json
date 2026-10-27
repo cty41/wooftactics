@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeMCPExecution": [
+      {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File Tools/godot/Invoke-CursorMcpGuard.ps1",
+        "failClosed": true
+      }
+    ]
+  }
+}
