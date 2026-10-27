@@ -63,7 +63,7 @@
 
 ## 运行观察（godot-ai）
 
-- MCP 核对通过：单会话、Godot 4.7.1、canonical 项目路径、插件 v4.1.0 与 manifest 一致且未改动。
+- MCP 核对通过：单会话、Godot 4.7.1、canonical 项目路径、插件 v4.1.0 与 manifest 一致且未改动（当时的 pin；现已刷新为 v4.3.1，以 `Tools/migration/manifest/godot-tooling.json` 为准）。
 - `project_run` 后游戏未进入 live 即停止，三路日志无错误；疑似 Editor 程序集与 dirty C# 不同步（该 Editor 非 `Open-GodotDev.ps1` 启动）。未获得运行截图与节点树。需按 `godot-editor-lifecycle` 正常关闭并经 `Open-GodotDev.ps1` 重开后复测。
 
 ## 供讨论的重新切片方向

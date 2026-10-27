@@ -28,6 +28,7 @@ Use for validated, repeatable Godot Editor/MCP operations after Core/Application
 4. Use only tools exposed by the selected cumulative profile. See `references/tool-boundary.md` for the stage matrix and permanent deny-list.
 5. Keep domain validation in C# services/CLI/tests. Run GdUnit and headless verification independently of godot-ai smoke.
 6. After changing version, ports or profile, rerun sync/check and restart the Codex task. Stop and investigate any project-root or launch drift.
+   After a godot-ai upgrade, every machine must rerun `Sync-GodotAiCodexConfig.ps1`: `.codex/config.toml` is gitignored and does not travel with the repository.
 
 ## Examples
 
