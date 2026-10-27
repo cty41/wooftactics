@@ -200,6 +200,57 @@ public sealed class PureRunEncounterRequestValidatorTests
         Assert.That(Validate(reduced, request).Succeeded, Is.True);
     }
 
+    [Test]
+    public void CheckpointPartyIsRejectedWhenAMemberDiesAfterTheCheckpointWasWritten()
+    {
+        var (snapshot, _, _) = Pending();
+        PureRunState run = snapshot.ActiveRun!;
+        RunCharacterState[] party = run.Party.Select((member, index) => index == 0 ? Dead(member) : member).ToArray();
+        PureRunState changed = WithParty(run, party);
+        var request = Request(changed);
+        var result = Validate(snapshot with { ActiveRun = changed }, request);
+        Assert.That(result.Succeeded, Is.False);
+        Assert.That(result.ErrorCode, Is.EqualTo("encounter.party_conflict"));
+    }
+
+    [Test]
+    public void CheckpointPartyContainingADeadMemberIsRejectedAsPartyConflict()
+    {
+        var (snapshot, _, _) = Pending();
+        PureRunState run = snapshot.ActiveRun!;
+        RunCharacterState[] party = run.Party.Select((member, index) => index == 0 ? Dead(member) : member).ToArray();
+        RunEncounterCheckpoint checkpoint = run.Checkpoint! with { Party = party };
+        PureRunState changed = WithParty(run, party, checkpoint);
+        var result = Validate(snapshot with { ActiveRun = changed }, Request(changed));
+        Assert.That(result.Succeeded, Is.False);
+        Assert.That(result.ErrorCode, Is.EqualTo("encounter.party_conflict"));
+    }
+
+    [Test]
+    public void FullyDeadRosterNeverValidatesAnEncounterRequest()
+    {
+        var (snapshot, _, _) = Pending();
+        PureRunState run = snapshot.ActiveRun!;
+        RunCharacterState[] party = run.Party.Select(Dead).ToArray();
+        RunEncounterCheckpoint checkpoint = run.Checkpoint! with { Party = Array.Empty<RunCharacterState>() };
+        PureRunState changed = WithParty(run, party, checkpoint);
+        var request = new EncounterRequest(changed.RunId, checkpoint.Revision, checkpoint.EncounterContentId,
+            Array.Empty<RunCharacterState>(), changed.AdventureState?.Revision ?? 0, checkpoint.SceneIdentity);
+        Assert.That(Validate(snapshot with { ActiveRun = changed }, request).Succeeded, Is.False);
+    }
+
+    private static RunCharacterState Dead(RunCharacterState member) => new(member.CharacterId, member.UnitContentId,
+        member.Level, member.Attributes, 0, member.MaxHealth, member.CurrentMana, member.MaxMana, true,
+        member.LearnedSkills, member.Equipment, member.CarriedConsumables, member.LearnedSkillStates,
+        member.StartingSkillContentId);
+
+    private static PureRunState WithParty(PureRunState run, RunCharacterState[] party,
+        RunEncounterCheckpoint? checkpoint = null) => new(run.RunId, run.Seed, run.Revision, run.Phase,
+        run.EncounterIndex, run.EncounterContentId, party, run.BackpackConsumables, run.BackpackEquipment,
+        run.PendingProgression, run.AppliedTransactionKeys, run.Gold, run.BattlesCompleted, run.EnemiesDefeated,
+        run.AcquiredItems, checkpoint ?? run.Checkpoint, run.MapState, run.NodeTransaction, run.EscortState,
+        run.AdventureState);
+
     private static PureRunMapDefinition Map() => PureRunNodeSceneProjectorTests.DemoMap();
     private static EncounterRequest Request(PureRunState run) => new(run.RunId, run.Checkpoint!.Revision,
         run.Checkpoint.EncounterContentId, run.Checkpoint.Party, run.AdventureState?.Revision ?? 0, run.Checkpoint.SceneIdentity);
