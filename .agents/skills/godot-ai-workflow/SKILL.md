@@ -42,6 +42,7 @@ Use for validated, repeatable Godot Editor/MCP operations after Core/Application
 - Do not edit the pinned plugin to solve a project-specific workflow.
 - Do not launch the Editor directly, share Agent user data, or overlap verifier/GdUnit with the same-worktree Editor.
 - Do not use `script_*`, `filesystem_manage`, `client_manage` or `autoload_manage`.
+  Cursor has no Codex-style `enabled_tools` allowlist; the project `.cursor/hooks.json` `beforeMCPExecution` guard hard-blocks only the permanent deny list from the manifest. It covers Agent Chat in a trusted workspace only.
 
 ## Checklist
 

@@ -20,4 +20,6 @@ Profile 累积继承前一阶段；不得跳过当前迁移阶段提前扩权。
 - `client_manage`：MCP 不得修改自身或用户级 Codex 配置。
 - `autoload_manage`：只有后续架构计划明确批准后才可重新评估。
 
+Cursor 没有 Codex 的 `enabled_tools` profile 白名单，只靠项目级 `.cursor/hooks.json` 的 `beforeMCPExecution` guard（`Tools/godot/Invoke-CursorMcpGuard.ps1`）硬拦上述 6 个工具（名单来自 manifest `alwaysForbiddenTools`）。该 hook 只作用于 Agent Chat，需要工作区受信任；云端 agent 不支持。
+
 不得通过 godot-ai 定义 Core 规则、ContentId、迁移台账、跨资产事务或最终测试真相。领域操作优先实现为受测 C# Application Service/CLI；custom tool 只有在 Revision、typed ChangeSet、原子 Undo 和失败清理稳定后再评估。

@@ -40,7 +40,7 @@
 - 已授权 Godot 修改任务需要 session 为 `0` 时，必须使用 `godot-editor-lifecycle` 对唯一 canonical PID 做正常关闭，并且只在 Editor 原本打开时恢复；超时不强杀、不继续写入。
 - MCP 写操作前必须先调用 Session 与 Editor 状态接口，确认仅有一个会话、Godot 版本为 4.7.1，且项目指向当前 worktree 的 `godot/project.godot`；不满足时停止写入。
 - Profile 按 `phase3-observe → content-authoring → ui-input → presentation` 累积扩展。未进入对应迁移阶段，不得提前扩大工具面。
-- 始终禁用 `script_create`、`script_attach`、`script_patch`、`filesystem_manage`、`client_manage` 和 `autoload_manage`。生产 C# 使用 `apply_patch` 与 Build；Godot 资产使用 ResourceSaver、Editor API 或受测转换器。
+- 始终禁用 `script_create`、`script_attach`、`script_patch`、`filesystem_manage`、`client_manage` 和 `autoload_manage`。生产 C# 使用 `apply_patch` 与 Build；Godot 资产使用 ResourceSaver、Editor API 或受测转换器。Cursor Agent Chat 由项目级 `.cursor/hooks.json` 的 `beforeMCPExecution` guard（`Tools/godot/Invoke-CursorMcpGuard.ps1`）按 manifest `alwaysForbiddenTools` 硬拦截；该 hook 只覆盖 Agent Chat，且需要工作区受信任，云端 agent 不支持。
 - MCP 只承担 Editor/Scene/Resource 观察、运行、日志、截图和已批准的重复编辑；不得成为 Runtime、Catalog、ContentId、迁移台账、typed ChangeSet 或测试真相源。
 
 ## 研究与证据
