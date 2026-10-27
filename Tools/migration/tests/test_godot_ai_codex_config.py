@@ -142,6 +142,22 @@ class GodotAiCodexConfigTests(unittest.TestCase):
             "http": self._generated_block(http_port=8001),
             "websocket": self._generated_block(websocket_port=9501),
             "bootstrap": self._generated_block(bootstrap="print('visible console')"),
+            "link-mode": self._generated_block(link_mode="symlink"),
+            **{
+                f"missing {name}": self._generated_block(drop=(name,))
+                for name in (
+                    "--isolated",
+                    "--no-config",
+                    "--no-env-file",
+                    "--no-sources",
+                    "--no-build",
+                    "--index-strategy",
+                    "--keyring-provider",
+                    "--index",
+                    "--default-index",
+                    "--find-links",
+                )
+            },
         }
         for name, block in variants.items():
             with self.subTest(name=name):
@@ -153,6 +169,18 @@ class GodotAiCodexConfigTests(unittest.TestCase):
                         "phase3-observe",
                         check_command_exists=False,
                     )
+                self._project_path().unlink(missing_ok=True)
+
+    def test_import_accepts_launcher_with_or_without_link_mode_copy(self) -> None:
+        for link_mode in ("copy", None):
+            with self.subTest(link_mode=link_mode):
+                self.user_config.write_text(self._generated_block(link_mode=link_mode), encoding="utf-8")
+                import_generated_user_entry(
+                    self.root,
+                    self.user_config,
+                    "phase3-observe",
+                    check_command_exists=False,
+                )
                 self._project_path().unlink(missing_ok=True)
 
     def test_dual_config_launch_drift_is_rejected(self) -> None:
@@ -347,20 +375,37 @@ class GodotAiCodexConfigTests(unittest.TestCase):
             "import subprocess,sys; raise SystemExit(subprocess.call(sys.argv[1:], "
             "stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr, creationflags=0x08000000))"
         ),
+        link_mode: str | None = "copy",
+        drop: tuple[str, ...] = (),
     ) -> str:
-        args = [
-            "-c",
-            bootstrap,
-            uvx,
+        isolation = [
             "--isolated",
             "--no-config",
             "--no-env-file",
             "--no-sources",
             "--no-build",
+            "--index-strategy",
+            "first-index",
+            "--keyring-provider",
+            "disabled",
             "--index",
             "https://pypi.org/simple",
-            "--link-mode",
-            "copy",
+            "--default-index",
+            "https://pypi.org/simple",
+            "--find-links",
+            "https://pypi.org/simple/godot-ai/",
+        ]
+        for name in drop:  # remove a flag, or an option together with its value
+            index = isolation.index(name)
+            width = 1 if name in {"--isolated", "--no-config", "--no-env-file", "--no-sources", "--no-build"} else 2
+            del isolation[index : index + width]
+        if link_mode is not None:
+            isolation += ["--link-mode", link_mode]
+        args = [
+            "-c",
+            bootstrap,
+            uvx,
+            *isolation,
             "--from",
             f"godot-ai=={version}",
             "godot-ai",

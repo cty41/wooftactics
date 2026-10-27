@@ -25,12 +25,21 @@ from typing import Any
 
 _PUBLIC_PYPI_INDEX = "https://pypi.org/simple"
 # 与 godot-ai 4.x uv_resolution_policy.gd 的生产参数保持一致。
-_UVX_ISOLATION_ARGS = (
-    "--isolated", "--no-config", "--no-env-file", "--no-sources", "--no-build",
-    "--index-strategy", "first-index", "--keyring-provider", "disabled",
-    "--index", _PUBLIC_PYPI_INDEX, "--default-index", _PUBLIC_PYPI_INDEX,
-    "--find-links", "https://pypi.org/simple/godot-ai/",
+_UVX_REQUIRED_FLAGS = ("--isolated", "--no-config", "--no-env-file", "--no-sources", "--no-build")
+_UVX_REQUIRED_OPTIONS = (
+    ("--index-strategy", "first-index"),
+    ("--keyring-provider", "disabled"),
+    ("--index", _PUBLIC_PYPI_INDEX),
+    ("--default-index", _PUBLIC_PYPI_INDEX),
+    ("--find-links", "https://pypi.org/simple/godot-ai/"),
 )
+# 生成器与校验共用同一份定义，避免两边漂移。
+_UVX_ISOLATION_ARGS = (
+    *_UVX_REQUIRED_FLAGS,
+    *(value for pair in _UVX_REQUIRED_OPTIONS for value in pair),
+)
+# Dock 生成的启动器会附带 --link-mode copy；可有可无，但只允许 copy。
+_UVX_ALLOWED_LINK_MODE = "copy"
 SERVER_NAME = "godot-ai"
 SERVER_HEADER = '[mcp_servers."godot-ai"]'
 _SERVER_HEADER_PATTERN = re.compile(
@@ -518,10 +527,13 @@ def _validate_launch(
     if "-c" not in args or not any("creationflags=0x08000000" in value for value in args):
         raise CodexGodotAiConfigError("godot-ai command is missing the Windows no-console bootstrap")
     # godot-ai 4.x 要求 uvx 隔离解析：忽略用户/项目 uv 配置并只使用公共 PyPI。
-    for flag in ("--isolated", "--no-config", "--no-sources"):
+    for flag in _UVX_REQUIRED_FLAGS:
         if flag not in args:
             raise CodexGodotAiConfigError(f"godot-ai launcher is missing isolation flag {flag}")
-    _require_argument(args, "--index", _PUBLIC_PYPI_INDEX)
+    for name, expected_value in _UVX_REQUIRED_OPTIONS:
+        _require_argument(args, name, expected_value)
+    if "--link-mode" in args:
+        _require_argument(args, "--link-mode", _UVX_ALLOWED_LINK_MODE)
     _require_argument(args, "--from", f"godot-ai=={policy.version}")
     if "godot-ai" not in args or "attach" not in args:
         raise CodexGodotAiConfigError("godot-ai command is not the pinned attach launcher")
