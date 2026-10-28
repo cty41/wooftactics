@@ -40,7 +40,7 @@ public static class MawBatAssetFactory
         unit.UnarmedDownRightTexture = unit.UnarmedUpLeftTexture = null;
         unit.RangedDownRightTexture = unit.RangedUpLeftTexture = unit.CastDownRightTexture = unit.CastUpLeftTexture = null;
         unit.BodyTintModeValue = "multiply"; unit.BodyTintMaterial = null; unit.BodyTint = Colors.White; unit.BaseBodyColor = Colors.White;
-        // Living poses share the ground-unit virtual landing pivot; death uses corpse AABB center (zero offset).
+        // Living poses share the ground-unit virtual landing pivot; death centres the corpse's opaque AABB on the ground contact.
         unit.DownRightBodyOffset = SpriteOffset(unit.DownRightTexture!, LivingPivotX, LivingPivotY);
         unit.UpLeftBodyOffset = SpriteOffset(unit.UpLeftTexture!, LivingPivotX, LivingPivotY);
         // The bat death art sits low in its canvas, so centre the corpse AABB on the ground contact point.
