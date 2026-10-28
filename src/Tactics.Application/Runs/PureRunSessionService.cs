@@ -206,7 +206,7 @@ public sealed class PureRunSessionService
         if (HasPendingSetup(loaded)) return Fail("run_setup.pending", loaded.Snapshot);
         if (!loaded.Succeeded || loaded.Snapshot?.ActiveRun is not PureRunState run)
             return Fail(loaded.ErrorCode ?? "run.no_active_run", loaded.Snapshot);
-        if (StaleActStateCode(run) is string staleCode)
+        if ((StaleActStateCode(run) ?? StaleCheckpointCode(run)) is string staleCode)
         {
             // Development builds discard contradictory runs instead of guessing a recovery point.
             RunSessionResult cleared = Save(new PureRunSaveSnapshot(run.Revision + 1, null, null), run.Revision);
@@ -391,6 +391,17 @@ public sealed class PureRunSessionService
         return saved.Succeeded
             ? saved with { EncounterRequest = result.EncounterRequest, WasDuplicate = result.WasDuplicate, Diagnostics = diagnostics }
             : saved with { Diagnostics = diagnostics };
+    }
+
+    /// <summary>
+    /// Current builds snapshot only living members when a battle starts, so a pending checkpoint that
+    /// carries a dead member (or a roster with nobody alive) can only come from an older build.
+    /// </summary>
+    private static string? StaleCheckpointCode(PureRunState run)
+    {
+        if (run.Phase != PureRunPhase.PendingBattle || run.Checkpoint is null) return null;
+        if (run.Party.Count > 0 && run.Party.All(member => member.IsDead)) return "checkpoint.party_contains_dead";
+        return run.Checkpoint.Party.Any(member => member.IsDead) ? "checkpoint.party_contains_dead" : null;
     }
 
     private string? StaleActStateCode(PureRunState run)

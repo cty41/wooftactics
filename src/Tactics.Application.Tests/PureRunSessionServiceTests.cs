@@ -954,6 +954,73 @@ public sealed class PureRunSessionServiceTests
         Assert.That(store.SaveCount, Is.Zero);
     }
 
+    [Test]
+    public void ResumeRun_ClearsPendingBattleWhoseCheckpointCarriesADeadMember()
+    {
+        (MemoryRunStore store, PureRunSessionService session, PureRunState pending) = PendingFirstBattle();
+        RunCharacterState[] party = pending.Party.Select((member, index) => index == 0 ? AsDead(member) : member).ToArray();
+        store.Snapshot = new PureRunSaveSnapshot(pending.Revision,
+            WithPending(pending, party, pending.Checkpoint! with { Party = party }), null);
+
+        RunSessionResult resumed = session.ResumeRun();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(resumed.ErrorCode, Is.EqualTo(PureRunSessionService.StaleSaveReset));
+            Assert.That(resumed.Diagnostics, Does.Contain("checkpoint.party_contains_dead"));
+            Assert.That(store.Snapshot!.ActiveRun, Is.Null);
+        });
+    }
+
+    [Test]
+    public void ResumeRun_ClearsPendingBattleWhenNobodyIsAlive()
+    {
+        (MemoryRunStore store, PureRunSessionService session, PureRunState pending) = PendingFirstBattle();
+        RunCharacterState[] party = pending.Party.Select(AsDead).ToArray();
+        store.Snapshot = new PureRunSaveSnapshot(pending.Revision,
+            WithPending(pending, party, pending.Checkpoint! with { Party = Array.Empty<RunCharacterState>() }), null);
+
+        Assert.That(session.ResumeRun().ErrorCode, Is.EqualTo(PureRunSessionService.StaleSaveReset));
+        Assert.That(store.Snapshot!.ActiveRun, Is.Null);
+    }
+
+    [Test]
+    public void ResumeRun_KeepsPendingBattleWhenOnlyLivingMembersWereSnapshotted()
+    {
+        (MemoryRunStore store, PureRunSessionService session, PureRunState pending) = PendingFirstBattle();
+        RunCharacterState[] party = pending.Party.Select((member, index) => index == 0 ? AsDead(member) : member).ToArray();
+        RunCharacterState[] living = party.Where(member => !member.IsDead).ToArray();
+        int saves = store.SaveCount;
+        store.Snapshot = new PureRunSaveSnapshot(pending.Revision,
+            WithPending(pending, party, pending.Checkpoint! with { Party = living }), null);
+
+        RunSessionResult resumed = session.ResumeRun();
+
+        Assert.That(resumed.ErrorCode, Is.Not.EqualTo(PureRunSessionService.StaleSaveReset));
+        Assert.That(store.Snapshot!.ActiveRun, Is.Not.Null);
+        Assert.That(store.SaveCount, Is.EqualTo(saves));
+    }
+
+    private static (MemoryRunStore Store, PureRunSessionService Session, PureRunState Pending) PendingFirstBattle()
+    {
+        var store = new MemoryRunStore();
+        var session = new PureRunSessionService(DefinitionWithMap(), store, mapDefinition: DemoMap());
+        Assert.That(session.StartNewRun(37).Succeeded, Is.True);
+        Assert.That(session.BeginEncounter().Succeeded, Is.True);
+        return (store, session, store.Snapshot!.ActiveRun!);
+    }
+
+    private static RunCharacterState AsDead(RunCharacterState member) => new(member.CharacterId, member.UnitContentId,
+        member.Level, member.Attributes, 0, member.MaxHealth, member.CurrentMana, member.MaxMana, true,
+        member.LearnedSkills, member.Equipment, member.CarriedConsumables, member.LearnedSkillStates,
+        member.StartingSkillContentId);
+
+    private static PureRunState WithPending(PureRunState run, RunCharacterState[] party, RunEncounterCheckpoint checkpoint) =>
+        new(run.RunId, run.Seed, run.Revision, run.Phase, run.EncounterIndex, run.EncounterContentId, party,
+            run.BackpackConsumables, run.BackpackEquipment, run.PendingProgression, run.AppliedTransactionKeys, run.Gold,
+            run.BattlesCompleted, run.EnemiesDefeated, run.AcquiredItems, checkpoint, run.MapState, run.NodeTransaction,
+            run.EscortState, run.AdventureState);
+
     private static PureRunState SettledFirstBattle(bool resolved)
     {
         PureRunDefinition definition = DefinitionWithMap();
