@@ -43,7 +43,8 @@ public static class MawBatAssetFactory
         // Living poses share the ground-unit virtual landing pivot; death uses corpse AABB center (zero offset).
         unit.DownRightBodyOffset = SpriteOffset(unit.DownRightTexture!, LivingPivotX, LivingPivotY);
         unit.UpLeftBodyOffset = SpriteOffset(unit.UpLeftTexture!, LivingPivotX, LivingPivotY);
-        unit.DeathBodyOffset = Vector2.Zero;
+        // The bat death art sits low in its canvas, so centre the corpse AABB on the ground contact point.
+        unit.DeathBodyOffset = CorpseCenterOffset(unit.DeathTexture!);
         unit.ToCoreDefinition(); Save(unit, UnitPath);
 
         var skill = new SkillDefinitionResource
@@ -139,6 +140,14 @@ public static class MawBatAssetFactory
         if (!ResourceUid.HasId(uid)) ResourceUid.AddId(uid, path); return uid;
     }
     private static void Save(Resource value, string path) => DeterministicResourceSaver.Save(value, path, Uid(path));
+
+    /// <summary>Offset that moves the opaque-pixel AABB centre of a texture onto the actor origin.</summary>
+    private static Vector2 CorpseCenterOffset(Texture2D texture)
+    {
+        Rect2I used = texture.GetImage().GetUsedRect();
+        var center = new Vector2(used.Position.X + used.Size.X / 2f, used.Position.Y + used.Size.Y / 2f);
+        return new Vector2(texture.GetWidth() / 2f, texture.GetHeight() / 2f) - center;
+    }
 
     private static Vector2 SpriteOffset(Texture2D texture, float pivotX, float pivotY) => new(
         texture.GetWidth() * (0.5f - pivotX),

@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics/tree/main/Tools/artworks
 title: Pure Run Artwork Pipeline
 description: Pure Run 角色美术的生成、去幕、尺寸校准、Review 与提交入口。
 tags: [operations, pure-run, artwork, sprite, godot]
-timestamp: "2026-09-19T00:10:55+08:00"
+timestamp: "2026-10-28T10:35:25+08:00"
 status: active
 catalog_scope: pure-run-artwork
 repo_paths:
@@ -28,7 +28,7 @@ repo_paths:
   - src/Tactics.Application/Presentation/BattlePresentationFrame.cs
   - Tools/public-release/asset-provenance.json
 verified_revision: c9ff3a710fd9
-source_fingerprint: sha256:6afbf2959a75e8c84661df9c594c27b67f9b9105b4d1414e40dbb4ba7c14a9ca
+source_fingerprint: sha256:9ddae4b59b972577d18733577003a326dca242a18b5dd9b283908329b6c9bb1b
 ---
 
 # Pure Run 角色美术流水线
@@ -70,7 +70,7 @@ source_fingerprint: sha256:6afbf2959a75e8c84661df9c594c27b67f9b9105b4d1414e40dbb
 - 魔剑士 Cast UL v08、Hit DR v02 与 Hit UL v03 已在既有人工通过基础上完成透明 RGB 规范化、尺寸证据、`reviewed_import` approval 与正式晋升。Idle、Melee、Cast、Hit 的 DR/UL 和 Death 九张正式纹理已按字节一致副本接入 `godot/assets/units`，`DemonboundAssetFactory` 通过 ResourceSaver 将其绑定到 `PureRunDemonbound.tres`，并清除了 Amazon 模板遗留的 Ranged 占位引用；运行时动作切换与尸体观感仍由 `MQA-GODOT-DEMONBOUND-ACTION-ART` 人工复验。
 - 赤柴 `doge_capsule_hunter_death_color_v04`、死灵 `doge_capsule_necromancer_death_color_v05`、法师 `doge_capsule_mage_death_color_v04` 与羊魔 `splitjaw_goat_charger_death_color_v03` 已获人工授权并复制为运行时死亡纹理。它们使用 `256×256`、`128 PPU`、中心 Pivot 与 Tight Mesh，由单位视觉配置传给通用 `Corpse`；尸体通过 `Sprite.bounds.center` 抵消透明画布偏移，不按生前朝向镜像，羊魔尸体继承生前材质以保留六种职责换色。
 - 骷髅战士、骷髅法师和火魔属于召唤物，死亡后不生成尸体，因而没有配置死亡纹理；蝙蝠仍无运行时 Prefab。
-- 蝙蝠死亡图 `tomb_maw_bat_ranged_death_color_v02` 当前位于 `Tools/artworks/pure_run/enemies/candidates`：保持近圆球核并缩小到活体球核之下，耳朵与脸部线索朝画面右上，双翼随朝向旋转后贴地瘫软；赤柴只提供屏幕朝向，不能提供胶囊体轮廓或细长身体轴。`v01` 保留为球核过大的历史候选；两版均未接入 Unity。
+- 蝙蝠死亡图 `tomb_maw_bat_ranged_death_color_v02` 当前位于 `Tools/artworks/pure_run/enemies/candidates`：保持近圆球核并缩小到活体球核之下，耳朵与脸部线索朝画面右上，双翼随朝向旋转后贴地瘫软；赤柴只提供屏幕朝向，不能提供胶囊体轮廓或细长身体轴。`v01` 保留为球核过大的历史候选；两版均未接入 Unity。Godot 侧蝙蝠死亡位置已修复：`MawBatAssetFactory` 以尸体不透明像素 AABB 中心求 `DeathBodyOffset`，`GodotUnitActor` 死亡下落从当前悬浮高度落至接地点（终点 0）；各姿态与落点目视确认为 `MQA-GODOT-MAW-BAT-POSES-DEATH`，状态 `manual_qa_pending`。
 - 无脚底尸体使用完整死亡尸体 AABB 中心对齐 Tile，不沿用站立脚底或活体悬浮锚点；道具必须脱手，默认移除常驻职业特效。未经人工确认或未获得运行时授权的死亡图继续留在 `concepts/candidates`。
 - 法师基础奥术弹 `doge_capsule_mage_arcane_bolt_projectile_color_v02` 已通过人工尺寸 Review并接入运行时：使用短梭形蓝紫轮廓、单帧中心锚点，在 `_128` 中约 `22×10 px`，对应法师主体宽度约 `42%`。`v01` 是偏大的历史候选；奥术、火焰和冰霜 Profile 共用该 Sprite 并通过 Tint 区分。
 - 死灵基础投射物以静态鬼火和飞行版分工：`doge_capsule_necromancer_pale_orb_projectile_color_v02` 保留近圆核心与向上火舌，作为静态造型锚点；正式飞行版 `v03` 朝右、亮核略靠前、短火舌向左后拖曳，`_128` 可见 AABB 约 `22×13 px`，继续用于死灵基础魔法表现，不再作为 Bone Spear 的运行时 Sprite。粗黑圆环的 `v01` 已归入 `rejected/superseded`。

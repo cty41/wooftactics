@@ -16,6 +16,18 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 - Automated evidence: Core 146 项与 Application 183 项覆盖移动成本、Air 穿越/落点、绝对障碍、召唤落点、吸血事件顺序和真实 Transition 可击杀排序；Resource/Catalog、AI Encounter、Unit 与 Playable UI headless 验证通过。悬浮节奏、素材接触、浅水可读性和 N2 体验平衡仍只能人工判断。
 - User verdict: none.
 
+### MQA-GODOT-MAW-BAT-POSES-DEATH — 蝙蝠各姿态与死亡落点
+
+- Status: `pending`
+- Source: 蝙蝠死亡位置修复（`MawBatAssetFactory` 按尸体不透明像素 AABB 居中；`GodotUnitActor` 死亡下落从当前悬浮高度落到接地点）。
+- Action: 在隔离存档的战斗或 Unit Gallery 中观察蝙蝠存活 DR/UL、近战咬击、受击、死亡姿态，并分别在 East/West 朝向（镜像）下复查；击杀悬浮中的蝙蝠观察落点。
+- Expected: 各姿态无明显错位或跳变；East/West 翻转后姿态与落点一致；死亡后尸体居中落在所在 Tile 接地点，不偏低、不悬空、不穿出格子。
+- Observe: 战斗棋盘或 Unit Gallery 中的单位 Body/Shadow 与 Tile 对齐、Godot Output。
+- Preserve on failure: 朝向、击杀时机、短视频或连续截图、Run seed 与 Output。
+- Save boundary: 战斗会修改当前 Run；使用 disposable/隔离存档。
+- Automated evidence: UnitBatchGodotTests 覆盖死亡偏移与下落终点；统一 verifier 中 Godot 套件无失败（仅已知 MaLiang artwork 单测失败）。目视效果不能由自动测试替代。
+- User verdict: none.
+
 ### MQA-GODOT-UNIT-VISUAL — Unit Gallery and Spawn framing baseline
 
 - Status: `pending`

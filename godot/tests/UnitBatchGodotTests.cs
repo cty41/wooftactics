@@ -18,6 +18,29 @@ public class UnitBatchGodotTests
 {
     [TestCase]
     [RequireGodotRuntime]
+    public void MawBatCorpseCentersOnGroundContactAndSettlesWithoutExtraDescent()
+    {
+        var bat = ResourceLoader.Load<UnitDefinitionResource>(
+            "res://content/units/PureRunMawBat.tres", string.Empty, ResourceLoader.CacheMode.Ignore);
+        AssertThat(bat).IsNotNull();
+        if (bat is null) return;
+
+        Texture2D death = bat.DeathTexture!;
+        Rect2I used = death.GetImage().GetUsedRect();
+        var corpseCenter = new Vector2(used.Position.X + used.Size.X / 2f, used.Position.Y + used.Size.Y / 2f);
+        Vector2 canvasCenter = new(death.GetWidth() / 2f, death.GetHeight() / 2f);
+        // Corpse AABB centre lands on the actor origin (the shadow's ground contact).
+        AssertThat((corpseCenter - canvasCenter + bat.DeathBodyOffset).Length() < 2f).IsTrue();
+        AssertThat(bat.DeathBodyOffset.IsEqualApprox(Vector2.Zero)).IsFalse();
+
+        GodotUnitActor actor = GodotUnitFactory.InstantiateActor(bat);
+        actor.SetDeathVisual(true);
+        actor._Process(1.0);
+        AssertThat(actor.Body!.GetParent<Node2D>().Position.IsEqualApprox(Vector2.Zero)).IsTrue();
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
     public void DemonboundUsesAuthoredMoveFourContractWithoutChangingFrozenUnits()
     {
         var resource = ResourceLoader.Load<UnitDefinitionResource>(

@@ -34,6 +34,7 @@ public partial class GodotUnitActor : Node2D
     private double _flightTime;
     private double _flightPhase;
     private double _deathDescent;
+    private double _deathStartY;
 
     public GodotUnitFacing Facing { get; private set; } = GodotUnitFacing.South;
     public bool IsShowingDeath { get; private set; }
@@ -84,7 +85,8 @@ public partial class GodotUnitActor : Node2D
         else if (IsShowingDeath && _deathDescent < .18)
         {
             _deathDescent = Math.Min(.18, _deathDescent + delta);
-            _flightLayer.Position = new Vector2(0, (float)(_deathDescent / .18 * 12));
+            // Settle from the last hover height onto the ground contact point (ends at exactly 0).
+            _flightLayer.Position = new Vector2(0, (float)(_deathStartY * (1 - _deathDescent / .18)));
         }
     }
 
@@ -124,7 +126,11 @@ public partial class GodotUnitActor : Node2D
 
     public void SetDeathVisual(bool enabled)
     {
-        if (enabled && !IsShowingDeath) _deathDescent = 0;
+        if (enabled && !IsShowingDeath)
+        {
+            _deathDescent = 0;
+            _deathStartY = _flightLayer?.Position.Y ?? 0;
+        }
         IsShowingDeath = enabled && _definition?.DeathTexture is not null;
         if (enabled) _actionPose = null;
         if (enabled && StatusOverlay is not null)
