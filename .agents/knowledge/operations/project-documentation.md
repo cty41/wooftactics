@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics/tree/main/.agents/docs
 title: Project Documentation
 description: 当前设计、活跃计划、统一缺口与 OKF 综合层的文档生命周期。
 tags: [operations, documentation, plans, knowledge]
-timestamp: "2026-10-27T10:47:35+08:00"
+timestamp: "2026-10-30T10:23:37+08:00"
 status: active
 catalog_scope: project-documentation
 repo_paths:
@@ -12,12 +12,12 @@ repo_paths:
   - .agents/plans
   - .agents/skills/manual-qa-handoff/SKILL.md
 verified_revision: c9ff3a710fd9
-source_fingerprint: sha256:a119321fd4416318bec0b64dd1595242ae451e203ed1bd497cfcb5696950c27f
+source_fingerprint: sha256:8d995f3862c305e5e229c4a1bad31e56896f4be9154de968d25ef6195734949b
 ---
 
 # Current State
 
-`.agents/docs/` 主要保存当前设计与使用指南；同一主题优先维护一份权威文档。`brainstorm.md` 是唯一的临时灵感收集箱，不属于设计真相源或实施承诺。想法成熟后迁入主题设计、[项目已知缺口](../plans/project-known-gaps.md)或正式计划。
+`.agents/docs/` 主要保存当前设计与使用指南；同一主题优先维护一份权威文档。`brainstorm.md` 是唯一的临时灵感收集箱，不属于设计真相源或实施承诺。想法成熟后迁入主题设计、[项目已知缺口](../plans/project-known-gaps.md)或正式计划。需要展开讨论的方向可写成 `.agents/docs/YYYY-MM-DD-brainstorm-<主题>.md` 深化草稿：草稿同样不是真相源，`brainstorm.md` 只保留摘要和链接。
 
 端到端指南 `.agents/docs/gameplay-design-to-development-workflow.md` 说明需求收束、玩法合同、可替换 Provider、受控 Draft、确定性编译、typed authoring、自动测试与人工验收。模型只生成带证据的候选；设计合同、代码、Resource 和测试继续承担权威，外接 LLM 不替代 Codex/开发者判断。
 
