@@ -12,6 +12,28 @@ from pathlib import Path
 
 VENDOR_PREFIX = "Tools/vendor/maliang/"
 
+MEDIA_PATTERNS = ("*.png", "*.jpg")
+
+# Mirrors the upstream SPDX annotations in Tools/vendor/maliang/REUSE.toml.
+# First match wins, so the GameMancer entries must precede their parent directories.
+LICENSE_MAP: tuple[tuple[str, str, str], ...] = (
+    ("docs/gallery/thumbs/gamemancer.png", "CC-BY-4.0", "loco"),
+    ("examples/gamemancer/", "CC-BY-4.0", "loco"),
+    ("docs/gallery/thumbs/", "CC-BY-4.0", "cty41"),
+    ("examples/art-pilot/characters/", "CC-BY-4.0", "cty41"),
+    ("examples/little-orange/", "CC-BY-4.0", "cty41"),
+    ("examples/poet-cast/", "CC-BY-4.0", "cty41"),
+    ("examples/tactics-amazon/", "CC-BY-4.0", "cty41"),
+    ("examples/synthetic/", "MIT", "MaLiang contributors"),
+)
+
+
+def classify(relative: str) -> tuple[str, str]:
+    for prefix, license_id, rights_holder in LICENSE_MAP:
+        if relative.startswith(prefix):
+            return license_id, rights_holder
+    raise RuntimeError(f"unclassified vendored MaLiang media: {relative}")
+
 
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
@@ -42,17 +64,10 @@ def expected_entries(root: Path) -> list[dict[str, str]]:
     actual_commit = git(vendor, "rev-parse", "HEAD")
     if actual_commit != pinned_commit:
         raise RuntimeError(f"MaLiang checkout is not at pinned commit {pinned_commit}: {actual_commit}")
-    paths = [line for line in git(vendor, "ls-files", "*.png").splitlines() if line]
+    paths = [line for line in git(vendor, "ls-files", *MEDIA_PATTERNS).splitlines() if line]
     entries: list[dict[str, str]] = []
     for relative in sorted(paths):
-        if relative.startswith("examples/poet-cast/"):
-            license_id = "CC-BY-4.0"
-            rights_holder = "cty41"
-        elif relative.startswith("examples/synthetic/"):
-            license_id = "MIT"
-            rights_holder = "MaLiang contributors"
-        else:
-            raise RuntimeError(f"unclassified vendored MaLiang PNG: {relative}")
+        license_id, rights_holder = classify(relative)
         public_path = f"{VENDOR_PREFIX}{relative}"
         entries.append({
             "path": public_path,

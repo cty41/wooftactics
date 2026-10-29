@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics/tree/main/.agents/docs
 title: Project Documentation
 description: 当前设计、活跃计划、统一缺口与 OKF 综合层的文档生命周期。
 tags: [operations, documentation, plans, knowledge]
-timestamp: "2026-10-30T10:23:37+08:00"
+timestamp: "2026-10-30T10:25:27+08:00"
 status: active
 catalog_scope: project-documentation
 repo_paths:
@@ -12,7 +12,7 @@ repo_paths:
   - .agents/plans
   - .agents/skills/manual-qa-handoff/SKILL.md
 verified_revision: c9ff3a710fd9
-source_fingerprint: sha256:8d995f3862c305e5e229c4a1bad31e56896f4be9154de968d25ef6195734949b
+source_fingerprint: sha256:d011bd32edb922163ab7818e7fab7f6115f3ffe81b6ba652dbbbfd95846e7102
 ---
 
 # Current State

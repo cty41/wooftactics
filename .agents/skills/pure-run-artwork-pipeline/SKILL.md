@@ -13,6 +13,7 @@ description: "Use when generating, editing, chroma-keying, calibrating, reviewin
 | 规划 ImageGen 单图迭代 | `references/imagegen-iteration.md` |
 | 生产 Melee / Thrown / Cast / Hit 单帧动作 | `references/single-frame-action-poses.md` |
 | 正式生成前用火柴人选择姿态 | `references/pose-proof.md`；`python scripts/pose_proof.py render-options|select-option ...`；豁免走 `create-pose-proof-exemption` |
+| 检查 MaLiang 上游/本地/skill 漂移 | `py Tools/vendor/check_maliang_drift.py`（联网刷新加 `--fetch`） |
 | 通用引擎与项目适配 | `Tools/vendor/maliang` 固定 MaLiang；`Tools/artworks/maliang.adapter.json` 固定 cty41、256/128、y=236、64×32 与 Godot runtime context；本地薄适配在 validate/render/write/Reviewer 全入口 fail closed，并复用 MaLiang 安全发布器 |
 | 规划四方向静态图 | `references/imagegen-iteration.md` 的“方向变体 / 双原生视图” |
 | 核对运行时四向映射 | `references/imagegen-iteration.md` 的“运行时双原生图接入” |
@@ -55,7 +56,9 @@ description: "Use when generating, editing, chroma-keying, calibrating, reviewin
 
 ## Workflow
 
-0. **先确认来源，再建立合同与 job。** 创建新生成任务前，必须检索同角色、同装备、同姿态族的 `approved`/`promoted` Attempt 和既有 Assembly，不能只按文件名猜来源。向用户展示一张来源对比或简明来源表，逐项写清：身份、体量、方向、装备、风格分别由哪张图负责，以及该图是 ImageGen 输入、仅 Review 对照还是确定性 Assembly 组件。用户明确要求查看、来源互相冲突、或存在多个可能权威时，必须等待 `cty41` 确认；不得先调用 `begin-generation`。已确认且职责不变的来源可在后续同一闭环中复用，无需每轮重复询问，但每次汇报仍要列出实际使用的来源。
+0. **先查工具链漂移，再确认来源。** 进入一轮新的美术生产前先运行 `py Tools/vendor/check_maliang_drift.py`。它报告三类漂移：固定提交落后上游、子模块内有未回推的本地改动、上游 `skills/maliang-art/SKILL.md` 哈希变化。任何一项有漂移时先向用户报告并等待决定，不默认继续生产；pin 升级与 skill 同步始终是人工决策，脚本只报告。
+
+   **再确认来源，然后建立合同与 job。** 创建新生成任务前，必须检索同角色、同装备、同姿态族的 `approved`/`promoted` Attempt 和既有 Assembly，不能只按文件名猜来源。向用户展示一张来源对比或简明来源表，逐项写清：身份、体量、方向、装备、风格分别由哪张图负责，以及该图是 ImageGen 输入、仅 Review 对照还是确定性 Assembly 组件。用户明确要求查看、来源互相冲突、或存在多个可能权威时，必须等待 `cty41` 确认；不得先调用 `begin-generation`。已确认且职责不变的来源可在后续同一闭环中复用，无需每轮重复询问，但每次汇报仍要列出实际使用的来源。
 
    **新动作先通过 Pose Proof。** 当冻结时刻、力线、重心、接触或负形尚未由人确认时，按 `references/pose-proof.md` 在临时目录确定性渲染 `1–4` 个纯橙火柴人方案和 128 预览。`cty41` 选择后只提交所选方案 Action Card；未选完整几何与临时 PNG 不进入 Attempt、Series、provenance 或 Git。火柴线不是身份、装备、最终解剖或 ImageGen 输入；Composition/Pose Guide 在选择后负责把它翻译成精确可测几何。无手臂角色的连线也只是力线抽象。只有同一目标 asset/pose/direction 已有批准姿态、仅技术修复或 Idle 微调时，才可用 `create-pose-proof-exemption` 生成绑定目标 Visual Moment 及完整 cty41 Approval→Attempt→Job→Contract 链的不可变豁免；裸图或其他资产的 Approval 不能充当证据。确定性 Assembly 若没有该目标的既有批准链，仍需至少建立单方案 Action Card。
 
@@ -129,6 +132,7 @@ description: "Use when generating, editing, chroma-keying, calibrating, reviewin
 
 ## Checklist
 
+- [ ] 已运行 `check_maliang_drift.py`：固定提交、子模块本地改动与上游 skill 哈希均无漂移，或已把漂移报告给用户并取得继续的决定。
 - [ ] 已检索同角色、同装备和同姿态族的 approved/promoted 成图、Attempt 与 Assembly；没有遗漏更直接的权威来源。
 - [ ] 生成前已向用户展示来源及职责，明确哪些进入 ImageGen、仅作 Review、或直接用于 Assembly；有歧义时已取得 `cty41` 确认。
 - [ ] 唯一母图和参考图职责已声明。
