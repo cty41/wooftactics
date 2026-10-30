@@ -536,12 +536,117 @@ public class PlayableRunUiGodotTests
         MethodInfo? show = typeof(GodotPlayableRunMain).GetMethod("ShowProgression", BindingFlags.Instance | BindingFlags.NonPublic);
         show?.Invoke(ui, new object[] { run, pending });
         string[] buttonTexts = Descendants<Button>(ui).Select(button => button.Text).ToArray();
-        AssertThat(buttonTexts.Count(text => text.StartsWith("+1 ", StringComparison.Ordinal))).IsEqual(6);
+        AssertThat(buttonTexts.Count(text => text == "+1")).IsEqual(6);
         AssertThat(buttonTexts.Any(text => text.Contains("mage.fireball", StringComparison.Ordinal))).IsFalse();
         AssertThat(buttonTexts.Any(text => text == "Back to Map")).IsFalse();
+        AssertThat(buttonTexts.Any(text => text.StartsWith("Continue — Progression", StringComparison.Ordinal))).IsFalse();
+        string labels = string.Join('\n', Descendants<Label>(ui).Select(label => label.Text));
+        AssertThat(labels).Contains("Gold:");
+        AssertThat(labels).Contains("Primary attribute: Intelligence");
+        AssertThat(Descendants<Label>(ui).Single(label => label.Name == "ProgressionPrimaryAttribute").GetParent() is VBoxContainer).IsTrue();
         PanelContainer progressionPanel = Descendants<PanelContainer>(ui).Single(panel => panel.Name == "ProgressionFlowPanel");
         AssertFormalPanel(progressionPanel);
+
+        // +1 then -1 only changes the draft; Continue stays disabled until a point is spent.
+        Button continueButton = Descendants<Button>(ui).Single(button => button.Name == "ProgressionAttributeContinue");
+        AssertThat(continueButton.Disabled).IsTrue();
+        // A page rebuild leaves the previous page subtree queued for deletion; the newest page is last in tree order.
+        Button Live(string name) => Descendants<Button>(ui).Last(button => button.Name == name);
+        Live("ProgressionAttribute_Strength").EmitSignal(BaseButton.SignalName.Pressed);
+        AssertThat(Live("ProgressionAttribute_Strength").Text).IsEqual("−1");
+        AssertThat(Live("ProgressionAttributeContinue").Disabled).IsFalse();
+        Live("ProgressionAttribute_Strength").EmitSignal(BaseButton.SignalName.Pressed);
+        AssertThat(Live("ProgressionAttribute_Strength").Text).IsEqual("+1");
+        AssertThat(Live("ProgressionAttributeContinue").Disabled).IsTrue();
         ui.Free();
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task EscapeOnProgressionSkillStepReturnsToAttributeStep()
+    {
+        GodotPlayableRunMain ui = ReadyUi();
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        tree.Root.AddChild(ui);
+        var attributes = new UnitAttributes(5, 5, 5, 6, 5, 5);
+        var mage = new RunCharacterState("pure_run_mage", new ContentId("unit.pure-run.mage"), 1, attributes,
+            20, 20, 12, 12, false, new[] { new ContentId("skill.mage.fireball.lv1") },
+            learnedSkillStates: new[] { new RunLearnedSkillState("mage.fireball", 1, new ContentId("skill.mage.fireball.lv1")) });
+        var necromancer = new RunCharacterState("pure_run_necromancer", new ContentId("unit.pure-run.necromancer"), 1, attributes, 20, 20, 12, 12, false, Array.Empty<ContentId>());
+        var amazon = new RunCharacterState("pure_run_amazon", new ContentId("unit.pure-run.amazon"), 1, attributes, 20, 20, 12, 12, false, Array.Empty<ContentId>());
+        var pending = new PendingProgression("battle:n1:progression", "n1", mage.CharacterId);
+        var run = new PureRunState("run-esc", 7, 2, PureRunPhase.Ready, 1, new ContentId("encounter.pure-run.n2"),
+            new[] { mage, necromancer, amazon }, pendingProgression: new[] { pending });
+        typeof(GodotPlayableRunMain).GetMethod("ShowProgression", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .Invoke(ui, new object[] { run, pending });
+        Button Live(string name) => Descendants<Button>(ui).Last(button => button.Name == name && !button.IsQueuedForDeletion());
+        Live("ProgressionAttribute_Strength").EmitSignal(BaseButton.SignalName.Pressed);
+        Live("ProgressionAttributeContinue").EmitSignal(BaseButton.SignalName.Pressed);
+        AssertThat(Descendants<Control>(ui).Any(node => node.Name == "ProgressionSkillColumns" && !node.IsQueuedForDeletion())).IsTrue();
+        await ToggleEscape(ui, tree);
+        // Back on step 1 with the spent point still drafted (so the toggle reads "−1").
+        AssertThat(Live("ProgressionAttribute_Strength").Text).IsEqual("−1");
+        AssertThat(Live("ProgressionAttributeContinue").Disabled).IsFalse();
+        ui.QueueFree();
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public void ProgressionDraftsAreIsolatedByRunId()
+    {
+        GodotPlayableRunMain ui = ReadyUi();
+        FieldInfo draftsField = typeof(GodotPlayableRunMain).GetField("_progressionDrafts",
+            BindingFlags.Instance | BindingFlags.NonPublic)!;
+        var drafts = (Dictionary<(string RunId, string TransactionKey), UnitAttributes>)draftsField.GetValue(ui)!;
+        MethodInfo bind = typeof(GodotPlayableRunMain).GetMethod("BindRunUiScope", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        bind.Invoke(ui, ["run-a"]);
+        drafts[("run-a", "progression:n1")] = new UnitAttributes(6, 5, 5, 5, 5, 5);
+        bind.Invoke(ui, ["run-a"]);
+        AssertThat(drafts.ContainsKey(("run-a", "progression:n1"))).IsTrue();
+        bind.Invoke(ui, ["run-b"]);
+        AssertThat(drafts.ContainsKey(("run-a", "progression:n1"))).IsFalse();
+        AssertThat(drafts.ContainsKey(("run-b", "progression:n1"))).IsFalse();
+        ui.Free();
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public void PrimaryAttributeLabelNamesAllRounders()
+    {
+        AssertThat(GodotPlayableRunMain.PrimaryAttributeLabel(UnitPrimaryAttribute.None)).Contains("none");
+        AssertThat(GodotPlayableRunMain.PrimaryAttributeLabel(UnitPrimaryAttribute.Constitution)).Contains("Constitution");
+        AssertThat(GodotPlayableRunMain.PrimaryAttributeLabel(UnitPrimaryAttribute.Charisma)).Contains("Charisma");
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public void PlayerClassUnitResourcesAgreeWithPrimaryAttributeRules()
+    {
+        (string Path, SkillRole Role)[] classes =
+        {
+            ("res://content/units/PureRunMage.tres", SkillRole.Mage),
+            ("res://content/units/PureRunNecromancer.tres", SkillRole.Necromancer),
+            ("res://content/units/PureRunAmazon.tres", SkillRole.Amazon),
+            ("res://content/demonbound/PureRunDemonbound.tres", SkillRole.Demonbound),
+            ("res://content/poet/PureRunPoet.tres", SkillRole.Poet),
+        };
+        foreach ((string path, SkillRole role) in classes)
+        {
+            UnitDefinitionResource resource = ResourceLoader.Load<UnitDefinitionResource>(
+                path, string.Empty, ResourceLoader.CacheMode.Ignore);
+            AssertThat(resource.ToCoreDefinition().PrimaryAttribute).IsEqual(PrimaryAttributeRules.For(role));
+        }
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public void UnknownPrimaryAttributeValueIsRejected()
+    {
+        UnitDefinitionResource resource = ResourceLoader.Load<UnitDefinitionResource>(
+            "res://content/units/PureRunAmazon.tres", string.Empty, ResourceLoader.CacheMode.Ignore);
+        UnitDefinitionResource copy = (UnitDefinitionResource)resource.Duplicate(true);
+        copy.PrimaryAttributeValue = "Wisdom";
+        AssertThrown(() => copy.ToCoreDefinition()).IsInstanceOf<InvalidOperationException>();
     }
 
     [TestCase]
@@ -591,8 +696,13 @@ public class PlayableRunUiGodotTests
             new[] { mage }.Concat(others).ToArray(), pendingProgression: new[] { pending });
         FieldInfo draftsField = typeof(GodotPlayableRunMain).GetField("_progressionDrafts",
             BindingFlags.Instance | BindingFlags.NonPublic)!;
-        var drafts = (Dictionary<string, UnitAttributes>)draftsField.GetValue(ui)!;
-        drafts[pending.TransactionKey] = proposed;
+        var drafts = (Dictionary<(string RunId, string TransactionKey), UnitAttributes>)draftsField.GetValue(ui)!;
+        typeof(GodotPlayableRunMain).GetMethod("BindRunUiScope", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .Invoke(ui, [run.RunId]);
+        drafts[(run.RunId, pending.TransactionKey)] = proposed;
+        var confirmed = (HashSet<(string RunId, string TransactionKey)>)typeof(GodotPlayableRunMain)
+            .GetField("_progressionConfirmed", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(ui)!;
+        confirmed.Add((run.RunId, pending.TransactionKey));
         typeof(GodotPlayableRunMain).GetMethod("ShowProgression", BindingFlags.Instance | BindingFlags.NonPublic)?.Invoke(ui, new object[] { run, pending });
         string[] buttonTexts = Descendants<Button>(ui).Select(button => button.Text).ToArray();
         string[] growthCards = buttonTexts.Where(text => text.StartsWith("Learn ", StringComparison.Ordinal) || text.StartsWith("Upgrade ", StringComparison.Ordinal)).ToArray();
@@ -601,7 +711,8 @@ public class PlayableRunUiGodotTests
         AssertThat(growthCards.Any(text => text.Contains("Learn Lv1 Lv1", StringComparison.Ordinal))).IsFalse();
         AssertThat(growthCards.Distinct(StringComparer.Ordinal).Count()).IsEqual(3);
         string labels = string.Join('\n', Descendants<Label>(ui).Select(label => label.Text));
-        AssertThat(labels).Contains("Current skills:");
+        AssertThat(labels).Contains("Current skills");
+        AssertThat(labels.Contains("STR 5", StringComparison.Ordinal)).IsFalse();
         AssertThat(labels).Contains("火球术");
         AssertThat(labels).Contains("MP 7");
         AssertThat(labels).Contains("施加2层点燃");

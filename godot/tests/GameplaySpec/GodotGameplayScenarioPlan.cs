@@ -93,7 +93,7 @@ public sealed record GodotGameplayScenarioPlan(
             case "movePointerToTarget" or "clickPointerTarget" or "rightClickPointerTarget":
                 string kind = HasString("targetKind") ? step.Parameters["targetKind"].GetString()! : "UiElement";
                 if (kind is not ("UiElement" or "MapNode" or "BattleUnit" or "BattleCell" or
-                    "AdventureCell" or "AdventureActor" or "AdventureObject" or "RouteNode") ||
+                    "AdventureCell" or "AdventureActor" or "AdventureObject" or "AdventureExitApproach" or "RouteNode") ||
                     string.IsNullOrWhiteSpace(step.Target) && !new[] { "elementName", "nodeId", "unitId", "actorId", "objectId", "routeNodeId", "cell" }.Any(HasString))
                     throw new InvalidDataException($"{step.Kind} has an invalid pointer target.");
                 break;

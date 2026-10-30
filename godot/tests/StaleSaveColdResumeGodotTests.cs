@@ -37,6 +37,73 @@ public sealed class StaleSaveColdResumeGodotTests
         await AssertColdResume(store, tree, "cold-first-settlement-resume");
     }
 
+    /// <summary>
+    /// Real path CompleteBattle → progression → RouteRunState: no settlement page in between, the player lands on
+    /// the node's own resident Surface, and the top-right rim marker is clickable.
+    /// </summary>
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task BattleSettlementReturnsToResidentSurfaceWithClickableRimExit()
+    {
+        var store = new GodotRunSaveStore(new MemoryRunSaveFileSystem(), SavePath);
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        GodotPlayableRunMain ui = await StartSetupRun(store, tree, "post-battle-resident");
+        try
+        {
+            GodotActWorldHost host = ui.ActWorld!;
+            await SettleCurrentBattle(ui, store, tree);
+            for (int frame = 0; frame < 4; frame++) await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+
+            PureRunState run = store.Load().Snapshot!.ActiveRun!;
+            string nodeId = RunAdventureTransitionService.CurrentNodeId(run);
+            AssertThat(ui.CaptureTestProbe().PageTitle.Contains("SETTLEMENT", StringComparison.OrdinalIgnoreCase)).IsFalse();
+            AssertThat(AllLabels(ui).Any(text => text.Contains("BATTLE SETTLEMENT", StringComparison.Ordinal))).IsFalse();
+
+            GodotAdventureBoardView view = Field<GodotAdventureBoardView?>(ui, "_adventureBoard")
+                ?? throw new InvalidOperationException("No exploration board after progression.");
+            AssertThat(view.UsesResidentSurface).IsTrue();
+            AssertThat(view.ResidentSurface!.GetInstanceId()).IsEqual(host.Nodes[nodeId].Surface.GetInstanceId());
+
+            AdventureBoardObject exit = view.Definition.Objects.First(value => value.Kind == AdventureObjectKind.Exit);
+            AssertThat(view.TryGetExitRimPosition(exit.ObjectId, out Vector2 rim)).IsTrue();
+            var pressed = new List<string>();
+            view.ObjectPressed += id => pressed.Add(id);
+            view.EmitSignal(Control.SignalName.GuiInput, new InputEventMouseButton
+            { ButtonIndex = MouseButton.Left, Pressed = true, Position = rim });
+            AssertThat(pressed.Contains(exit.ObjectId)).IsTrue();
+        }
+        finally { await Free(ui, tree); }
+    }
+
+    /// <summary>Entering a battle node starts the fight with no click, writes one checkpoint, and never starts twice.</summary>
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task EnteringBattleNodeStartsBattleOnceWithoutAnyClick()
+    {
+        var store = new GodotRunSaveStore(new MemoryRunSaveFileSystem(), SavePath);
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        GodotPlayableRunMain ui = await StartSetupRun(store, tree, "auto-battle-start");
+        try
+        {
+            AssertThat(ui.CaptureTestProbe().BattleActive).IsTrue();
+            PureRunState pending = store.Load().Snapshot!.ActiveRun!;
+            AssertThat(pending.Phase).IsEqual(PureRunPhase.PendingBattle);
+            long revision = store.Load().Snapshot!.Revision;
+            for (int frame = 0; frame < 20; frame++) await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+            AssertThat(store.Load().Snapshot!.Revision).IsEqual(revision);
+        }
+        finally { await Free(ui, tree); }
+    }
+
+    private static IEnumerable<string> AllLabels(Node root)
+    {
+        foreach (Node child in root.GetChildren())
+        {
+            if (child is Label label && !label.IsQueuedForDeletion()) yield return label.Text;
+            foreach (string nested in AllLabels(child)) yield return nested;
+        }
+    }
+
     [TestCase]
     [RequireGodotRuntime]
     public async Task LayerFourRestSelectionSurvivesColdResume()
@@ -273,11 +340,9 @@ public sealed class StaleSaveColdResumeGodotTests
         InvokePrivate(ui, "RouteCommittedSetup", setup);
         for (int frame = 0; frame < 180 && !ui.ActWorldReady; frame++)
             await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
-        PureRunState ready = store.Load().Snapshot?.ActiveRun
+        _ = store.Load().Snapshot?.ActiveRun
             ?? throw new InvalidOperationException($"Setup did not persist a ready run: {SafeStatus(ui)}");
-        InvokePrivate(ui, "HandleAdventureExit", ready, "layer_01_battle");
-        for (int frame = 0; frame < 4; frame++) await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
-        if (!ui.CaptureTestProbe().BattleActive) await EnterBattle(ui, store, tree, "layer_01_battle");
+        // Committing setup leaves the start map for the first battle node by itself; just wait for the fight.
         await WaitForBattle(ui, tree);
         return ui;
     }
@@ -320,6 +385,7 @@ public sealed class StaleSaveColdResumeGodotTests
             if (FindButton(ui, button => button.Name == "ProgressionAttribute_Strength") is null)
                 InvokePrivate(ui, "ShowProgression", run, run.PendingProgression[0]);
             await Press(ui, tree, button => button.Name == "ProgressionAttribute_Strength");
+            await Press(ui, tree, button => button.Name == "ProgressionAttributeContinue");
             long before = store.Load().Snapshot!.Revision;
             await Press(ui, tree, button => button.Name == "ProgressionSkillChoice_0" || button.Text == "Confirm Attribute");
             if (store.Load().Snapshot!.Revision <= before)
@@ -354,29 +420,11 @@ public sealed class StaleSaveColdResumeGodotTests
         for (int frame = 0; frame < 4; frame++) await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
         if (store.Load().Snapshot!.Revision <= before)
             throw new InvalidOperationException($"Exit to {node} did not save: {SafeStatus(ui)}");
-        if (!ui.CaptureTestProbe().BattleActive &&
-            ui.CaptureTestProbe().PageTitle.Contains("TILE BATTLE", StringComparison.Ordinal))
-            await EnterBattle(ui, store, tree, node);
+        // Battle nodes start on entry; give the deferred start a few frames instead of clicking anything.
+        if (ui.CaptureTestProbe().PageTitle.Contains(" — BATTLE", StringComparison.Ordinal))
+            for (int frame = 0; frame < 60 && !ui.CaptureTestProbe().BattleActive; frame++)
+                await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
     }
-
-    /// <summary>
-    /// The scripted player's "Begin battle" click. It is explicit, runs once, and must write exactly
-    /// one checkpoint CAS so waiting can never hide a battle the game failed to open.
-    /// </summary>
-    private static async Task EnterBattle(GodotPlayableRunMain ui, IRunSaveStore store, SceneTree tree, string node)
-    {
-        string begin = node switch
-        {
-            "layer_05_battle" => "BeginLayerFive",
-            "layer_07_battle" => "BeginBoss",
-            _ => "BeginReadyEncounter"
-        };
-        long before = store.Load().Snapshot!.Revision;
-        InvokePrivate(ui, begin);
-        for (int frame = 0; frame < 4; frame++) await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
-        AssertThat(store.Load().Snapshot!.Revision).IsEqual(before + 1);
-    }
-
     private static async Task<GodotPlayableRunMain> AssertColdResume(IRunSaveStore store, SceneTree tree, string id,
         bool keep = false)
     {

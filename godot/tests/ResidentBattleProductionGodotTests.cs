@@ -252,8 +252,7 @@ public sealed class ResidentBattleProductionGodotTests
             if (ui.ActWorldReady && ui.CaptureTestProbe().BattleActive) return;
             string? page = ui.CaptureTestProbe().PageTitle;
             if (ui.ActWorldReady && page is not null &&
-                (page.Contains("TILE ADVENTURE", StringComparison.Ordinal) ||
-                 page.Contains("TILE BATTLE", StringComparison.Ordinal)))
+                page.Contains("TILE ADVENTURE", StringComparison.Ordinal))
                 typeof(GodotPlayableRunMain).GetMethod("BeginReadyEncounter",
                     BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(ui, null);
         }

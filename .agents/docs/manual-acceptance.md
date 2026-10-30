@@ -361,6 +361,18 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 - Automated evidence: 清档只针对 `act_state.inconsistent_resolution`（其他推导拒绝仍走旧恢复流程，避免误删）。Core 265、Application 398；隔离 GdUnit 10 套件 95/95（含常驻普通/事件战斗冷热恢复），过程中修复了事件战斗 PendingBattle 被误判的推导缺陷。正式门禁在任务外 public-release 工具测试处中断。2026-10-23 新增 `StaleSaveColdResumeGodotTests` 3/3：脚本玩家经 `GodotRunSaveStore` 写真实 V11 文档（固定 seed 37，调用界面结算、出口与成长按钮同一路径），在第一场结算后、L4 休息选中后、L5 战斗检查点与 L5 结算后分别新建 Main 冷启动，断言局仍在、revision 不变、未显示清档提示、未回主页。2026-10-27 在变基后的 HEAD 上重跑仍为 3/3：首战改为先点营地出口再显式「开战」（由 `EnterBattle` 断言恰好写一次检查点，等待函数不再代点）；Application 415/415；验证器因只比对存活成员而让全员阵亡的局以空队伍通过，已改为存活为空即拒绝并补 3 条用例；控制台打开时 ESC 只关控制台的用例已加入 UI 套件（该套件 48/48）。2026-10-28 规则：`ResumeRun` 新增窄判定，PendingBattle 的检查点含死者或全员死亡一律视为旧构建产物，清档并返回 `run.reset_stale_save`（诊断码 `checkpoint.party_contains_dead`），仅存活者的检查点不被清；Application 418/418。冷读档套件扩至 8/8，新增 L4 商店开店与购买后不重刷库存、L4 事件选中、L6 休息节点，以及两份旧版存档（结算后 Board 未 `.resolved`、检查点含死者）冷启动后被清、状态栏显示清档提示、回主页、Continue 变灰、New Run 可进入 START CAMP。仍需人工确认：真正关闭进程再打开的一次冒烟，以及页面观感。
 - User verdict: none.
 
+### MQA-GODOT-TILE-RESIDENT-EXPLORATION — 探索页统一复用驻留战斗地图与战斗单位
+
+- Status: `pending`
+- Source: 探索页统一复用驻留地图（初始营地、战斗入口、战后、休息、商店、宝箱、事件共用节点正式 Act 地图）
+- Action: 在隔离 Run 中依次走过初始营地出口、战斗入口、战后页、休息、商店、宝箱与一个事件节点；每页移动领队、点击场景物件，再从右侧出口离开；休息页移动领队后点 Inventory 再返回。
+- Expected: 每页都是该节点的正式地图（阻挡物与战斗中一致），三名队员显示为与战斗相同的角色精灵而非文字；领队移动后刷新/返回仍停在原位；锁定出口可见但点击提示先完成节点；Inventory 按钮不遮挡右侧出口；Output 无 `exploration.resident_template_mismatch`。
+- Observe: 探索棋盘、角色精灵、右侧出口标记、状态栏、Inventory 按钮、Godot Output。
+- Preserve on failure: 截图（含窗口大小）、节点 ID、领队格、点击位置、Output 的 mismatch 警告。
+- Save boundary: 使用隔离 Run；移动与离开节点会写入存档。
+- Automated evidence: Core `PlaceParty` 用例；`ResidentExplorationPagesGodotTests` 5/5 覆盖各页正式地图、精灵、移动持久化；20 条 gameplay journey 与批量报告 29/29 在新出口几何（右缘 `9,y`）下通过。观感、点击手感与遮挡仍需人工判断。
+- User verdict: none.
+
 ## Passed
 
 ### MQA-ARTWORK-DEMONBOUND-DEATH — Rounded death Sprite identity and size

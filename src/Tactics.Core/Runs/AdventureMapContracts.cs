@@ -101,6 +101,15 @@ public sealed record AdventureMapTemplateDefinition(
             if (AdventureBoardPathfinder.FindPath(Board, entry.Cell, slot.Cell).Count == 0)
                 throw new ArgumentException("Exploration slots must be reachable from every entry.");
 
+        // Exit markers are drawn half a cell beyond the exit cell, away from its (X-1, Y) neighbour, so that
+        // neighbour must be a real open tile or the rim position would point nowhere meaningful.
+        foreach (AdventureMapExitAnchor exit in Exits)
+        {
+            var inner = new GridPoint(exit.Cell.X - 1, exit.Cell.Y);
+            if (!Board.Contains(inner) || Board.BlockedCells.Contains(inner))
+                throw new ArgumentException($"Exit '{exit.ExitId}' needs an open inner neighbour at X-1.");
+        }
+
         foreach (AdventureMapAnchor entry in Entries)
         foreach (AdventureMapExitAnchor exit in Exits)
             if (AdventureBoardPathfinder.FindPath(Board, entry.Cell, exit.Cell).Count == 0)

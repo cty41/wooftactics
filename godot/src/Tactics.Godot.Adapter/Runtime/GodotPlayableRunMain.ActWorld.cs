@@ -116,8 +116,12 @@ public partial class GodotPlayableRunMain
             _actBelongsToSetup = false;
             _actOwnerRunId = run.RunId;
         }
+        _directExitAfterSetup = true;
         RouteRunState(result.Snapshot!);
     }
+
+    /// <summary>True only for a freshly committed setup: the camp already was the start map, so the first battle starts directly. Resumed legacy saves keep the fallback page.</summary>
+    private bool _directExitAfterSetup;
 
     private void PrepareActWorld(int seed, string? runId, Action resume, PureRunActBlueprint? contentPlan = null)
     {

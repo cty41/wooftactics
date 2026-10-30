@@ -85,40 +85,8 @@
       "adapter": "PlayerInput",
       "kind": "waitForPlayerObservable",
       "parameters": {
-        "observable": "adventureBoardReady",
-        "maximumFrames": 180
-      }
-    },
-    {
-      "adapter": "PlayerInput",
-      "kind": "clickPointerTarget",
-      "target": "7,5",
-      "parameters": {
-        "targetKind": "AdventureCell"
-      }
-    },
-    {
-      "adapter": "PlayerInput",
-      "kind": "clickPointerTarget",
-      "target": "exit:layer_01_battle",
-      "parameters": {
-        "targetKind": "AdventureObject"
-      }
-    },
-    {
-      "adapter": "PlayerInput",
-      "kind": "clickPointerTarget",
-      "target": "6,5",
-      "parameters": {
-        "targetKind": "AdventureCell"
-      }
-    },
-    {
-      "adapter": "PlayerInput",
-      "kind": "clickPointerTarget",
-      "target": "encounter",
-      "parameters": {
-        "targetKind": "AdventureObject"
+        "observable": "battleReady",
+        "maximumFrames": 300
       }
     },
     {
@@ -131,7 +99,7 @@
     {
       "adapter": "PlayerInput",
       "kind": "clickPointerTarget",
-      "target": "Continue — Progression",
+      "target": "ProgressionAttribute_Strength",
       "parameters": {
         "targetKind": "UiElement"
       }
@@ -139,7 +107,7 @@
     {
       "adapter": "PlayerInput",
       "kind": "clickPointerTarget",
-      "target": "ProgressionAttribute_Strength",
+      "target": "ProgressionAttributeContinue",
       "parameters": {
         "targetKind": "UiElement"
       }
@@ -155,17 +123,9 @@
     {
       "adapter": "PlayerInput",
       "kind": "clickPointerTarget",
-      "target": "Continue",
+      "target": "exit:layer_02_battle",
       "parameters": {
-        "targetKind": "UiElement"
-      }
-    },
-    {
-      "adapter": "PlayerInput",
-      "kind": "clickPointerTarget",
-      "target": "8,7",
-      "parameters": {
-        "targetKind": "AdventureCell"
+        "targetKind": "AdventureExitApproach"
       }
     },
     {
@@ -178,22 +138,6 @@
     },
     {
       "adapter": "PlayerInput",
-      "kind": "clickPointerTarget",
-      "target": "6,5",
-      "parameters": {
-        "targetKind": "AdventureCell"
-      }
-    },
-    {
-      "adapter": "PlayerInput",
-      "kind": "clickPointerTarget",
-      "target": "encounter",
-      "parameters": {
-        "targetKind": "AdventureObject"
-      }
-    },
-    {
-      "adapter": "PlayerInput",
       "kind": "playBattleThroughInput",
       "parameters": {
         "maximumActions": 100
@@ -202,7 +146,7 @@
     {
       "adapter": "PlayerInput",
       "kind": "clickPointerTarget",
-      "target": "Continue — Progression",
+      "target": "ProgressionAttribute_Strength",
       "parameters": {
         "targetKind": "UiElement"
       }
@@ -210,7 +154,7 @@
     {
       "adapter": "PlayerInput",
       "kind": "clickPointerTarget",
-      "target": "ProgressionAttribute_Strength",
+      "target": "ProgressionAttributeContinue",
       "parameters": {
         "targetKind": "UiElement"
       }
@@ -226,17 +170,9 @@
     {
       "adapter": "PlayerInput",
       "kind": "clickPointerTarget",
-      "target": "Continue",
+      "target": "exit:layer_03_battle",
       "parameters": {
-        "targetKind": "UiElement"
-      }
-    },
-    {
-      "adapter": "PlayerInput",
-      "kind": "clickPointerTarget",
-      "target": "8,7",
-      "parameters": {
-        "targetKind": "AdventureCell"
+        "targetKind": "AdventureExitApproach"
       }
     },
     {
@@ -249,22 +185,6 @@
     },
     {
       "adapter": "PlayerInput",
-      "kind": "clickPointerTarget",
-      "target": "6,5",
-      "parameters": {
-        "targetKind": "AdventureCell"
-      }
-    },
-    {
-      "adapter": "PlayerInput",
-      "kind": "clickPointerTarget",
-      "target": "encounter",
-      "parameters": {
-        "targetKind": "AdventureObject"
-      }
-    },
-    {
-      "adapter": "PlayerInput",
       "kind": "playBattleThroughInput",
       "parameters": {
         "maximumActions": 100
@@ -273,7 +193,7 @@
     {
       "adapter": "PlayerInput",
       "kind": "clickPointerTarget",
-      "target": "Continue — Progression",
+      "target": "ProgressionAttribute_Strength",
       "parameters": {
         "targetKind": "UiElement"
       }
@@ -281,7 +201,7 @@
     {
       "adapter": "PlayerInput",
       "kind": "clickPointerTarget",
-      "target": "ProgressionAttribute_Strength",
+      "target": "ProgressionAttributeContinue",
       "parameters": {
         "targetKind": "UiElement"
       }
@@ -297,9 +217,9 @@
     {
       "adapter": "PlayerInput",
       "kind": "clickPointerTarget",
-      "target": "3,7",
+      "target": "exit:layer_04_rest",
       "parameters": {
-        "targetKind": "AdventureCell"
+        "targetKind": "AdventureExitApproach"
       }
     },
     {
@@ -337,31 +257,15 @@
     {
       "adapter": "PlayerInput",
       "kind": "clickPointerTarget",
-      "target": "8,7",
+      "target": "exit:layer_05_battle",
       "parameters": {
-        "targetKind": "AdventureCell"
+        "targetKind": "AdventureExitApproach"
       }
     },
     {
       "adapter": "PlayerInput",
       "kind": "clickPointerTarget",
       "target": "exit:layer_05_battle",
-      "parameters": {
-        "targetKind": "AdventureObject"
-      }
-    },
-    {
-      "adapter": "PlayerInput",
-      "kind": "clickPointerTarget",
-      "target": "6,5",
-      "parameters": {
-        "targetKind": "AdventureCell"
-      }
-    },
-    {
-      "adapter": "PlayerInput",
-      "kind": "clickPointerTarget",
-      "target": "encounter",
       "parameters": {
         "targetKind": "AdventureObject"
       }
@@ -376,7 +280,7 @@
     {
       "adapter": "PlayerInput",
       "kind": "clickPointerTarget",
-      "target": "Continue — Progression",
+      "target": "ProgressionAttribute_Strength",
       "parameters": {
         "targetKind": "UiElement"
       }
@@ -384,7 +288,7 @@
     {
       "adapter": "PlayerInput",
       "kind": "clickPointerTarget",
-      "target": "ProgressionAttribute_Strength",
+      "target": "ProgressionAttributeContinue",
       "parameters": {
         "targetKind": "UiElement"
       }
@@ -400,9 +304,9 @@
     {
       "adapter": "PlayerInput",
       "kind": "clickPointerTarget",
-      "target": "8,8",
+      "target": "exit:layer_06_treasure",
       "parameters": {
-        "targetKind": "AdventureCell"
+        "targetKind": "AdventureExitApproach"
       }
     },
     {
@@ -440,31 +344,15 @@
     {
       "adapter": "PlayerInput",
       "kind": "clickPointerTarget",
-      "target": "8,7",
+      "target": "exit:layer_07_battle",
       "parameters": {
-        "targetKind": "AdventureCell"
+        "targetKind": "AdventureExitApproach"
       }
     },
     {
       "adapter": "PlayerInput",
       "kind": "clickPointerTarget",
       "target": "exit:layer_07_battle",
-      "parameters": {
-        "targetKind": "AdventureObject"
-      }
-    },
-    {
-      "adapter": "PlayerInput",
-      "kind": "clickPointerTarget",
-      "target": "6,5",
-      "parameters": {
-        "targetKind": "AdventureCell"
-      }
-    },
-    {
-      "adapter": "PlayerInput",
-      "kind": "clickPointerTarget",
-      "target": "encounter",
       "parameters": {
         "targetKind": "AdventureObject"
       }

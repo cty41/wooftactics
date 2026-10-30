@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Battle System
 description: Godot Pure Run 的棋盘、回合、技能、状态、AI 合法性、结算与表现投影主链。
 tags: [gameplay, battle, turn-based, godot]
-timestamp: "2026-09-11T11:08:38+08:00"
+timestamp: "2026-10-30T11:59:09+08:00"
 status: active
 catalog_scope: battle-system
 repo_paths:
@@ -27,7 +27,7 @@ repo_paths:
   - godot/src/Tactics.Godot.Adapter/Runtime/GodotPlayableRunMain.cs
   - godot/tests/CoreGoldenVectorGodotTests.cs
 verified_revision: 04c75ec4
-source_fingerprint: sha256:b0cf670d2f9c81cc3b7d9f8dafb55fc7ea62386cbcc8a1844c5d00846d2d40bb
+source_fingerprint: sha256:7bf0e35c2e9f9a1e086e735757f49868e0d512eacb0290f2a60880b857f62ca1
 ---
 
 # Current State
@@ -56,6 +56,8 @@ AI 和真实 Transition 必须复用 Core 规则；表现 cue、Tween、伤害�
 历史事实；`contract-decisions.json` 显式记录它已被当前 Godot 合同替代，不能再约束当前 Core 行为。
 
 ## Battle Runtime
+
+所有探索页(初始营地、战斗入口、战后、休息、商店、宝箱、事件)统一经 `TryPrepareResidentExploration` 借用该节点的正式驻留 Act 地图，队员以战斗同款 `GodotUnitActor` 精灵显示，不再绘制占位棋盘；出口位于地图右缘 `9,y`。仅在无驻留世界(无头上下文)或模板与绑定不符时才回退到唯一的占位棋盘，并输出 `exploration.resident_template_mismatch` 警告。Core `RunAdventureTransitionService.PlaceParty` 在 `EnterBoard` 的固定落点不适用于正式地图时重新落座并持久化。
 
 Adventure 事件战的随机状态会从 checkpoint revision 中扣除 Adventure 专属 revision，确保领队移动、路线点击和场景切换不会改变相同 run seed 的战斗序列。护送 NPC 的生命值读取正式 UnitDefinition 派生值，不再使用硬编码 12 HP；其存活、团灭与事件失败仍由现有 Protected NPC 胜负规则裁决。
 
@@ -89,6 +91,16 @@ Air 可越过动态占位与 flyover 障碍但不能停在其上；absolute 障�
 - 敌方候选与模式见 [Monster AI](monster-ai.md)。
 - 战斗外状态和结算返回见 [Roguelike Run](roguelike-run.md)。
 - Frozen Unity 到 Godot 的历史证据边界见 [Godot migration](../plans/godot-migration.md)。
+
+# Primary Attribute
+
+职业主属性是单位数据：`UnitDefinitionResource.PrimaryAttributeValue`（字符串，缺省 None）经 `ToCoreDefinition()` 进入 `UnitDefinition.PrimaryAttribute`。职业与主属性的唯一规则源是 `PrimaryAttributeRules.For(SkillRole)`（Mage→智力、Necromancer→体质、Demonbound→魅力、Poet→力量、Amazon→无）；战斗伤害加成与 `UnitCombatStatRules` 都调用它，Amazon 的敏捷加成在 `DamageBonusSource` 中显式保留。加点页读取单位数据，一致性测试保证资源与规则不漂移。战斗本身不读取单位字段。
+
+# Battle Node Entry
+
+普通战斗节点（含 layer 4/6 战斗、layer 5、boss）进入即开战：`ShowAdventureBattleEntry` 不再提供 encounter 探索图，进入事务落盘后按 `(RunId, NodeId, Revision)` 守卫延迟一帧调用对应 `Begin*`，同一次进入只触发一次；失败时页面保留 `Begin battle` 重试按钮。事件战斗（宝箱、祭坛、护送）仍是靠近对象再点击的有意交互，不受影响。
+
+起始营地选队并选完起始技能后（新提交的 setup），`RouteRunState` 直接调用 `HandleAdventureExit(run, "layer_01_battle")` 进入第一场战斗，不再停留在第二个 "TILE ADVENTURE" 起始探索页；该页仅作为失败回退和旧存档恢复的兜底。战后自由探索仍需队长靠近出口。
 
 # Verification Guidance
 

@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Godot migration provenance
 description: 已完成迁移的冻结来源、Godot ownership、生成批次与验证边界。
 tags: [migration, godot, provenance, testing]
-timestamp: "2026-10-28T10:35:26+08:00"
+timestamp: "2026-10-30T11:59:16+08:00"
 status: active
 catalog_scope: godot-migration
 repo_paths:
@@ -16,7 +16,7 @@ repo_paths:
   - Tools/migration
   - Tools/migration/manifest/retirement
 verified_revision: 2b341cb3
-source_fingerprint: sha256:f6309f90cf70cbf094e462f021f6363b4576d836de1013c352c8e4fd94880347
+source_fingerprint: sha256:d6b77d724225fcb21a202be814c376b594e418f1afbca78da46ce9c8a5f21555
 ---
 
 # Current State
@@ -31,6 +31,8 @@ Godot 4.7 C# 是唯一产品主线，`godot/project.godot` 是唯一项目。Cor
 
 Adventure/Battle 生产指针目标先从 Control 本地坐标转换为 Canvas 与 Screen 坐标，再由 Viewport 按对应坐标空间注入；定位必须同时命中目标 Control 和精确本地点，PointerPressed 与状态变化继续作为提交证据，避免全屏 surface 的宽泛 Hover 掩盖错误格。
 
+`GodotAdventureBoardView` 在驻留地图上用 `GodotUnitActor` 呈现队员(无驻留面时回退文字标记);右缘出口标记仅响应落在棋盘格之外的点击,不抢占相邻可走格的输入。
+
 开发工具链把固定的 MIT godot-ai v4.3.1 源码作为 Editor-only vendor 依赖纳入公开源码，并由 manifest tree hash 审计；它不进入游戏 PCK/Windows 包。Editor 通过统一入口完成 production C# Build、worktree 用户数据隔离、项目级 Codex 配置和会话租约，避免测试宿主程序集或另一个 worktree 的窗口被误认成当前项目。
 
 # Relationships
@@ -38,6 +40,10 @@ Adventure/Battle 生产指针目标先从 Control 本地坐标转换为 Canvas �
 - 当前开发与验证入口见 [Godot Agent Workflow](../operations/godot-agent-workflow.md)。
 - 历史 Agent 工具退役索引见 [Archived Unity Agent Workflow](../operations/unity-agent-workflow.md)。
 - 当前人工状态见 `.agents/docs/manual-acceptance.md`。
+
+# Primary Attribute Data
+
+五个职业 Unit 资源的 `PrimaryAttributeValue` 由 `UnitAssetFactory.ApplyPrimaryAttribute` 经 ResourceSaver 写入（Mage/Necromancer/Demonbound/Poet，Amazon 保持缺省 None），`UnitAttributeBalanceBuilder` 二次运行字节不变；Demonbound/Poet 工厂同样调用它。该字段为 SchemaVersion 1 内的可选字段。
 
 # Verification Guidance
 

@@ -16,8 +16,8 @@ actions:
     parameters: { observable: adventureBoardReady, maximumFrames: 180 }
   - kind: clickPointerTarget
     adapter: PlayerInput
-    target: 7,7
-    parameters: { targetKind: AdventureCell }
+    target: "exit:layer_04_event"
+    parameters: { targetKind: AdventureExitApproach }
   - kind: clickPointerTarget
     adapter: PlayerInput
     target: "exit:layer_04_event"

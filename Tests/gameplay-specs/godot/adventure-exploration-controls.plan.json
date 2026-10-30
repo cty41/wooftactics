@@ -10,8 +10,8 @@
   "requiredCapabilities": [
     "action:clickPointerTarget",
     "action:waitForPlayerObservable",
-    "assertion:activeAdventureLeaderEquals",
     "assertion:adventureActorCellEquals",
+    "assertion:pendingPartyOrderEquals",
     "assertion:productionSaveUnchanged",
     "assertion:runtimeHasNoErrors",
     "setup:initializePlayerInput"
@@ -59,46 +59,6 @@
     {
       "adapter": "PlayerInput",
       "kind": "clickPointerTarget",
-      "target": "start-exit",
-      "parameters": {
-        "targetKind": "AdventureObject"
-      }
-    },
-    {
-      "adapter": "PlayerInput",
-      "kind": "clickPointerTarget",
-      "target": "starting_skill__skill_amazon_thrust_lv1",
-      "parameters": {
-        "targetKind": "UiElement"
-      }
-    },
-    {
-      "adapter": "PlayerInput",
-      "kind": "clickPointerTarget",
-      "target": "starting_skill__skill_mage_fireball_lv1",
-      "parameters": {
-        "targetKind": "UiElement"
-      }
-    },
-    {
-      "adapter": "PlayerInput",
-      "kind": "waitForPlayerObservable",
-      "parameters": {
-        "observable": "adventureBoardReady",
-        "maximumFrames": 180
-      }
-    },
-    {
-      "adapter": "PlayerInput",
-      "kind": "clickPointerTarget",
-      "target": "pure_run_mage",
-      "parameters": {
-        "targetKind": "AdventureActor"
-      }
-    },
-    {
-      "adapter": "PlayerInput",
-      "kind": "clickPointerTarget",
       "target": "4,5",
       "parameters": {
         "targetKind": "AdventureCell"
@@ -108,29 +68,19 @@
   "assertionPlans": [
     {
       "adapter": "Map",
-      "kind": "activeAdventureLeaderEquals",
-      "expected": "pure_run_mage",
-      "parameters": {}
-    },
-    {
-      "adapter": "Map",
-      "kind": "adventureActorCellEquals",
-      "target": "pure_run_mage",
-      "expected": "4,5",
+      "kind": "pendingPartyOrderEquals",
+      "expected": [
+        "pure_run_amazon",
+        "pure_run_demonbound",
+        "pure_run_mage"
+      ],
       "parameters": {}
     },
     {
       "adapter": "Map",
       "kind": "adventureActorCellEquals",
       "target": "pure_run_amazon",
-      "expected": "2,5",
-      "parameters": {}
-    },
-    {
-      "adapter": "Map",
-      "kind": "adventureActorCellEquals",
-      "target": "pure_run_demonbound",
-      "expected": "1,4",
+      "expected": "4,5",
       "parameters": {}
     },
     {
@@ -150,25 +100,13 @@
   "probeRequests": [
     {
       "adapter": "Map",
-      "kind": "activeAdventureLeaderEquals",
-      "parameters": {}
-    },
-    {
-      "adapter": "Map",
-      "kind": "adventureActorCellEquals",
-      "target": "pure_run_mage",
+      "kind": "pendingPartyOrderEquals",
       "parameters": {}
     },
     {
       "adapter": "Map",
       "kind": "adventureActorCellEquals",
       "target": "pure_run_amazon",
-      "parameters": {}
-    },
-    {
-      "adapter": "Map",
-      "kind": "adventureActorCellEquals",
-      "target": "pure_run_demonbound",
       "parameters": {}
     },
     {

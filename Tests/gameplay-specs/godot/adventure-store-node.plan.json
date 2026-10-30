@@ -46,9 +46,9 @@
     {
       "adapter": "PlayerInput",
       "kind": "clickPointerTarget",
-      "target": "5,7",
+      "target": "exit:layer_04_store",
       "parameters": {
-        "targetKind": "AdventureCell"
+        "targetKind": "AdventureExitApproach"
       }
     },
     {
