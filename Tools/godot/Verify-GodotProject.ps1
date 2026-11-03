@@ -1,6 +1,8 @@
 [CmdletBinding()]
 param(
-    [string]$GodotExecutable = 'D:\Godot\Godot_v4.7.1-stable_mono_win64\Godot_v4.7.1-stable_mono_win64_console.exe'
+    [string]$GodotExecutable = 'D:\Godot\Godot_v4.7.1-stable_mono_win64\Godot_v4.7.1-stable_mono_win64_console.exe',
+    # Fail instead of skipping artwork steps when the optional MaLiang submodule is not initialized.
+    [switch]$RequireArtwork
 )
 
 $ErrorActionPreference = 'Stop'
@@ -180,6 +182,16 @@ function Invoke-IsolatedGdUnitSuite {
         }
         throw "$Description failed with exit code $exitCode on attempt $attempt."
     }
+}
+
+# MaLiang is an optional art-generation dependency; absent submodule means artwork steps are skipped, never silently passed.
+# Decided before any long-running step so -RequireArtwork fails immediately.
+$maliangAvailable = Test-Path (Join-Path $repoRoot 'Tools\vendor\maliang\src\maliang_art\__init__.py')
+if (-not $maliangAvailable -and $RequireArtwork) {
+    throw 'MaLiang submodule is not initialized but -RequireArtwork was set. Run: git submodule update --init Tools/vendor/maliang'
+}
+if (-not $maliangAvailable) {
+    Write-Warning 'SKIP: MaLiang submodule not initialized; artwork pipeline unittest and artwork state registry check will be skipped. Run: git submodule update --init Tools/vendor/maliang (or pass -RequireArtwork to fail instead).'
 }
 
 $sessionModule = Join-Path $PSScriptRoot 'GodotDevSession.psm1'
@@ -1175,16 +1187,20 @@ try {
         python -m unittest discover -s (Join-Path $repoRoot 'Tools/public-release/tests') -p 'test_*.py'
     }
 
+    if ($maliangAvailable) {
     Invoke-Checked 'Run artwork pipeline unittest' {
         python -m unittest discover -s (Join-Path $repoRoot '.agents/skills/pure-run-artwork-pipeline/tests') -p 'test_*.py'
+    }
     }
 
     Invoke-Checked 'Run Godot tooling Python unittest' {
         python -m unittest discover -s (Join-Path $repoRoot 'Tools/godot/tests') -p 'test_*.py'
     }
 
+    if ($maliangAvailable) {
     Invoke-Checked 'Validate Pure Run artwork state registry' {
         python '.agents/skills/pure-run-artwork-pipeline/scripts/artwork_pipeline.py' --root $repoRoot check --strict
+    }
     }
 
     Invoke-Checked 'Validate public source candidate' {

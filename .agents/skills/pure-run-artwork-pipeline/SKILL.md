@@ -46,6 +46,10 @@ description: "Use when generating, editing, chroma-keying, calibrating, reviewin
 | 运行时视觉 QA | 使用 Godot 后台测试、生产输入注入或已有截图；不控制真实 Editor 窗口 |
 | DSH 中直接展示审核图 | `read_image` 只保证把原生图片块写入会话；Web GUI 需要专用 `read_image` tool-view renderer（例如 `dsh-read-image-view`）才会内联显示，否则只能提供绝对路径并明确标记 `manual_visual_qa_pending` |
 
+## 前置:MaLiang 子模块(可选依赖)
+
+生图与 `artwork_review.py` / `pose_proof.py` 依赖固定子模块 `Tools/vendor/maliang`。新检出或额外 worktree 默认不含它;做美术前先运行 `git submodule update --init Tools/vendor/maliang`。未初始化时统一验证器会明确 SKIP 美术步骤;提交美术产物或发布前用 `Verify-GodotProject.ps1 -RequireArtwork` 强制要求。
+
 ## When to use
 
 - 生成或编辑 Pure Run 的角色、怪物、武器或职业变体 Sprite。

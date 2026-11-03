@@ -188,7 +188,8 @@ jobs:
         run: |
           try {
             ./Tools/godot/Verify-GodotProject.ps1 `
-              -GodotExecutable '${{ steps.godot.outputs.executable }}' *>&1 |
+              -GodotExecutable '${{ steps.godot.outputs.executable }}' `
+              -RequireArtwork *>&1 |
               Tee-Object -FilePath '${{ steps.paths.outputs.diagnostics }}\godot-owned-verifier.log'
           }
           catch {

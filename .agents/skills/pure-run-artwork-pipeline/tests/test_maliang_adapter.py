@@ -42,6 +42,22 @@ class PinnedMaliangAdapterTests(unittest.TestCase):
     def tearDown(self):
         self.temporary.cleanup()
 
+    def test_activate_reports_uninitialized_submodule_clearly(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "Tools" / "vendor" / "maliang").mkdir(parents=True)
+            previous_root = MODULE.ROOT
+            previous_config = MODULE.load_config
+            MODULE.ROOT = root
+            MODULE.load_config = lambda: {"engine": {"submodulePath": "Tools/vendor/maliang", "commit": "a" * 40}}
+            try:
+                self.assertFalse(MODULE.is_available())
+                with self.assertRaisesRegex(RuntimeError, "not initialized.*git submodule update --init"):
+                    MODULE.activate()
+            finally:
+                MODULE.ROOT = previous_root
+                MODULE.load_config = previous_config
+
     def test_accepts_exact_clean_checkout(self):
         MODULE._verify_pinned_checkout(self.repo, self.commit)
 

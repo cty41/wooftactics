@@ -7,6 +7,9 @@ import unittest
 from copy import deepcopy
 from pathlib import Path
 
+if not (Path(__file__).resolve().parents[4] / "Tools" / "vendor" / "maliang" / "src" / "maliang_art" / "__init__.py").is_file():
+    raise unittest.SkipTest("MaLiang submodule not initialized: git submodule update --init Tools/vendor/maliang")
+
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "artwork_review.py"
 sys.path.insert(0, str(SCRIPT.parent))
 SPEC = importlib.util.spec_from_file_location("artwork_review", SCRIPT)

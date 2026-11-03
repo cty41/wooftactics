@@ -13,6 +13,9 @@ from unittest import mock
 from PIL import Image, ImageDraw
 
 
+if not (Path(__file__).resolve().parents[4] / "Tools" / "vendor" / "maliang" / "src" / "maliang_art" / "__init__.py").is_file():
+    raise unittest.SkipTest("MaLiang submodule not initialized: git submodule update --init Tools/vendor/maliang")
+
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "artwork_pipeline.py"
 SPEC = importlib.util.spec_from_file_location("artwork_pipeline", SCRIPT)
 pipeline = importlib.util.module_from_spec(SPEC)

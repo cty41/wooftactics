@@ -75,6 +75,8 @@ git diff origin/feat/example -- path/to/file
 
 创建前记录理由、源/目标分支、绝对路径、生命周期和必须保留的 dirty 文件。创建后说明哪棵树是主工作路径，避免 Editor 打开错误项目。
 
+若确需额外 worktree:子模块不会自动初始化。仅做美术时再运行 `git submodule update --init Tools/vendor/maliang`;统一验证器在其缺失时会明确 SKIP 美术步骤(`-RequireArtwork` 可改为失败)。
+
 ## Anti-patterns
 
 | 错误 | 正确 | 原因 |
