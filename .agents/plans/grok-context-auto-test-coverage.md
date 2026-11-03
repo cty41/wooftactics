@@ -8,7 +8,7 @@
 - 产品主线：Godot 4.7.1 C# 三职业 Pure Run。唯一 Godot 工程是 `godot/project.godot`。
 - Unity 工程只作历史证据，不得编辑、生成或运行。
 - 分层：`Tactics.Core` / `Tactics.Application` 不得引用 Godot；Node、Resource、文件系统、UI 在 `godot/src/Tactics.Godot.Adapter`。
-- 本机是 Windows + PowerShell。Python 可能不在 PATH，可加 `C:\Users\15507\AppData\Local\Python\pythoncore-3.14-64`。
+- 本机是 Windows + PowerShell。Python 可能不在 PATH，可把本机 Python 安装目录（如 `%LOCALAPPDATA%\Python\pythoncore-3.14-64`）加入 PATH。
 
 ## 2. 硬性约束（违反即失败）
 
