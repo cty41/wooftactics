@@ -30,6 +30,21 @@ public sealed class ResidentExplorationPagesGodotTests
         await Task.CompletedTask;
     });
 
+    /// <summary>Only a freshly committed setup leaves the start map by itself; resuming an old InitialExploration save keeps the page.</summary>
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task ResumedInitialExplorationSaveKeepsTheStartPageInsteadOfStartingBattle() => await WithRun(async (ui, host, setup, store) =>
+    {
+        // WithRun committed the setup, which already went straight to battle. Routing the stored InitialExploration
+        // snapshot again is exactly what a cold resume of an old save does: it must show the page, not exit again.
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        long revision = store.Load().Snapshot!.Revision;
+        InvokePrivate(ui, "RouteRunState", setup.Snapshot!);
+        for (int frame = 0; frame < 6; frame++) await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        AssertThat(Field<GodotAdventureBoardView?>(ui, "_adventureBoard")?.Name.ToString()).IsEqual("InitialAdventureBoard");
+        AssertThat(store.Load().Snapshot!.Revision).IsEqual(revision);
+    });
+
     [TestCase]
     [RequireGodotRuntime]
     public async Task BattleEntryStartsTheBattleOnceWithoutAnExplorationBoard() => await WithRun(async (ui, host, setup, store) =>

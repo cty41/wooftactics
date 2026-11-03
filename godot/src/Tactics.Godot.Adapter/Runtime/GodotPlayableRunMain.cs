@@ -1979,6 +1979,8 @@ public partial class GodotPlayableRunMain : Control
         _autoBattleKey = key;
         Callable.From(() =>
         {
+            // The page or the entry may have been replaced during the deferred frame; never start a stale battle.
+            if (!GodotObject.IsInstanceValid(root) || !root.IsInsideTree() || _autoBattleKey != key) return;
             beginBattle();
             // A successful start replaces this page. If the label survives untouched the start failed silently, so
             // say so; the Begin battle button above stays as the manual retry.
@@ -2067,9 +2069,19 @@ public partial class GodotPlayableRunMain : Control
         {
             // A freshly committed setup: the camp already was the start-map exploration, so go straight to the first battle node.
             // Resumed legacy saves and failed transitions keep the initial exploration page as a manual fallback.
-            if (directExit) HandleAdventureExit(run, "layer_01_battle");
+            string? exitError = null;
+            if (directExit)
+            {
+                if (_status is not null && GodotObject.IsInstanceValid(_status)) _status.Text = string.Empty;
+                HandleAdventureExit(run, "layer_01_battle");
+                if (_status is not null && GodotObject.IsInstanceValid(_status) && _status.Text.Length > 0) exitError = _status.Text;
+            }
             if (!directExit || SaveStore.Load().Snapshot?.ActiveRun?.AdventureState?.Lifecycle == RunAdventureLifecycle.InitialExploration)
+            {
                 ShowInitialAdventure(run);
+                // The fallback page rebuilds the status label; show why the direct start failed.
+                if (exitError is not null) SetStatus(exitError);
+            }
         }
         else if (run.AdventureState is { Lifecycle: RunAdventureLifecycle.MapActive } adventure &&
                  !adventure.BoardContentId.Value.EndsWith(".resolved", StringComparison.Ordinal) &&
