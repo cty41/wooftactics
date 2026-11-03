@@ -1970,14 +1970,25 @@ public partial class GodotPlayableRunMain : Control
         Control root = NewPage($"{nodeId} — BATTLE", "The battle begins as soon as the node is entered.");
         AddRunShell(root, run, "Battle Node");
         _adventureBoard = null;
-        _status = LabelAt(root, "Starting battle…", new Vector2(470, 810), 18);
+        Label status = LabelAt(root, BattleStartingStatus, new Vector2(470, 810), 18);
+        _status = status;
         root.AddChild(PlaceControl(Button("Begin battle", beginBattle), new Vector2(1130, 720), new Vector2(360, 58)));
         // One automatic start per (run, node, revision): re-rendering or a failed start must not loop or double-start.
         (string RunId, string NodeId, long Revision) key = (run.RunId, nodeId, run.Revision);
         if (_autoBattleKey == key) return;
         _autoBattleKey = key;
-        Callable.From(beginBattle).CallDeferred();
+        Callable.From(() =>
+        {
+            beginBattle();
+            // A successful start replaces this page. If the label survives untouched the start failed silently, so
+            // say so; the Begin battle button above stays as the manual retry.
+            if (GodotObject.IsInstanceValid(status) && status.Text == BattleStartingStatus)
+                status.Text = BattleStartFailedStatus;
+        }).CallDeferred();
     }
+
+    private const string BattleStartingStatus = "Starting battle…";
+    internal const string BattleStartFailedStatus = "battle.start_failed — press Begin battle to retry.";
 
     private void ShowResolvedAdventureNode(PureRunState run)
     {
@@ -2050,8 +2061,8 @@ public partial class GodotPlayableRunMain : Control
             ShowProgression(run, pending);
             return;
         }
-        bool directExit = _directExitAfterSetup;
-        _directExitAfterSetup = false;
+        bool directExit = string.Equals(_directExitRunId, run.RunId, StringComparison.Ordinal);
+        _directExitRunId = null;
         if (run.AdventureState is { Lifecycle: RunAdventureLifecycle.InitialExploration })
         {
             // A freshly committed setup: the camp already was the start-map exploration, so go straight to the first battle node.

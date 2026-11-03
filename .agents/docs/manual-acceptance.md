@@ -365,7 +365,7 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 
 - Status: `pending`
 - Source: 探索页统一复用驻留地图（初始营地、战斗入口、战后、休息、商店、宝箱、事件共用节点正式 Act 地图）
-- Action: 在隔离 Run 中依次走过初始营地出口、战斗入口、战后页、休息、商店、宝箱与一个事件节点；每页移动领队、点击场景物件，再从右侧出口离开；休息页移动领队后点 Inventory 再返回。
+- Action: 在隔离 Run 中依次走过战后页、休息、商店、宝箱与一个事件节点（普通、精英、Boss 战斗节点进入即自动开战，无探索页，不在此列）；每页移动领队、点击场景物件，再从右侧出口离开；休息页移动领队后点 Inventory 再返回；另用一份旧版起始探索存档确认仍显示起始营地兜底页。
 - Expected: 每页都是该节点的正式地图（阻挡物与战斗中一致），三名队员显示为与战斗相同的角色精灵而非文字；领队移动后刷新/返回仍停在原位；锁定出口可见但点击提示先完成节点；Inventory 按钮不遮挡右侧出口；Output 无 `exploration.resident_template_mismatch`。
 - Observe: 探索棋盘、角色精灵、右侧出口标记、状态栏、Inventory 按钮、Godot Output。
 - Preserve on failure: 截图（含窗口大小）、节点 ID、领队格、点击位置、Output 的 mismatch 警告。

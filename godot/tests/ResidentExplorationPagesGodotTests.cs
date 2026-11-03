@@ -45,6 +45,43 @@ public sealed class ResidentExplorationPagesGodotTests
         for (int frame = 0; frame < 6; frame++) await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
         AssertThat(begun).IsEqual(1);
     });
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task FailedAutomaticBattleStartKeepsItsReasonOrSaysItFailedAndKeepsTheRetryButton() => await WithRun(async (ui, host, setup, store) =>
+    {
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        // The start reports its own rejection: that text must survive.
+        InvokePrivate(ui, "ShowAdventureBattleEntry", setup.Snapshot!.ActiveRun!, "layer_01_battle",
+            (Action)(() => Field<Label>(ui, "_status").Text = "battle.rejected_for_test"));
+        for (int frame = 0; frame < 6; frame++) await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        AssertThat(Field<Label>(ui, "_status").Text).IsEqual("battle.rejected_for_test");
+
+        // A silent failure (page untouched) gets a generic message; the manual button stays available.
+        store.RestoreFixture(setup.Snapshot!);
+        typeof(GodotPlayableRunMain).GetField("_autoBattleKey", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(ui, null);
+        InvokePrivate(ui, "ShowAdventureBattleEntry", store.Load().Snapshot!.ActiveRun!, "layer_01_battle", (Action)(() => { }));
+        for (int frame = 0; frame < 6; frame++) await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        AssertThat(Field<Label>(ui, "_status").Text).Contains("battle.start_failed");
+        AssertThat(ui.FindChildren("*", "Button", true, false).OfType<Button>().Any(button => button.Text == "Begin battle")).IsTrue();
+    });
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task StaleDirectExitFlagNeverSkipsTheFallbackPageOfAnotherRun() => await WithRun(async (ui, host, setup, store) =>
+    {
+        store.RestoreFixture(setup.Snapshot!);
+        typeof(GodotPlayableRunMain).GetField("_directExitRunId", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .SetValue(ui, "some-other-run");
+        Invoke(ui, "RouteRunState", setup.Snapshot!);
+        GodotAdventureBoardView board = Field<GodotAdventureBoardView>(ui, "_adventureBoard");
+        AssertThat(board.Name.ToString()).IsEqual("InitialAdventureBoard");
+        AssertThat(store.Load().Snapshot!.ActiveRun!.AdventureState!.Lifecycle).IsEqual(RunAdventureLifecycle.InitialExploration);
+        AssertThat(typeof(GodotPlayableRunMain).GetField("_directExitRunId", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .GetValue(ui)).IsNull();
+        await Task.CompletedTask;
+    });
+
     [TestCase]
     [RequireGodotRuntime]
     public async Task ResolvedBattleNodeShowsTheSameSpritesOnTheFormalMap() => await WithRun(async (ui, host, setup, _) =>

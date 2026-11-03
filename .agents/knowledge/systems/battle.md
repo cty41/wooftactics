@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Battle System
 description: Godot Pure Run 的棋盘、回合、技能、状态、AI 合法性、结算与表现投影主链。
 tags: [gameplay, battle, turn-based, godot]
-timestamp: "2026-10-30T11:59:09+08:00"
+timestamp: "2026-10-30T22:09:51+08:00"
 status: active
 catalog_scope: battle-system
 repo_paths:
@@ -27,7 +27,7 @@ repo_paths:
   - godot/src/Tactics.Godot.Adapter/Runtime/GodotPlayableRunMain.cs
   - godot/tests/CoreGoldenVectorGodotTests.cs
 verified_revision: 04c75ec4
-source_fingerprint: sha256:7bf0e35c2e9f9a1e086e735757f49868e0d512eacb0290f2a60880b857f62ca1
+source_fingerprint: sha256:7b471c97dc582bb88864fdb4711f7f7c79898eeeb1c7c187dd3c3dbfeefaa6d3
 ---
 
 # Current State
@@ -98,7 +98,9 @@ Air 可越过动态占位与 flyover 障碍但不能停在其上；absolute 障�
 
 # Battle Node Entry
 
-普通战斗节点（含 layer 4/6 战斗、layer 5、boss）进入即开战：`ShowAdventureBattleEntry` 不再提供 encounter 探索图，进入事务落盘后按 `(RunId, NodeId, Revision)` 守卫延迟一帧调用对应 `Begin*`，同一次进入只触发一次；失败时页面保留 `Begin battle` 重试按钮。事件战斗（宝箱、祭坛、护送）仍是靠近对象再点击的有意交互，不受影响。
+普通战斗节点（含 layer 4/6 战斗、layer 5、boss，精英与 Boss 同样不设准备窗口）进入即开战：`ShowAdventureBattleEntry` 不再提供 encounter 探索图，进入事务落盘后按 `(RunId, NodeId, Revision)` 守卫延迟一帧调用对应 `Begin*`，同一次进入只触发一次；失败时页面保留 `Begin battle` 重试按钮，`Begin*` 自己写入的错误码会保留，若页面状态标签原样未变则显示 `battle.start_failed`。直接出战标志 `_directExitRunId` 绑定提交 setup 的 RunId，只对该 Run 生效并在首次路由时消费，残留值不会让旧存档跳过起始探索兜底页。
+
+TODO: 战斗节点目前进入即自动开战；如需入场演出或对话，在 `ShowAdventureBattleEntry` 的自动开战前扩展，并同步 gameplay spec 与人工验收账本。事件战斗（宝箱、祭坛、护送）仍是靠近对象再点击的有意交互，不受影响。
 
 起始营地选队并选完起始技能后（新提交的 setup），`RouteRunState` 直接调用 `HandleAdventureExit(run, "layer_01_battle")` 进入第一场战斗，不再停留在第二个 "TILE ADVENTURE" 起始探索页；该页仅作为失败回退和旧存档恢复的兜底。战后自由探索仍需队长靠近出口。
 
