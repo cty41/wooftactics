@@ -324,8 +324,8 @@ static func _toml_header(client: McpClient) -> String:
 ##
 ## Uses `JSON.stringify` for every leaf String (key OR value) so paths
 ## containing backslashes / quotes / newlines render as syntactically valid
-## JSON. A Windows uvx path like `C:\Users\<user>\uvx.exe` would otherwise be
-## emitted as `"C:\Users\<user>\uvx.exe"` — invalid JSON, unsafe to paste.
+## JSON. A Windows uvx path like `C:\Users\foo\uvx.exe` would otherwise be
+## emitted as `"C:\Users\foo\uvx.exe"` — invalid JSON, unsafe to paste.
 static func _format_entry_inline(entry: Dictionary) -> String:
 	var parts: Array[String] = []
 	for k in entry:
