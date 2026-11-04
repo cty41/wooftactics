@@ -26,7 +26,8 @@ SECRET_PATTERNS = (
     re.compile(r"\bsk-[A-Za-z0-9]{20,}\b"),
     re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
 )
-LOCAL_USER_PATH = re.compile(r"(?i)\bC:[\\/]Users[\\/](?!<user>)[^\\/\s\"']+")
+# Placeholder user names (`<user>`, and the upstream godot-ai doc example `foo`) are not real local paths.
+LOCAL_USER_PATH = re.compile(r"(?i)\bC:[\\/]Users[\\/](?!(?:<user>|foo)(?:[\\/\s\"']|$))[^\\/\s\"']+")
 
 
 @dataclass
