@@ -1,5 +1,6 @@
 import json
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -23,7 +24,7 @@ class GodotContentOwnershipTests(unittest.TestCase):
 
     def test_receipt_is_current_and_separates_manual_acceptance(self) -> None:
         subprocess.run(
-            ["python", "Tools/migration/godot_content_ownership.py", "--check"],
+            [sys.executable, "Tools/migration/godot_content_ownership.py", "--check"],
             cwd=ROOT,
             check=True,
             capture_output=True,
