@@ -30,7 +30,7 @@
 
 ## godot-ai 项目级 MCP
 
-- Godot Editor 只通过 `Tools/godot/Open-GodotDev.ps1` 启动。入口始终串行增量 Build production Adapter，校验程序集身份，并以 worktree 路径派生互斥锁、用户数据目录和会话记录；禁止把直接双击 Editor 作为 Agent 支持流程。
+- Godot Editor 只通过 `Tools/godot/Open-GodotDev.ps1` 启动。入口始终串行增量 Build production Adapter，校验程序集身份，并以 worktree 路径派生互斥锁、用户数据目录和会话记录；禁止把直接双击 Editor 作为 Agent 支持流程。Linux／云端 Verify／Dev 外壳的 Python 编排与 TypeScript 规格分层见 `.agents/docs/godot-tooling-cross-platform-migration.md`（原则草稿，非权威实现合同）。
 - godot-ai v4.3.1 源码固定在 `godot/addons/godot_ai`，允许进入公开源码根，但必须从 PCK/Windows 运行时包排除。Dock 自更新（4.x 的签名 manifest 更新器）不用于日常升级，因为它绕过 vendor hash 审计；升级只能通过固定 Tag/commit/hash 的显式 vendor refresh、许可证审计和完整门禁。建议每个 godot-ai 次版本或安全发布后评估一次 refresh，不得长期停留在旧版。
 - godot-ai 只允许由包含 canonical `godot/project.godot` 的当前项目 worktree 中、被 Git 忽略的 `.codex/config.toml` 加载；用户级 `~/.codex/config.toml` 不得长期保留 godot-ai 表，也不得影响历史 Unity 检出或其他项目。
 - 固定使用 `godot-ai==4.3.1` 的 Windows Attach 启动方式（uvx 隔离解析、仅公共 PyPI）：绝对路径 `pythonw.exe`、无窗口 bootstrap、HTTP 8000、WebSocket 9500。配置以 `Tools/migration/manifest/godot-tooling.json` 为策略真相源。

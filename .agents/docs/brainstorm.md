@@ -239,6 +239,7 @@ mindmap
 
 ## 收件箱
 
+- 2026-11-05：`[已收束]` Frank 拍板 `Tools/godot` 跨平台迁移——编排 Python、规格留 TypeScript；原则稿见 [godot-tooling-cross-platform-migration.md](godot-tooling-cross-platform-migration.md)（非实现合同）。
 - 2026-10-16：罗小黑战记的能力体系
 - 2026-10-16：少林寺和武僧还有禅宗的关联
 - 2026-10-18：厨师职业 我想好好打篮球的梗
