@@ -1,13 +1,14 @@
-"""Verify step registry for cross-platform orchestration (Slice 2 — agent profile)."""
+"""Verify step registry for cross-platform orchestration (Slice 2 agent, Slice 5 windows)."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Literal
 
-StepKind = Literal["run", "windows_only_skip", "conditional_skip"]
+StepKind = Literal["run", "windows_only_skip", "conditional_skip", "windows_extended_ps1"]
 
 PROFILE_AGENT = "agent"
+PROFILE_WINDOWS = "windows"
 
 
 @dataclass(frozen=True)
@@ -17,6 +18,16 @@ class VerifyStepDefinition:
     kind: StepKind
     profiles: frozenset[str]
     skip_reason: str | None = None
+
+
+def _with_profiles(step: VerifyStepDefinition, profile: str) -> VerifyStepDefinition:
+    return VerifyStepDefinition(
+        step_id=step.step_id,
+        title=step.title,
+        kind=step.kind,
+        profiles=frozenset({profile}),
+        skip_reason=step.skip_reason,
+    )
 
 
 def agent_profile_steps() -> tuple[VerifyStepDefinition, ...]:
@@ -135,7 +146,100 @@ def agent_profile_steps() -> tuple[VerifyStepDefinition, ...]:
     )
 
 
+def windows_profile_steps() -> tuple[VerifyStepDefinition, ...]:
+    """Windows full verify: shared portable steps, gap steps, then PowerShell extended body."""
+    windows = frozenset({PROFILE_WINDOWS})
+    shared_run_ids = {
+        "preflight",
+        "godot_ai_vendor",
+        "dotnet_restore_build",
+        "dotnet_core_tests",
+        "dotnet_application_tests",
+        "dotnet_frozen_oracle_tests",
+        "python_agent_policy",
+        "python_godot_incidents",
+        "python_content_ownership",
+        "python_manual_qa_handoff",
+        "gameplay_spec_compiler",
+        "gameplay_spec_batch_compile",
+    }
+    steps: list[VerifyStepDefinition] = []
+    for step in agent_profile_steps():
+        if step.step_id not in shared_run_ids:
+            continue
+        steps.append(_with_profiles(step, PROFILE_WINDOWS))
+
+    steps.extend(
+        (
+            VerifyStepDefinition(
+                "sync_godot_ai_codex_check",
+                "Validate project-scoped godot-ai Codex configuration",
+                "conditional_skip",
+                windows,
+                skip_reason="local .codex/config.toml is not present",
+            ),
+            VerifyStepDefinition(
+                "dotnet_restore_test_host",
+                "Restore isolated GdUnit4Net test host dependencies (locked)",
+                "run",
+                windows,
+            ),
+            VerifyStepDefinition(
+                "assert_godot_editor_dependency_graph",
+                "Assert GodotSharpEditor lock graph after restore",
+                "run",
+                windows,
+            ),
+            VerifyStepDefinition(
+                "prime_godot_uid_cache",
+                "Prime fresh Godot resource UID cache",
+                "run",
+                windows,
+            ),
+            VerifyStepDefinition(
+                "dotnet_authoring_mcp_build",
+                "Build development-only Tactics Authoring MCP",
+                "run",
+                windows,
+            ),
+            VerifyStepDefinition(
+                "dotnet_authoring_mcp_tests",
+                "Run Tactics Authoring MCP protocol tests",
+                "run",
+                windows,
+            ),
+            VerifyStepDefinition(
+                "validate_codex_skills",
+                "Validate Codex/OpenCode project skills",
+                "run",
+                windows,
+            ),
+            VerifyStepDefinition(
+                "gameplay_plan_hash_contract",
+                "Validate tracked Godot gameplay plan hashes",
+                "run",
+                windows,
+            ),
+            VerifyStepDefinition(
+                "windows_extended_verification",
+                "Windows extended verification (GdUnit, migration, release, OKF)",
+                "windows_extended_ps1",
+                windows,
+            ),
+            VerifyStepDefinition(
+                "python_godot_tooling_tests",
+                "Run Godot tooling Python unittest",
+                "run",
+                windows,
+            ),
+        )
+    )
+    return tuple(steps)
+
+
 def steps_for_profile(profile: str) -> tuple[VerifyStepDefinition, ...]:
     if profile == PROFILE_AGENT:
         return agent_profile_steps()
+    if profile == PROFILE_WINDOWS:
+        return windows_profile_steps()
     raise ValueError(f"Unknown verify profile: {profile}")

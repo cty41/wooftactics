@@ -4,7 +4,13 @@ from Tools.godot.lib.skip_log import (
     SKIP_WINDOWS_ONLY_PREFIX,
     format_skip_windows_only,
 )
-from Tools.godot.lib.verify_steps import PROFILE_AGENT, agent_profile_steps, steps_for_profile
+from Tools.godot.lib.verify_steps import (
+    PROFILE_AGENT,
+    PROFILE_WINDOWS,
+    agent_profile_steps,
+    steps_for_profile,
+    windows_profile_steps,
+)
 
 
 class VerifyStepsRegistryTests(unittest.TestCase):
@@ -19,6 +25,16 @@ class VerifyStepsRegistryTests(unittest.TestCase):
         titles = {step.title for step in windows_skips}
         self.assertIn("Validate Codex/OpenCode project skills", titles)
         self.assertIn("Test-TacticsToolingAssemblyReload.ps1", titles)
+
+    def test_windows_profile_has_semantic_authority_steps(self):
+        steps = steps_for_profile(PROFILE_WINDOWS)
+        step_ids = [step.step_id for step in steps]
+        self.assertIn("windows_extended_verification", step_ids)
+        self.assertIn("validate_codex_skills", step_ids)
+        self.assertNotIn("gdunit_isolated_subset", step_ids)
+
+    def test_profiles_are_distinct(self):
+        self.assertNotEqual(steps_for_profile(PROFILE_AGENT), steps_for_profile(PROFILE_WINDOWS))
 
     def test_skip_log_prefix_is_grep_friendly(self):
         line = format_skip_windows_only("Example step", "reason")

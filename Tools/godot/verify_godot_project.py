@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-"""Cross-platform Verify entry for Linux / cloud agents (Slice 2 — agent profile).
+"""Cross-platform Verify orchestration (Slice 2 agent profile, Slice 5 windows profile).
 
-Windows daily development should continue using ``Tools/godot/Verify-GodotProject.ps1``.
-This script runs a documented portable subset and logs ``SKIP (Windows-only): …`` for
-steps that remain on the full Windows path.
+Windows daily development should continue using ``Tools/godot/Verify-GodotProject.ps1``,
+which forwards to this module with ``--profile windows``.
 
-Example (from repository root, with PYTHONPATH=.):
+Linux / cloud agents:
 
     python Tools/godot/verify_godot_project.py --profile agent
 
@@ -23,7 +22,7 @@ from pathlib import Path
 
 from Tools.godot.lib.tool_probe import try_resolve_godot_executable
 from Tools.godot.lib.verify_runner import run_verify_profile
-from Tools.godot.lib.verify_steps import PROFILE_AGENT, steps_for_profile
+from Tools.godot.lib.verify_steps import PROFILE_AGENT, PROFILE_WINDOWS, steps_for_profile
 
 
 def _default_repo_root() -> Path:
@@ -35,8 +34,8 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument(
         "--profile",
         default=PROFILE_AGENT,
-        choices=[PROFILE_AGENT],
-        help="Verification profile (agent = portable Linux/cloud subset).",
+        choices=[PROFILE_AGENT, PROFILE_WINDOWS],
+        help="Verification profile (agent = portable subset; windows = full Windows path).",
     )
     parser.add_argument(
         "--repo-root",
@@ -47,7 +46,12 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument(
         "--godot-executable",
         default=None,
-        help="Godot binary for optional GdUnit subset (else GODOT_EXECUTABLE / GODOT_BIN).",
+        help="Godot binary (required for windows profile; optional for agent GdUnit subset).",
+    )
+    parser.add_argument(
+        "--require-artwork",
+        action="store_true",
+        help="Fail when MaLiang submodule is not initialized (Windows profile).",
     )
     return parser.parse_args(argv)
 
@@ -62,6 +66,7 @@ def main(argv: list[str] | None = None) -> int:
         profile=args.profile,
         steps=steps,
         godot_executable=godot,
+        require_artwork=args.require_artwork,
     )
 
 

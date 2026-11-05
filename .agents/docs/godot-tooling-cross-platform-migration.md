@@ -188,3 +188,4 @@ python Tools/godot/verify_godot_project.py --profile agent
 | 2026-11-05 | 初稿：Frank 拍板「Python 编排、TS 规格」原则；文档-only，无脚本行为变更。 |
 | 2026-11-05 | 原则 status 升为已批准；实现跟踪 [godot-tooling-cross-platform-migration 开发计划](../plans/godot-tooling-cross-platform-migration.md)。[#14](https://github.com/cty41/wooftactics/pull/14) 原则、[#13](https://github.com/cty41/wooftactics/pull/13) 进程探测、[#15](https://github.com/cty41/wooftactics/pull/15) 开发计划已合入 `feat/all-tilemap`。 |
 | 2026-11-05 | 刀 2：``Tools/godot/verify_godot_project.py``（``--profile agent``）与步骤表／SKIP 约定。 |
+| 2026-11-05 | 刀 5：Verify 步骤单源迁入 ``Tools/godot/lib/verify_steps.py``／``verify_runner.py``；``Verify-GodotProject.ps1`` 薄转发；Windows 扩展链保留在 ``Verify-GodotProject.WindowsExtended.ps1``。 |
