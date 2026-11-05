@@ -8,6 +8,8 @@ param(
 $ErrorActionPreference = 'Stop'
 $GodotOwned = $true
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
+Import-Module (Join-Path $PSScriptRoot 'TacticsPython.psm1') -Force
+$tacticsPythonExe = Get-TacticsPythonExecutable -RepoRoot $repoRoot
 $projectRoot = (Resolve-Path (Join-Path $repoRoot 'godot')).Path
 $projectRootWithSeparator = $projectRoot.TrimEnd([System.IO.Path]::DirectorySeparatorChar) +
     [System.IO.Path]::DirectorySeparatorChar
@@ -219,7 +221,7 @@ try {
     }
 
     Invoke-Checked 'Validate pinned Godot AI vendor tree' {
-        python 'Tools/migration/godot_ai_vendor.py' --root $repoRoot
+        & $tacticsPythonExe 'Tools/migration/godot_ai_vendor.py' --root $repoRoot
     }
 
     if ($GodotOwned) {
