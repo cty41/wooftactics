@@ -1,7 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { compileScenarioDraft } from "../src/compiler.js";
-import { parseGameplayContracts, validateContractRegistry } from "../src/contracts.js";
+import {
+  buildRegistryContractCoverage,
+  contractCoverageGateDiagnostics,
+  evaluateContractCoverageGate,
+  parseGameplayContracts,
+  validateContractRegistry
+} from "../src/contracts.js";
 import { extractContractCandidates, generateScenarioDraft } from "../src/ollama.js";
 
 const contract = `# Poison\n\n\`\`\`gameplay-contract
@@ -66,4 +72,63 @@ test("fails closed when Ollama invents evidence or an unsupported draft", async 
   const compiled = compileScenarioDraft(draft.value, { runtime: "Godot" });
   assert.equal(compiled.valid, false);
   assert.ok(compiled.diagnostics.some(value => value.code === "UnsupportedActionKind"));
+});
+
+test("contract coverage gate fails when a supported contract lacks ScenarioSpec", () => {
+  const coverage = [
+    { id: "BUFF-REFRESH-STRATEGY-001", status: "covered" as const },
+    { id: "GRID-LOGIC-AUTHORITY-001", status: "missing-spec" as const }
+  ];
+  const gate = evaluateContractCoverageGate(true, coverage, new Set());
+  assert.equal(gate.valid, false);
+  assert.deepEqual(gate.uncoveredMissingSpec, ["GRID-LOGIC-AUTHORITY-001"]);
+  assert.ok(contractCoverageGateDiagnostics(gate).some(value => value.code === "ContractCoverageMissingSpec"));
+});
+
+test("contract coverage gate accepts baseline allowlist entries for missing-spec contracts", () => {
+  const coverage = [
+    { id: "GRID-LOGIC-AUTHORITY-001", status: "missing-spec" as const },
+    { id: "MOVE-TERRAIN-COST-001", status: "missing-spec" as const }
+  ];
+  const gate = evaluateContractCoverageGate(true, coverage, new Set(["GRID-LOGIC-AUTHORITY-001"]));
+  assert.equal(gate.valid, false);
+  assert.deepEqual(gate.uncoveredMissingSpec, ["MOVE-TERRAIN-COST-001"]);
+  const allowedGate = evaluateContractCoverageGate(
+    true,
+    coverage,
+    new Set(["GRID-LOGIC-AUTHORITY-001", "MOVE-TERRAIN-COST-001"])
+  );
+  assert.equal(allowedGate.valid, true);
+  assert.deepEqual(allowedGate.staleAllowlistEntries, []);
+});
+
+test("buildRegistryContractCoverage preserves unsupported and failed statuses", () => {
+  const registry = validateContractRegistry([{
+    path: "sample.md",
+    markdown: `# Sample\n\n\`\`\`gameplay-contract
+id: GRID-LOGIC-AUTHORITY-001
+status: verified_current
+statement: Grid logic authority remains in Core.
+verification:
+  - layer: core_test
+    path: src/Tactics.Core.Tests/GridTests.cs
+dsl_support: supported
+\`\`\`\n\n\`\`\`gameplay-contract
+id: ATTR-VALUE-BOUNDS-001
+status: verified_current
+statement: Attribute bounds are enforced.
+verification:
+  - layer: core_test
+    path: src/Tactics.Core.Tests/AttributeTests.cs
+dsl_support: unsupported
+\`\`\`\n`
+  }]);
+  const references = new Map<string, "covered" | "failed">([
+    ["GRID-LOGIC-AUTHORITY-001", "failed"]
+  ]);
+  const coverage = buildRegistryContractCoverage(registry, references);
+  assert.deepEqual(coverage, [
+    { id: "GRID-LOGIC-AUTHORITY-001", status: "failed" },
+    { id: "ATTR-VALUE-BOUNDS-001", status: "unsupported" }
+  ]);
 });

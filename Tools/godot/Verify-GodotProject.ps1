@@ -348,6 +348,14 @@ try {
         }
     }
 
+    $contractCoverageAllowlist = Join-Path $repoRoot 'Tests\gameplay-specs\contract-coverage-allow-missing-spec-v1.json'
+    Invoke-Checked 'Enforce gameplay contract coverage gate' {
+        node Tools/gameplay-test-spec/dist/src/cli.js contract-coverage `
+            --docs .agents/docs `
+            --specs Tests/gameplay-specs `
+            --allow-missing-spec $contractCoverageAllowlist
+    }
+
     Invoke-Checked 'Restore isolated GdUnit4Net test host dependencies' {
         dotnet restore $testHostProject --locked-mode -p:GodotProjectDir=$projectRootWithSeparator
     }
