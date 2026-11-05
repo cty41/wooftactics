@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Battle System
 description: Godot Pure Run 的棋盘、回合、技能、状态、AI 合法性、结算与表现投影主链。
 tags: [gameplay, battle, turn-based, godot]
-timestamp: "2026-10-30T22:09:51+08:00"
+timestamp: "2026-11-05T12:23:11+08:00"
 status: active
 catalog_scope: battle-system
 repo_paths:
@@ -27,7 +27,7 @@ repo_paths:
   - godot/src/Tactics.Godot.Adapter/Runtime/GodotPlayableRunMain.cs
   - godot/tests/CoreGoldenVectorGodotTests.cs
 verified_revision: 04c75ec4
-source_fingerprint: sha256:7b471c97dc582bb88864fdb4711f7f7c79898eeeb1c7c187dd3c3dbfeefaa6d3
+source_fingerprint: sha256:72dae0a9bceedfb65e5cbd93ea7f2c22b7724df26a195e2d05550ebf8ca20908
 ---
 
 # Current State
@@ -57,7 +57,7 @@ AI 和真实 Transition 必须复用 Core 规则；表现 cue、Tween、伤害�
 
 ## Battle Runtime
 
-所有探索页(初始营地、战斗入口、战后、休息、商店、宝箱、事件)统一经 `TryPrepareResidentExploration` 借用该节点的正式驻留 Act 地图，队员以战斗同款 `GodotUnitActor` 精灵显示，不再绘制占位棋盘；出口位于地图右缘 `9,y`。仅在无驻留世界(无头上下文)或模板与绑定不符时才回退到唯一的占位棋盘，并输出 `exploration.resident_template_mismatch` 警告。Core `RunAdventureTransitionService.PlaceParty` 在 `EnterBoard` 的固定落点不适用于正式地图时重新落座并持久化。
+所有探索页(初始营地、战斗入口、战后、休息、商店、宝箱、事件)统一经 `TryPrepareResidentExploration` 借用该节点的正式驻留 Act 地图，队员以战斗同款 `GodotUnitActor` 精灵显示，不再绘制占位棋盘；出口位于地图右缘 `9,y`。仅在无驻留世界(无头上下文)或模板与绑定不符时才回退到唯一的占位棋盘，并输出 `exploration.resident_template_mismatch` 警告；该原因暂存在 `_residentFallbackReason`，页面创建状态标签时经 `WithResidentFallback` 一次性显示在状态栏（`CreatePage` 清空，不会串到下一页）。初始页与已解决节点页共用同一个 Inventory 按钮槽（`ExplorationInventoryButtonRect`，右下角，不覆盖右缘出口标记）。战后路线布局遇到缺失的目标节点或入口锚点时跳过该路线并记 `postbattle.route_target_missing` / `postbattle.route_entry_missing`，其余路线与镜头框选照常。Core `RunAdventureTransitionService.PlaceParty` 在 `EnterBoard` 的固定落点不适用于正式地图时重新落座并持久化。
 
 Adventure 事件战的随机状态会从 checkpoint revision 中扣除 Adventure 专属 revision，确保领队移动、路线点击和场景切换不会改变相同 run seed 的战斗序列。护送 NPC 的生命值读取正式 UnitDefinition 派生值，不再使用硬编码 12 HP；其存活、团灭与事件失败仍由现有 Protected NPC 胜负规则裁决。
 

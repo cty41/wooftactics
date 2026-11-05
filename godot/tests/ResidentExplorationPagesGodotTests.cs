@@ -158,6 +158,178 @@ public sealed class ResidentExplorationPagesGodotTests
         await Task.CompletedTask;
     });
 
+    /// <summary>A page that cannot borrow its resident map says so on screen, once, and never on a later page.</summary>
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task MismatchedResidentTemplateFallsBackAndShowsTheReasonOnThePage() => await WithRun(async (ui, host, setup, _) =>
+    {
+        FieldInfo world = typeof(GodotPlayableRunMain).GetField("_actWorld", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        object? original = world.GetValue(ui);
+        var unprepared = new GodotActWorldHost();
+        world.SetValue(ui, unprepared);
+        try
+        {
+            InvokePrivate(ui, "ShowInitialAdventure", setup.Snapshot!.ActiveRun!);
+            AssertThat(Field<Label>(ui, "_status").Text).Contains("exploration.resident_template_mismatch:start");
+            AssertThat(Field<GodotAdventureBoardView>(ui, "_adventureBoard").UsesResidentSurface).IsFalse();
+        }
+        finally
+        {
+            world.SetValue(ui, original);
+            unprepared.Free();
+        }
+        // The reason was consumed: the next page, now on the real resident map, does not repeat it.
+        InvokePrivate(ui, "ShowInitialAdventure", setup.Snapshot!.ActiveRun!);
+        AssertThat(Field<Label>(ui, "_status").Text.Contains("exploration.", StringComparison.Ordinal)).IsFalse();
+        AssertThat(Field<GodotAdventureBoardView>(ui, "_adventureBoard").UsesResidentSurface).IsTrue();
+        await Task.CompletedTask;
+    });
+
+    /// <summary>Entering a node reseats a party that stands on objects or blocked cells; a valid placement is left untouched.</summary>
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task InvalidPartyPlacementIsReseatedOnTheTemplateAndValidOnesAreLeftAlone() => await WithRun(async (ui, host, setup, _) =>
+    {
+        var service = new RunAdventureTransitionService();
+        MethodInfo seat = typeof(GodotPlayableRunMain).GetMethod("SeatPartyOnTemplate", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        AdventureMapTemplateDefinition template = host.Nodes["start"].Surface.Template!.ToCoreDefinition();
+        PureRunState run = setup.Snapshot!.ActiveRun!;
+        AdventureBoardObject blocker = template.Board.Objects.First();
+        RunAdventureActorCell[] broken = run.AdventureState!.ActorCells
+            .Select((cell, index) => index == 0 ? cell with { Cell = blocker.Cell } : cell).ToArray();
+        PureRunState invalid = service.PlaceParty(run, broken);
+
+        var seated = (PureRunState)seat.Invoke(ui, [service, invalid, "start"])!;
+        AssertThat(ReferenceEquals(seated, invalid)).IsFalse();
+        AssertThat(seated.AdventureState!.SceneRevision).IsEqual(invalid.AdventureState!.SceneRevision + 1);
+        AssertThat(seated.AdventureState.ActorCells.Count).IsEqual(3);
+        foreach (RunAdventureActorCell actor in seated.AdventureState.ActorCells)
+        {
+            AssertThat(template.Board.IsWalkable(actor.Cell)).IsTrue();
+            AssertThat(template.Board.Objects.Any(value => value.Cell == actor.Cell)).IsFalse();
+        }
+        AssertThat(seated.AdventureState.ActorCells.Select(value => value.Cell).Distinct().Count()).IsEqual(3);
+
+        var again = (PureRunState)seat.Invoke(ui, [service, seated, "start"])!;
+        AssertThat(ReferenceEquals(again, seated)).IsTrue();
+        await Task.CompletedTask;
+    });
+
+    /// <summary>Cells win over the rim marker; the rim exit marker only answers clicks outside the board.</summary>
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task ClickingBesideTheExitWalksAndOnlyTheRimMarkerLeaves() => await WithRun(async (ui, host, setup, _) =>
+    {
+        InvokePrivate(ui, "ShowInitialAdventure", setup.Snapshot!.ActiveRun!);
+        GodotAdventureBoardView board = Field<GodotAdventureBoardView>(ui, "_adventureBoard");
+        AdventureBoardObject exit = board.Definition.Objects.First(value => value.Kind == AdventureObjectKind.Exit);
+        AssertThat(board.TryGetExitRimPosition(exit.ObjectId, out Vector2 rim)).IsTrue();
+        GridPoint[] occupied = board.Definition.Actors.Select(value => value.Cell)
+            .Concat(board.Definition.Objects.Select(value => value.Cell)).ToArray();
+        GridPoint beside = new[] { new GridPoint(exit.Cell.X, exit.Cell.Y - 1), new GridPoint(exit.Cell.X, exit.Cell.Y + 1),
+                new GridPoint(exit.Cell.X - 1, exit.Cell.Y) }
+            .Where(cell => board.Definition.IsWalkable(cell) && !occupied.Contains(cell))
+            .OrderBy(cell => board.CellCenter(cell).DistanceTo(rim)).First();
+
+        var cells = new List<GridPoint>();
+        var objects = new List<string>();
+        board.CellPressed += cell => cells.Add(cell);
+        board.ObjectPressed += id => objects.Add(id);
+        InvokePrivate(board, "OnGuiInput", new InputEventMouseButton
+        { ButtonIndex = MouseButton.Left, Pressed = true, Position = board.CellCenter(beside) });
+        AssertThat(cells.SequenceEqual([beside])).IsTrue();
+        AssertThat(objects.Count).IsEqual(0);
+
+        // The page re-rendered after the move; the new board answers the rim marker.
+        GodotAdventureBoardView refreshed = Field<GodotAdventureBoardView>(ui, "_adventureBoard");
+        AssertThat(refreshed.TryGetExitRimPosition(exit.ObjectId, out Vector2 refreshedRim)).IsTrue();
+        var rimObjects = new List<string>();
+        refreshed.ObjectPressed += id => rimObjects.Add(id);
+        InvokePrivate(refreshed, "OnGuiInput", new InputEventMouseButton
+        { ButtonIndex = MouseButton.Left, Pressed = true, Position = refreshedRim });
+        AssertThat(rimObjects.SequenceEqual([exit.ObjectId])).IsTrue();
+        await Task.CompletedTask;
+    });
+
+    /// <summary>Every interaction object and exit of every formal map has a neighbour the party can walk to from each entry.</summary>
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task EveryObjectOfEveryFormalMapHasAReachableNeighbourFromEachEntry() => await WithRun(async (ui, host, setup, _) =>
+    {
+        var problems = new List<string>();
+        foreach ((string nodeId, GodotAdventureMapInstance map) in host.Nodes)
+        {
+            AdventureMapTemplateDefinition template = map.Surface.Template!.ToCoreDefinition();
+            foreach (AdventureMapAnchor entry in template.Entries)
+            foreach (AdventureBoardObject value in template.Board.Objects)
+            {
+                bool reachable = new[] { new GridPoint(value.Cell.X, value.Cell.Y - 1), new GridPoint(value.Cell.X - 1, value.Cell.Y),
+                        new GridPoint(value.Cell.X + 1, value.Cell.Y), new GridPoint(value.Cell.X, value.Cell.Y + 1) }
+                    .Any(neighbour => template.Board.IsWalkable(neighbour) && (neighbour == entry.Cell ||
+                        AdventureBoardPathfinder.FindPath(template.Board, entry.Cell, neighbour).Count > 0));
+                if (!reachable) problems.Add($"{nodeId}:{value.ObjectId}@{value.Cell} from entry {entry.AnchorId}");
+            }
+        }
+        AssertThat(string.Join("; ", problems)).IsEqual(string.Empty);
+        await Task.CompletedTask;
+    });
+
+    /// <summary>The Inventory button sits in one shared slot and never covers an exit rim marker (the canvas is a fixed 1600x900 stretch).</summary>
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task InventoryButtonSharesOneSlotAndNeverCoversAnExitMarker() => await WithRun(async (ui, host, setup, _) =>
+    {
+        MethodInfo rim = typeof(GodotAdventureBoardView).GetMethod("RimPosition", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        var slots = new List<Vector2>();
+        foreach (string page in new[] { "ShowInitialAdventure", "ShowResolvedAdventureNode" })
+        {
+            InvokePrivate(ui, page, setup.Snapshot!.ActiveRun!);
+            GodotAdventureBoardView board = Field<GodotAdventureBoardView>(ui, "_adventureBoard");
+            var button = (Button)ui.FindChild("ExplorationInventoryButton", true, false)!;
+            slots.Add(button.Position);
+            Rect2 buttonRect = new(button.GetGlobalTransformWithCanvas().Origin, button.Size);
+            // Exits live on the x = 9 column; every possible rim marker (radius 32) must stay clear of the button.
+            for (int y = 0; y < 10; y++)
+            {
+                Vector2 marker = board.GetGlobalTransformWithCanvas() * (Vector2)rim.Invoke(board, [new GridPoint(9, y)])!;
+                AssertThat(buttonRect.Intersects(new Rect2(marker - new Vector2(32, 32), new Vector2(64, 64)))).IsFalse();
+            }
+        }
+        AssertThat(slots[0]).IsEqual(slots[1]);
+        await Task.CompletedTask;
+    });
+
+    /// <summary>A route whose target map or entry anchor is missing is skipped with a diagnostic; the rest still draw.</summary>
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task PostBattleLayoutSkipsRoutesWhoseTargetOrEntryIsMissing() => await WithRun(async (ui, host, setup, _) =>
+    {
+        (string nodeId, AdventureMapTemplateDefinition template) = host.Nodes
+            .Select(pair => (pair.Key, pair.Value.Surface.Template!.ToCoreDefinition()))
+            .First(value => value.Item2.Exits.Count > 0 && value.Item2.Exits.All(exit => host.Nodes.ContainsKey(exit.TargetNodeId)));
+        AdventureMapExitAnchor good = template.Exits[0];
+        AdventureMapExitAnchor ghost = good with { ExitId = "ghost", TargetNodeId = "ghost_node" };
+        AdventureMapExitAnchor noEntry = good with { ExitId = "no-entry", TargetEntryId = "missing_entry" };
+        AdventureMapTemplateDefinition damaged = template with { Exits = [good, ghost, noEntry] };
+        var board = new GodotAdventureBoardView();
+        try
+        {
+            InvokePrivate(ui, "PreparePostBattleWorld", nodeId, damaged, new[] { good.TargetNodeId, "ghost_node" }, board);
+            var diagnostics = Field<List<string>>(ui, "_postBattleDiagnostics");
+            AssertThat(diagnostics.Contains($"postbattle.route_target_missing:{nodeId}->ghost_node")).IsTrue();
+            AssertThat(diagnostics.Contains($"postbattle.route_entry_missing:{nodeId}->{good.TargetNodeId}:missing_entry")).IsTrue();
+            Node routes = host.Nodes[nodeId].GetNode("PostBattleRoutes");
+            AssertThat(routes.GetChildCount()).IsEqual(1);
+            AssertThat(board.FrameExtraPoints.Count).IsEqual(4);
+        }
+        finally
+        {
+            InvokePrivate(ui, "RestoreHostBaseline", host);
+            board.Free();
+        }
+        await Task.CompletedTask;
+    });
+
     private static GodotAdventureBoardView AssertResidentPage(GodotPlayableRunMain ui, GodotActWorldHost host, string nodeId)
     {
         GodotAdventureBoardView view = Field<GodotAdventureBoardView>(ui, "_adventureBoard");

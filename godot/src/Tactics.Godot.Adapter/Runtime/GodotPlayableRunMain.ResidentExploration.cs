@@ -17,6 +17,21 @@ public partial class GodotPlayableRunMain
         PureRunState Run, AdventureBoardDefinition Definition);
 
     /// <summary>
+    /// Why the current page could not use its resident map (diagnostic code). Pages create their status label after
+    /// preparing the board, so the reason waits here until <see cref="WithResidentFallback"/> puts it on screen;
+    /// <c>CreatePage</c> clears it so a reason never leaks onto an unrelated later page.
+    /// </summary>
+    private string? _residentFallbackReason;
+
+    /// <summary>Returns <paramref name="text"/> prefixed by the pending fallback reason (once) so the warning is visible.</summary>
+    private string WithResidentFallback(string text)
+    {
+        string? reason = _residentFallbackReason;
+        _residentFallbackReason = null;
+        return reason is null ? text : string.IsNullOrEmpty(text) ? reason : $"{reason} — {text}";
+    }
+
+    /// <summary>
     /// Builds the exploration board from the node's resident template. Returns null when no resident world exists
     /// (headless contexts) or when the prepared map does not match the authored binding; the latter is reported
     /// loudly so a placeholder board can never replace a formal map unnoticed.
@@ -36,7 +51,7 @@ public partial class GodotPlayableRunMain
         {
             string reason = $"exploration.resident_template_mismatch:{nodeId}";
             GD.PushWarning($"{reason} — falling back to the placeholder board.");
-            SetStatus(reason);
+            _residentFallbackReason = reason;
             return null;
         }
 
@@ -65,7 +80,7 @@ public partial class GodotPlayableRunMain
             // EnsurePartySeated). A still-invalid placement here means that step was skipped, so say so loudly.
             string reason = $"exploration.party_placement_invalid:{nodeId}";
             GD.PushWarning($"{reason} — resident map not shown.");
-            SetStatus(reason);
+            _residentFallbackReason = reason;
             return null;
         }
         return new ResidentExploration(map, template, run, board with { Actors = actors });
@@ -147,6 +162,16 @@ public partial class GodotPlayableRunMain
             if (_unitResources.TryGetValue(member.UnitContentId, out UnitDefinitionResource? definition))
                 units[member.CharacterId] = definition;
         return units;
+    }
+
+    /// <summary>Shared Inventory button slot of the exploration pages: bottom-right, clear of the rim exit markers.</summary>
+    internal static readonly Rect2 ExplorationInventoryButtonRect = new(new Vector2(1180, 796), new Vector2(360, 58));
+
+    private void AddExplorationInventoryButton(Control root, PureRunState run)
+    {
+        Button button = Button("Inventory", () => ShowInventory(run));
+        button.Name = "ExplorationInventoryButton";
+        root.AddChild(PlaceControl(button, ExplorationInventoryButtonRect.Position, ExplorationInventoryButtonRect.Size));
     }
 
     private static string[] ExitTargets(AdventureBoardDefinition definition) =>

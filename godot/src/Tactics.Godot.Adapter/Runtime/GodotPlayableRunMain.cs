@@ -869,8 +869,8 @@ public partial class GodotPlayableRunMain : Control
             if (objectId != "exit:layer_01_battle") return;
             HandleExitPointer(run, definition, objectId);
         };
-        root.AddChild(PlaceControl(Button("Inventory", () => ShowInventory(run)), new Vector2(1130, 720), new Vector2(360, 58)));
-        _status = LabelAt(root, $"Leader: {adventure.LeaderId}", new Vector2(470, 810), 18);
+        AddExplorationInventoryButton(root, run);
+        _status = LabelAt(root, WithResidentFallback($"Leader: {adventure.LeaderId}"), new Vector2(470, 810), 18);
         BuildPauseMenu(root, false);
     }
 
@@ -1725,7 +1725,7 @@ public partial class GodotPlayableRunMain : Control
                 GD.PushError($"Event battle failed: {exception}");
             }
         };
-        _status = LabelAt(root, $"Interact: {objectId}", new Vector2(470, 810), 18);
+        _status = LabelAt(root, WithResidentFallback($"Interact: {objectId}"), new Vector2(470, 810), 18);
     }
 
     private void ShowPostEventScene(PureRunState run, string contextKind)
@@ -1769,7 +1769,7 @@ public partial class GodotPlayableRunMain : Control
         WireAdventureMovement(run, definition, changed => ShowPostEventScene(changed, contextKind));
         _adventureBoard.ObjectPressed += pressed => HandleExitPointer(run, definition, pressed);
         root.AddChild(PlaceControl(Button("Continue", () => RouteMap(run)), new Vector2(650, 740), new Vector2(300, 50)));
-        _status = LabelAt(root, eventResolution, new Vector2(470, 810), 18);
+        _status = LabelAt(root, WithResidentFallback(eventResolution), new Vector2(470, 810), 18);
     }
 
     private void ShowAdventureNodeEntry(PureRunState run, PureRunNodeKind kind)
@@ -1846,7 +1846,7 @@ public partial class GodotPlayableRunMain : Control
                 case PureRunNodeKind.Treasure: ShowTreasure(run); break;
             }
         };
-        _status = LabelAt(root, $"Interact: {objectId}", new Vector2(470, 810), 18);
+        _status = LabelAt(root, WithResidentFallback($"Interact: {objectId}"), new Vector2(470, 810), 18);
     }
 
     private void WireAdventureMovement(PureRunState run, AdventureBoardDefinition definition, Action<PureRunState> rerender)
@@ -2010,8 +2010,8 @@ public partial class GodotPlayableRunMain : Control
             WireAdventureMovement(run, definition, ShowResolvedAdventureNode);
             _adventureBoard.ObjectPressed += pressed => HandleExitPointer(run, definition, pressed);
         }
-        root.AddChild(PlaceControl(Button("Inventory", () => ShowInventory(run)), new Vector2(1180, 796), new Vector2(360, 58)));
-        _status = LabelAt(root, "Node resolved", new Vector2(470, 810), 18);
+        AddExplorationInventoryButton(root, run);
+        _status = LabelAt(root, WithResidentFallback("Node resolved"), new Vector2(470, 810), 18);
     }
 
     private void RouteMap(PureRunState run)
@@ -2619,6 +2619,7 @@ public partial class GodotPlayableRunMain : Control
 
     private Control CreatePage(string title, string subtitle, bool battleBackdrop, bool showHeader)
     {
+        _residentFallbackReason = null;
         HideActWorldForPage();
         ClosePauseMenu();
         ClearEscapeLayers();

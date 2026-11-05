@@ -11,6 +11,17 @@ namespace Tactics.Godot.Adapter.Runtime;
 public partial class GodotPlayableRunMain
 {
     private const string PostBattleRoutesName = "PostBattleRoutes";
+    internal const string PostBattleRouteTargetMissing = "postbattle.route_target_missing";
+    internal const string PostBattleRouteEntryMissing = "postbattle.route_entry_missing";
+
+    /// <summary>Diagnostic codes raised while laying out the latest post-battle page (tests and logs read them).</summary>
+    private readonly List<string> _postBattleDiagnostics = new();
+
+    private void ReportPostBattleDiagnostic(string code)
+    {
+        _postBattleDiagnostics.Add(code);
+        GD.PushWarning($"{code} — route skipped.");
+    }
 
     private Dictionary<string, Transform2D> _hostBaselineTransforms = new();
     private GodotActWorldHost? _hostBaselineHost;
@@ -54,7 +65,12 @@ public partial class GodotPlayableRunMain
         GodotAdventureBoardView board)
     {
         GodotActWorldHost host = _actWorld!;
-        GodotAdventureMapInstance current = host.Nodes[nodeId];
+        _postBattleDiagnostics.Clear();
+        if (!host.Nodes.TryGetValue(nodeId, out GodotAdventureMapInstance? current))
+        {
+            ReportPostBattleDiagnostic($"postbattle.current_node_missing:{nodeId}");
+            return;
+        }
         Rect2 bounds = GodotBattleBoardFitter.BoardBounds();
         var layout = GodotAdventureAtlasLayout.Project(MapDefinition, bounds.Size);
         // Remember the pre-layout transforms once so other pages (single-map exploration, battle, Overview) get
@@ -84,9 +100,20 @@ public partial class GodotPlayableRunMain
         Transform2D toCurrent = current.Transform.AffineInverse();
         foreach (AdventureMapExitAnchor exit in template.Exits.Where(value => allowedTargets.Contains(value.TargetNodeId, StringComparer.Ordinal)))
         {
-            GodotAdventureMapInstance target = host.Nodes[exit.TargetNodeId];
-            AdventureMapTemplateDefinition targetTemplate = target.Surface.Template!.ToCoreDefinition();
-            AdventureMapAnchor entry = targetTemplate.Entries.Single(value => value.AnchorId == exit.TargetEntryId);
+            // A route whose target map or entry anchor is missing is skipped with a diagnostic; the remaining
+            // routes and the camera framing still work.
+            if (!host.Nodes.TryGetValue(exit.TargetNodeId, out GodotAdventureMapInstance? target))
+            {
+                ReportPostBattleDiagnostic($"{PostBattleRouteTargetMissing}:{nodeId}->{exit.TargetNodeId}");
+                continue;
+            }
+            AdventureMapAnchor? entry = target.Surface.Template?.ToCoreDefinition().Entries
+                .FirstOrDefault(value => value.AnchorId == exit.TargetEntryId);
+            if (entry is null)
+            {
+                ReportPostBattleDiagnostic($"{PostBattleRouteEntryMissing}:{nodeId}->{exit.TargetNodeId}:{exit.TargetEntryId}");
+                continue;
+            }
             Vector2 centre = current.Surface.CellCenter(exit.Cell);
             Vector2 rim = centre + (centre - current.Surface.CellCenter(new GridPoint(exit.Cell.X - 1, exit.Cell.Y))) * .5f;
             Vector2 to = toCurrent * target.Transform * target.Surface.CellCenter(entry.Cell);

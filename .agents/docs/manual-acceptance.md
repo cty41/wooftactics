@@ -366,11 +366,11 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 - Status: `pending`
 - Source: 探索页统一复用驻留地图（初始营地、战斗入口、战后、休息、商店、宝箱、事件共用节点正式 Act 地图）
 - Action: 在隔离 Run 中依次走过战后页、休息、商店、宝箱与一个事件节点（普通、精英、Boss 战斗节点进入即自动开战，无探索页，不在此列）；每页移动领队、点击场景物件，再从右侧出口离开；休息页移动领队后点 Inventory 再返回；另用一份旧版起始探索存档确认仍显示起始营地兜底页。
-- Expected: 每页都是该节点的正式地图（阻挡物与战斗中一致），三名队员显示为与战斗相同的角色精灵而非文字；领队移动后刷新/返回仍停在原位；锁定出口可见但点击提示先完成节点；Inventory 按钮不遮挡右侧出口；Output 无 `exploration.resident_template_mismatch`。
+- Expected: 每页都是该节点的正式地图（阻挡物与战斗中一致），三名队员显示为与战斗相同的角色精灵而非文字；领队移动后刷新/返回仍停在原位；锁定出口可见但点击提示先完成节点；Inventory 按钮（初始页与已解决页同在右下角同一位置）不遮挡右侧出口；Output 无 `exploration.resident_template_mismatch`，状态栏也不出现 `exploration.*` 提示；战后路线图无 `postbattle.route_*` 警告。
 - Observe: 探索棋盘、角色精灵、右侧出口标记、状态栏、Inventory 按钮、Godot Output。
 - Preserve on failure: 截图（含窗口大小）、节点 ID、领队格、点击位置、Output 的 mismatch 警告。
 - Save boundary: 使用隔离 Run；移动与离开节点会写入存档。
-- Automated evidence: Core `PlaceParty` 用例；`ResidentExplorationPagesGodotTests` 5/5 覆盖各页正式地图、精灵、移动持久化；20 条 gameplay journey 与批量报告 29/29 在新出口几何（右缘 `9,y`）下通过。观感、点击手感与遮挡仍需人工判断。
+- Automated evidence: Core `PlaceParty` 用例；`ResidentExplorationPagesGodotTests` 14/14 覆盖各页正式地图、精灵、移动持久化、回退原因上屏、无效站位重新落座、点击规则、全部正式地图物件相邻格可达、Inventory 共用槽位不遮挡出口标记、战后缺目标路线跳过；20 条 gameplay journey 与批量报告 29/29 在新出口几何（右缘 `9,y`）下通过。观感、点击手感与遮挡仍需人工判断。
 - User verdict: none.
 
 ## Passed
