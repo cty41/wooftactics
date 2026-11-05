@@ -32,5 +32,5 @@ PYTHONPATH=. python3 Tools/godot/open_godot_dev.py --no-launch
 
 - 仅准备依赖、配置和 DLL：追加 `-NoLaunch`。
 - 扩大工具白名单：使用 `-GodotAiProfile content-authoring|ui-input|presentation`，然后重启 Codex 任务。
-- 完整验证：关闭该 worktree 的 Editor，再运行 `Tools/godot/Verify-GodotProject.ps1`。
+- 完整验证：关闭该 worktree 的 Editor，再运行 `Tools/godot/Verify-GodotProject.ps1`（Windows 薄包装，内部转发到 `Tools/godot/verify_godot_project.py --profile windows`）。Linux／云端 Agent 子集仍用 `python3 Tools/godot/verify_godot_project.py --profile agent`；**未**把 AGENTS.md Quick Reference 默认入口改为 Python，需维护者单独批准。
 - 更新 Godot AI：只能审阅固定 Tag/commit/license 后运行 vendor refresh；禁止使用 Dock 自更新。插件源码进入公开源码，但 `godot/export_presets.cfg` 与 Windows包验证继续排除它。

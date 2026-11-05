@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import os
 import re
 import shutil
@@ -20,8 +21,20 @@ from Tools.godot.lib.tool_probe import (
     resolve_node_executable,
     try_resolve_godot_executable,
 )
-from Tools.godot.lib.verify_steps import VerifyStepDefinition
+from Tools.godot.lib.verify_steps import PROFILE_WINDOWS, VerifyStepDefinition
 from Tools.godot.lib.worktree_lock import WorktreeLock, acquire_worktree_lock
+
+WINDOWS_EXTENDED_SCRIPT = Path("Tools/godot/Verify-GodotProject.WindowsExtended.ps1")
+CODEX_SKILLS = (
+    "godot-workflow",
+    "godot-csharp-development",
+    "godot-content-migration",
+    "godot-editor-tooling",
+    "godot-editor-lifecycle",
+    "godot-testing-diagnostics",
+    "godot-ai-workflow",
+    "manual-qa-handoff",
+)
 
 
 @dataclass
@@ -34,6 +47,8 @@ class VerifyContext:
     node_exe: str
     godot_executable: str | None
     run_on_windows: bool
+    require_artwork: bool = False
+    maliang_available: bool = False
 
 
 class VerifyStepFailed(RuntimeError):
@@ -48,6 +63,192 @@ def _run_checked(title: str, argv: list[str], *, cwd: Path, env: dict[str, str])
     completed = subprocess.run(argv, cwd=cwd, env=env, check=False)
     if completed.returncode != 0:
         raise VerifyStepFailed(title, completed.returncode)
+
+
+def _resolve_pwsh_executable(env: dict[str, str]) -> str:
+    for key in ("PWSH", "POWERSHELL"):
+        value = env.get(key, "").strip()
+        if value:
+            return value
+    for candidate in ("pwsh", "powershell"):
+        resolved = shutil.which(candidate, path=env.get("PATH"))
+        if resolved:
+            return resolved
+    raise RuntimeError("PowerShell (pwsh or powershell) is required for Windows extended verification.")
+
+
+def _assert_maliang_policy(ctx: VerifyContext) -> None:
+    marker = ctx.repo_root / "Tools/vendor/maliang/src/maliang_art/__init__.py"
+    ctx.maliang_available = marker.is_file()
+    if ctx.maliang_available:
+        return
+    if ctx.require_artwork:
+        raise RuntimeError(
+            "MaLiang submodule is not initialized but --require-artwork was set. "
+            "Run: git submodule update --init Tools/vendor/maliang"
+        )
+    print(
+        "SKIP: MaLiang submodule not initialized; artwork pipeline unittest and "
+        "artwork state registry check will be skipped in Windows extended verification.",
+        flush=True,
+    )
+
+
+def _sync_godot_ai_codex_check(ctx: VerifyContext) -> None:
+    config = ctx.repo_root / ".codex/config.toml"
+    if not config.is_file():
+        print(
+            "SKIP: Validate project-scoped godot-ai Codex configuration — "
+            "local .codex/config.toml is not present",
+            flush=True,
+        )
+        return
+    pwsh = _resolve_pwsh_executable(ctx.env)
+    _run_checked(
+        "Validate project-scoped godot-ai Codex configuration",
+        [
+            pwsh,
+            "-NoProfile",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            "Tools/godot/Sync-GodotAiCodexConfig.ps1",
+            "-Check",
+        ],
+        cwd=ctx.repo_root,
+        env=ctx.env,
+    )
+
+
+def _dotnet_restore_test_host(ctx: VerifyContext) -> None:
+    project_root = ctx.repo_root / "godot"
+    project_root_sep = str(project_root.resolve()) + os.sep
+    test_host = project_root / "tests/Tactics.Godot.TestHost.csproj"
+    _run_checked(
+        "Restore isolated GdUnit4Net test host dependencies (locked)",
+        [
+            ctx.dotnet_exe,
+            "restore",
+            str(test_host.relative_to(ctx.repo_root)).replace("\\", "/"),
+            "--locked-mode",
+            f"-p:GodotProjectDir={project_root_sep}",
+        ],
+        cwd=ctx.repo_root,
+        env=ctx.env,
+    )
+
+
+def _assert_godot_editor_dependency_graph(ctx: VerifyContext) -> None:
+    assets_path = ctx.repo_root / "godot/.godot/mono/temp/obj/project.assets.json"
+    if not assets_path.is_file():
+        raise RuntimeError(
+            f"Godot Editor dependency graph is missing after locked restore: {assets_path}"
+        )
+    assets_text = assets_path.read_text(encoding="utf-8")
+    if "GodotSharpEditor/4.7.1" not in assets_text:
+        raise RuntimeError(
+            "Godot Editor dependency graph is missing GodotSharpEditor/4.7.1. "
+            "Restore the Debug/Editor lock graph before building."
+        )
+    print("== Assert GodotSharpEditor lock graph after restore ==", flush=True)
+
+
+def _prime_godot_uid_cache(ctx: VerifyContext) -> None:
+    if not ctx.godot_executable:
+        raise RuntimeError("Godot executable is required to prime the UID cache.")
+    project_root = ctx.repo_root / "godot"
+    _run_checked(
+        "Prime fresh Godot resource UID cache",
+        [
+            ctx.godot_executable,
+            "--headless",
+            "--editor",
+            "--path",
+            str(project_root),
+            "--import",
+        ],
+        cwd=ctx.repo_root,
+        env=ctx.env,
+    )
+
+
+def _dotnet_authoring_mcp_build(ctx: VerifyContext) -> None:
+    _run_checked(
+        "Build development-only Tactics Authoring MCP",
+        [
+            ctx.dotnet_exe,
+            "build",
+            "Tools/tactics-authoring-mcp/Tactics.Authoring.Mcp.csproj",
+            "-c",
+            "Release",
+            "-m:1",
+        ],
+        cwd=ctx.repo_root,
+        env=ctx.env,
+    )
+
+
+def _dotnet_authoring_mcp_tests(ctx: VerifyContext) -> None:
+    _python_module(ctx, "Run Tactics Authoring MCP protocol tests", "Tools.tactics-authoring-mcp.tests.test_protocol")
+
+
+def _validate_codex_skills(ctx: VerifyContext) -> None:
+    pwsh = _resolve_pwsh_executable(ctx.env)
+    for skill in CODEX_SKILLS:
+        _run_checked(
+            f"Validate Codex/OpenCode skill: {skill}",
+            [
+                pwsh,
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                ".agents/scripts/validate-skills.ps1",
+                "-SkillsRoot",
+                f".agents/skills/{skill}",
+            ],
+            cwd=ctx.repo_root,
+            env=ctx.env,
+        )
+
+
+def _gameplay_plan_hash_contract(ctx: VerifyContext) -> None:
+    source = ctx.repo_root / "Tests/gameplay-specs/godot"
+    output = ctx.repo_root / "artifacts/gameplay-specs/godot"
+    print("== Validate tracked Godot gameplay plan hashes ==", flush=True)
+    for spec in sorted(source.glob("*.gameplay-test.md")):
+        name = spec.name[: -len(".gameplay-test.md")]
+        generated = output / f"{name}.plan.json"
+        tracked = source / f"{name}.plan.json"
+        if not generated.is_file() or not tracked.is_file():
+            raise RuntimeError(f"Godot gameplay plan is stale or missing: {name}")
+        generated_hash = hashlib.sha256(generated.read_bytes()).hexdigest()
+        tracked_hash = hashlib.sha256(tracked.read_bytes()).hexdigest()
+        if generated_hash != tracked_hash:
+            raise RuntimeError(f"Godot gameplay plan is stale or missing: {name}")
+
+
+def _invoke_windows_extended_verification(ctx: VerifyContext) -> None:
+    if not ctx.run_on_windows:
+        raise RuntimeError("Windows extended verification requires Windows.")
+    if not ctx.godot_executable:
+        raise RuntimeError("Godot executable is required for Windows extended verification.")
+    pwsh = _resolve_pwsh_executable(ctx.env)
+    argv = [
+        pwsh,
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        str(WINDOWS_EXTENDED_SCRIPT),
+        "-GodotExecutable",
+        ctx.godot_executable,
+        "-PortableStepsRanExternally",
+        "-SkipWorktreeMutex",
+    ]
+    if ctx.require_artwork:
+        argv.append("-RequireArtwork")
+    _run_checked("Windows extended verification (GdUnit, migration, release, OKF)", argv, cwd=ctx.repo_root, env=ctx.env)
 
 
 def _preflight(ctx: VerifyContext) -> None:
@@ -357,6 +558,14 @@ def _execute_run_step(ctx: VerifyContext, step: VerifyStepDefinition) -> None:
         "gameplay_spec_compiler": _gameplay_spec_compiler,
         "gameplay_spec_batch_compile": _gameplay_spec_batch_compile,
         "gdunit_isolated_subset": _gdunit_isolated_subset,
+        "sync_godot_ai_codex_check": _sync_godot_ai_codex_check,
+        "dotnet_restore_test_host": _dotnet_restore_test_host,
+        "assert_godot_editor_dependency_graph": _assert_godot_editor_dependency_graph,
+        "prime_godot_uid_cache": _prime_godot_uid_cache,
+        "dotnet_authoring_mcp_build": _dotnet_authoring_mcp_build,
+        "dotnet_authoring_mcp_tests": _dotnet_authoring_mcp_tests,
+        "validate_codex_skills": _validate_codex_skills,
+        "gameplay_plan_hash_contract": _gameplay_plan_hash_contract,
         "python_godot_tooling_tests": lambda c: _python_discover(
             c, "Run Godot tooling Python unittest", "Tools/godot/tests"
         ),
@@ -373,12 +582,25 @@ def run_verify_profile(
     profile: str,
     steps: tuple[VerifyStepDefinition, ...],
     godot_executable: str | None,
+    require_artwork: bool = False,
 ) -> int:
     env = os.environ.copy()
     if godot_executable:
         env["GODOT_BIN"] = godot_executable
         env["GODOT_EXECUTABLE"] = godot_executable
     run_on_windows = os.name == "nt"
+    if profile == PROFILE_WINDOWS and not run_on_windows:
+        print(
+            "Windows profile requires Windows; use --profile agent on Linux/cloud.",
+            file=sys.stderr,
+        )
+        return 1
+    if profile == PROFILE_WINDOWS and not godot_executable:
+        print(
+            "Windows profile requires --godot-executable (or GODOT_EXECUTABLE).",
+            file=sys.stderr,
+        )
+        return 1
     ctx = VerifyContext(
         repo_root=repo_root.resolve(),
         profile=profile,
@@ -388,6 +610,7 @@ def run_verify_profile(
         node_exe="",
         godot_executable=godot_executable,
         run_on_windows=run_on_windows,
+        require_artwork=require_artwork,
     )
     editors = list_godot_editor_processes(str(ctx.repo_root / "godot"))
     if editors:
@@ -400,23 +623,35 @@ def run_verify_profile(
     lock: WorktreeLock | None = None
     try:
         lock = acquire_worktree_lock(str(ctx.repo_root))
+        if profile == PROFILE_WINDOWS:
+            _assert_maliang_policy(ctx)
         for step in steps:
             if step.kind == "windows_only_skip":
+                if profile == PROFILE_WINDOWS:
+                    log_skip_windows_only(step.title, step.skip_reason or "Windows-only step")
+                    continue
                 if run_on_windows:
                     print(
                         f"== {step.title} ==",
                         flush=True,
                     )
                     print(
-                        f"Windows full Verify should use Tools/godot/Verify-GodotProject.ps1 for: {step.title}",
+                        f"Step remains outside agent subset: {step.title}",
                         flush=True,
                     )
                     continue
                 log_skip_windows_only(step.title, step.skip_reason or "Windows-only step")
                 continue
-            if step.kind == "conditional_skip" and step.step_id == "gdunit_isolated_subset":
-                _execute_run_step(ctx, step)
+            if step.kind == "windows_extended_ps1":
+                _invoke_windows_extended_verification(ctx)
                 continue
+            if step.kind == "conditional_skip":
+                if step.step_id == "gdunit_isolated_subset":
+                    _execute_run_step(ctx, step)
+                    continue
+                if step.step_id == "sync_godot_ai_codex_check":
+                    _execute_run_step(ctx, step)
+                    continue
             if step.kind == "run":
                 _execute_run_step(ctx, step)
                 continue
