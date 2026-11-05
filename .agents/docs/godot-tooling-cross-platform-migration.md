@@ -86,7 +86,7 @@ PowerShell（`.ps1` / `.psm1`）在迁移期仍是 **Windows 主路径上的实�
 | 场景 | 原则 |
 |---|---|
 | **Windows 日常开发** | 继续可用 `Tools/godot/Open-GodotDev.ps1` 与 `Tools/godot/Verify-GodotProject.ps1`；README／CONTRIBUTING 中的 pwsh 示例在过渡期**仍然有效**。 |
-| **Linux／云端 Agent** | 使用**同一套** Python 编排入口（例如未来的 `python -m …` 或 `Tools/godot/verify_godot_project.py`），与 Windows 共享步骤定义；避免「云端只能读 ps1、无法执行」的长期状态。 |
+| **Linux／云端 Agent** | 使用**同一套** Python 编排入口（``Tools/godot/verify_godot_project.py``，`--profile agent`），与 Windows 共享步骤定义；避免「云端只能读 ps1、无法执行」的长期状态。 |
 | **渐进双入口** | 允许短期内 Windows 仍默认 ps1、Linux 默认 Python，但**语义必须一致**（同一 mutex 规则、同一 Editor 路径过滤、同一失败即停）。双入口是迁移手段，不是永久产品分叉。 |
 | **文档与 Agent** | `AGENTS.md` Quick Reference 在完全切换入口前仍以 ps1 为准；切换时一次性更新 Quick Reference 与 [godot-agent-first-development.md](godot-agent-first-development.md)，并保留 ps1 薄包装说明。 |
 
@@ -157,7 +157,22 @@ PowerShell（`.ps1` / `.psm1`）在迁移期仍是 **Windows 主路径上的实�
 
 ---
 
-## 8. 相关文档与索引
+## 8. Linux／云端 Verify 子集（刀 2）
+
+仓库根目录、``PYTHONPATH=.``：
+
+```bash
+export PATH="$HOME/.dotnet:$PATH"   # 若 dotnet 不在 PATH
+python Tools/godot/verify_godot_project.py --profile agent
+# 可选 GdUnit 子集：--godot-executable /path/to/Godot
+```
+
+- Windows-only 步骤统一日志前缀：``SKIP (Windows-only): <step> — <reason>``（可 grep）。
+- 完整产品证据仍在 Windows 上执行 ``Tools/godot/Verify-GodotProject.ps1``。
+
+---
+
+## 9. 相关文档与索引
 
 - **开发入口（当前）**：[godot-agent-first-development.md](godot-agent-first-development.md)
 - **Spec／合同**：[gameplay-test-framework.md](gameplay-test-framework.md)、[godot-authoring-spec-workflow.md](godot-authoring-spec-workflow.md)
@@ -172,3 +187,4 @@ PowerShell（`.ps1` / `.psm1`）在迁移期仍是 **Windows 主路径上的实�
 |---|---|
 | 2026-11-05 | 初稿：Frank 拍板「Python 编排、TS 规格」原则；文档-only，无脚本行为变更。 |
 | 2026-11-05 | 原则 status 升为已批准；实现跟踪 [godot-tooling-cross-platform-migration 开发计划](../plans/godot-tooling-cross-platform-migration.md)。[#14](https://github.com/cty41/wooftactics/pull/14) 原则、[#13](https://github.com/cty41/wooftactics/pull/13) 进程探测、[#15](https://github.com/cty41/wooftactics/pull/15) 开发计划已合入 `feat/all-tilemap`。 |
+| 2026-11-05 | 刀 2：``Tools/godot/verify_godot_project.py``（``--profile agent``）与步骤表／SKIP 约定。 |

@@ -24,6 +24,7 @@ def run_pwsh(script: pathlib.Path, *args: str, cwd: pathlib.Path | None = None):
     )
 
 
+@unittest.skipUnless(POWERSHELL is not None, "PowerShell not available (Windows-only RC pipeline tests)")
 class WindowsRcPipelineTests(unittest.TestCase):
     def test_powershell_scripts_parse(self):
         scripts = [
