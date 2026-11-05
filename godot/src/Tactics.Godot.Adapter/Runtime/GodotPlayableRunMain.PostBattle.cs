@@ -13,6 +13,7 @@ public partial class GodotPlayableRunMain
     private const string PostBattleRoutesName = "PostBattleRoutes";
     internal const string PostBattleRouteTargetMissing = "postbattle.route_target_missing";
     internal const string PostBattleRouteEntryMissing = "postbattle.route_entry_missing";
+    internal const string PostBattleRouteTemplateMissing = "postbattle.route_template_missing";
 
     /// <summary>Diagnostic codes raised while laying out the latest post-battle page (tests and logs read them).</summary>
     private readonly List<string> _postBattleDiagnostics = new();
@@ -107,7 +108,12 @@ public partial class GodotPlayableRunMain
                 ReportPostBattleDiagnostic($"{PostBattleRouteTargetMissing}:{nodeId}->{exit.TargetNodeId}");
                 continue;
             }
-            AdventureMapAnchor? entry = target.Surface.Template?.ToCoreDefinition().Entries
+            if (target.Surface.Template is null)
+            {
+                ReportPostBattleDiagnostic($"{PostBattleRouteTemplateMissing}:{nodeId}->{exit.TargetNodeId}");
+                continue;
+            }
+            AdventureMapAnchor? entry = target.Surface.Template.ToCoreDefinition().Entries
                 .FirstOrDefault(value => value.AnchorId == exit.TargetEntryId);
             if (entry is null)
             {

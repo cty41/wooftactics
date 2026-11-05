@@ -185,6 +185,26 @@ public sealed class ResidentExplorationPagesGodotTests
         await Task.CompletedTask;
     });
 
+    /// <summary>A still-invalid party placement keeps the resident map off and puts its diagnostic on the status bar.</summary>
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task InvalidPlacementFallbackShowsItsReasonOnThePage() => await WithRun(async (ui, host, setup, _) =>
+    {
+        PureRunState run = setup.Snapshot!.ActiveRun!;
+        string nodeId = RunAdventureTransitionService.CurrentNodeId(run);
+        AdventureMapTemplateDefinition template = host.Nodes[nodeId].Surface.Template!.ToCoreDefinition();
+        AdventureBoardObject blocker = template.Board.Objects.First(value =>
+            value.Cell.X is > 0 and < 8 && value.Cell.Y is > 0 and < 9 && value.Cell != new GridPoint(8, 4));
+        RunAdventureActorCell[] broken = run.AdventureState!.ActorCells
+            .Select((cell, index) => index == 0 ? cell with { Cell = blocker.Cell } : cell).ToArray();
+        PureRunState invalid = new RunAdventureTransitionService().PlaceParty(run, broken);
+
+        InvokePrivate(ui, "ShowResolvedAdventureNode", invalid);
+        AssertThat(Field<Label>(ui, "_status").Text).Contains($"exploration.party_placement_invalid:{nodeId}");
+        AssertThat(Field<GodotAdventureBoardView>(ui, "_adventureBoard").UsesResidentSurface).IsFalse();
+        await Task.CompletedTask;
+    });
+
     /// <summary>Entering a node reseats a party that stands on objects or blocked cells; a valid placement is left untouched.</summary>
     [TestCase]
     [RequireGodotRuntime]
@@ -230,13 +250,14 @@ public sealed class ResidentExplorationPagesGodotTests
                 new GridPoint(exit.Cell.X - 1, exit.Cell.Y) }
             .Where(cell => board.Definition.IsWalkable(cell) && !occupied.Contains(cell))
             .OrderBy(cell => board.CellCenter(cell).DistanceTo(rim)).First();
+        Vector2 contestedPoint = board.CellCenter(beside);
 
         var cells = new List<GridPoint>();
         var objects = new List<string>();
         board.CellPressed += cell => cells.Add(cell);
         board.ObjectPressed += id => objects.Add(id);
         InvokePrivate(board, "OnGuiInput", new InputEventMouseButton
-        { ButtonIndex = MouseButton.Left, Pressed = true, Position = board.CellCenter(beside) });
+        { ButtonIndex = MouseButton.Left, Pressed = true, Position = contestedPoint });
         AssertThat(cells.SequenceEqual([beside])).IsTrue();
         AssertThat(objects.Count).IsEqual(0);
 
@@ -279,6 +300,9 @@ public sealed class ResidentExplorationPagesGodotTests
     [RequireGodotRuntime]
     public async Task InventoryButtonSharesOneSlotAndNeverCoversAnExitMarker() => await WithRun(async (ui, host, setup, _) =>
     {
+        // The check below covers the x = 9 rim only; pin the authoring rule it relies on.
+        foreach ((string id, GodotAdventureMapInstance map) in host.Nodes)
+            AssertThat(map.Surface.Template!.ToCoreDefinition().Exits.All(exit => exit.Cell.X == 9)).IsTrue();
         MethodInfo rim = typeof(GodotAdventureBoardView).GetMethod("RimPosition", BindingFlags.Instance | BindingFlags.NonPublic)!;
         var slots = new List<Vector2>();
         foreach (string page in new[] { "ShowInitialAdventure", "ShowResolvedAdventureNode" })
