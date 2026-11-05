@@ -1,5 +1,7 @@
 # Godot Agent-first 开发入口
 
+跨平台工具链分层与迁移顺序（讨论稿，非实现合同）见 [Tools/godot 跨平台工具链迁移原则](godot-tooling-cross-platform-migration.md)。
+
 Agent 与人工开发统一从仓库根运行：
 
 ```powershell
