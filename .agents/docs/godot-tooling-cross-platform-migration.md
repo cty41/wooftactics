@@ -1,9 +1,10 @@
 ---
 title: Tools/godot 跨平台工具链迁移原则
-status: discussion-draft
-authority: non-binding
+status: approved-via-migration-plan
+authority: principle-approved
 owner_decision: Frank（2026-11）
 related_pr: https://github.com/cty41/wooftactics/pull/13
+implementation_plan: .agents/plans/godot-tooling-cross-platform-migration.md
 ---
 
 # Tools/godot 跨平台工具链迁移原则
@@ -12,10 +13,10 @@ related_pr: https://github.com/cty41/wooftactics/pull/13
 
 | 项 | 说明 |
 |---|---|
-| **状态** | 讨论／原则草稿；Frank 拍板的方向性共识，**不是**权威实现合同、不是 OKF 系统概念、不自动约束 CI 或脚本行为。 |
+| **状态** | Frank 已批准的方向性原则；**实现按** [跨平台工具链迁移开发计划](../plans/godot-tooling-cross-platform-migration.md) 分刀落地。本文仍**不是**逐行实现合同、不是 OKF 系统概念；脚本与测试行为以仓库代码为准。 |
 | **读者** | 负责 Linux／云端 Agent、Verify／Open-GodotDev 演进与 `Tools/gameplay-test-spec` 边界的维护者。 |
 | **事实源** | 当前仍以实现为准：`Tools/godot/*.ps1`、`GodotDevSession.psm1`、`Tools/gameplay-test-spec`、`.agents/rules/godot-agent-workflow.md` 与根 `AGENTS.md`。本文描述**目标分层与迁移顺序**；落地须单独 PR、测试与（必要时）计划条目。 |
-| **本任务边界** | 只记录原则；**不**在本轮实现 `python`/`python3` shim、**不**重写 Verify 行为、**不**替代 TypeScript 规格链。 |
+| **本任务边界** | 记录已批准原则与迁移顺序；具体编排改动见开发计划各刀 PR。**不**替代 TypeScript 规格链；**不**把本文当作 Verify 逐步清单。 |
 
 关联入口：[Godot Agent-first 开发](godot-agent-first-development.md)、[Gameplay Test Framework](gameplay-test-framework.md)、[Godot Agent 工作规约](../rules/godot-agent-workflow.md)。
 
@@ -170,3 +171,4 @@ PowerShell（`.ps1` / `.psm1`）在迁移期仍是 **Windows 主路径上的实�
 | 日期 | 说明 |
 |---|---|
 | 2026-11-05 | 初稿：Frank 拍板「Python 编排、TS 规格」原则；文档-only，无脚本行为变更。 |
+| 2026-11-05 | 原则 status 升为已批准；实现跟踪 [godot-tooling-cross-platform-migration 开发计划](../plans/godot-tooling-cross-platform-migration.md)。[#14](https://github.com/cty41/wooftactics/pull/14) 原则、[#13](https://github.com/cty41/wooftactics/pull/13) 进程探测、[#15](https://github.com/cty41/wooftactics/pull/15) 开发计划已合入 `feat/all-tilemap`。 |
