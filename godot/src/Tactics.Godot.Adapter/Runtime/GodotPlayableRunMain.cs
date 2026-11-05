@@ -385,6 +385,11 @@ public partial class GodotPlayableRunMain : Control
             GetViewport().SetInputAsHandled();
             return;
         }
+        if (_pauseMenu?.Visible != true && _cheatConsole?.Visible != true && TryHandlePostBattleOverviewKey(inputEvent))
+        {
+            GetViewport().SetInputAsHandled();
+            return;
+        }
         if (_startCampView is null || _pauseMenu?.Visible == true || _cheatConsole?.Visible == true) return;
         if (!_startCampView.HandleAtlasKey(inputEvent)) return;
         GetViewport().SetInputAsHandled();
@@ -1106,7 +1111,7 @@ public partial class GodotPlayableRunMain : Control
             ? _actors.GetValueOrDefault(snapshot.ActiveUnitId)
             : null);
         if(_turnOrder is not null)_turnOrder.Text=$"Round {snapshot.Round} | Turn: "+string.Join(" → ",snapshot.TurnOrder.Select((id,index)=>$"{(index==snapshot.ActiveTurnIndex?"▶":"")}{id.Value}{(snapshot.Units.First(unit=>unit.UnitId==id).IsAlive?string.Empty:"✝")}"));
-        _initiativeStrip?.Apply(snapshot.Round, snapshot.InitiativeQueue, _unitResources);
+        _initiativeStrip?.Apply(snapshot.Round, snapshot.InitiativeQueue, _unitResources, snapshot.NextRoundInitiativeQueue);
         RefreshLog();
     }
 
@@ -1621,13 +1626,22 @@ public partial class GodotPlayableRunMain : Control
         BuildPauseMenu(root, false);
     }
 
+    /// <summary>Four 15 px lines must end above the settlement result panel at y = 230.</summary>
+    private const float RunShellLineHeight = 20;
+
     private void AddRunShell(Control root, PureRunState run, string page)
     {
-        var panel = new ColorRect { Color = new Color("1c2a33e6"), Position = new Vector2(1115, 125), Size = new Vector2(420, 82) };
+        string[] lines = new[] { $"{page}  |  Gold {run.Gold}  |  Bag {run.BackpackConsumables.Count + run.BackpackEquipment.Count}" }
+            .Concat(run.Party.Select(value => $"{value.CharacterId} L{value.Level} HP {value.CurrentHealth}/{value.MaxHealth} MP {value.CurrentMana}/{value.MaxMana}"))
+            .ToArray();
+        float height = lines.Length * RunShellLineHeight + 20;
+        var panel = new ColorRect { Name = "RunShellPanel", Color = new Color("1c2a33e6"), Position = new Vector2(1115, 125), Size = new Vector2(420, height) };
         root.AddChild(panel);
-        LabelAt(root, $"{page}  |  Gold {run.Gold}  |  Bag {run.BackpackConsumables.Count + run.BackpackEquipment.Count}\n" +
-            string.Join("   ", run.Party.Select(value => $"{value.CharacterId} L{value.Level} HP {value.CurrentHealth}/{value.MaxHealth} MP {value.CurrentMana}/{value.MaxMana}")),
-            new Vector2(1130, 138), 15).Size = new Vector2(390, 62);
+        Label text = LabelAt(root, string.Join('\n', lines), new Vector2(1130, 135), 15);
+        text.Name = "RunShellText";
+        text.Size = new Vector2(390, height - 20);
+        text.ClipText = true;
+        text.TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis;
     }
 
     private PureRunMapDefinition MapDefinition => _mapDefinition ??
@@ -2371,12 +2385,15 @@ public partial class GodotPlayableRunMain : Control
         UnitAttributes proposed = _progressionDrafts.TryGetValue(key, out UnitAttributes draft) ? draft : character.Attributes;
         bool raised = !proposed.Equals(character.Attributes);
         menu.AddChild(Label($"{character.CharacterId} leveled up",24));
-        Label primary = Label(PrimaryAttributeLabel(
-            _units.TryGetValue(character.UnitContentId, out UnitDefinition? primaryUnit)
-                ? primaryUnit.PrimaryAttribute
-                : UnitPrimaryAttribute.None), 17);
-        primary.Name = "ProgressionPrimaryAttribute";
-        menu.AddChild(primary);
+        UnitPrimaryAttribute primaryAttribute = _units.TryGetValue(character.UnitContentId, out UnitDefinition? primaryUnit)
+            ? primaryUnit.PrimaryAttribute
+            : UnitPrimaryAttribute.None;
+        if (primaryAttribute == UnitPrimaryAttribute.None)
+        {
+            Label allRounder = Label(PrimaryAttributeLabel(primaryAttribute), 15);
+            allRounder.Name = "ProgressionPrimaryAttribute";
+            menu.AddChild(allRounder);
+        }
         if (!_progressionConfirmed.Contains(key) || !raised)
         {
             _progressionConfirmed.Remove(key);
@@ -2388,19 +2405,36 @@ public partial class GodotPlayableRunMain : Control
                 bool isRaised = AttributeValue(proposed, selectedAttribute) > oldValue;
                 var row = new HBoxContainer { Name = $"ProgressionAttributeRow_{selectedAttribute}" };
                 row.AddThemeConstantOverride("separation", 16);
-                Label name = Label(selectedAttribute, 20); name.CustomMinimumSize = new Vector2(190, 0);
+                bool isPrimary = primaryAttribute.ToString() == selectedAttribute;
+                Label name = Label(selectedAttribute, 20); name.CustomMinimumSize = new Vector2(150, 0);
+                Label primaryTag = Label(isPrimary ? "★ Primary" : string.Empty, 15);
+                primaryTag.CustomMinimumSize = new Vector2(100, 0);
+                primaryTag.VerticalAlignment = VerticalAlignment.Center;
                 Label value = Label(isRaised ? $"{oldValue} → {oldValue + 1}" : oldValue.ToString(System.Globalization.CultureInfo.InvariantCulture), 20);
-                value.CustomMinimumSize = new Vector2(130, 0);
+                value.CustomMinimumSize = new Vector2(110, 0);
+                if (isPrimary)
+                {
+                    primaryTag.Name = "ProgressionPrimaryAttribute";
+                    primaryTag.AddThemeColorOverride("font_color", PrimaryAttributeColor);
+                    name.AddThemeColorOverride("font_color", PrimaryAttributeColor);
+                    value.AddThemeColorOverride("font_color", PrimaryAttributeColor);
+                }
                 Button attributeButton = SmallButton(isRaised ? "−1" : "+1", () => PreviewProgressionAttribute(run, pending,
                     isRaised ? character.Attributes : Raise(character.Attributes, selectedAttribute)));
                 attributeButton.Name = $"ProgressionAttribute_{selectedAttribute}";
-                row.AddChild(name); row.AddChild(value); row.AddChild(attributeButton);
+                row.AddChild(name); row.AddChild(primaryTag); row.AddChild(value); row.AddChild(attributeButton);
                 menu.AddChild(row);
             }
+            var confirmRow = new HBoxContainer { Name = "ProgressionAttributeContinueRow", CustomMinimumSize = new Vector2(ProgressionAttributeRowWidth, 0) };
+            confirmRow.Alignment = BoxContainer.AlignmentMode.End;
+            confirmRow.SizeFlagsHorizontal = SizeFlags.ShrinkBegin;
             Button confirm = Button("Continue", () => { _progressionConfirmed.Add(key); ShowProgression(run, pending); });
             confirm.Name = "ProgressionAttributeContinue";
             confirm.Disabled = !raised;
-            menu.AddChild(confirm);
+            confirm.CustomMinimumSize = ProgressionContinueSize;
+            confirm.SizeFlagsHorizontal = SizeFlags.ShrinkEnd;
+            confirmRow.AddChild(confirm);
+            menu.AddChild(confirmRow);
         }
         else
         {
@@ -2412,29 +2446,28 @@ public partial class GodotPlayableRunMain : Control
             var columns = new HBoxContainer { Name = "ProgressionSkillColumns" };
             columns.AddThemeConstantOverride("separation", 24);
             menu.AddChild(columns);
-            var current = new VBoxContainer { Name = "ProgressionCurrentSkills", CustomMinimumSize = new Vector2(300, 0) };
+            var current = new VBoxContainer { Name = "ProgressionCurrentSkills", CustomMinimumSize = new Vector2(ProgressionSkillCardSize.X, 0) };
+            current.AddThemeConstantOverride("separation", 8);
             columns.AddChild(current);
             current.AddChild(Label("Current skills", 18));
-            foreach (RunLearnedSkillState value in character.LearnedSkillStates)
+            foreach ((RunLearnedSkillState value, int index) in character.LearnedSkillStates.Select((value, index) => (value, index)))
             {
                 SkillUiMetadata known = _skillUi[value.DefinitionId];
-                Label info = Label($"{known.DisplayName} Lv{value.Level} — {(known.IsPassive ? "Passive" : "Active")} — MP {known.ManaCost}\n{known.Description}", 15);
-                info.AutowrapMode = TextServer.AutowrapMode.WordSmart;
-                info.CustomMinimumSize = new Vector2(300, 0);
-                current.AddChild(info);
+                Control card = SkillCard($"Learned · {known.DisplayName} Lv{value.Level}", known, null);
+                card.Name = $"ProgressionCurrentSkill_{index}";
+                current.AddChild(card);
             }
-            var choices = new VBoxContainer { Name = "ProgressionSkillChoices", CustomMinimumSize = new Vector2(360, 0) };
+            var choices = new VBoxContainer { Name = "ProgressionSkillChoices", CustomMinimumSize = new Vector2(ProgressionSkillCardSize.X, 0) };
+            choices.AddThemeConstantOverride("separation", 8);
             columns.AddChild(choices);
+            choices.AddChild(Label("Choose one", 18));
             SkillDefinition[] candidates=progressionService.PreviewGrowthOffer(run,pending.TransactionKey,proposed,_skills,_runDefinition!).ToArray();
             foreach((SkillDefinition skill, int index) in candidates.Select((value, index) => (value, index)))
             {
-                Button choice=Button(GrowthChoiceLabel(preview,skill,_skillUi[skill.ContentId]),()=>
-                    CompleteProgression(run.RunId,pending.TransactionKey,proposed,skill.ContentId));
+                SkillUiMetadata metadata = _skillUi[skill.ContentId];
+                Control choice = SkillCard(GrowthChoiceTitle(preview, skill, metadata), metadata,
+                    () => CompleteProgression(run.RunId,pending.TransactionKey,proposed,skill.ContentId));
                 choice.Name = $"ProgressionSkillChoice_{index}";
-                choice.ThemeTypeVariation=GodotTacticsTheme.ActionButton;
-                choice.AddThemeFontSizeOverride("font_size", 14);
-                choice.CustomMinimumSize=new Vector2(340,104);
-                choice.SizeFlagsHorizontal = SizeFlags.ShrinkBegin;
                 choices.AddChild(choice);
             }
             if(candidates.Length==0)
@@ -2450,20 +2483,68 @@ public partial class GodotPlayableRunMain : Control
         }
     }
 
+    internal static readonly Color PrimaryAttributeColor = new("f1c75b");
+    /// <summary>Name, primary tag, value and +1 columns plus three 16 px gaps; Continue right-aligns to it.</summary>
+    internal const float ProgressionAttributeRowWidth = 150 + 100 + 110 + 118 + 16 * 3;
+    internal static readonly Vector2 ProgressionContinueSize = new(220, 48);
+    internal static readonly Vector2 ProgressionSkillCardSize = new(340, 112);
+
     internal static string PrimaryAttributeLabel(UnitPrimaryAttribute primary) =>
         primary == UnitPrimaryAttribute.None
             ? "Primary attribute: none (all-rounder)"
             : $"Primary attribute: {primary}";
 
-    private static string GrowthChoiceLabel(RunCharacterState character,SkillDefinition skill,SkillUiMetadata metadata)
+    private static string GrowthChoiceTitle(RunCharacterState character,SkillDefinition skill,SkillUiMetadata metadata)
     {
         RunLearnedSkillState? learned=character.LearnedSkillStates.FirstOrDefault(value=>value.BranchId==skill.BranchId);
-        string title = learned is null
+        return learned is null
             ? $"Learn {metadata.DisplayName} Lv{skill.Level}"
             : $"Upgrade {metadata.DisplayName} Lv{learned.Level} → Lv{skill.Level}";
+    }
+
+    private static string SkillCardDetail(SkillUiMetadata metadata)
+    {
         string requirement=string.IsNullOrEmpty(metadata.RequiredAttribute)?"None":$"{metadata.RequiredAttribute} {metadata.MinimumAttribute}";
         string prerequisite=string.IsNullOrEmpty(metadata.PrerequisiteBranchId)?"None":metadata.PrerequisiteBranchId;
-        return $"{title}\n{metadata.Description}\n{(metadata.IsPassive ? "Passive" : "Active")}  MP {metadata.ManaCost}  Range {RangeLabel(metadata)}\nRequires: {requirement}  Prerequisite: {prerequisite}";
+        return $"{metadata.Description}\n{(metadata.IsPassive ? "Passive" : "Active")}  MP {metadata.ManaCost}  Range {RangeLabel(metadata)}\nRequires: {requirement}  Prerequisite: {prerequisite}";
+    }
+
+    /// <summary>
+    /// One fixed-size skill card shared by learned skills (static panel) and growth candidates (pressable); only
+    /// the frame style differs, so both columns read as the same component.
+    /// </summary>
+    private static Control SkillCard(string title, SkillUiMetadata metadata, Action? onPressed)
+    {
+        Control card = onPressed is null
+            ? new PanelContainer { ThemeTypeVariation = GodotTacticsTheme.Card }
+            : new Button { ThemeTypeVariation = GodotTacticsTheme.ActionButton, FocusMode = FocusModeEnum.All };
+        if (card is Button button) button.Pressed += onPressed!;
+        card.CustomMinimumSize = ProgressionSkillCardSize;
+        card.Size = ProgressionSkillCardSize;
+        card.SizeFlagsHorizontal = SizeFlags.ShrinkBegin;
+        card.ClipContents = true;
+        var text = new VBoxContainer
+        {
+            Name = "SkillCardText",
+            Position = new Vector2(12, 8),
+            Size = ProgressionSkillCardSize - new Vector2(24, 16),
+            MouseFilter = MouseFilterEnum.Ignore
+        };
+        text.AddThemeConstantOverride("separation", 2);
+        Label heading = Label(title, 15);
+        heading.Name = "SkillCardTitle";
+        Label detail = Label(SkillCardDetail(metadata), 13);
+        detail.Name = "SkillCardDetail";
+        foreach (Label label in new[] { heading, detail })
+        {
+            label.AutowrapMode = TextServer.AutowrapMode.WordSmart;
+            label.HorizontalAlignment = HorizontalAlignment.Left;
+            label.CustomMinimumSize = new Vector2(ProgressionSkillCardSize.X - 24, 0);
+            label.MouseFilter = MouseFilterEnum.Ignore;
+            text.AddChild(label);
+        }
+        card.AddChild(text);
+        return card;
     }
 
     private static string RangeLabel(SkillUiMetadata metadata) => metadata.MinRange == metadata.MaxRange

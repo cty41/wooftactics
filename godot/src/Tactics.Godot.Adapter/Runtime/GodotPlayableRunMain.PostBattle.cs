@@ -67,6 +67,7 @@ public partial class GodotPlayableRunMain
     {
         GodotActWorldHost host = _actWorld!;
         _postBattleDiagnostics.Clear();
+        _postBattleOverviewPoints = Array.Empty<Vector2>();
         if (!host.Nodes.TryGetValue(nodeId, out GodotAdventureMapInstance? current))
         {
             ReportPostBattleDiagnostic($"postbattle.current_node_missing:{nodeId}");
@@ -133,7 +134,46 @@ public partial class GodotPlayableRunMain
                          targetBounds.Position + new Vector2(0, targetBounds.Size.Y), targetBounds.End })
                 extra.Add(toCurrent * target.Transform * corner);
         }
-        board.FrameExtraPoints = extra;
+        // The camera starts on the fought map like the battle did; Overview widens it to the successor routes.
+        _postBattleOverviewPoints = extra;
+        board.FrameExtraPoints = Array.Empty<Vector2>();
+    }
+
+    /// <summary>Overview button slot: directly above the shared Inventory button, clear of the rim exit markers.</summary>
+    internal static readonly Rect2 PostBattleOverviewButtonRect = new(
+        ExplorationInventoryButtonRect.Position - new Vector2(0, 66), new Vector2(ExplorationInventoryButtonRect.Size.X, 54));
+    internal const string PostBattleOverviewLabel = "Overview  [M]";
+    internal const string PostBattleCurrentMapLabel = "Back to Map  [M]";
+
+    private IReadOnlyList<Vector2> _postBattleOverviewPoints = Array.Empty<Vector2>();
+    private Button? _postBattleOverviewButton;
+
+    private void AddPostBattleOverviewButton(Control root, GodotAdventureBoardView board)
+    {
+        if (_postBattleOverviewPoints.Count == 0) return;
+        Button button = Button(PostBattleOverviewLabel, () => TogglePostBattleOverview(board));
+        button.Name = "PostBattleOverviewButton";
+        _postBattleOverviewButton = button;
+        root.AddChild(PlaceControl(button, PostBattleOverviewButtonRect.Position, PostBattleOverviewButtonRect.Size));
+    }
+
+    private void TogglePostBattleOverview(GodotAdventureBoardView board)
+    {
+        if (!GodotObject.IsInstanceValid(board) || _postBattleOverviewButton is not { } button || !GodotObject.IsInstanceValid(button)) return;
+        bool overview = board.FrameExtraPoints.Count == 0;
+        board.FrameExtraPoints = overview ? _postBattleOverviewPoints : Array.Empty<Vector2>();
+        board.RefitCamera();
+        button.Text = overview ? PostBattleCurrentMapLabel : PostBattleOverviewLabel;
+    }
+
+    /// <summary>M toggles the post-battle overview while its button is on screen.</summary>
+    private bool TryHandlePostBattleOverviewKey(InputEvent inputEvent)
+    {
+        if (inputEvent is not InputEventKey { Pressed: true, Echo: false, Keycode: Key.M } ||
+            _postBattleOverviewButton is not { } button || !GodotObject.IsInstanceValid(button) ||
+            button.IsQueuedForDeletion() || !button.IsVisibleInTree() || _adventureBoard is not { } board) return false;
+        TogglePostBattleOverview(board);
+        return true;
     }
 
     /// <summary>Resolved node exploration on the node's resident map; false when the binding does not match.</summary>
@@ -150,6 +190,7 @@ public partial class GodotPlayableRunMain
         _adventureBoard.SetBoard(definition);
         WireAdventureMovement(run, definition, ShowResolvedAdventureNode);
         _adventureBoard.ObjectPressed += pressed => HandleExitPointer(run, definition, pressed);
+        AddPostBattleOverviewButton(root, _adventureBoard);
         return true;
     }
 }

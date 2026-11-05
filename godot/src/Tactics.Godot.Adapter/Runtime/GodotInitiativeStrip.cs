@@ -14,6 +14,13 @@ namespace Tactics.Godot.Adapter.Runtime;
 public partial class GodotInitiativeStrip : HBoxContainer
 {
     private const int MaximumPortraits = 9;
+    /// <summary>Current-round plus next-round portraits that fit the 565 px strip beside the round label.</summary>
+    internal const int TotalPortraitBudget = 11;
+    internal const float SlotSize = 34f;
+    internal const float PortraitSize = 28f;
+    internal const string NextRoundSeparatorName = "NextRoundSeparator";
+    private static readonly Dictionary<(ulong Texture, Rect2 Region), Texture2D> CroppedPortraits = new();
+    private static readonly Dictionary<ulong, Texture2D> TrimmedSprites = new();
     internal const double TransitionDurationSeconds = .22;
     private readonly Label _roundLabel = new();
     private readonly HBoxContainer _slots = new();
@@ -29,6 +36,10 @@ public partial class GodotInitiativeStrip : HBoxContainer
 
     internal static int VisiblePortraitCount(int queueCount) => Math.Min(Math.Max(0, queueCount), MaximumPortraits);
     internal static bool ShowsEllipsis(int queueCount) => queueCount > MaximumPortraits;
+    /// <summary>Next-round portraits get whatever budget the current round leaves; none while it overflows.</summary>
+    internal static int VisibleNextRoundCount(int queueCount, int nextRoundCount) => ShowsEllipsis(queueCount)
+        ? 0
+        : Math.Min(Math.Max(0, nextRoundCount), TotalPortraitBudget - VisiblePortraitCount(queueCount));
     internal bool IsTransitionLocked => _transitionLocked;
     internal int TransitionMovementCount => _transitionMovementCount;
 
@@ -58,19 +69,23 @@ public partial class GodotInitiativeStrip : HBoxContainer
     public void Apply(
         int round,
         IReadOnlyList<BattleUiInitiativeEntry>? queue,
-        IReadOnlyDictionary<ContentId, UnitDefinitionResource> definitions)
+        IReadOnlyDictionary<ContentId, UnitDefinitionResource> definitions,
+        IReadOnlyList<BattleUiInitiativeEntry>? nextRound = null)
     {
         _roundLabel.Text = $"第 {round} 回合";
         BattleUiInitiativeEntry[] ordered = queue?.ToArray() ?? Array.Empty<BattleUiInitiativeEntry>();
         BattleUiInitiativeEntry[] visible = ordered.Take(VisiblePortraitCount(ordered.Length)).ToArray();
-        string hidden = string.Join('|', ordered.Skip(MaximumPortraits).Select(item => item.UnitId.Value));
+        BattleUiInitiativeEntry[] upcoming = (nextRound ?? Array.Empty<BattleUiInitiativeEntry>())
+            .Take(VisibleNextRoundCount(ordered.Length, nextRound?.Count ?? 0)).ToArray();
+        string hidden = string.Join('|', ordered.Skip(MaximumPortraits).Select(item => item.UnitId.Value)) +
+            "#" + string.Join('|', upcoming.Select(item => item.UnitId.Value));
         bool sequenceChanged = !_visibleIds.SequenceEqual(visible.Select(item => item.UnitId));
         bool hiddenChanged = hidden != _hiddenFingerprint;
         if (!sequenceChanged && !hiddenChanged) return;
 
         CancelTrackedTransition(releaseLock: false);
         SetTransitionLocked(true);
-        _previousPositions = _slots.GetChildren().OfType<InitiativePortraitSlot>()
+        _previousPositions = _slots.GetChildren().OfType<InitiativePortraitSlot>().Where(slot => !slot.IsNextRound)
             .ToDictionary(slot => slot.UnitId, slot => slot.Position);
         HoverChanged?.Invoke(null);
         _visibleIds.Clear();
@@ -98,6 +113,17 @@ public partial class GodotInitiativeStrip : HBoxContainer
             ellipsis = CreateEllipsis();
             _slots.AddChild(ellipsis);
         }
+        if (upcoming.Length > 0)
+        {
+            _slots.AddChild(CreateNextRoundSeparator());
+            foreach (BattleUiInitiativeEntry item in upcoming)
+            {
+                definitions.TryGetValue(item.DefinitionId, out UnitDefinitionResource? definition);
+                var slot = new InitiativePortraitSlot(item, _playerNumber, definition, isNextRound: true);
+                slot.HoverChanged += hovered => HoverChanged?.Invoke(hovered ? item.UnitId : null);
+                _slots.AddChild(slot);
+            }
+        }
         ulong transitionVersion = BeginTransition(ellipsis, hiddenChanged);
         Callable.From(() => AnimatePendingSlotMovement(transitionVersion)).CallDeferred();
     }
@@ -115,7 +141,7 @@ public partial class GodotInitiativeStrip : HBoxContainer
         out Vector2 target)
     {
         InitiativePortraitSlot? slot = _slots.GetChildren().OfType<InitiativePortraitSlot>()
-            .FirstOrDefault(candidate => candidate.UnitId == unitId);
+            .FirstOrDefault(candidate => candidate.UnitId == unitId && !candidate.IsNextRound);
         source = slot?.TransitionSource ?? default;
         position = slot?.Position ?? default;
         target = slot?.TransitionTarget ?? default;
@@ -188,7 +214,11 @@ public partial class GodotInitiativeStrip : HBoxContainer
         TransitionLockChanged?.Invoke(locked);
     }
 
-    private static Texture2D? PortraitOf(UnitDefinitionResource? definition)
+    /// <summary>
+    /// The face crop as a standalone texture. An <c>AtlasTexture</c> would hand the circular-mask shader atlas-space
+    /// UVs, so the mask would test the whole sprite sheet instead of the crop and the face would spill out uncut.
+    /// </summary>
+    internal static Texture2D? PortraitOf(UnitDefinitionResource? definition)
     {
         if (definition is null) return null;
         Texture2D? source = definition.PortraitTextureOverride ?? definition.DownRightTexture;
@@ -198,15 +228,64 @@ public partial class GodotInitiativeStrip : HBoxContainer
         Rect2 region = definition.HasPortraitRegion
             ? definition.PortraitRegion
             : DefaultFaceRegion(source);
-        return new AtlasTexture { Atlas = source, Region = region };
+        return CropTexture(source, region);
     }
 
+    /// <summary>The sprite cropped to its opaque pixels, so layout aligns the character rather than its transparent margin.</summary>
+    internal static Texture2D TrimToContent(Texture2D source)
+    {
+        ulong id = source.GetInstanceId();
+        if (TrimmedSprites.TryGetValue(id, out Texture2D? cached) && GodotObject.IsInstanceValid(cached)) return cached;
+        Image? image = source.GetImage();
+        if (image is null || image.IsEmpty()) return source;
+        if (image.IsCompressed()) image.Decompress();
+        Rect2I used = image.GetUsedRect();
+        Texture2D trimmed = used.Size.X <= 0 || used.Size.Y <= 0 || used.Size == image.GetSize()
+            ? source
+            : CropTexture(source, new Rect2(used.Position, used.Size));
+        TrimmedSprites[id] = trimmed;
+        return trimmed;
+    }
+
+    internal static Texture2D CropTexture(Texture2D source, Rect2 region)
+    {
+        (ulong, Rect2) key = (source.GetInstanceId(), region);
+        if (CroppedPortraits.TryGetValue(key, out Texture2D? cached) && GodotObject.IsInstanceValid(cached)) return cached;
+        Image? image = source.GetImage();
+        if (image is null || image.IsEmpty()) return source;
+        if (image.IsCompressed()) image.Decompress();
+        var rect = new Rect2I((Vector2I)region.Position, (Vector2I)region.Size)
+            .Intersection(new Rect2I(Vector2I.Zero, image.GetSize()));
+        if (rect.Size.X <= 0 || rect.Size.Y <= 0) return source;
+        Texture2D cropped = ImageTexture.CreateFromImage(image.GetRegion(rect));
+        CroppedPortraits[key] = cropped;
+        return cropped;
+    }
+
+    /// <summary>Square head crop: upper part of the sprite, wide enough that ears and cheeks stay inside the circle.</summary>
     internal static Rect2 DefaultFaceRegion(Texture2D texture)
     {
         float width = texture.GetWidth();
         float height = texture.GetHeight();
-        float side = MathF.Max(1f, MathF.Min(width, height) * .5f);
-        return new Rect2((width - side) * .5f, MathF.Max(0f, height * .2f), side, side);
+        float side = MathF.Max(1f, MathF.Min(width, height) * .62f);
+        return new Rect2((width - side) * .5f, MathF.Max(0f, height * .1f), side, side);
+    }
+
+    private static Control CreateNextRoundSeparator()
+    {
+        var label = new Label
+        {
+            Name = NextRoundSeparatorName,
+            Text = "|",
+            CustomMinimumSize = new Vector2(14, SlotSize),
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            TooltipText = "Next round",
+            MouseFilter = MouseFilterEnum.Pass
+        };
+        label.AddThemeFontSizeOverride("font_size", 22);
+        label.AddThemeColorOverride("font_color", new Color("8f8572"));
+        return label;
     }
 
     private static Control CreateEllipsis()
@@ -214,7 +293,7 @@ public partial class GodotInitiativeStrip : HBoxContainer
         var label = new Label
         {
             Text = "…",
-            CustomMinimumSize = new Vector2(42, 42),
+            CustomMinimumSize = new Vector2(SlotSize, SlotSize),
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center,
             MouseFilter = MouseFilterEnum.Ignore
@@ -232,18 +311,23 @@ public partial class GodotInitiativeStrip : HBoxContainer
 
         public event Action<bool>? HoverChanged;
         public UnitInstanceId UnitId { get; }
+        public bool IsNextRound { get; }
         public Vector2? TransitionSource { get; set; }
         public Vector2? TransitionTarget { get; set; }
 
         public InitiativePortraitSlot(
             BattleUiInitiativeEntry item,
             int playerNumber,
-            UnitDefinitionResource? definition)
+            UnitDefinitionResource? definition,
+            bool isNextRound = false)
         {
             UnitId = item.UnitId;
+            IsNextRound = isNextRound;
+            Name = isNextRound ? $"NextRound_{item.UnitId.Value}" : $"Slot_{item.UnitId.Value}";
+            if (isNextRound) Modulate = new Color(1f, 1f, 1f, .62f);
             _friendly = item.PlayerNumber == playerNumber;
             _current = item.IsCurrent;
-            CustomMinimumSize = new Vector2(42, 42);
+            CustomMinimumSize = new Vector2(SlotSize, SlotSize);
             MouseDefaultCursorShape = CursorShape.PointingHand;
             MouseEntered += () => SetHovered(true);
             MouseExited += () => SetHovered(false);
@@ -251,8 +335,8 @@ public partial class GodotInitiativeStrip : HBoxContainer
             {
                 Name = "Portrait",
                 Texture = PortraitOf(definition),
-                Position = new Vector2(3, 3),
-                Size = new Vector2(36, 36),
+                Position = new Vector2((SlotSize - PortraitSize) * .5f, (SlotSize - PortraitSize) * .5f),
+                Size = new Vector2(PortraitSize, PortraitSize),
                 ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
                 StretchMode = TextureRect.StretchModeEnum.KeepAspectCovered,
                 MouseFilter = MouseFilterEnum.Ignore,
@@ -264,9 +348,10 @@ public partial class GodotInitiativeStrip : HBoxContainer
         public override void _Draw()
         {
             Vector2 center = Size * .5f;
-            DrawCircle(center, 20f, _friendly ? new Color("28643f") : new Color("7b2f35"));
-            if (_current) DrawArc(center, 19f, 0f, MathF.Tau, 48, new Color("f1c75b"), 3f, true);
-            if (_hovered) DrawArc(center, 20f, 0f, MathF.Tau, 48, Colors.White, 4f, true);
+            float radius = SlotSize * .5f - 1f;
+            DrawCircle(center, radius, _friendly ? new Color("28643f") : new Color("7b2f35"));
+            if (_current) DrawArc(center, radius - 1f, 0f, MathF.Tau, 48, new Color("f1c75b"), 3f, true);
+            if (_hovered) DrawArc(center, radius, 0f, MathF.Tau, 48, Colors.White, 3f, true);
         }
 
         private void SetHovered(bool hovered)

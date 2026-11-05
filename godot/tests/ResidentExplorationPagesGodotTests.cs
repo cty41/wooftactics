@@ -106,6 +106,32 @@ public sealed class ResidentExplorationPagesGodotTests
         await Task.CompletedTask;
     });
 
+    /// <summary>The post-battle camera stays on the fought map; Overview (button or M) toggles the route view.</summary>
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task PostBattleCameraStartsOnTheMapAndOverviewToggles() => await WithRun(async (ui, host, setup, _) =>
+    {
+        InvokePrivate(ui, "ShowResolvedAdventureNode", setup.Snapshot!.ActiveRun!);
+        GodotAdventureBoardView board = Field<GodotAdventureBoardView>(ui, "_adventureBoard");
+        AssertThat(board.FrameExtraPoints.Count).IsEqual(0);
+        float mapScale = board.BoardScale;
+        var button = (Button)ui.FindChild("PostBattleOverviewButton", true, false)!;
+        AssertThat(button.Text).IsEqual(GodotPlayableRunMain.PostBattleOverviewLabel);
+
+        button.EmitSignal(BaseButton.SignalName.Pressed);
+        AssertThat(board.FrameExtraPoints.Count).IsGreater(0);
+        AssertThat(board.BoardScale).IsLess(mapScale);
+        AssertThat(button.Text).IsEqual(GodotPlayableRunMain.PostBattleCurrentMapLabel);
+
+        bool handled = (bool)typeof(GodotPlayableRunMain)
+            .GetMethod("TryHandlePostBattleOverviewKey", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .Invoke(ui, [new InputEventKey { Pressed = true, Keycode = Key.M }])!;
+        AssertThat(handled).IsTrue();
+        AssertThat(board.FrameExtraPoints.Count).IsEqual(0);
+        AssertThat(board.BoardScale).IsEqualApprox(mapScale, .001f);
+        await Task.CompletedTask;
+    });
+
     [TestCase]
     [RequireGodotRuntime]
     public async Task RestStoreAndTreasureUseTheirFormalNodeMaps() => await WithRun(async (ui, host, setup, store) =>
@@ -311,12 +337,18 @@ public sealed class ResidentExplorationPagesGodotTests
             GodotAdventureBoardView board = Field<GodotAdventureBoardView>(ui, "_adventureBoard");
             var button = (Button)ui.FindChild("ExplorationInventoryButton", true, false)!;
             slots.Add(button.Position);
-            Rect2 buttonRect = new(button.GetGlobalTransformWithCanvas().Origin, button.Size);
-            // Exits live on the x = 9 column; every possible rim marker (radius 32) must stay clear of the button.
-            for (int y = 0; y < 10; y++)
+            var buttons = new List<Button> { button };
+            if (ui.FindChild("PostBattleOverviewButton", true, false) is Button overview && !overview.IsQueuedForDeletion())
+                buttons.Add(overview);
+            // Exits live on the x = 9 column; every possible rim marker (radius 32) must stay clear of the buttons.
+            foreach (Button hud in buttons)
             {
-                Vector2 marker = board.GetGlobalTransformWithCanvas() * (Vector2)rim.Invoke(board, [new GridPoint(9, y)])!;
-                AssertThat(buttonRect.Intersects(new Rect2(marker - new Vector2(32, 32), new Vector2(64, 64)))).IsFalse();
+                Rect2 buttonRect = new(hud.GetGlobalTransformWithCanvas().Origin, hud.Size);
+                for (int y = 0; y < 10; y++)
+                {
+                    Vector2 marker = board.GetGlobalTransformWithCanvas() * (Vector2)rim.Invoke(board, [new GridPoint(9, y)])!;
+                    AssertThat(buttonRect.Intersects(new Rect2(marker - new Vector2(32, 32), new Vector2(64, 64)))).IsFalse();
+                }
             }
         }
         AssertThat(slots[0]).IsEqual(slots[1]);
@@ -344,7 +376,8 @@ public sealed class ResidentExplorationPagesGodotTests
             AssertThat(diagnostics.Contains($"postbattle.route_entry_missing:{nodeId}->{good.TargetNodeId}:missing_entry")).IsTrue();
             Node routes = host.Nodes[nodeId].GetNode("PostBattleRoutes");
             AssertThat(routes.GetChildCount()).IsEqual(1);
-            AssertThat(board.FrameExtraPoints.Count).IsEqual(4);
+            AssertThat(board.FrameExtraPoints.Count).IsEqual(0);
+            AssertThat(Field<IReadOnlyList<Vector2>>(ui, "_postBattleOverviewPoints").Count).IsEqual(4);
         }
         finally
         {

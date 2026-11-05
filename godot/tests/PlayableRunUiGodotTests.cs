@@ -192,8 +192,15 @@ public class PlayableRunUiGodotTests
 
         panel.Bind(definition, BattleUnit(corruption: 9));
         AssertThat(panel.Visible).IsTrue();
-        AssertThat(Descendants<TextureRect>(panel).Single(value => value.Name == "ActiveUnitPortrait").Texture)
-            .IsSame(texture);
+        // A fully opaque sprite has nothing to trim, so the panel keeps the source texture.
+        TextureRect portrait = Descendants<TextureRect>(panel).Single(value => value.Name == "ActiveUnitPortrait");
+        AssertThat(portrait.Texture).IsSame(texture);
+        // Portrait and the name-plus-bars column share one vertical midline.
+        Label nameLabel = Descendants<Label>(panel).Single(value => value.Name == "ActiveUnitName");
+        Control rows = Descendants<Control>(panel).Single(value => value.Name == "ActiveUnitResourceRows");
+        float columnMid = (nameLabel.Position.Y + rows.Position.Y + rows.Size.Y) * .5f;
+        AssertThat(portrait.Position.Y + portrait.Size.Y * .5f).IsEqualApprox(columnMid, .5f);
+        AssertThat(nameLabel.Position.X).IsEqual(rows.Position.X);
         AssertThat(Descendants<Label>(panel).Single(value => value.Name == "ActiveUnitName").Text)
             .IsEqual("Demonbound");
         AssertThat(Descendants<Label>(panel).Single(value => value.Name == "HealthValue").Text)
@@ -542,8 +549,12 @@ public class PlayableRunUiGodotTests
         AssertThat(buttonTexts.Any(text => text.StartsWith("Continue — Progression", StringComparison.Ordinal))).IsFalse();
         string labels = string.Join('\n', Descendants<Label>(ui).Select(label => label.Text));
         AssertThat(labels).Contains("Gold:");
-        AssertThat(labels).Contains("Primary attribute: Intelligence");
-        AssertThat(Descendants<Label>(ui).Single(label => label.Name == "ProgressionPrimaryAttribute").GetParent() is VBoxContainer).IsTrue();
+        // The primary attribute is tagged on its own attribute row, not on a separate line.
+        Label primaryTag = Descendants<Label>(ui).Single(label => label.Name == "ProgressionPrimaryAttribute");
+        AssertThat(primaryTag.Text).Contains("Primary");
+        AssertThat(primaryTag.GetParent().Name.ToString()).IsEqual("ProgressionAttributeRow_Intelligence");
+        AssertThat(Descendants<Button>(ui).Single(button => button.Name == "ProgressionAttributeContinue").CustomMinimumSize.X)
+            .IsLessEqual(240f);
         PanelContainer progressionPanel = Descendants<PanelContainer>(ui).Single(panel => panel.Name == "ProgressionFlowPanel");
         AssertFormalPanel(progressionPanel);
 
@@ -705,8 +716,16 @@ public class PlayableRunUiGodotTests
         confirmed.Add((run.RunId, pending.TransactionKey));
         typeof(GodotPlayableRunMain).GetMethod("ShowProgression", BindingFlags.Instance | BindingFlags.NonPublic)?.Invoke(ui, new object[] { run, pending });
         string[] buttonTexts = Descendants<Button>(ui).Select(button => button.Text).ToArray();
-        string[] growthCards = buttonTexts.Where(text => text.StartsWith("Learn ", StringComparison.Ordinal) || text.StartsWith("Upgrade ", StringComparison.Ordinal)).ToArray();
+        Button[] choiceCards = Descendants<Button>(ui).Where(button => button.Name.ToString().StartsWith("ProgressionSkillChoice_", StringComparison.Ordinal)).ToArray();
+        string[] growthCards = choiceCards
+            .Select(card => Descendants<Label>(card).Single(label => label.Name == "SkillCardTitle").Text).ToArray();
         AssertThat(growthCards.Length).IsEqual(3);
+        AssertThat(growthCards.All(text => text.StartsWith("Learn ", StringComparison.Ordinal) || text.StartsWith("Upgrade ", StringComparison.Ordinal))).IsTrue();
+        // Learned and candidate skills are the same card component at the same size.
+        Control[] allCards = Descendants<Control>(ui).Where(card => card.Name.ToString().StartsWith("ProgressionSkillChoice_", StringComparison.Ordinal) ||
+            card.Name.ToString().StartsWith("ProgressionCurrentSkill_", StringComparison.Ordinal)).ToArray();
+        AssertThat(allCards.Length).IsEqual(4);
+        AssertThat(allCards.All(card => card.CustomMinimumSize == GodotPlayableRunMain.ProgressionSkillCardSize)).IsTrue();
         AssertThat(growthCards.Any(text => text.Contains("Upgrade 火球术 Lv1 → Lv2", StringComparison.Ordinal))).IsTrue();
         AssertThat(growthCards.Any(text => text.Contains("Learn Lv1 Lv1", StringComparison.Ordinal))).IsFalse();
         AssertThat(growthCards.Distinct(StringComparer.Ordinal).Count()).IsEqual(3);

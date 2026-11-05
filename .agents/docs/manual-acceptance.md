@@ -373,6 +373,18 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 - Automated evidence: Core `PlaceParty` 用例；`ResidentExplorationPagesGodotTests` 14/14 覆盖各页正式地图、精灵、移动持久化、回退原因上屏、无效站位重新落座、点击规则、全部正式地图物件相邻格可达、Inventory 共用槽位不遮挡出口标记、战后缺目标路线跳过；20 条 gameplay journey 与批量报告 29/29 在新出口几何（右缘 `9,y`）下通过。观感、点击手感与遮挡仍需人工判断。
 - User verdict: none.
 
+### MQA-GODOT-SETTLEMENT-BATTLE-HUD-POLISH — 结算加点/技能卡、战后镜头与战斗行动条复验
+
+- Status: `pending`
+- Source: 用户 2026-11-05 截图 review（加点页主属性位置与 Continue 长度、技能卡样式不统一、右上 Progression 文字超框、战后镜头直接俯瞰、行动条头像重复且缺敌人次序、左上角色卡头像未对齐）。
+- Action: 在隔离 Run 中打完 N1：在加点页确认主属性标注并加点、点 Continue；在技能页对比"已掌握"与候选卡；选完后进入战后地图，先观察默认镜头，再点 `Overview`、再按 `M` 切回；进入下一场战斗观察顶部行动条与左上角色卡，轮到敌人行动后再看一次。
+- Expected: 主属性在对应属性行上以金色 `★ Primary` 标注，标题下不再单独一行；Continue 为短按钮并与 `+1` 列右对齐；已掌握技能卡与候选卡尺寸一致、文字不出框；右上 Progression 面板每名角色一行，文字不超出面板；战后默认镜头与战斗时一样只框当前地图，`Overview`/`M` 在俯瞰与当前地图间切换且按钮文字随之变化；行动条只有一套圆形头像（本回合剩余 + 分隔符 + 下回合完整顺序，敌我颜色区分，可见敌人次序），头像更小且脸部完整；左上角色卡头像与名字/血条整块垂直对齐。
+- Observe: 加点页、技能页、右上 Progression 面板、战后地图镜头与 Overview 按钮、战斗顶部行动条、左上角色卡。
+- Preserve on failure: 截图（含窗口大小）、所在页面、当前回合与行动单位、Godot Output。
+- Save boundary: 使用隔离 Run；加点、选技能与离开节点会写入存档。
+- Automated evidence: `PlayableRunUiGodotTests`（主属性标签挂在对应属性行、Continue 宽度 ≤240、四张技能卡同尺寸、左上角色卡头像与资源列同一中线）；`ResidentExplorationPagesGodotTests`（战后默认 `FrameExtraPoints` 为空、Overview 按钮与 `M` 键切换并改变缩放、Overview 按钮不遮挡出口标记）；`InitiativeStripGodotTests`（分隔符后接下回合、槽位预算、头像为独立裁切贴图而非 `AtlasTexture`）；Application `Snapshot_PreviewsTheFullNextRoundForBothSidesWithoutACurrentMarker`；统一验证器 `-RequireArtwork` 通过。观感与对齐仍需人工判断。
+- User verdict: none.
+
 ## Passed
 
 ### MQA-ARTWORK-DEMONBOUND-DEATH — Rounded death Sprite identity and size

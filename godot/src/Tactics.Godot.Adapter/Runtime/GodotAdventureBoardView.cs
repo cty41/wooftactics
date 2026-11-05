@@ -95,6 +95,14 @@ public partial class GodotAdventureBoardView : Control
         RelayoutMarkers();
     }
 
+    /// <summary>Re-frames the camera after <see cref="FrameExtraPoints"/> changed on a configured board.</summary>
+    public void RefitCamera()
+    {
+        if (_definition is null || _tiles is null || !IsResidentLeaseCurrent) return;
+        FitBoardToViewport();
+        RelayoutMarkers();
+    }
+
     public void BindResidentSurface(GodotActWorldHost host, GodotNodeActivationLease lease,
         GodotIsometricTileMapSurface surface)
     {

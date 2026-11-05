@@ -25,7 +25,19 @@ public partial class GodotBattleActiveUnitPanel : Control
     public static readonly Color ElevatedCorruptionColor = new("8444a3");
     public static readonly Color CriticalCorruptionColor = new("c33772");
 
+    /// <summary>Inner layout area: the 430x190 BattleUnitPanel card minus its 8 px inset on each side.</summary>
+    internal static readonly Vector2 ContentSize = new(414, 174);
+    internal const float PortraitSide = 96f;
+    internal const float PortraitLeft = 12f;
+    internal const float ColumnLeft = PortraitLeft + PortraitSide + 16f;
+    internal const float BarWidth = 266f;
+    private const float NameHeight = 32f;
+    private const float NameGap = 4f;
+    private const float RowHeight = 34f;
+    private const float RowGap = 8f;
+
     private TextureRect? _portrait;
+    private VBoxContainer? _rows;
     private Label? _name;
     private ProgressBar? _health;
     private ProgressBar? _mana;
@@ -45,8 +57,7 @@ public partial class GodotBattleActiveUnitPanel : Control
         _portrait = new TextureRect
         {
             Name = "ActiveUnitPortrait",
-            Position = new Vector2(8, 31),
-            Size = new Vector2(108, 130),
+            Size = new Vector2(PortraitSide, PortraitSide),
             ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
             StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
             MouseFilter = MouseFilterEnum.Ignore
@@ -56,9 +67,8 @@ public partial class GodotBattleActiveUnitPanel : Control
         _name = new Label
         {
             Name = "ActiveUnitName",
-            Position = new Vector2(128, 2),
-            Size = new Vector2(276, 32),
-            HorizontalAlignment = HorizontalAlignment.Center,
+            Size = new Vector2(BarWidth, NameHeight),
+            HorizontalAlignment = HorizontalAlignment.Left,
             VerticalAlignment = VerticalAlignment.Center,
             MouseFilter = MouseFilterEnum.Ignore
         };
@@ -68,12 +78,12 @@ public partial class GodotBattleActiveUnitPanel : Control
         var rows = new VBoxContainer
         {
             Name = "ActiveUnitResourceRows",
-            Position = new Vector2(128, 41),
-            Size = new Vector2(276, 126),
+            Size = new Vector2(BarWidth, 126),
             MouseFilter = MouseFilterEnum.Ignore
         };
-        rows.AddThemeConstantOverride("separation", 8);
+        rows.AddThemeConstantOverride("separation", (int)RowGap);
         AddChild(rows);
+        _rows = rows;
 
         Control healthRow;
         (_health, _healthText, healthRow) = CreateResourceRow("Health", new Color("b95f66"));
@@ -102,7 +112,7 @@ public partial class GodotBattleActiveUnitPanel : Control
     public void Bind(UnitDefinitionResource definition, BattleUiUnitSnapshot unit)
     {
         EnsureReady();
-        _portrait!.Texture = definition.DownRightTexture;
+        _portrait!.Texture = definition.DownRightTexture is { } sprite ? GodotInitiativeStrip.TrimToContent(sprite) : null;
         _name!.Text = definition.DisplayName;
         BindBar(_health!, _healthText!, unit.CurrentHealth, unit.MaxHealth, string.Empty, new Color("b95f66"));
         BindBar(_mana!, _manaText!, unit.CurrentMana, unit.MaxMana, string.Empty, new Color("527cc7"));
@@ -122,7 +132,20 @@ public partial class GodotBattleActiveUnitPanel : Control
             _specialRow.Modulate = Colors.White;
         }
 
+        LayoutBlock(special is not null ? 3 : 2);
         Visible = true;
+    }
+
+    /// <summary>Vertically centres the name-plus-bars column and the portrait on one shared midline.</summary>
+    private void LayoutBlock(int rowCount)
+    {
+        float rowsHeight = rowCount * RowHeight + (rowCount - 1) * RowGap;
+        float blockHeight = NameHeight + NameGap + rowsHeight;
+        float top = (ContentSize.Y - blockHeight) * .5f;
+        _name!.Position = new Vector2(ColumnLeft, top);
+        _rows!.Position = new Vector2(ColumnLeft, top + NameHeight + NameGap);
+        _rows.Size = new Vector2(BarWidth, rowsHeight);
+        _portrait!.Position = new Vector2(PortraitLeft, top + (blockHeight - PortraitSide) * .5f);
     }
 
     public void Clear()
@@ -165,14 +188,14 @@ public partial class GodotBattleActiveUnitPanel : Control
         var row = new Control
         {
             Name = name + "ResourceRow",
-            CustomMinimumSize = new Vector2(276, 34),
+            CustomMinimumSize = new Vector2(BarWidth, RowHeight),
             MouseFilter = MouseFilterEnum.Ignore
         };
         var bar = new ProgressBar
         {
             Name = name + "Bar",
             Position = Vector2.Zero,
-            Size = new Vector2(276, 34),
+            Size = new Vector2(BarWidth, RowHeight),
             ShowPercentage = false,
             MouseFilter = MouseFilterEnum.Ignore
         };
@@ -182,7 +205,7 @@ public partial class GodotBattleActiveUnitPanel : Control
         {
             Name = name + "Value",
             Position = Vector2.Zero,
-            Size = new Vector2(276, 34),
+            Size = new Vector2(BarWidth, RowHeight),
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center,
             MouseFilter = MouseFilterEnum.Ignore

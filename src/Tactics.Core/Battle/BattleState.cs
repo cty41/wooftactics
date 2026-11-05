@@ -134,6 +134,13 @@ public sealed class BattleState
 
     public BattleState WithInitiativeChanged(BattleUnitState unit) => WithUnit(unit);
 
+    /// <summary>
+    /// Order the next round would start with if it began now (current eligibility and initiative). A preview only:
+    /// changes before the round actually starts still reorder it.
+    /// </summary>
+    public IReadOnlyList<InitiativeEntry> PreviewNextRoundOrder() =>
+        InitiativeRoundState.StartRound(EligibleEntries(_units.Values)).Remaining;
+
     /// <summary>Completes the current turn and starts the next eligible turn.</summary>
     public BattleState AdvanceTurn()
     {

@@ -146,6 +146,42 @@ public sealed class InitiativeStripGodotTests
         strip.QueueFree();
     }
 
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task NextRoundFollowsASeparatorWithinTheSlotBudget()
+    {
+        GodotInitiativeStrip strip = AddStrip();
+        await NextFrame(strip);
+        BattleUiInitiativeEntry[] next = Queue("x", "y", "z").Select(item => item with { IsCurrent = false }).ToArray();
+
+        strip.Apply(1, Queue("a", "b"), EmptyDefinitions, next);
+
+        Node[] children = strip.FindChildren("*", "", true, false).ToArray();
+        int separator = Array.FindIndex(children, node => node.Name == GodotInitiativeStrip.NextRoundSeparatorName);
+        AssertThat(separator).IsGreaterEqual(0);
+        AssertThat(Array.FindIndex(children, node => node.Name == "Slot_b")).IsLess(separator);
+        AssertThat(Array.FindIndex(children, node => node.Name == "NextRound_x")).IsGreater(separator);
+        AssertThat(GodotInitiativeStrip.VisibleNextRoundCount(2, 20)).IsEqual(GodotInitiativeStrip.TotalPortraitBudget - 2);
+        AssertThat(GodotInitiativeStrip.VisibleNextRoundCount(10, 5)).IsEqual(0);
+        await Timer(strip, GodotInitiativeStrip.TransitionDurationSeconds + .08);
+        strip.QueueFree();
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public void PortraitIsAStandaloneCropSoTheCircularMaskUsesItsOwnUv()
+    {
+        UnitDefinitionResource? goat = ResourceLoader.Load<UnitDefinitionResource>(
+            "res://content/units/PureRunGoatRanged.tres", string.Empty, ResourceLoader.CacheMode.Ignore);
+        AssertThat(goat).IsNotNull();
+        if (goat is null) return;
+        Texture2D? portrait = GodotInitiativeStrip.PortraitOf(goat);
+        AssertThat(portrait).IsNotNull();
+        AssertThat(portrait is AtlasTexture).IsFalse();
+        Rect2 region = goat.HasPortraitRegion ? goat.PortraitRegion : GodotInitiativeStrip.DefaultFaceRegion(goat.DownRightTexture!);
+        AssertThat(portrait!.GetWidth()).IsEqual((int)region.Size.X);
+    }
+
     private static GodotInitiativeStrip AddStrip()
     {
         var strip = new GodotInitiativeStrip { Size = new Vector2(565, 52) };
