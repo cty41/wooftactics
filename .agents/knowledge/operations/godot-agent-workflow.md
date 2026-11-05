@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Godot agent workflow
 description: Godot 4.7 C# 主线的项目、分层、Editor 生命周期、验证和发布边界。
 tags: [godot, agent, workflow, testing]
-timestamp: "2026-10-27T10:47:35+08:00"
+timestamp: "2026-11-05T11:28:20+08:00"
 status: active
 catalog_scope: godot-agent-workflow
 repo_paths:
@@ -21,7 +21,7 @@ repo_paths:
   - Tools/godot/Build-GodotWindows.ps1
   - Tools/migration/manifest/godot-tooling.json
 verified_revision: d092a955
-source_fingerprint: sha256:5564e73c853485947f733344d63d1fc3e492ed5c78e0d1a7b1ed9687d307054f
+source_fingerprint: sha256:584179b37d4d680bca8e86addbaa1373c34a57aff1da1a7a3bb7cbdfd329755a
 ---
 
 # Current State
@@ -37,6 +37,8 @@ Editor 采用 Human Direct / Prepared Agent 双入口。人工可以从 Project 
 Godot 修改先由 `godot-workflow` 路由到最小 Specialist Skill。C#、ResourceSaver、生成器和 reload-sensitive 工作遵循 `godot-editor-lifecycle`；只正常关闭该流程确认的 canonical Editor，并只恢复由本流程关闭的会话。恢复动作本身也必须委托 `Tools/godot/Open-GodotDev.ps1`，不得裸启动 Godot；因此恢复仍会完成 production Adapter 串行 Build、worktree 用户数据、bootstrap 参数、互斥锁和 session 记录。Python 策略测试固定检查 lifecycle 脚本没有重新引入 raw `Start-Process godot --editor --path`。
 
 统一入口 `Tools/godot/Verify-GodotProject.ps1` 串行执行 restore/build、Core/Application/FrozenOracle、Gameplay Spec、Python、Skill/Incident、GdUnit、Release/Runtime/Editor headless、renderer、receipt 与 OKF。FrozenOracle、Golden 和 receipt 只是历史/确定性证据，不能替代视觉、手感、真实 Editor Reload 或干净 Windows 启动。
+
+MaLiang 子模块（`Tools/vendor/maliang`）是可选依赖：验证器在开头判定其是否已初始化，缺失时明确 SKIP 美术管线单元测试与美术状态登记检查；加 `-RequireArtwork` 则立即失败（CI 工作流已加该开关）。新检出或额外 worktree 做美术前先 `git submodule update --init Tools/vendor/maliang`。隔离 GdUnit 套件的重试覆盖两类偶发：原生 Godot 宿主崩溃，以及玩法 spec 的 `step.timeout`（固定种子完整通关曾在 28 次单独运行中偶发 1 次，停在战斗中约 100 秒）；重试时会把超时诊断（阶段、最近操作）打印为警告，重复失败仍会让总门禁失败。
 
 Windows 构建使用单一 `Windows Desktop` preset、锁定工具链和受审计 staging。Debug/Release 包必须通过架构、PCK/managed runtime、顶层 allowlist、测试/缓存/本地配置排除、manifest/hash 与隔离用户目录启动验证。
 

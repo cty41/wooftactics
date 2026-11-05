@@ -57,24 +57,31 @@ public sealed class ProductionInputDecisionSource(int maximumActions) : IGodotGa
         {
             if (context.IsTerminalPending || !context.CanSubmitPlayerInput)
             {
+                context.SetStage("notReady:" + context.DescribeInputBlockers());
                 await context.WaitForAutomaticProgressAsync(cancellationToken);
                 continue;
             }
+            context.SetStage("decide");
             BattleUiSnapshot snapshot = context.Main.CaptureVisibleBattleSnapshot()!;
+            ulong actionStarted = Time.GetTicksMsec();
+            string where = $"r{snapshot.Round}/{snapshot.ActiveUnitId.Value}";
             if (await TryUseFirstSkillAsync(context, snapshot, cancellationToken))
             {
                 actions++;
                 await context.WaitUntilPlayerReadyOrTerminalAsync(cancellationToken);
+                context.RecordAction($"skill {where} {Time.GetTicksMsec() - actionStarted}ms");
                 continue;
             }
             if (await TryMoveTowardEnemyAsync(context, snapshot, cancellationToken))
             {
                 actions++;
                 await context.WaitUntilPlayerReadyOrTerminalAsync(cancellationToken);
+                context.RecordAction($"move {where} {Time.GetTicksMsec() - actionStarted}ms");
                 continue;
             }
             await context.PressKeyAsync(Key.Enter, cancellationToken);
             actions++;
+            context.RecordAction($"endTurn {where} {Time.GetTicksMsec() - actionStarted}ms");
         }
         if (context.HasActiveBattle && !context.IsTerminal && !context.IsAdventureEventResolved)
         {
@@ -358,7 +365,8 @@ public sealed class GodotGameplayRuntimeRunner
                 $":active={current?.ActiveUnitId.Value ?? "none"}:phase={current?.Phase.ToString() ?? "none"}" +
                 $":targeting={current?.TargetingMode.ToString() ?? "none"}:visibleActive={visible?.ActiveUnitId.Value ?? "none"}" +
                 $":visiblePhase={visible?.Phase.ToString() ?? "none"}:visibleTargeting={visible?.TargetingMode.ToString() ?? "none"}" +
-                $":locked={probe.PresentationLocked}:playing={probe.PresentationPlaying}:automatic={probe.AutomaticFramesPending}";
+                $":locked={probe.PresentationLocked}:playing={probe.PresentationPlaying}:automatic={probe.AutomaticFramesPending}" +
+                $":{context.RecentActionsDiagnostic}";
             trace.Add(new GodotGameplayTraceEntry(ordinal, phase, step.Kind, false, context.StateHash(), (long)(Time.GetTicksMsec() - started), diagnostic));
             throw new GodotGameplayScenarioException(GodotGameplayFailureKind.Timeout, diagnostic);
         }
@@ -484,9 +492,47 @@ public sealed class GodotGameplayRuntimeContext(GodotGameplayScenarioPlan plan, 
     private string ProductionSaveEvidence { get; } = productionSaveEvidence;
     private string _lastHash = string.Empty;
     private int _sameHashCount;
+    private readonly Queue<string> _recentActions = new();
+    private int _recordedActionCount;
     private AdventureRevisionBaseline _lastActionAdventure;
     private readonly DemonboundTelemetry _telemetry = new(fixedSeed);
     public JsonElement? LastBattleSkillReceipt { get; private set; }
+
+    /// <summary>
+    /// Diagnostics only: remembers the last few decision-source actions so a step timeout can say whether the
+    /// battle loop was busy (many fast actions), slow (few long actions) or repeating itself.
+    /// </summary>
+    public void RecordAction(string description)
+    {
+        _recordedActionCount++;
+        _recentActions.Enqueue($"#{_recordedActionCount} {description}");
+        while (_recentActions.Count > 8) _recentActions.Dequeue();
+    }
+
+    private string _stage = "none";
+    private ulong _stageStarted;
+
+    /// <summary>Diagnostics only: names the wait/decision stage the battle loop is in; unchanged text keeps its start time.</summary>
+    public void SetStage(string stage)
+    {
+        if (_stage == stage) return;
+        _stage = stage;
+        _stageStarted = Time.GetTicksMsec();
+    }
+
+    public string RecentActionsDiagnostic =>
+        $"actions={_recordedActionCount}:stage={_stage}@{Time.GetTicksMsec() - _stageStarted}ms:recent=[{string.Join(" | ", _recentActions)}]";
+
+    /// <summary>Compact reason why <see cref="CanSubmitPlayerInput"/> is false, for stage diagnostics.</summary>
+    public string DescribeInputBlockers()
+    {
+        GodotPlayableRunProbe probe = Main.CaptureTestProbe();
+        BattleUiSnapshot? visible = Main.CaptureVisibleBattleSnapshot();
+        return $"phase={probe.BattleSnapshot?.Phase}:visiblePhase={visible?.Phase}:" +
+            $"activeMatch={visible?.ActiveUnitId == probe.BattleSnapshot?.ActiveUnitId}:locked={probe.PresentationLocked}:" +
+            $"playing={probe.PresentationPlaying}:auto={probe.AutomaticFramesPending}:paused={probe.PlaybackPaused}:" +
+            $"terminalPending={probe.BattleSnapshot?.TerminalPending}";
+    }
 
     public async Task UseBattleSkillThroughInputAsync(string actorId, string skillId, int maximumActions,
         CancellationToken token)
@@ -917,7 +963,10 @@ public sealed class GodotGameplayRuntimeContext(GodotGameplayScenarioPlan plan, 
         // Observe at least one frame before deciding that the player is ready again.
         await WaitFramesAsync(1, token);
         while (HasActiveBattle && !IsTerminal && !IsAdventureEventResolved && !IsTerminalPending && !CanSubmitPlayerInput)
+        {
+            SetStage("waitReady:" + DescribeInputBlockers());
             await WaitForAutomaticProgressAsync(token);
+        }
     }
 
     public async Task EndTurnUntilPresentationNumberAsync(string kind, int maximumActions, CancellationToken token)

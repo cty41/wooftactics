@@ -32,7 +32,7 @@ provider/schema/compiler smoke 候选，因使用占位 checkpoint 未晋升为�
 
 OpenCode Go Key 与普通 provider 配置分离，secrets ACL 只允许当前用户、SYSTEM 或 Administrators。doctor 只发送固定 JSON 探针；项目文档仅由显式 extract/generate 命令发送，确定性 validate/compile 命令不联网。审计输出不包含 Key、Authorization、prompt 或原始响应。
 
-`GodotGameplayRuntimeRunner` 加载正式 `Main.tscn`，并通过 `Viewport.PushInput` 驱动生产 GUI/Input 链。每个场景使用隔离 `user://qa-runner/<scenario>/<attempt>/`，执行前后验证生产主档与 backup 未变化，并在退出时释放 Main、临时节点和隔离目录。
+`GodotGameplayRuntimeRunner` 加载正式 `Main.tscn`，并通过 `Viewport.PushInput` 驱动生产 GUI/Input 链。每个场景使用隔离 `user://qa-runner/<scenario>/<attempt>/`，执行前后验证生产主档与 backup 未变化，并在退出时释放 Main、临时节点和隔离目录。步骤 watchdog 超时的诊断（`step.timeout:…`）除页面与战斗状态外，还带战斗循环当前阶段（`stage=`，含不能提交输入的原因）和最近 8 次决策操作（`actions=… recent=[…]`），用于区分机器变慢与决策循环停滞。
 
 依赖命中/闪避结果的 presentation 场景绑定显式 checkpoint RNG state；属性、行动顺序或 committed battle snapshot 变化后必须重新确认目标分支，并同步 checkpoint semantic hash 与由源 spec 编译的 plan。生产输入 readiness 同时观察表现播放锁和 initiative Tween 输入锁，避免自动旅程在 Core 已提交但 HUD 动画尚未解锁时注入下一次点击。
 

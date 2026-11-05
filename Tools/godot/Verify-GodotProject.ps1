@@ -180,6 +180,14 @@ function Invoke-IsolatedGdUnitSuite {
             Write-Warning "$Description lost its native Godot host; retrying once in a fresh process."
             continue
         }
+        # A gameplay step watchdog timeout (for example the fixed-seed run stalling in one battle) was observed to be
+        # intermittent: the same code passed 27 of 28 isolated runs. Retry once, but print the timeout diagnostic
+        # (stage, recent actions) so a repeated or real stall is never hidden by the retry.
+        $gameplayStepTimeout = [Regex]::Match($text, 'Scenario \S+ failed: step\.timeout:[^\r\n]*')
+        if ($attempt -eq 1 -and $gameplayStepTimeout.Success -and -not $knownNativeCrash) {
+            Write-Warning "$Description hit a gameplay step timeout; retrying once. Diagnostic: $($gameplayStepTimeout.Value)"
+            continue
+        }
         throw "$Description failed with exit code $exitCode on attempt $attempt."
     }
 }
