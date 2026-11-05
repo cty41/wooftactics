@@ -7,6 +7,13 @@ import os
 from dataclasses import dataclass
 
 
+@dataclass(frozen=True)
+class WorktreeIdentity:
+    repo_root: str
+    key: str
+    user_directory_name: str
+
+
 @dataclass
 class WorktreeLock:
     path: str
@@ -38,6 +45,16 @@ def worktree_lock_key(repo_root: str) -> str:
     resolved = os.path.abspath(repo_root).rstrip(os.sep)
     digest = hashlib.sha256(resolved.lower().encode("utf-8")).hexdigest()
     return digest[:24]
+
+
+def worktree_identity(repo_root: str) -> WorktreeIdentity:
+    resolved = os.path.abspath(repo_root).rstrip(os.sep)
+    key = worktree_lock_key(repo_root)
+    return WorktreeIdentity(
+        repo_root=resolved,
+        key=key,
+        user_directory_name=f"TacticsGodotDev/{key}",
+    )
 
 
 def acquire_worktree_lock(repo_root: str) -> WorktreeLock:
