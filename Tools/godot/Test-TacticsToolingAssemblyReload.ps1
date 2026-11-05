@@ -15,10 +15,11 @@ $forbidden = @('InvalidCastException', 'Failed to unload assemblies', 'delegate_
 if (!(Test-Path -LiteralPath $GodotExecutable)) { throw "Godot executable not found: $GodotExecutable" }
 if (!(Test-Path -LiteralPath $projectFile)) { throw "Canonical Godot project not found: $projectFile" }
 
-$canonicalEditors = @(Get-CimInstance Win32_Process | Where-Object {
-    $_.Name -like 'Godot*.exe' -and $_.CommandLine -match '--editor' -and
-    $_.CommandLine -like ('*' + $projectRoot + '*')
-})
+$sessionModule = Join-Path $PSScriptRoot 'GodotDevSession.psm1'
+Import-Module $sessionModule -Force
+$canonicalEditors = @(Get-TacticsGodotEditorProcess -ProjectRoot $projectRoot | Where-Object {
+        $_.CommandLine -match '--editor'
+    })
 if ($canonicalEditors.Count -ne 0) {
     throw "Reload smoke requires no canonical Editor. Found PID(s): $($canonicalEditors.ProcessId -join ', ')."
 }
