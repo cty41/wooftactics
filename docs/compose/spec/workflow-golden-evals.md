@@ -2,7 +2,7 @@
 feature: workflow-golden-evals
 status: delivered
 updated: 2026-11-05
-source: feat/workflow-golden-evals
+source: https://github.com/cty41/wooftactics/pull/21
 ---
 
 # 工作流 Golden Eval 集
