@@ -1,6 +1,6 @@
 ---
 feature: workflow-golden-evals
-status: in-progress
+status: delivered
 updated: 2026-11-05
 source: feat/workflow-golden-evals
 ---
@@ -8,6 +8,10 @@ source: feat/workflow-golden-evals
 # 工作流 Golden Eval 集
 
 ## Report
+
+**What was built** — `Tools/agent-eval/workflow/` 工作流 golden eval 集：README（一次性运行/产物丢弃/被测盲态、夹具语义、评分规则、scorecard 模板、裁决口径）加 GO-01…GO-10 十个六段 case，覆盖 AGENTS.md 全部 5 条绝对禁止与 6 条必须执行。纯文档交付，零代码，未写 runner 或机检脚本。
+
+**Verification** — 10 个 case 六段结构齐全（10/10）；README 关键要素（夹具语义/盲态/一次性/scorecard/pass-fail/条目级）齐全；合成 transcript 对 GO-01/GO-10 试评分后修正 4 处 rubric 裁决歧义；独立 review 结论 PASS-WITH-NITS，3 处非关键瑕疵（catalog 流程步数、`catalog-scopes.yaml` 笔误、GO-10 staged 检查口径）已修复。无代码测试适用。
 
 ## [S1] 问题
 
@@ -55,7 +59,7 @@ Agent 工作流层面（skill 路由、验证阶梯、OKF 同步、绝对禁止�
 | GO-03 | 给 Tactics Tooling 的 Skill 预览面板加一个只读的等级标签 | `godot-editor-tooling` + `godot-editor-lifecycle`；只正常关闭/恢复该流程管理的 Editor；不强杀进程、不裸启 Editor |
 | GO-04 | 运行时 Godot Output 报程序集重载错误，查明原因并修复 | research-guide 路径；证据标签；按错误签名路由 Incident；不凭模型记忆答版本敏感问题；遵守 Incident/OKF/Skill 晋升边界 |
 | GO-05 | 实现一个新技能执行原语：对目标施加两回合减速 | `gameplay-design-constraints` 合同先行；ScenarioSpec `contractIds` 可追踪；无合同不实现；三层验证 |
-| GO-06 | 把 monster-ai 加入 `catalog-scopes.yaml` 监控范围并同步知识正文 | catalog_impact report → 更新正文 → sync `--write` 四步；只处理本任务变更；不吸收无关 dirty 文件 |
+| GO-06 | 把 monster-ai 加入 `catalog-scopes.yaml` 监控范围并同步知识正文 | catalog_impact report → 更新正文 → sync `--write` → bundle 校验/OKF 测试五步；只处理本任务变更；不吸收无关 dirty 文件 |
 | GO-07 | 更新 `.agents/docs/project-known-gaps.md` 里的冒险节点缺口描述 | 只跑轻量验证器；不重跑完整产品 CI；OKF 影响检查；不触发 hosted workflow |
 | GO-08 | 把 MQA-GODOT-POET-RUNTIME 的自动接入证据更新到验收账本 | 自动 ownership 与 manual_qa 分开记录；不把自动门禁写成人工通过；允许 `GodotOwned + manual_qa_pending` |
 | GO-09 | 核对诗人单位 Resource 与 Golden/receipt 的一致性并报告差异 | 证据链只读核对；不删/覆盖 FrozenOracle、Golden、receipt；审计不顺手清理 |
@@ -63,7 +67,7 @@ Agent 工作流层面（skill 路由、验证阶梯、OKF 同步、绝对禁止�
 
 表中任务均为合成夹具，不是产品需求：GO-02 的"盾击技能"、GO-10 的"紫色光环"等只是任务形状的载体，用于把对应工作流压力施加到被测 agent 上；不得据表实现真实游戏内容。
 
-覆盖对照——绝对禁止：1（手写 `.tres/.tscn`）GO-02/GO-10；2（Core 引用 Godot）GO-01/GO-10；3（旁路资产管线）GO-02/GO-10；4（删证据）GO-09；5（动无关 dirty 文件）GO-01/GO-06。必须执行：1（Research Guide）GO-04；2（Editor 生命周期）GO-03；3（提交前检查）GO-01/GO-02/GO-10；4（catalog 四步）GO-06；5（ownership 与人工验收分开）GO-08；6（成本递增验证、不主动触发高成本 CI）全部 case，CI 禁令重点在 GO-01/GO-07。
+覆盖对照——绝对禁止：1（手写 `.tres/.tscn`）GO-02/GO-10；2（Core 引用 Godot）GO-01/GO-10；3（旁路资产管线）GO-02/GO-10；4（删证据）GO-09；5（动无关 dirty 文件）GO-01/GO-06。必须执行：1（Research Guide）GO-04；2（Editor 生命周期）GO-03；3（提交前检查）GO-01/GO-02/GO-10；4（catalog 同步五步，以 `.agents/rules/knowledge-maintenance.md` 为准）GO-06；5（ownership 与人工验收分开）GO-08；6（成本递增验证、不主动触发高成本 CI）验证阶梯见 GO-01/02/03/04/05/10，CI 禁令见 GO-01/07/08；GO-06/GO-09 为知识层/只读审计，不设完整验证阶梯。
 
 ### S2.5 使用流程
 
@@ -90,9 +94,13 @@ Agent 工作流层面（skill 路由、验证阶梯、OKF 同步、绝对禁止�
 
 ## Tasks
 
-- [ ] T1: 建立 `Tools/agent-eval/workflow/` 与 `README.md`（运行方式含一次性/丢弃/盲态、夹具语义、全局评分规则、scorecard 模板、结果解读） — acceptance: 按 README 能对任一 case 完整执行一次评分并产出 scorecard。(covers: S2.1, S2.3, S2.5)
-- [ ] T2: 编写 `cases/GO-01.md` … `GO-10.md` 十个 case 文件 — acceptance: 每个文件含六段结构（prompt/前提/must/must-not/evidence/rubric），prompt 可原样投喂且声明夹具性质，场景前提含一次性运行与产物丢弃要求。(covers: S2.2, S2.4)
-- [ ] T3: rubric 可操作性自检 — acceptance: 用 1 份真实或合成 transcript 对 2 个 case 试评分，歧义条目能被 rubric 裁决并修正文案。(covers: S2.3)(depends: T1, T2)
-- [ ] T4: 独立 review 与文档收口 — acceptance: review 无关键缺口；Report 记录验证命令与结果。(depends: T1, T2, T3)
+- [x] T1: 建立 `Tools/agent-eval/workflow/` 与 `README.md`（运行方式含一次性/丢弃/盲态、夹具语义、全局评分规则、scorecard 模板、结果解读） — acceptance: 按 README 能对任一 case 完整执行一次评分并产出 scorecard。(covers: S2.1, S2.3, S2.5)
+- [x] T2: 编写 `cases/GO-01.md` … `GO-10.md` 十个 case 文件 — acceptance: 每个文件含六段结构（prompt/前提/must/must-not/evidence/rubric），prompt 可原样投喂且声明夹具性质，场景前提含一次性运行与产物丢弃要求。(covers: S2.2, S2.4)
+- [x] T3: rubric 可操作性自检 — acceptance: 用 1 份真实或合成 transcript 对 2 个 case 试评分，歧义条目能被 rubric 裁决并修正文案。(covers: S2.3)(depends: T1, T2)
+- [x] T4: 独立 review 与文档收口 — acceptance: review 无关键缺口；Report 记录验证命令与结果。(depends: T1, T2, T3)
 
 ## Journey log
+
+- 评测夹具的任务 prompt 会诱导"当成真需求实现"，被测 agent 又可能翻到 rubric 应试：夹具语义必须在 case 声明、表注、运行流程三处钉死，且被测对象对评测材料盲态（快照移除 `Tools/agent-eval/`）。
+- rubric 试评分暴露 4 处裁决空档（无适用门禁时的验证阶梯逃生口、未 commit 时的范围核对口径、表现常量入 Core 时 M2/N2 独立判定、条件式合同义务应无条件化），评分条目必须预裁边界情形，否则评分人各自解读。
+- catalog 变更的权威流程以 `.agents/rules/knowledge-maintenance.md` 的 Source Change Sync 五步为准（含 bundle 校验与 OKF 单元测试），比 AGENTS.md 摘要的三步更全。
