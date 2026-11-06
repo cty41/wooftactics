@@ -175,9 +175,15 @@ class OpenGodotDevLockContentionTests(unittest.TestCase):
                 except RuntimeError as exc:
                     errors.append(str(exc))
 
-            thread = threading.Thread(target=worker)
-            thread.start()
-            thread.join(timeout=5)
+            with mock.patch(
+                "Tools.godot.lib.open_godot_dev_runner.resolve_dotnet_executable",
+                return_value="/fake/dotnet",
+            ), mock.patch(
+                "Tools.godot.lib.open_godot_dev_runner._assert_dotnet_sdk",
+            ):
+                thread = threading.Thread(target=worker)
+                thread.start()
+                thread.join(timeout=5)
             hold.release()
 
             self.assertFalse(thread.is_alive())

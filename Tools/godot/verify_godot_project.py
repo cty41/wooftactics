@@ -17,8 +17,22 @@ With Godot for an optional GdUnit subset:
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import sys
 from pathlib import Path
+
+
+def _bootstrap_repo_imports() -> None:
+    bootstrap_path = Path(__file__).resolve().parent / "lib" / "repo_bootstrap.py"
+    spec = importlib.util.spec_from_file_location("_godot_repo_bootstrap", bootstrap_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Failed to load repo bootstrap: {bootstrap_path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    module.bootstrap_cli_entry(__file__)
+
+
+_bootstrap_repo_imports()
 
 from Tools.godot.lib.tool_probe import try_resolve_godot_executable
 from Tools.godot.lib.verify_runner import run_verify_profile
