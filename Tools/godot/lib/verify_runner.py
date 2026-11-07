@@ -17,8 +17,10 @@ from Tools.godot.lib.skip_log import log_skip_windows_only
 from Tools.godot.lib.tool_probe import (
     DotnetNotFoundError,
     NodeNotFoundError,
+    NpmNotFoundError,
     resolve_dotnet_executable,
     resolve_node_executable,
+    resolve_npm_executable,
     try_resolve_godot_executable,
 )
 from Tools.godot.lib.verify_steps import PROFILE_WINDOWS, VerifyStepDefinition
@@ -45,6 +47,7 @@ class VerifyContext:
     python_exe: str
     dotnet_exe: str
     node_exe: str
+    npm_exe: str
     godot_executable: str | None
     run_on_windows: bool
     require_artwork: bool = False
@@ -265,11 +268,18 @@ def _preflight(ctx: VerifyContext) -> None:
         ctx.python_exe = resolve_python.resolve_python_executable(env=ctx.env)
         ctx.dotnet_exe = resolve_dotnet_executable(env=ctx.env)
         ctx.node_exe = resolve_node_executable(env=ctx.env)
-    except (resolve_python.PythonNotFoundError, DotnetNotFoundError, NodeNotFoundError) as exc:
+        ctx.npm_exe = resolve_npm_executable(env=ctx.env, node_exe=ctx.node_exe)
+    except (
+        resolve_python.PythonNotFoundError,
+        DotnetNotFoundError,
+        NodeNotFoundError,
+        NpmNotFoundError,
+    ) as exc:
         raise RuntimeError(str(exc)) from exc
     print(f"Python: {ctx.python_exe}", flush=True)
     print(f"dotnet: {ctx.dotnet_exe}", flush=True)
     print(f"node: {ctx.node_exe}", flush=True)
+    print(f"npm: {ctx.npm_exe}", flush=True)
     if ctx.godot_executable:
         print(f"Godot: {ctx.godot_executable}", flush=True)
     else:
@@ -370,14 +380,14 @@ def _ensure_gameplay_spec_dist(ctx: VerifyContext) -> None:
         print("== Restore gameplay spec compiler dependencies ==", flush=True)
         _run_checked(
             "npm ci (gameplay-test-spec)",
-            ["npm", "--prefix", str(prefix), "ci", "--ignore-scripts"],
+            [ctx.npm_exe, "--prefix", str(prefix), "ci", "--ignore-scripts"],
             cwd=ctx.repo_root,
             env=ctx.env,
         )
     print("== Build gameplay-test-spec dist ==", flush=True)
     _run_checked(
         "npm run build (gameplay-test-spec)",
-        ["npm", "--prefix", str(prefix), "run", "build"],
+        [ctx.npm_exe, "--prefix", str(prefix), "run", "build"],
         cwd=ctx.repo_root,
         env=ctx.env,
     )
@@ -389,7 +399,7 @@ def _gameplay_spec_compiler(ctx: VerifyContext) -> None:
         print("== Restore gameplay spec compiler dependencies ==", flush=True)
         _run_checked(
             "npm ci (gameplay-test-spec)",
-            ["npm", "--prefix", str(prefix), "ci", "--ignore-scripts"],
+            [ctx.npm_exe, "--prefix", str(prefix), "ci", "--ignore-scripts"],
             cwd=ctx.repo_root,
             env=ctx.env,
         )
@@ -397,7 +407,7 @@ def _gameplay_spec_compiler(ctx: VerifyContext) -> None:
     env["GODOT_OWNED_VERIFY"] = "1"
     _run_checked(
         "Run gameplay spec compiler tests",
-        ["npm", "--prefix", str(prefix), "test"],
+        [ctx.npm_exe, "--prefix", str(prefix), "test"],
         cwd=ctx.repo_root,
         env=env,
     )
@@ -608,6 +618,7 @@ def run_verify_profile(
         python_exe="",
         dotnet_exe="",
         node_exe="",
+        npm_exe="",
         godot_executable=godot_executable,
         run_on_windows=run_on_windows,
         require_artwork=require_artwork,

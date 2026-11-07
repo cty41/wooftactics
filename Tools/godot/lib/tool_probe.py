@@ -15,6 +15,10 @@ class NodeNotFoundError(RuntimeError):
     """Raised when node is not on PATH."""
 
 
+class NpmNotFoundError(RuntimeError):
+    """Raised when npm is not on PATH and not overridden by NPM."""
+
+
 class GodotNotFoundError(RuntimeError):
     """Raised when no Godot binary was configured or discovered."""
 
@@ -47,6 +51,47 @@ def resolve_node_executable(*, env: Mapping[str, str] | None = None) -> str:
         return os.path.abspath(found)
     raise NodeNotFoundError(
         "No node executable found on PATH. Install Node.js or set PATH so node is available."
+    )
+
+
+def resolve_npm_executable(
+    *,
+    env: Mapping[str, str] | None = None,
+    node_exe: str | None = None,
+) -> str:
+    """Return absolute path to npm for subprocess argv[0].
+
+    On Windows, ``subprocess.run([\"npm\", ...])`` can raise WinError 2 because the bare
+    name is not resolved to ``npm.cmd`` the way a shell does. Prefer a concrete path from
+    ``which`` or next to ``node.exe``.
+    """
+    environment = os.environ if env is None else env
+    path_env = environment.get("PATH") or None
+
+    npm_override = (environment.get("NPM") or "").strip()
+    if npm_override:
+        if os.path.isfile(npm_override):
+            return os.path.abspath(npm_override)
+        found = shutil.which(npm_override, path=path_env)
+        if found:
+            return os.path.abspath(found)
+        raise NpmNotFoundError(
+            f"NPM is set but does not resolve to an npm executable: {npm_override}"
+        )
+
+    for name in ("npm", "npm.cmd"):
+        found = shutil.which(name, path=path_env)
+        if found:
+            return os.path.abspath(found)
+
+    if os.name == "nt" and node_exe:
+        sibling = os.path.join(os.path.dirname(node_exe), "npm.cmd")
+        if os.path.isfile(sibling):
+            return os.path.abspath(sibling)
+
+    raise NpmNotFoundError(
+        "No npm executable found on PATH. Install Node.js (npm ships with it), set PATH, "
+        "or set NPM to the full path to npm (e.g. npm.cmd on Windows)."
     )
 
 
