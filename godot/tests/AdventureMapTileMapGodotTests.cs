@@ -165,8 +165,11 @@ public sealed class AdventureMapTileMapGodotTests
         AssertThat(view.AtlasNodeBounds.Values.All(value => value.Size == start.Size)).IsTrue();
         AssertThat(battle.Position.X).IsGreater(start.Position.X);
         AssertThat(battle.Position.Y).IsLess(start.Position.Y);
-        AssertThat(left.Position.Y).IsEqual(right.Position.Y);
-        AssertThat(left.Position.X).IsLess(right.Position.X);
+        // Lanes line up along grid +Y (screen up-left): the higher lane sits further up-left, parallel to the lower.
+        Vector2 laneOffset = right.Position - left.Position;
+        Vector2 axisY = GodotAdventureAtlasLayout.BoardAxisY(start.Size);
+        AssertThat(laneOffset.Normalized().IsEqualApprox(axisY.Normalized())).IsTrue();
+        AssertThat(GodotAdventureAtlasLayout.DiamondContains(left, right.GetCenter())).IsFalse();
         AdventureMapTemplateDefinition campDefinition = AdventureMapAssetFactory.CreateStartCampTemplate().ToCoreDefinition();
         AdventureMapTemplateDefinition previewDefinition = AdventureMapAssetFactory.CreateBasicBattleTemplate().ToCoreDefinition();
         (Vector2 from, Vector2 to) = view.ConnectionEndpoints["start->battle"];

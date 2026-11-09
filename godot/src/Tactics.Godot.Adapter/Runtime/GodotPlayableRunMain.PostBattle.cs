@@ -86,6 +86,14 @@ public partial class GodotPlayableRunMain
         foreach ((string id, GodotAdventureMapInstance map) in host.Nodes)
             if (layout.TryGetValue(id, out GodotAdventureAtlasNodeLayout? node))
                 map.Transform = new Transform2D(0f, node.WorldBounds.Position - bounds.Position);
+        // Route lanes and template exit cells are authored separately; hand the successors' lane slots out in the
+        // exits' rim order (grid y) so no two route lines cross.
+        string[] byExit = template.Exits.Where(value => allowedTargets.Contains(value.TargetNodeId, StringComparer.Ordinal) &&
+                                                        host.Nodes.ContainsKey(value.TargetNodeId) && layout.ContainsKey(value.TargetNodeId))
+            .OrderBy(value => value.Cell.Y).Select(value => value.TargetNodeId).Distinct(StringComparer.Ordinal).ToArray();
+        Transform2D[] slots = byExit.OrderBy(id => layout[id].Lane).Select(id => host.Nodes[id].Transform).ToArray();
+        for (int index = 0; index < byExit.Length; index++)
+            host.Nodes[byExit[index]].Transform = slots[index];
 
         foreach ((string id, GodotAdventureMapInstance map) in host.Nodes)
             map.Visible = id == nodeId || allowedTargets.Contains(id, StringComparer.Ordinal);
@@ -139,22 +147,34 @@ public partial class GodotPlayableRunMain
         board.FrameExtraPoints = Array.Empty<Vector2>();
     }
 
-    /// <summary>Overview button slot: directly above the shared Inventory button, clear of the rim exit markers.</summary>
+    /// <summary>Overview text-hint slot: on the status line, left of the shared Inventory button.</summary>
     internal static readonly Rect2 PostBattleOverviewButtonRect = new(
-        ExplorationInventoryButtonRect.Position - new Vector2(0, 66), new Vector2(ExplorationInventoryButtonRect.Size.X, 54));
-    internal const string PostBattleOverviewLabel = "Overview  [M]";
-    internal const string PostBattleCurrentMapLabel = "Back to Map  [M]";
+        new Vector2(ExplorationInventoryButtonRect.Position.X - 260, ExplorationInventoryButtonRect.Position.Y + 12), new Vector2(240, 34));
+    internal const string PostBattleOverviewLabel = "[M] Overview";
+    internal const string PostBattleCurrentMapLabel = "[M] Back to map";
 
     private IReadOnlyList<Vector2> _postBattleOverviewPoints = Array.Empty<Vector2>();
-    private Button? _postBattleOverviewButton;
+    private LinkButton? _postBattleOverviewButton;
 
     private void AddPostBattleOverviewButton(Control root, GodotAdventureBoardView board)
     {
         if (_postBattleOverviewPoints.Count == 0) return;
-        Button button = Button(PostBattleOverviewLabel, () => TogglePostBattleOverview(board));
-        button.Name = "PostBattleOverviewButton";
+        var button = new LinkButton
+        {
+            Name = "PostBattleOverviewButton",
+            Text = PostBattleOverviewLabel,
+            Underline = LinkButton.UnderlineMode.OnHover,
+            FocusMode = FocusModeEnum.None,
+            Position = PostBattleOverviewButtonRect.Position,
+            Size = PostBattleOverviewButtonRect.Size,
+            ZIndex = StartPageUiZIndex
+        };
+        button.AddThemeFontSizeOverride("font_size", 18);
+        button.AddThemeColorOverride("font_color", PrimaryAttributeColor);
+        button.AddThemeColorOverride("font_hover_color", PrimaryAttributeColor.Lightened(.25f));
+        button.Pressed += () => TogglePostBattleOverview(board);
         _postBattleOverviewButton = button;
-        root.AddChild(PlaceControl(button, PostBattleOverviewButtonRect.Position, PostBattleOverviewButtonRect.Size));
+        root.AddChild(button);
     }
 
     private void TogglePostBattleOverview(GodotAdventureBoardView board)

@@ -863,7 +863,7 @@ public class PlayableRunUiGodotTests
 
     [TestCase]
     [RequireGodotRuntime]
-    public void InventoryRendersSingleBackpackAndActionableLoadoutColumns()
+    public async Task InventoryRendersSingleBackpackAndActionableLoadoutColumns()
     {
         GodotPlayableRunMain ui = ReadyUi();
         SceneTree tree = (SceneTree)Engine.GetMainLoop();
@@ -890,9 +890,26 @@ public class PlayableRunUiGodotTests
         AssertThat(buttons).Contains("Consumables");
         AssertThat(buttons).Contains("Back");
         PanelContainer[] inventoryCards = Descendants<PanelContainer>(ui)
-            .Where(panel => panel.ThemeTypeVariation == GodotTacticsTheme.Card && panel.Size.Y == 640)
+            .Where(panel => panel.Name.ToString().StartsWith("Inventory", StringComparison.Ordinal))
             .ToArray();
         AssertThat(inventoryCards.Length).IsEqual(3);
+        await ui.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        // Every column's content stays inside its own card, and the two tabs share the backpack row equally.
+        foreach (PanelContainer panel in inventoryCards)
+        {
+            Rect2 card = panel.GetGlobalRect();
+            AssertThat(card.Position.Y).IsGreaterEqual(GodotPlayableRunMain.PageContentTop);
+            foreach (Control child in Descendants<Control>(panel).Where(value => value.Visible && value != panel))
+                AssertThat(card.Grow(1f).Encloses(child.GetGlobalRect())).IsTrue();
+        }
+        Button equipmentTab = Descendants<Button>(ui).Single(value => value.Name == "InventoryTabEquipment");
+        Button consumableTab = Descendants<Button>(ui).Single(value => value.Name == "InventoryTabConsumables");
+        AssertThat(equipmentTab.Size.X).IsEqualApprox(consumableTab.Size.X, 1f);
+        Label headerInfo = Descendants<Label>(ui).Single(value => value.Name == "HeaderRunInfo");
+        AssertThat(headerInfo.Visible).IsTrue();
+        Rect2 header = Descendants<PanelContainer>(ui).Single(value => value.Name == "PageHeader").GetGlobalRect();
+        AssertThat(header.Grow(1f).Encloses(headerInfo.GetGlobalRect())).IsTrue();
+        AssertThat(inventoryCards.Any(panel => panel.GetGlobalRect().Intersects(header))).IsFalse();
         AssertThat(inventoryCards.All(panel => panel.MouseFilter == Control.MouseFilterEnum.Ignore)).IsTrue();
         AssertThat(inventoryCards.Select(panel => panel.Name.ToString()).OrderBy(value => value).ToArray())
             .ContainsExactly("InventoryBackpackPanel", "InventoryCharacterPanel", "InventoryDetailPanel");

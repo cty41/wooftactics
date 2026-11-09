@@ -325,6 +325,9 @@ public partial class GodotPlayableRunMain : Control
         return true;
     }
 
+    public bool IsAdventureWalking =>
+        _adventureBoard is not null && GodotObject.IsInstanceValid(_adventureBoard) && _adventureBoard.IsWalking;
+
     public bool TryResolveTestAdventurePointerTarget(string targetKind, string locator,
         out Control? surface, out Vector2 globalPoint)
     {
@@ -859,16 +862,8 @@ public partial class GodotPlayableRunMain : Control
             if (!changed.Succeeded) { SetStatus(changed.ErrorCode); return; }
             ShowInitialAdventure(changed.Snapshot!.ActiveRun!);
         };
-        _adventureBoard.CellPressed += destination =>
-        {
-            RunSessionResult changed = _run!.ApplyMutation(state =>
-            {
-                try { return new RunMutationResult(true, null, new RunAdventureTransitionService().MoveLeader(state, definition, destination)); }
-                catch (InvalidOperationException error) { return new RunMutationResult(false, error.Message, state); }
-            });
-            if (!changed.Succeeded) { SetStatus(changed.ErrorCode); return; }
-            ShowInitialAdventure(changed.Snapshot!.ActiveRun!);
-        };
+        _adventureRerender = ShowInitialAdventure;
+        _adventureBoard.CellPressed += destination => WalkLeaderThen(run, definition, destination, null);
         _adventureBoard.ObjectPressed += objectId =>
         {
             if (objectId != "exit:layer_01_battle") return;
@@ -1626,14 +1621,24 @@ public partial class GodotPlayableRunMain : Control
         BuildPauseMenu(root, false);
     }
 
-    /// <summary>Four 15 px lines must end above the settlement result panel at y = 230.</summary>
+    /// <summary>Four 15 px lines must end above the settlement result panel at y = 230 (header-less fallback only).</summary>
     private const float RunShellLineHeight = 20;
+    internal static readonly Rect2 PageHeaderRect = new(new Vector2(48, 24), new Vector2(1504, 104));
+    /// <summary>First free y below the page header; page content starts here.</summary>
+    internal const float PageContentTop = 140;
+    private Label? _headerRunInfo;
 
     private void AddRunShell(Control root, PureRunState run, string page)
     {
         string[] lines = new[] { $"{page}  |  Gold {run.Gold}  |  Bag {run.BackpackConsumables.Count + run.BackpackEquipment.Count}" }
             .Concat(run.Party.Select(value => $"{value.CharacterId} L{value.Level} HP {value.CurrentHealth}/{value.MaxHealth} MP {value.CurrentMana}/{value.MaxMana}"))
             .ToArray();
+        if (_headerRunInfo is { } headerInfo && GodotObject.IsInstanceValid(headerInfo))
+        {
+            headerInfo.Text = string.Join('\n', lines);
+            headerInfo.Visible = true;
+            return;
+        }
         float height = lines.Length * RunShellLineHeight + 20;
         var panel = new ColorRect { Name = "RunShellPanel", Color = new Color("1c2a33e6"), Position = new Vector2(1115, 125), Size = new Vector2(420, height) };
         root.AddChild(panel);
@@ -1707,9 +1712,13 @@ public partial class GodotPlayableRunMain : Control
         {
             if (pressed.StartsWith("exit:", StringComparison.Ordinal)) { SetStatus("Complete the event before leaving."); return; }
             if (pressed != objectId) return;
-            RunAdventureActorCell leader = run.AdventureState!.ActorCells.Single(value => value.ActorId == run.AdventureState.LeaderId);
-            if (!RunAdventureTransitionService.IsAdjacent(leader.Cell, definition.Objects.Single(value => value.ObjectId == objectId).Cell))
-            { SetStatus("Move the leader next to the event object first."); return; }
+            ApproachThen(run, definition, definition.Objects.Single(value => value.ObjectId == objectId).Cell, _ => BeginEventObjectBattle(contextKind, objectId));
+        };
+        _status = LabelAt(root, WithResidentFallback($"Interact: {objectId}"), new Vector2(470, 810), 18);
+    }
+
+    private void BeginEventObjectBattle(string contextKind, string objectId)
+    {
             try
             {
                 var encounterId = new ContentId("encounter.pure-run.n1");
@@ -1738,8 +1747,6 @@ public partial class GodotPlayableRunMain : Control
                 SetStatus($"event_battle.{exception.GetType().Name}:{exception.Message}");
                 GD.PushError($"Event battle failed: {exception}");
             }
-        };
-        _status = LabelAt(root, WithResidentFallback($"Interact: {objectId}"), new Vector2(470, 810), 18);
     }
 
     private void ShowPostEventScene(PureRunState run, string contextKind)
@@ -1850,15 +1857,15 @@ public partial class GodotPlayableRunMain : Control
                 return;
             }
             if (pressed != objectId) return;
-            RunAdventureActorCell leader = run.AdventureState!.ActorCells.Single(value => value.ActorId == run.AdventureState.LeaderId);
-            if (!RunAdventureTransitionService.IsAdjacent(leader.Cell, definition.Objects.Single(value => value.ObjectId == objectId).Cell))
-            { SetStatus("Move the leader next to the interaction object first."); return; }
-            switch (kind)
+            ApproachThen(run, definition, definition.Objects.Single(value => value.ObjectId == objectId).Cell, arrived =>
             {
-                case PureRunNodeKind.Rest: ShowRest(run); break;
-                case PureRunNodeKind.Store: ShowStore(run); break;
-                case PureRunNodeKind.Treasure: ShowTreasure(run); break;
-            }
+                switch (kind)
+                {
+                    case PureRunNodeKind.Rest: ShowRest(arrived); break;
+                    case PureRunNodeKind.Store: ShowStore(arrived); break;
+                    case PureRunNodeKind.Treasure: ShowTreasure(arrived); break;
+                }
+            });
         };
         _status = LabelAt(root, WithResidentFallback($"Interact: {objectId}"), new Vector2(470, 810), 18);
     }
@@ -1872,16 +1879,8 @@ public partial class GodotPlayableRunMain : Control
             if (!changed.Succeeded) { SetStatus(changed.ErrorCode); return; }
             rerender(changed.Snapshot!.ActiveRun!);
         };
-        _adventureBoard.CellPressed += destination =>
-        {
-            RunSessionResult changed = _run!.ApplyMutation(state =>
-            {
-                try { return new RunMutationResult(true, null, new RunAdventureTransitionService().MoveLeader(state, definition, destination)); }
-                catch (InvalidOperationException error) { return new RunMutationResult(false, error.Message, state); }
-            });
-            if (!changed.Succeeded) { SetStatus(changed.ErrorCode); return; }
-            rerender(changed.Snapshot!.ActiveRun!);
-        };
+        _adventureRerender = rerender;
+        _adventureBoard.CellPressed += destination => WalkLeaderThen(run, definition, destination, null);
     }
 
     private AdventureBoardObject[] CreateExitObjects(PureRunState run, string currentNodeId, bool unlocked)
@@ -1910,11 +1909,11 @@ public partial class GodotPlayableRunMain : Control
     {
         AdventureBoardObject? exit = definition.Objects.FirstOrDefault(value => value.ObjectId == objectId && value.Kind == AdventureObjectKind.Exit);
         if (exit?.TargetNodeId is null) return;
-        RunAdventureActorCell leader = run.AdventureState!.ActorCells.Single(value => value.ActorId == run.AdventureState.LeaderId);
-        if (!RunAdventureTransitionService.IsAdjacent(leader.Cell, exit.Cell))
-        { SetStatus("Move the leader next to the exit first."); return; }
-        if (exit.IsLocked) { SetStatus("Complete the current node before leaving."); return; }
-        HandleAdventureExit(run, exit.TargetNodeId);
+        ApproachThen(run, definition, exit.Cell, arrived =>
+        {
+            if (exit.IsLocked) { SetStatus("Complete the current node before leaving."); return; }
+            HandleAdventureExit(arrived, exit.TargetNodeId);
+        });
     }
 
     private void HandleAdventureExit(PureRunState run, string targetNodeId)
@@ -2259,50 +2258,52 @@ public partial class GodotPlayableRunMain : Control
         InventoryAttributeProjection attributes = inventory.SelectedCharacter.Attributes;
         Control root=NewPage("INVENTORY","Backpack, equipment loadout, carried consumable and derived character state");
         AddRunShell(root,run,"Inventory");
-        PanelAt(root,new Vector2(50,140),new Vector2(390,640),GodotTacticsTheme.Card).Name="InventoryCharacterPanel";
-        PanelAt(root,new Vector2(450,140),new Vector2(490,640),GodotTacticsTheme.Card).Name="InventoryBackpackPanel";
-        PanelAt(root,new Vector2(950,140),new Vector2(600,640),GodotTacticsTheme.Card).Name="InventoryDetailPanel";
-        var columns=new HBoxContainer{Position=new Vector2(65,150),Size=new Vector2(1470,610)};root.AddChild(columns);
-        var characters=new VBoxContainer{CustomMinimumSize=new Vector2(390,580)};columns.AddChild(characters);
+        Rect2[] columnsRects = InventoryColumnRects;
+        VBoxContainer characters = InventoryColumn(root, "InventoryCharacterPanel", columnsRects[0]);
         foreach(RunCharacterState character in run.Party)
         {
             RunCharacterState captured = character;
-            characters.AddChild(Button($"{(captured.CharacterId == selectedCharacter.CharacterId ? "▶ " : string.Empty)}{captured.CharacterId}  Lv{captured.Level}", () =>
+            characters.AddChild(InventoryButton($"{(captured.CharacterId == selectedCharacter.CharacterId ? "▶ " : string.Empty)}{captured.CharacterId}  Lv{captured.Level}", () =>
             {
                 _inventoryCharacterId = captured.CharacterId; _inventorySelectedInstanceId = null;
                 ShowInventory(run, returnTarget);
             }));
         }
-        characters.AddChild(AttributeProjectionLabel(selectedCharacter, attributes));
-        characters.AddChild(Label("Skills:\n" + string.Join('\n', selectedCharacter.LearnedSkillStates
-            .Select(value => $"{value.BranchId} Lv{value.Level}")), 18));
+        RichTextLabel attributeText = AttributeProjectionLabel(selectedCharacter, attributes);
+        attributeText.SizeFlagsHorizontal = SizeFlags.ExpandFill;
+        attributeText.CustomMinimumSize = new Vector2(0, attributeText.CustomMinimumSize.Y);
+        characters.AddChild(attributeText);
+        characters.AddChild(WrappedLabel("Skills:\n" + string.Join('\n', selectedCharacter.LearnedSkillStates
+            .Select(value => $"{(_skillUi.TryGetValue(value.DefinitionId, out SkillUiMetadata? skill) ? skill.DisplayName : value.BranchId)} Lv{value.Level}")), 17));
 
-        var backpack=new VBoxContainer{CustomMinimumSize=new Vector2(500,580)};columns.AddChild(backpack);
-        var tabs=new HBoxContainer();backpack.AddChild(tabs);
-        tabs.AddChild(Button(_inventoryEquipmentTab?"[ Equipment ]":"Equipment",()=>{_inventoryEquipmentTab=true;_inventorySelectedInstanceId=null;ShowInventory(run,returnTarget);}));
-        tabs.AddChild(Button(!_inventoryEquipmentTab?"[ Consumables ]":"Consumables",()=>{_inventoryEquipmentTab=false;_inventorySelectedInstanceId=null;ShowInventory(run,returnTarget);}));
+        VBoxContainer backpack = InventoryColumn(root, "InventoryBackpackPanel", columnsRects[1]);
+        var tabs=new HBoxContainer{Name="InventoryTabs",SizeFlagsHorizontal=SizeFlags.ExpandFill};backpack.AddChild(tabs);
+        Button equipmentTab = InventoryButton(_inventoryEquipmentTab?"[ Equipment ]":"Equipment",()=>{_inventoryEquipmentTab=true;_inventorySelectedInstanceId=null;ShowInventory(run,returnTarget);});
+        Button consumableTab = InventoryButton(!_inventoryEquipmentTab?"[ Consumables ]":"Consumables",()=>{_inventoryEquipmentTab=false;_inventorySelectedInstanceId=null;ShowInventory(run,returnTarget);});
+        equipmentTab.Name = "InventoryTabEquipment"; consumableTab.Name = "InventoryTabConsumables";
+        foreach (Button tab in new[] { equipmentTab, consumableTab }) { tab.SizeFlagsStretchRatio = 1; tabs.AddChild(tab); }
         if (_inventoryEquipmentTab)
         {
-            if (run.BackpackEquipment.Count == 0) backpack.AddChild(Label("Equipment backpack is empty.\nEquipment is obtained from Store or Mystery routes.",18));
+            if (run.BackpackEquipment.Count == 0) backpack.AddChild(WrappedLabel("Equipment backpack is empty.\nEquipment is obtained from Store or Mystery routes.",17));
             foreach (RunEquipmentState item in run.BackpackEquipment)
             {
                 RunEquipmentState captured=item;
-                backpack.AddChild(Button($"{captured.InstanceId.Value}  |  {_equipment[captured.DefinitionId].DisplayName}",()=>
+                backpack.AddChild(InventoryButton($"{_equipment[captured.DefinitionId].DisplayName}  ·  {captured.InstanceId.Value}",()=>
                 { _inventorySelectedInstanceId=captured.InstanceId.Value; ShowInventory(run,returnTarget); }));
             }
         }
         else
         {
-            if (run.BackpackConsumables.Count == 0) backpack.AddChild(Label("Consumable backpack is empty.\nNormal battles use the frozen deterministic drop chance.",18));
+            if (run.BackpackConsumables.Count == 0) backpack.AddChild(WrappedLabel("Consumable backpack is empty.\nNormal battles use the frozen deterministic drop chance.",17));
             foreach (BattleConsumableState item in run.BackpackConsumables)
             {
                 BattleConsumableState captured=item;
-                backpack.AddChild(Button($"{captured.InstanceId.Value}  |  {_consumables[captured.DefinitionId].DisplayName}  {captured.RemainingCharges}/{captured.MaxCharges}",()=>
+                backpack.AddChild(InventoryButton($"{_consumables[captured.DefinitionId].DisplayName}  {captured.RemainingCharges}/{captured.MaxCharges}  ·  {captured.InstanceId.Value}",()=>
                 { _inventorySelectedInstanceId=captured.InstanceId.Value; ShowInventory(run,returnTarget); }));
             }
         }
 
-        var detail=new VBoxContainer{CustomMinimumSize=new Vector2(520,580)};columns.AddChild(detail);
+        VBoxContainer detail = InventoryColumn(root, "InventoryDetailPanel", columnsRects[2]);
         detail.AddChild(Label($"Loadout — {selectedCharacter.CharacterId}",22));
         foreach(EquipmentSlot slot in Enum.GetValues<EquipmentSlot>())
         {
@@ -2323,17 +2324,81 @@ public partial class GodotPlayableRunMain : Control
         if(selectedEquipment is not null)
         {
             EquipmentDefinition definition=_equipment[selectedEquipment.DefinitionId];
-            detail.AddChild(Label($"\n{definition.DisplayName}\n{definition.Slot} | {definition.Rarity} | Price {definition.Price}\nSource: Store / Mystery\nBonuses: STR {definition.AttributeBonuses.Strength} AGI {definition.AttributeBonuses.Agility} CON {definition.AttributeBonuses.Constitution} INT {definition.AttributeBonuses.Intelligence} CHA {definition.AttributeBonuses.Charisma} LUCK {definition.AttributeBonuses.Luck}",17));
+            detail.AddChild(WrappedLabel($"\n{definition.DisplayName}\n{definition.Slot} | {definition.Rarity} | Price {definition.Price}\nSource: Store / Mystery\nBonuses: STR {definition.AttributeBonuses.Strength} AGI {definition.AttributeBonuses.Agility} CON {definition.AttributeBonuses.Constitution} INT {definition.AttributeBonuses.Intelligence} CHA {definition.AttributeBonuses.Charisma} LUCK {definition.AttributeBonuses.Luck}",17));
             detail.AddChild(Button(selectedCharacter.Equipment.Any(value=>value.Slot==definition.Slot)?"Replace equipped item":"Equip",()=>CommitInventoryMutation(state=>new RunInventoryProgressionService().Equip(state,state.Revision,selectedCharacter.CharacterId,selectedEquipment.InstanceId,_equipment,_units[selectedCharacter.UnitContentId].Speed),returnTarget)));
         }
         else if(selectedConsumable is not null)
         {
             ConsumableDefinition definition=_consumables[selectedConsumable.DefinitionId];
-            detail.AddChild(Label($"\n{definition.DisplayName}\nPrice {definition.Price}\n{definition.Description}\nSource: deterministic Battle drop / Store / Mystery",17));
+            detail.AddChild(WrappedLabel($"\n{definition.DisplayName}\nPrice {definition.Price}\n{definition.Description}\nSource: deterministic Battle drop / Store / Mystery",17));
             detail.AddChild(Button(selectedCharacter.CarriedConsumables.Count>0?"Replace carried consumable":"Carry",()=>CommitInventoryMutation(state=>new RunInventoryProgressionService().Carry(state,state.Revision,selectedCharacter.CharacterId,selectedConsumable.InstanceId),returnTarget)));
         }
-        root.AddChild(PlaceControl(Button("Back",()=>ReturnFromInventory(run,returnTarget)),new Vector2(650,815),new Vector2(300,55)));
+        Button back = Button("Back",()=>ReturnFromInventory(run,returnTarget));
+        back.Name = "InventoryBack";
+        root.AddChild(PlaceControl(back,new Vector2((CanvasWidth-InventoryBackSize.X)*.5f,InventoryColumnsBottom+14),InventoryBackSize));
         PushEscapeLayer("inventory", () => ReturnFromInventory(run, returnTarget));
+    }
+
+    private static readonly Vector2 InventoryBackSize = new(300, 52);
+    private const float InventoryColumnsBottom = 790;
+
+    /// <summary>Character / backpack / detail columns at 0.27 / 0.33 / 0.40 of the 1520 px safe width.</summary>
+    internal static Rect2[] InventoryColumnRects
+    {
+        get
+        {
+            const float left = 40, width = 1520, gap = 14;
+            float usable = width - gap * 2;
+            float[] ratios = [.27f, .33f, .40f];
+            var rects = new Rect2[3];
+            float x = left;
+            for (int index = 0; index < 3; index++)
+            {
+                float w = usable * ratios[index];
+                rects[index] = new Rect2(x, PageContentTop, w, InventoryColumnsBottom - PageContentTop);
+                x += w + gap;
+            }
+            return rects;
+        }
+    }
+
+    /// <summary>One inventory column: a card panel with inner margins that owns its VBox, so content cannot spill past the card.</summary>
+    private static VBoxContainer InventoryColumn(Control root, string name, Rect2 rect)
+    {
+        PanelContainer panel = PanelAt(root, rect.Position, rect.Size, GodotTacticsTheme.Card);
+        panel.Name = name;
+        panel.ClipContents = true;
+        var margin = new MarginContainer { Name = "Margin" };
+        foreach (string side in new[] { "left", "right", "top", "bottom" })
+            margin.AddThemeConstantOverride($"margin_{side}", 12);
+        panel.AddChild(margin);
+        var column = new VBoxContainer { Name = "Column" };
+        column.AddThemeConstantOverride("separation", 8);
+        margin.AddChild(column);
+        return column;
+    }
+
+    private static Button InventoryButton(string text, Action action)
+    {
+        var button = new Button
+        {
+            Text = text,
+            CustomMinimumSize = new Vector2(0, 44),
+            SizeFlagsHorizontal = SizeFlags.ExpandFill,
+            ThemeTypeVariation = GodotTacticsTheme.CompactButton,
+            ClipText = true,
+            TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis
+        };
+        button.Pressed += action;
+        return button;
+    }
+
+    private static Label WrappedLabel(string text, int size)
+    {
+        Label label = Label(text, size);
+        label.AutowrapMode = TextServer.AutowrapMode.WordSmart;
+        label.SizeFlagsHorizontal = SizeFlags.ExpandFill;
+        return label;
     }
 
     private void CommitInventoryMutation(Func<PureRunState,RunMutationResult> mutation, InventoryReturnTarget returnTarget)
@@ -2379,7 +2444,7 @@ public partial class GodotPlayableRunMain : Control
         Control root=NewPage("BATTLE SETTLEMENT",SettlementSubtitle(run,out _));
         AddRunShell(root,run,"Progression");
         AddSettlementRewards(root,run);
-        PanelAt(root,new Vector2(60,140),new Vector2(770,700)).Name="ProgressionFlowPanel";
+        PanelAt(root,new Vector2(60,PageContentTop),new Vector2(770,700)).Name="ProgressionFlowPanel";
         var menu=new VBoxContainer{Position=new Vector2(85,160),Size=new Vector2(720,660)};root.AddChild(menu);
         var progressionService=new RunInventoryProgressionService();
         UnitAttributes proposed = _progressionDrafts.TryGetValue(key, out UnitAttributes draft) ? draft : character.Attributes;
@@ -2701,6 +2766,8 @@ public partial class GodotPlayableRunMain : Control
     private Control CreatePage(string title, string subtitle, bool battleBackdrop, bool showHeader)
     {
         _residentFallbackReason = null;
+        _headerRunInfo = null;
+        _adventureRerender = null;
         HideActWorldForPage();
         ClosePauseMenu();
         ClearEscapeLayers();
@@ -2739,11 +2806,27 @@ public partial class GodotPlayableRunMain : Control
         background.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect); root.AddChild(background);
         if (!battleBackdrop && showHeader)
         {
-            PanelContainer header = PanelAt(root, new Vector2(48, 24), new Vector2(1504, 104));
+            PanelContainer header = PanelAt(root, PageHeaderRect.Position, PageHeaderRect.Size);
+            header.Name = "PageHeader";
             header.ZIndex = StartPageUiZIndex;
-            var labels = new VBoxContainer(); header.AddChild(labels);
-            labels.AddChild(Label(title, 34));
-            Label detail = Label(subtitle, 16); detail.AddThemeColorOverride("font_color", GodotTacticsTheme.TextSecondary); labels.AddChild(detail);
+            header.ClipContents = true;
+            var row = new HBoxContainer { Name = "PageHeaderRow" }; header.AddChild(row);
+            row.AddThemeConstantOverride("separation", 24);
+            var labels = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill }; row.AddChild(labels);
+            Label heading = Label(title, 34); heading.TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis; labels.AddChild(heading);
+            Label detail = Label(subtitle, 16); detail.AddThemeColorOverride("font_color", GodotTacticsTheme.TextSecondary);
+            detail.TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis; labels.AddChild(detail);
+            _headerRunInfo = new Label
+            {
+                Name = "HeaderRunInfo",
+                Visible = false,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center,
+                SizeFlagsVertical = SizeFlags.ShrinkCenter
+            };
+            _headerRunInfo.AddThemeFontSizeOverride("font_size", 13);
+            _headerRunInfo.AddThemeColorOverride("font_color", GodotTacticsTheme.TextSecondary);
+            row.AddChild(_headerRunInfo);
         }
         return root;
     }

@@ -339,7 +339,7 @@ public partial class GodotStartCampView : Control
         if (input is not InputEventMouseButton { ButtonIndex: MouseButton.Left, Pressed: true }) return;
         Vector2 atlasPoint = _atlasWorldRoot is null ? Vector2.Zero : AtlasToViewTransform.AffineInverse() * viewPoint;
         string? previewNode = _routePreviewRects.FirstOrDefault(value =>
-            value.Key != GodotAdventureAtlasLayout.StartNodeId && value.Value.HasPoint(atlasPoint)).Key;
+            value.Key != GodotAdventureAtlasLayout.StartNodeId && GodotAdventureAtlasLayout.DiamondContains(value.Value, atlasPoint)).Key;
         if (_cameraMode == StartAtlasCameraMode.Overview)
         {
             if (!string.IsNullOrEmpty(previewNode)) PreviewPressed?.Invoke(previewNode);

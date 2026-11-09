@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics/tree/main/Tools/artworks
 title: Pure Run Artwork Pipeline
 description: Pure Run 角色美术的生成、去幕、尺寸校准、Review 与提交入口。
 tags: [operations, pure-run, artwork, sprite, godot]
-timestamp: "2026-11-06T00:45:15+08:00"
+timestamp: "2026-11-09T11:40:23+08:00"
 status: active
 catalog_scope: pure-run-artwork
 repo_paths:
@@ -28,7 +28,7 @@ repo_paths:
   - src/Tactics.Application/Presentation/BattlePresentationFrame.cs
   - Tools/public-release/asset-provenance.json
 verified_revision: c9ff3a710fd9
-source_fingerprint: sha256:17740309b8adbe3564fc2e85163b6c6630d291d3eec98f420e0efc78f6f2cba9
+source_fingerprint: sha256:6f813b431397a307bfd35dde65796670a084d6635740d23b123f3fb10866c69e
 ---
 
 # Pure Run 角色美术流水线

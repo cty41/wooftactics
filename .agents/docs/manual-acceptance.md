@@ -4,6 +4,18 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 
 ## Pending
 
+### MQA-GODOT-EXPLORATION-WALK-ATLAS-LAYOUT — 探索点击自动走位、战后 atlas 与页面排版
+
+- Status: `pending`
+- Source: 探索页交互与布局修复计划（Overview 文字提示、atlas 等距平行排列、页头自适应、背包三列、点击目标自动走位）
+- Action: 使用隔离存档进入常驻探索页：点远处普通格；直接点远处的出口、事件对象和 Rest/Store/Treasure 对象；行走中连点其他格；战斗胜利后看战后地图并按 `[M]`/点 `[M] Overview` 切换；打开背包页并缩放窗口。
+- Expected: 单位以均匀速度逐格移动且朝向跟随每段方向，不瞬移；点目标会自动走到最合适的相邻格后立即触发交互（出口离开、事件开战、打开 Rest/Store/Treasure），锁定出口到位后提示先完成当前节点；行走中的点击被忽略；不可达目标只显示提示。战后后继地图沿右上等距斜度平行排开、与当前地图不平行重叠、连线互不交叉；`[M] Overview` 以文字形式显示在背包按钮左侧；页头 Run 信息不溢出；背包三列内容不越出各自卡片，Back 按钮居中。
+- Observe: 探索页、战后页、背包页、状态栏文字与 Godot Output。
+- Preserve on failure: Run seed、节点 ID、点击的格/对象、行走前后截图或短视频、存档副本和完整 Output。
+- Save boundary: 移动与交互会写当前 Run；使用 disposable/隔离存档。
+- Automated evidence: ResidentExplorationPages 19 项（含远处出口自动走位离开、步长 `(path-1)*0.16s`、行走期间点击被忽略、不可达不写档、战后路线不相交/菱形不重叠）、PlayableRunUi 50 项（背包子控件在卡片内、页头包含 Run 信息）、AdventureMapTileMap 7、ResidentEventBattleProduction 10、StaleSaveColdResume 10、ActWorldHost 9 项 headless 通过。行走手感、视觉排版与整体美观只能人工判断。
+- User verdict: none.
+
 ### MQA-GODOT-MAW-BAT-SLICE — 大嘴蝠、浅水与 N2 实战纵切
 
 - Status: `pending`

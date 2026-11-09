@@ -115,7 +115,7 @@ public sealed class ResidentExplorationPagesGodotTests
         GodotAdventureBoardView board = Field<GodotAdventureBoardView>(ui, "_adventureBoard");
         AssertThat(board.FrameExtraPoints.Count).IsEqual(0);
         float mapScale = board.BoardScale;
-        var button = (Button)ui.FindChild("PostBattleOverviewButton", true, false)!;
+        var button = (LinkButton)ui.FindChild("PostBattleOverviewButton", true, false)!;
         AssertThat(button.Text).IsEqual(GodotPlayableRunMain.PostBattleOverviewLabel);
 
         button.EmitSignal(BaseButton.SignalName.Pressed);
@@ -176,6 +176,8 @@ public sealed class ResidentExplorationPagesGodotTests
             ButtonIndex = MouseButton.Left, Pressed = true, Position = first.CellCenter(destination)
         };
         InvokePrivate(first, "OnGuiInput", click);
+        AssertThat(first.IsWalking).IsTrue();
+        await WaitWalk(ui);
 
         GodotAdventureBoardView refreshed = Field<GodotAdventureBoardView>(ui, "_adventureBoard");
         AssertThat(ReferenceEquals(refreshed, first)).IsFalse();
@@ -286,6 +288,7 @@ public sealed class ResidentExplorationPagesGodotTests
         { ButtonIndex = MouseButton.Left, Pressed = true, Position = contestedPoint });
         AssertThat(cells.SequenceEqual([beside])).IsTrue();
         AssertThat(objects.Count).IsEqual(0);
+        await WaitWalk(ui);
 
         // The page re-rendered after the move; the new board answers the rim marker.
         GodotAdventureBoardView refreshed = Field<GodotAdventureBoardView>(ui, "_adventureBoard");
@@ -337,11 +340,11 @@ public sealed class ResidentExplorationPagesGodotTests
             GodotAdventureBoardView board = Field<GodotAdventureBoardView>(ui, "_adventureBoard");
             var button = (Button)ui.FindChild("ExplorationInventoryButton", true, false)!;
             slots.Add(button.Position);
-            var buttons = new List<Button> { button };
-            if (ui.FindChild("PostBattleOverviewButton", true, false) is Button overview && !overview.IsQueuedForDeletion())
+            var buttons = new List<Control> { button };
+            if (ui.FindChild("PostBattleOverviewButton", true, false) is LinkButton overview && !overview.IsQueuedForDeletion())
                 buttons.Add(overview);
             // Exits live on the x = 9 column; every possible rim marker (radius 32) must stay clear of the buttons.
-            foreach (Button hud in buttons)
+            foreach (Control hud in buttons)
             {
                 Rect2 buttonRect = new(hud.GetGlobalTransformWithCanvas().Origin, hud.Size);
                 for (int y = 0; y < 10; y++)
@@ -356,6 +359,51 @@ public sealed class ResidentExplorationPagesGodotTests
     });
 
     /// <summary>A route whose target map or entry anchor is missing is skipped with a diagnostic; the rest still draw.</summary>
+    /// <summary>Successor maps sit up-right beyond the exit rim, parallel and apart; their route lines never cross.</summary>
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task PostBattleSuccessorsLineUpParallelAndRoutesNeverCross() => await WithRun(async (ui, host, setup, _) =>
+    {
+        var board = new GodotAdventureBoardView();
+        try
+        {
+            foreach ((string nodeId, GodotAdventureMapInstance map) in host.Nodes)
+            {
+                AdventureMapTemplateDefinition template = map.Surface.Template!.ToCoreDefinition();
+                string[] targets = template.Exits.Select(exit => exit.TargetNodeId).Where(host.Nodes.ContainsKey).Distinct().ToArray();
+                if (targets.Length == 0) continue;
+                InvokePrivate(ui, "PreparePostBattleWorld", nodeId, template, targets, board);
+                Rect2 bounds = GodotBattleBoardFitter.BoardBounds();
+                Rect2 Diamond(string id) => new(host.Nodes[id].Transform * bounds.Position, bounds.Size);
+                foreach (string target in targets)
+                {
+                    // Beyond the rim: the successor's centre lies further along grid +X (up-right) than the current map.
+                    Vector2 delta = Diamond(target).GetCenter() - Diamond(nodeId).GetCenter();
+                    var axes = new Transform2D(GodotAdventureAtlasLayout.BoardAxisX(bounds.Size),
+                        GodotAdventureAtlasLayout.BoardAxisY(bounds.Size), Vector2.Zero);
+                    Vector2 inBoards = axes.AffineInverse() * delta;
+                    AssertThat(inBoards.X).IsGreater(1f);
+                    AssertThat(GodotAdventureAtlasLayout.DiamondContains(Diamond(nodeId), Diamond(target).GetCenter())).IsFalse();
+                    foreach (string other in targets.Where(value => string.CompareOrdinal(value, target) > 0))
+                        AssertThat(GodotAdventureAtlasLayout.DiamondContains(Diamond(target), Diamond(other).GetCenter())).IsFalse();
+                }
+                Line2D[] routes = host.Nodes[nodeId].GetNode("PostBattleRoutes").GetChildren().OfType<Line2D>().ToArray();
+                for (int a = 0; a < routes.Length; a++)
+                for (int b = a + 1; b < routes.Length; b++)
+                    AssertThat(Geometry2D.SegmentIntersectsSegment(routes[a].Points[0], routes[a].Points[1],
+                        routes[b].Points[0], routes[b].Points[1]).VariantType == Variant.Type.Nil)
+                        .OverrideFailureMessage($"{routes[a].Name} {routes[a].Points[0]}->{routes[a].Points[1]} crosses {routes[b].Name} {routes[b].Points[0]}->{routes[b].Points[1]}")
+                        .IsTrue();
+            }
+        }
+        finally
+        {
+            InvokePrivate(ui, "RestoreHostBaseline", host);
+            board.Free();
+        }
+        await Task.CompletedTask;
+    });
+
     [TestCase]
     [RequireGodotRuntime]
     public async Task PostBattleLayoutSkipsRoutesWhoseTargetOrEntryIsMissing() => await WithRun(async (ui, host, setup, _) =>
@@ -424,6 +472,63 @@ public sealed class ResidentExplorationPagesGodotTests
             source.BattlesCompleted, source.EnemiesDefeated, source.AcquiredItems, null, selected.State,
             selected.Transaction, null, entered.AdventureState);
         return setup.Snapshot with { ActiveRun = ready };
+    }
+
+    /// <summary>Clicking a far exit walks at a constant pace to its best neighbour, ignores clicks on the way, then leaves.</summary>
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task ClickingAFarExitWalksBesideItThenLeaves() => await WithRun(async (ui, host, setup, store) =>
+    {
+        PureRunState run = setup.Snapshot!.ActiveRun!;
+        InvokePrivate(ui, "ShowInitialAdventure", run);
+        GodotAdventureBoardView board = Field<GodotAdventureBoardView>(ui, "_adventureBoard");
+        AdventureBoardObject exit = board.Definition.Objects.First(value => value.Kind == AdventureObjectKind.Exit && !value.IsLocked);
+        RunAdventureState state = run.AdventureState!;
+        GridPoint leader = state.ActorCells.Single(value => value.ActorId == state.LeaderId).Cell;
+        AssertThat(RunAdventureTransitionService.IsAdjacent(leader, exit.Cell)).IsFalse();
+        GridPoint? approach = GodotPlayableRunMain.BestApproachCell(run, board.Definition, exit.Cell);
+        AssertThat(approach.HasValue).IsTrue();
+        IReadOnlyList<GridPoint> path = AdventureBoardPathfinder.FindPath(board.Definition, leader, approach!.Value,
+            state.ActorCells.Where(value => value.ActorId != state.LeaderId).Select(value => value.Cell).ToArray());
+
+        InvokePrivate(ui, "HandleExitPointer", run, board.Definition, exit.ObjectId);
+        AssertThat(board.IsWalking).IsTrue();
+        AssertThat(board.LastWalkSeconds).IsEqualApprox((path.Count - 1) * GodotAdventureBoardView.ExplorationStepSeconds, 1e-4f);
+        var ignored = new List<GridPoint>();
+        board.CellPressed += cell => ignored.Add(cell);
+        InvokePrivate(board, "OnGuiInput", new InputEventMouseButton
+        { ButtonIndex = MouseButton.Left, Pressed = true, Position = board.CellCenter(leader) });
+        AssertThat(ignored.Count).IsEqual(0);
+
+        await WaitWalk(ui);
+        PureRunState saved = store.Load().Snapshot!.ActiveRun!;
+        AssertThat(RunAdventureTransitionService.CurrentNodeId(saved)).IsEqual(exit.TargetNodeId!);
+    });
+
+    /// <summary>A target no neighbour can be walked to only reports it and writes nothing.</summary>
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task UnreachableTargetOnlyReportsAndWritesNothing() => await WithRun(async (ui, host, setup, store) =>
+    {
+        PureRunState run = setup.Snapshot!.ActiveRun!;
+        InvokePrivate(ui, "ShowInitialAdventure", run);
+        GodotAdventureBoardView board = Field<GodotAdventureBoardView>(ui, "_adventureBoard");
+        string before = System.Text.Json.JsonSerializer.Serialize(store.Load().Snapshot);
+        bool called = false;
+        InvokePrivate(ui, "ApproachThen", run, board.Definition, new GridPoint(-5, -5), (Action<PureRunState>)(_ => called = true));
+        AssertThat(called).IsFalse();
+        AssertThat(board.IsWalking).IsFalse();
+        AssertThat(Field<Label>(ui, "_status").Text).Contains(GodotPlayableRunMain.AdventureTargetUnreachable);
+        AssertThat(System.Text.Json.JsonSerializer.Serialize(store.Load().Snapshot)).IsEqual(before);
+        await Task.CompletedTask;
+    });
+
+    private static async Task WaitWalk(GodotPlayableRunMain ui)
+    {
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        for (int frame = 0; frame < 600 && ui.IsAdventureWalking; frame++)
+            await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        AssertThat(ui.IsAdventureWalking).IsFalse();
     }
 
     private static async Task WithRun(Func<GodotPlayableRunMain, GodotActWorldHost, RunSessionResult, MemoryStore, Task> body)

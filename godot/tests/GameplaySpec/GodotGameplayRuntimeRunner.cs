@@ -670,6 +670,7 @@ public sealed class GodotGameplayRuntimeContext(GodotGameplayScenarioPlan plan, 
         if (Main.TryResolveTestAdventurePointerTarget(targetKind, target, out Control? adventureSurface, out Vector2 adventurePoint) &&
             adventureSurface is not null)
         {
+            await WaitWhileAdventureWalkingAsync(token);
             string before = StateHash();
             (Viewport adventureViewport, Vector2 adventureClickPoint, bool adventureLocal) =
                 await ResolvePointerAsync(adventurePoint, adventureSurface, target, token);
@@ -677,6 +678,7 @@ public sealed class GodotGameplayRuntimeContext(GodotGameplayScenarioPlan plan, 
             await WaitFramesAsync(1, token);
             adventureViewport.PushInput(new InputEventMouseButton { Position = adventureClickPoint, GlobalPosition = adventureClickPoint, ButtonIndex = MouseButton.Left, Pressed = false }, adventureLocal);
             await WaitForStateDifferentAsync(before, token);
+            await WaitWhileAdventureWalkingAsync(token);
             return;
         }
         if (!Main.TryResolveTestBattlePointerTarget(targetKind, target, out Control? surface, out Vector2 logicalPoint) ||
@@ -812,6 +814,12 @@ public sealed class GodotGameplayRuntimeContext(GodotGameplayScenarioPlan plan, 
             await WaitUntilAsync(() => Main.CaptureTestProbe().BattleSnapshot?.TargetingMode == BattleTargetingMode.None, token);
     }
 
+    private async Task WaitWhileAdventureWalkingAsync(CancellationToken token)
+    {
+        for (int frame = 0; frame < 600 && Main.IsAdventureWalking; frame++)
+            await WaitFramesAsync(1, token);
+    }
+
     public async Task WaitObservableAsync(string observable, string? target,
         Dictionary<string, JsonElement> parameters, CancellationToken token)
     {
@@ -836,7 +844,7 @@ public sealed class GodotGameplayRuntimeContext(GodotGameplayScenarioPlan plan, 
                 "uiHidden" => locator is not null && !IsUiVisible(locator),
                 _ => false
             };
-            if (ready) return;
+            if (ready && !Main.IsAdventureWalking) return;
             await WaitFramesAsync(1, token);
         }
         GodotPlayableRunProbe finalProbe = Main.CaptureTestProbe();
