@@ -24,6 +24,7 @@ Remove-Item -Path $stateFile -Force
 if (Test-Path $holderScript) {
     Remove-Item -Path $holderScript -Force
 }
+Remove-Item -Path (Join-Path $stateDir 'holder.err.log'), (Join-Path $stateDir 'holder.out.log') -Force -ErrorAction SilentlyContinue
 
 Write-Host '--- powercfg /requests（应不再出现该 powershell 进程；需管理员权限，失败不影响功能）---'
 try {

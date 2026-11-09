@@ -1,6 +1,6 @@
 ---
 feature: agent-keep-awake
-status: in-progress
+status: delivered
 updated: 2026-11-09
 source: feat/agent-keep-awake
 ---
@@ -8,6 +8,10 @@ source: feat/agent-keep-awake
 # Agent Keep Awake（关屏照常、禁止空闲休眠）
 
 ## Report
+
+**What was built** — `Tools/power/` keep-awake 工具：`Start-AgentKeepAwake.ps1`（后台持有进程，`SetThreadExecutionState(ES_SYSTEM_REQUIRED | ES_CONTINUOUS)` + 30 秒周期活动，`-Minutes` 自动到期，启动后 2 秒存活检查，stderr 落日志）与 `Stop-AgentKeepAwake.ps1`（幂等清理），不改电源计划、不拦关屏。配套 `Tools/power/README.md`（Modern Standby 陷阱成因与核验方法）、`.agents/rules/agent-environment.md`（长任务前启用/结束停止/仅 AC）与 AGENTS.md 规则索引行。
+
+**Verification** — 启停冒烟（启动存活、重复启停幂等、停止即释放、状态清理）PASS；持有进程 API 返回值 2147483648（非零=成功）PASS；跨 shell 会话存活 PASS；心跳连续性实证（10 秒拍，standby 状态内 28 连拍零断档；对照组亦零断档，据此修订 S2.4 判据）PASS；`powercfg /query` 无 diff、测试期临时关屏 1 分钟已恢复 15 分钟 PASS。独立 review PASS-WITH-NITS，4 处非关键项（Tasks 与 S2.4 矛盾、ES_CONTINUOUS 表述、holder 诊断日志、PID 复用边界）已修复并复验。
 
 ## [S1] 问题
 
@@ -58,10 +62,10 @@ mibook 是 Modern Standby（S0ix）机器：电源计划已设"睡眠：接通�
 
 ## Tasks
 
-- [ ] T1: `Start-AgentKeepAwake.ps1` / `Stop-AgentKeepAwake.ps1` — acceptance: 启动后 `powercfg /requests` 可见条目、电源计划无 diff、`-Minutes` 到期自动释放、重复启动/停止幂等。(covers: S2.1, S2.2, S2.3)
-- [ ] T2: `Tools/power/README.md` 与 `.agents/rules/agent-environment.md`（含 AGENTS.md 索引行） — acceptance: 文档说清成因/用法/核验；规则含"长任务前启用、结束停止、仅接通电源场景"。(covers: S2.2)
-- [ ] T3: 实证验证（事件日志） — acceptance: keep-awake 期间跨过空闲阈值无 506 Idle Timeout 新事件；Stop 后 `/requests` 条目消失；测后电源计划恢复原值。(covers: S2.4)
-- [ ] T4: 独立 review 与文档收口 — acceptance: review 无关键缺口；Report 记录验证命令与结果。(depends: T1, T2, T3)
+- [x] T1: `Start-AgentKeepAwake.ps1` / `Stop-AgentKeepAwake.ps1` — acceptance: 持有进程启动后 2 秒存活（失败即报错，stderr 落日志可查）、电源计划无 diff、`-Minutes` 到期自动释放、重复启动/停止幂等。(covers: S2.1, S2.2, S2.3)
+- [x] T2: `Tools/power/README.md` 与 `.agents/rules/agent-environment.md`（含 AGENTS.md 索引行） — acceptance: 文档说清成因/用法/核验；规则含"长任务前启用、结束停止、仅接通电源场景"。(covers: S2.2)
+- [x] T3: 实证验证（心跳连续性判据） — acceptance: keep-awake 期间跨过空闲阈值心跳无 >15 秒断档（实测 28 连拍零断档）；测后电源计划恢复原值。(covers: S2.4)
+- [x] T4: 独立 review 与文档收口 — acceptance: review 无关键缺口；Report 记录验证命令与结果。(depends: T1, T2, T3)
 
 ## Journey log
 

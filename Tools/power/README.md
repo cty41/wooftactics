@@ -8,7 +8,7 @@ mibook 是 Modern Standby（S0ix）机器。电源计划的"睡眠：从不"只�
 
 - 进入路径是**关屏计时器（AC 15 分钟）+ 无键鼠输入** → 系统日志 Kernel-Power 506 记录 `Reason: Idle Timeout`。
 - **后台 agent 的 CPU 忙碌不重置空闲计时**——Windows 只认键鼠输入。"机器在干活"和"系统判定空闲"可以同时成立。
-- 因此改 `monitor-timeout-ac`（关屏=从不）是钝器：屏幕被迫常亮。本工具用 Windows 电源请求 `SetThreadExecutionState(ES_SYSTEM_REQUIRED)`，**只拦睡眠转换、不拦关屏、不动电源计划**，进程退出即自动释放（故障安全）。
+- 因此改 `monitor-timeout-ac`（关屏=从不）是钝器：屏幕被迫常亮。本工具用 Windows 电源请求 `SetThreadExecutionState(ES_SYSTEM_REQUIRED | ES_CONTINUOUS)`，**只拦睡眠转换、不拦关屏、不动电源计划**，进程退出即自动释放（故障安全）。持有进程同时每 30 秒周期活动，双保险对抗 DRIPS 冻结。
 
 ## 用法
 
@@ -23,6 +23,7 @@ Tools\power\Stop-AgentKeepAwake.ps1
 - 重复 Start 幂等（已有存活持有进程则提示并退出）。
 - 仅建议在**接通电源**场景使用；电池供电时应允许系统休眠省电。
 - 不修改任何电源计划设置；`powercfg /query` 全程无 diff。
+- 已知边界：幂等判定按 PID 存活，极端情况下 PID 复用可能误判"已在运行"，`Stop` 后重启即可清理。
 
 ## 核验
 

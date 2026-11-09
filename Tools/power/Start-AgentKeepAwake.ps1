@@ -48,12 +48,15 @@ $argList = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $holderScript)
 if ($deadlineText) {
     $argList += @('-Deadline', $deadlineText)
 }
-$holder = Start-Process -FilePath 'powershell.exe' -ArgumentList $argList -WindowStyle Hidden -PassThru
+$holderErrLog = Join-Path $stateDir 'holder.err.log'
+$holderOutLog = Join-Path $stateDir 'holder.out.log'
+$holder = Start-Process -FilePath 'powershell.exe' -ArgumentList $argList -WindowStyle Hidden -PassThru `
+    -RedirectStandardOutput $holderOutLog -RedirectStandardError $holderErrLog
 
 Start-Sleep -Seconds 2
 if (-not (Get-Process -Id $holder.Id -ErrorAction SilentlyContinue)) {
     Remove-Item -Path $holderScript -Force -ErrorAction SilentlyContinue
-    throw "KeepAwake 持有进程启动后立即退出，启动失败；请检查 holder 脚本错误输出。"
+    throw "KeepAwake 持有进程启动后立即退出，启动失败；请查看 $holderErrLog"
 }
 
 $state = @{
