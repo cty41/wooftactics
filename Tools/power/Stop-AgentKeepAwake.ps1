@@ -1,4 +1,4 @@
-﻿[CmdletBinding()]
+[CmdletBinding()]
 param()
 
 $ErrorActionPreference = 'Stop'
@@ -25,5 +25,9 @@ if (Test-Path $holderScript) {
     Remove-Item -Path $holderScript -Force
 }
 
-Write-Host '--- powercfg /requests（应不再出现该 powershell 进程）---'
-powercfg /requests 2>&1 | Out-String | Write-Host
+Write-Host '--- powercfg /requests（应不再出现该 powershell 进程；需管理员权限，失败不影响功能）---'
+try {
+    powercfg /requests 2>&1 | Out-String | Write-Host
+} catch {
+    Write-Host "（无管理员权限，跳过 /requests 核验；以心跳连续性为权威证据）"
+}

@@ -1,4 +1,4 @@
-﻿[CmdletBinding()]
+[CmdletBinding()]
 param(
     [int]$Minutes = 120
 )
@@ -31,7 +31,7 @@ param([string]$Deadline)
 $ErrorActionPreference = 'Stop'
 $sig = '[System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)] public static extern uint SetThreadExecutionState(uint esFlags);'
 Add-Type -MemberDefinition $sig -Name Power -Namespace Win32 | Out-Null
-$flags = [uint32]([uint32]0x80000000 -bor [uint32]0x1)
+$flags = [uint32]2147483648 -bor [uint32]1
 $deadlineTime = [datetime]::MaxValue
 if ($Deadline) {
     $deadlineTime = [datetime]::Parse($Deadline)
@@ -50,6 +50,12 @@ if ($deadlineText) {
 }
 $holder = Start-Process -FilePath 'powershell.exe' -ArgumentList $argList -WindowStyle Hidden -PassThru
 
+Start-Sleep -Seconds 2
+if (-not (Get-Process -Id $holder.Id -ErrorAction SilentlyContinue)) {
+    Remove-Item -Path $holderScript -Force -ErrorAction SilentlyContinue
+    throw "KeepAwake 持有进程启动后立即退出，启动失败；请检查 holder 脚本错误输出。"
+}
+
 $state = @{
     Pid       = $holder.Id
     Deadline  = $deadlineText
@@ -65,5 +71,9 @@ if ($deadlineText) {
 }
 Write-Host "注意：本工具不修改电源计划，屏幕仍按原设置关闭；仅阻止空闲休眠（Modern Standby）。"
 
-Write-Host '--- powercfg /requests（SYSTEM 块应可见 powershell 进程）---'
-powercfg /requests 2>&1 | Out-String | Write-Host
+Write-Host '--- powercfg /requests（SYSTEM 块应可见 powershell 进程；需管理员权限，失败不影响功能）---'
+try {
+    powercfg /requests 2>&1 | Out-String | Write-Host
+} catch {
+    Write-Host "（无管理员权限，跳过 /requests 核验；以心跳连续性为权威证据）"
+}

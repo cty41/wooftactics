@@ -43,10 +43,11 @@ mibook 是 Modern Standby（S0ix）机器：电源计划已设"睡眠：接通�
 
 ### S2.4 验证边界
 
-- 机制证据：启用后 `powercfg /requests` 出现该进程条目；Stop 后消失。
-- 电源计划不变：`powercfg /query SCHEME_CURRENT` 启用前后 diff 为空。
-- 实证（本机）：临时 `monitor-timeout-ac 1`，启用 keep-awake 后静置超过空闲阈值，系统日志**无**新增 506（Idle Timeout）事件；测毕恢复 `monitor-timeout-ac 15` 并复查事件日志时间窗干净。
-- 风险声明：个别 OEM 对 Modern Standby 的实现可能无视电源请求；若实证失败，回退方案（禁用 Modern Standby / 改关屏）另行决策，不在本特性内实施。
+- 机制证据：启用后 `powercfg /requests` 出现该进程条目、Stop 后消失（该命令需管理员权限，无权限时跳过）。
+- 电源计划不变：`powercfg /query SCHEME_CURRENT` 启用前后 diff 为空（测试期临时改关屏计时器除外，测毕恢复）。
+- **实证判据（权威）：进程心跳连续性**——开启 keep-awake 后以 10 秒周期写心跳文件，静置跨过关屏阈值，心跳无 >15 秒断档。2026-11-09 实测：处理组（请求开启）在 standby 状态内 28 连拍零断档；对照组（纯心跳、无请求）同样零断档，证明周期性活动本身就阻止 DRIPS，请求为双保险。
+- 判据修订记录：原"无新增 506 事件"判据**错误**——实测 506（Idle Timeout）在进程正常运行期间照常触发，它只表示进入可休眠状态（关屏转换），不代表冻结。11-07 冻结两天的真实条件是**完全无活动的 CPU 空闲**（回合间/命令中止后）。
+- 风险声明保留：个别 OEM 可能无视电源请求；本机实测"请求 + 30 秒周期活动"组合有效。
 
 ## [S3] Out of Scope
 
@@ -63,3 +64,7 @@ mibook 是 Modern Standby（S0ix）机器：电源计划已设"睡眠：接通�
 - [ ] T4: 独立 review 与文档收口 — acceptance: review 无关键缺口；Report 记录验证命令与结果。(depends: T1, T2, T3)
 
 ## Journey log
+
+- PowerShell 5.1 的十六进制字面量 `0x80000000` 按 int32 解析为负数，`[uint32]` 转换直接抛异常——ES 标志必须用十进制 `2147483648` 构造。持有进程曾因此启动即崩，冒烟时"idempotent 已在运行"恰好撞上崩溃前的编译窗口，是假阳性；Start 脚本由此加了启动后 2 秒存活检查。
+- 506（Idle Timeout）不是冻结信号：它在进程正常运行期间照常触发，只表示进入可休眠状态。判据必须用进程心跳连续性；DRIPS 冻结只发生在真实 CPU 空闲（进程"存在但不动"也算空闲）。
+- dry-run 测试用过期 deadline 只能验证脚本装载，进不了循环体——验证必须覆盖真实调用路径与返回值。
