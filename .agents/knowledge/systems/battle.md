@@ -40,7 +40,7 @@ Gameplay runner 的 Battle/Adventure 生产指针坐标统一转换到 Canvas �
 
 跨引擎沿用的属性、状态、朝向与等距投影规则已整理为带稳定 Contract ID 的 Godot 权威文档。新角色或机制必须显式引用相关合同；旧 Unity 类名和编辑器结构不再作为规则来源。
 
-六维统一战斗投影已支持状态携带有符号临时属性修正：有效属性从 BaseAttributes 与全部活动修正重算，敏捷同步派生命中和先攻，状态移除后恢复。回合顺序由 Core `InitiativeRoundState` 分区维护（HUD 行动条显示本回合剩余、分隔符、再接 `BattleState.PreviewNextRoundOrder` 投影的下回合完整顺序；头像为独立裁切贴图，圆形遮罩才按自身 UV 生效）；新回合完整排序，轮中只重排 remaining，行动召唤可按新 InstanceId 插入，Decoy 不入队。持续治疗冻结施加时总量并按前高后低的未来 TurnStart tick 分配。
+六维统一战斗投影已支持状态携带有符号临时属性修正：有效属性从 BaseAttributes 与全部活动修正重算，敏捷同步派生命中和先攻，状态移除后恢复。回合顺序由 Core `InitiativeRoundState` 分区维护（HUD 行动条显示本回合剩余、分隔符、再接 `BattleState.PreviewNextRoundOrder` 投影的下回合完整顺序；头像暂时屏蔽，`GodotInitiativeStrip.ShowPortraits = false`，只显示敌我颜色圆点）；新回合完整排序，轮中只重排 remaining，行动召唤可按新 InstanceId 插入，Decoy 不入队。持续治疗冻结施加时总量并按前高后低的未来 TurnStart tick 分配。
 
 固定战场使用 10×10、零基坐标。单位实例身份使用 `UnitInstanceId`，不能用内容 `ContentId` 代替。合法性预览、
 AI 和真实 Transition 必须复用 Core 规则；表现 cue、Tween、伤害数字和 Sprite 姿态不能修改战斗状态。

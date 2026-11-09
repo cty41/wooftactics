@@ -120,6 +120,7 @@ public sealed class InitiativeStripGodotTests
         TextureRect[] portraits = strip.FindChildren("Portrait", "TextureRect", true, false)
             .Cast<TextureRect>().ToArray();
         AssertThat(portraits.Length).IsEqual(4);
+        AssertThat(portraits.Any(value => value.Visible)).IsFalse();
         ShaderMaterial[] materials = portraits.Select(value => value.Material as ShaderMaterial)
             .Where(value => value is not null).Cast<ShaderMaterial>().ToArray();
         AssertThat(materials.Length).IsEqual(4);

@@ -19,6 +19,8 @@ public partial class GodotInitiativeStrip : HBoxContainer
     internal const float SlotSize = 34f;
     internal const float PortraitSize = 28f;
     internal const string NextRoundSeparatorName = "NextRoundSeparator";
+    /// <summary>Portraits are hidden until their in-slot sizing is reworked; the side-coloured dots carry the order.</summary>
+    internal const bool ShowPortraits = false;
     private static readonly Dictionary<(ulong Texture, Rect2 Region), Texture2D> CroppedPortraits = new();
     private static readonly Dictionary<ulong, Texture2D> TrimmedSprites = new();
     internal const double TransitionDurationSeconds = .22;
@@ -334,6 +336,7 @@ public partial class GodotInitiativeStrip : HBoxContainer
             var portrait = new TextureRect
             {
                 Name = "Portrait",
+                Visible = ShowPortraits,
                 Texture = PortraitOf(definition),
                 Position = new Vector2((SlotSize - PortraitSize) * .5f, (SlotSize - PortraitSize) * .5f),
                 Size = new Vector2(PortraitSize, PortraitSize),
