@@ -22,6 +22,7 @@
 - `.agents/rules/godot-agent-workflow.md`：Godot 项目、C#、Resource、EditorPlugin 和测试边界。
 - `.agents/rules/foreground-interaction.md`：窗口、真实输入和人工验证边界。
 - `.agents/rules/agent-worktree.md`：默认当前 workspace checkout；细节见 `tactics-git-workspace`。
+- `.agents/rules/agent-environment.md`：长任务防 Modern Standby 休眠（电源请求 keep-awake）。
 - `.agents/rules/code-documentation.md`：代码注释与系统规则说明。
 - `.agents/rules/knowledge-maintenance.md`：OKF 查询、写回、替代和校验。
 - `.agents/rules/godot-migration.md`：退役完成前的历史迁移与来源审计边界。
