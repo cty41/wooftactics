@@ -1,6 +1,6 @@
 ---
 feature: subagent-handback
-status: in-progress
+status: delivered
 updated: 2026-11-09
 source: feat/subagent-handback
 ---
@@ -8,6 +8,10 @@ source: feat/subagent-handback
 # 子代理回执契约与拆分决策规则
 
 ## Report
+
+**What was built** — `.agents/rules/subagent-handback.md`：拆分决策规则（判据=上下文需求与结果紧凑度，该拆/不该拆各 4 条，默认不拆）、四段回执契约（做了什么/证据/偏差点/待核验项，含紧凑约束与审查类任务的证据出口）、派发侧义务（任务书四要素、不传会话历史）、主循环核验义务（自我声明不算证据、至少一次便宜独立核对）与迷你示例。AGENTS.md 规则索引补一行。
+
+**Verification** — 用本会话真实 review 回执对照 schema 试填，暴露并修复 2 处歧义（回执总长约束、派发侧义务缺失）；独立 review PASS-WITH-NITS（T1–T3 全过），另 2 处非关键瑕疵（判据反例对照、自报测试计数归属）已修复。纯文档变更，无代码测试适用。
 
 ## [S1] 问题
 
@@ -58,9 +62,12 @@ source: feat/subagent-handback
 
 ## Tasks
 
-- [ ] T1: `.agents/rules/subagent-handback.md` — acceptance: 决策表可裁决"拆/不拆"；schema 四段齐备且每段有可操作判据；含一个迷你示例回执。(covers: S2.1, S2.2, S2.3)
-- [ ] T2: `AGENTS.md` 规则索引行 — acceptance: 索引列出新规则文件。(covers: S2.3)
-- [ ] T3: 回执试填自检 — acceptance: 用本会话一份真实子代理产出（如独立 review 回执）对照 schema 试填，歧义处回改文案。(covers: S2.2)
-- [ ] T4: 独立 review 与收口 — acceptance: review 无关键缺口；Report 记录验证命令与结果。(depends: T1, T2, T3)
+- [x] T1: `.agents/rules/subagent-handback.md` — acceptance: 决策表可裁决"拆/不拆"；schema 四段齐备且每段有可操作判据；含一个迷你示例回执。(covers: S2.1, S2.2, S2.3)
+- [x] T2: `AGENTS.md` 规则索引行 — acceptance: 索引列出新规则文件。(covers: S2.3)
+- [x] T3: 回执试填自检 — acceptance: 用本会话一份真实子代理产出（如独立 review 回执）对照 schema 试填，歧义处回改文案。(covers: S2.2)
+- [x] T4: 独立 review 与收口 — acceptance: review 无关键缺口；Report 记录验证命令与结果。(depends: T1, T2, T3)
 
 ## Journey log
+
+- 契约类文本要过两道筛才敢用：真实样本试填（暴露"长度无约束、派发侧缺失"）+ 独立评审（暴露"主观判据缺反例、证据与待核验项在自报计数上互含"）。与 P0 的 rubric 试评分同一条经验。
+- AGENTS.md 索引区与 PR #25（agent-environment 行）分属两个分支、改的是相邻行，合并时留意顺序即可，无内容冲突。
