@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics/tree/main/Tools/okf
 title: OKF Maintenance
 description: 将工作区变更映射到 catalog_scope，并由 Agent 同步受影响知识概念的维护流程。
 tags: [agent, okf, knowledge, automation]
-timestamp: "2026-10-26T10:33:24+08:00"
+timestamp: "2026-11-10T22:12:21+08:00"
 status: active
 catalog_scope: okf-maintenance
 repo_paths:
@@ -14,12 +14,12 @@ repo_paths:
   - Tools/okf/catalog_impact.py
   - Tools/okf/validate_bundle.py
 verified_revision: c56d71ad4ebd
-source_fingerprint: sha256:878fed9f1c5c4bd6edfe4dbd9ca575d6c78327c90377b34a6cf5068ac09efac5
+source_fingerprint: sha256:6cbc205727fc2c77cfb3d890742c5768fce0d860e6042b6f4b599a666018d52e
 ---
 
 # Current State
 
-`catalog-scopes.yaml` 保存仓库路径到 `catalog_scope` 的多对多映射；根 `README.md` 作为项目入口归入 `project-architecture`。Agent 修改代码、设计、计划、规则或工具后，使用 `catalog_impact.py report --worktree` 找出受影响概念，核对真实差异并更新知识正文，再使用 `sync --worktree --scope <scope> --write` 刷新来源指纹、时间和根日志。
+`catalog-scopes.yaml` 保存仓库路径到 `catalog_scope` 的多对多映射；根 `README.md` 作为项目入口归入 `project-architecture`。Agent 修改代码、设计、计划、规则或工具后，使用 `catalog_impact.py report --worktree` 找出受影响概念，核对真实差异并更新知识正文，再使用 `sync --worktree --scope <scope> --write` 刷新来源指纹、时间和根日志。其中 report → sync --write → validate 的机械段可按 `.agents/rules/subagent-handback.md` 已验证派发配方拆给子代理（`sync --write` 自动追加的根日志 Sync 记录属命令固有产出）；变更甄别与概念正文落笔仍由主循环完成。
 
 同一路径可以合法影响多个 scope，例如根 `AGENTS.md` 同时影响项目架构、Godot Agent 工作流和 OKF 维护约束。同步范围应以“本任务实际造成的路径变化”为准：共享路径产生的直接 scope 必须一并核对，工作区中由其他文件产生的无关 scope 继续排除。
 

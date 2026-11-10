@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Godot agent workflow
 description: Godot 4.7 C# 主线的项目、分层、Editor 生命周期、验证和发布边界。
 tags: [godot, agent, workflow, testing]
-timestamp: "2026-10-27T10:47:35+08:00"
+timestamp: "2026-11-10T22:12:20+08:00"
 status: active
 catalog_scope: godot-agent-workflow
 repo_paths:
@@ -21,10 +21,12 @@ repo_paths:
   - Tools/godot/Build-GodotWindows.ps1
   - Tools/migration/manifest/godot-tooling.json
 verified_revision: d092a955
-source_fingerprint: sha256:5564e73c853485947f733344d63d1fc3e492ed5c78e0d1a7b1ed9687d307054f
+source_fingerprint: sha256:083909e73201bad4b44e63790d499412265b8b57850f8baf73b48ec1f11d5eec
 ---
 
 # Current State
+
+Agent 拆分判据与四段回执契约位于 `.agents/rules/subagent-handback.md`；其中 OKF 同步链与门禁日志分诊两个派发配方（各含机械段边界与任务书模板）均已真实试跑验证。概念正文落笔与 `catalog-scopes.yaml` 修改不属机械段，仍归主循环；`sync --write` 自动追加的 `log.md` Sync 记录属命令固有产出。
 
 本机4.7.1已验证ResourceLoader的UID查询可能保留旧正/负缓存；生成器以只读磁盘头部验证ResourceSaver写出的UID，再执行Editor扫描与独立Runtime验证，见`.agents/incidents/godot/headless-resource-uid-cache.md`。不可把内存AddId或一次API返回值当作持久化证据。Act准备阶段现与主目录共用RequiredResourceLoader的CacheMode.Ignore及精确类型诊断；缓存替身测试验证不采信旧缓存对象，但不能据此宣称已修复所有原生runner异常。
 
@@ -43,6 +45,7 @@ Windows 构建使用单一 `Windows Desktop` preset、锁定工具链和受审�
 # Relationships
 
 - 当前规则：`.agents/rules/godot-agent-workflow.md`
+- 拆分与回执：`.agents/rules/subagent-handback.md`
 - 迁移 provenance：[Godot migration provenance](../plans/godot-migration.md)
 - 文档生命周期：[Project Documentation](project-documentation.md)
 - 历史工具索引：[Archived Unity Agent Workflow](unity-agent-workflow.md)

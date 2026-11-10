@@ -47,3 +47,27 @@
 > **证据**：`git diff --stat` 2 文件 +18/-3；`dotnet test` 412/412 通过；测试名 `FooDoesNotThrowOnNull`。
 > **偏差点**：任务书未要求，顺手更新 `Foo.md` 一行文档（未越出文档范围）；未跑统一 verifier（单文件修复，按成本递增止于相关测试）。
 > **待核验项**：声称"无其他调用点受影响"——请抽查 `rg "Foo\("` 的调用面。
+
+## 已验证派发配方
+
+### OKF 同步链
+
+机械段只含四步，子代理按序执行：`catalog_impact.py report --worktree` 影响检测 → 汇总受影响 scope 与概念清单 → 逐 scope `catalog_impact.py sync --worktree --scope <scope> --write` 写 metadata → `validate_bundle.py` 校验。其中 `sync --write` 自动写 frontmatter 时间戳/来源指纹并追加 `log.md` 的 Sync 记录，属命令固有产出，不算越界。归主循环的是概念正文（Current State、Relationships 等）落笔、`catalog-scopes.yaml` 修改，以及 `log.md` 中非 Sync 的知识状态记录。
+
+任务书模板（四要素）：
+
+> 工作区路径：`<repo root>`，当前 workspace checkout。
+> 任务描述：对当前工作树变更执行 OKF 同步机械段四步（report → 汇总 → 逐 scope sync --write → validate_bundle）。只做这四步，不手动编辑概念正文、`catalog-scopes.yaml`、rules 与 `log.md`；sync --write 自动产出的 metadata 与 Sync 记录除外。
+> 验收判据：回执四段齐备；report 报出的每个 scope 都有 sync 输出锚点；`validate_bundle.py` 退出码 0。
+> 验证命令：`python Tools/okf/catalog_impact.py report --worktree`；`python Tools/okf/catalog_impact.py sync --worktree --scope <scope> --write`；`python Tools/okf/validate_bundle.py`（解释器需含 PyYAML；本机 Windows 用 `py -3`）。
+
+### 门禁日志分诊
+
+机械段：读指定门禁日志 → 产出失败 case 清单与签名锚点（case 名 + 日志行号 + 关键错误行摘要）与批次计数。不修复、不改代码、不重跑门禁。日志必须是真实命令输出（回执记录捕获命令与时间），禁止合成或手写日志。
+
+任务书模板（四要素）：
+
+> 工作区路径：`<repo root>`；日志路径 `<log file>`（只读）。
+> 任务描述：对该门禁日志做失败分诊：逐个失败 case 给出 case 名、日志行号锚点与关键错误行摘要；给出各批次通过/失败/跳过计数并与日志汇总行核对。只分诊，不修复、不改代码、不重跑命令。
+> 验收判据：回执四段齐备；每个失败 case 附可按行号定位的锚点；计数与日志汇总行一致；记录捕获命令与时间（取自日志头）。
+> 验证命令：无执行命令；核对手段是主循环按行号在原始日志抽查 ≥2 处锚点。
