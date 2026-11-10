@@ -479,6 +479,8 @@ public sealed class ResidentExplorationPagesGodotTests
     [RequireGodotRuntime]
     public async Task ClickingAFarExitWalksBesideItThenLeaves() => await WithRun(async (ui, host, setup, store) =>
     {
+        // WithRun's committed setup already left for the first battle; put the start-camp save back so the exit is real.
+        store.RestoreFixture(setup.Snapshot!);
         PureRunState run = setup.Snapshot!.ActiveRun!;
         InvokePrivate(ui, "ShowInitialAdventure", run);
         GodotAdventureBoardView board = Field<GodotAdventureBoardView>(ui, "_adventureBoard");
@@ -491,7 +493,9 @@ public sealed class ResidentExplorationPagesGodotTests
         IReadOnlyList<GridPoint> path = AdventureBoardPathfinder.FindPath(board.Definition, leader, approach!.Value,
             state.ActorCells.Where(value => value.ActorId != state.LeaderId).Select(value => value.Cell).ToArray());
 
+        long exitsBefore = store.Load().Snapshot!.ActiveRun!.AdventureState!.ExitRevision;
         InvokePrivate(ui, "HandleExitPointer", run, board.Definition, exit.ObjectId);
+        AssertThat(store.Load().Snapshot!.ActiveRun!.AdventureState!.ExitRevision).IsEqual(exitsBefore);
         AssertThat(board.IsWalking).IsTrue();
         AssertThat(board.LastWalkSeconds).IsEqualApprox((path.Count - 1) * GodotAdventureBoardView.ExplorationStepSeconds, 1e-4f);
         var ignored = new List<GridPoint>();
@@ -503,6 +507,9 @@ public sealed class ResidentExplorationPagesGodotTests
         await WaitWalk(ui);
         PureRunState saved = store.Load().Snapshot!.ActiveRun!;
         AssertThat(RunAdventureTransitionService.CurrentNodeId(saved)).IsEqual(exit.TargetNodeId!);
+        AssertThat(saved.AdventureState!.ExitRevision)
+            .OverrideFailureMessage($"status={Field<Label>(ui, "_status").Text} node={RunAdventureTransitionService.CurrentNodeId(saved)} lifecycle={saved.AdventureState.Lifecycle} before={exitsBefore} after={saved.AdventureState.ExitRevision} runNode={RunAdventureTransitionService.CurrentNodeId(run)}/{run.AdventureState!.Lifecycle}/{run.AdventureState.ExitRevision}")
+            .IsEqual(exitsBefore + 1);
     });
 
     /// <summary>A target no neighbour can be walked to only reports it and writes nothing.</summary>
@@ -521,6 +528,36 @@ public sealed class ResidentExplorationPagesGodotTests
         AssertThat(Field<Label>(ui, "_status").Text).Contains(GodotPlayableRunMain.AdventureTargetUnreachable);
         AssertThat(System.Text.Json.JsonSerializer.Serialize(store.Load().Snapshot)).IsEqual(before);
         await Task.CompletedTask;
+    });
+
+    /// <summary>The Inventory button waits for the walk, and a walk whose board is no longer current never leaves the node.</summary>
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task WalkInProgressBlocksInventoryAndAStaleBoardNeverInteracts() => await WithRun(async (ui, host, setup, store) =>
+    {
+        store.RestoreFixture(setup.Snapshot!);
+        PureRunState run = setup.Snapshot!.ActiveRun!;
+        InvokePrivate(ui, "ShowInitialAdventure", run);
+        GodotAdventureBoardView board = Field<GodotAdventureBoardView>(ui, "_adventureBoard");
+        AdventureBoardObject exit = board.Definition.Objects.First(value => value.Kind == AdventureObjectKind.Exit && !value.IsLocked);
+        long exitsBefore = store.Load().Snapshot!.ActiveRun!.AdventureState!.ExitRevision;
+        InvokePrivate(ui, "HandleExitPointer", run, board.Definition, exit.ObjectId);
+        AssertThat(board.IsWalking).IsTrue();
+
+        Button inventory = (Button)ui.FindChild("ExplorationInventoryButton", true, false);
+        inventory.EmitSignal(BaseButton.SignalName.Pressed);
+        AssertThat(ReferenceEquals(Field<GodotAdventureBoardView>(ui, "_adventureBoard"), board)).IsTrue();
+        AssertThat(ui.FindChild("InventoryCharacterPanel", true, false) is null).IsTrue();
+
+        // Another page took over while the old board (still alive until the frame ends) finishes its tween.
+        FieldInfo current = typeof(GodotPlayableRunMain).GetField("_adventureBoard", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        current.SetValue(ui, null);
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        for (int frame = 0; frame < 600 && board.IsWalking; frame++)
+            await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        AssertThat(board.IsWalking).IsFalse();
+        AssertThat(store.Load().Snapshot!.ActiveRun!.AdventureState!.ExitRevision).IsEqual(exitsBefore);
+        AssertThat(ReferenceEquals(board.GetParent(), Field<Control>(ui, "_page"))).IsTrue();
     });
 
     private static async Task WaitWalk(GodotPlayableRunMain ui)

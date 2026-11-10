@@ -13,7 +13,7 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 - Observe: 探索页、战后页、背包页、状态栏文字与 Godot Output。
 - Preserve on failure: Run seed、节点 ID、点击的格/对象、行走前后截图或短视频、存档副本和完整 Output。
 - Save boundary: 移动与交互会写当前 Run；使用 disposable/隔离存档。
-- Automated evidence: ResidentExplorationPages 19 项（含远处出口自动走位离开、步长 `(path-1)*0.16s`、行走期间点击被忽略、不可达不写档、战后路线不相交/菱形不重叠）、PlayableRunUi 50 项（背包子控件在卡片内、页头包含 Run 信息）、AdventureMapTileMap 7、ResidentEventBattleProduction 10、StaleSaveColdResume 10、ActWorldHost 9 项 headless 通过。行走手感、视觉排版与整体美观只能人工判断。
+- Automated evidence: ResidentExplorationPages 20 项（含远处出口自动走位离开、行走中 Inventory 按钮不响应、已换页的旧棋盘走完不触发交互、步长 `(path-1)*0.16s`、行走期间点击被忽略、不可达不写档、战后路线不相交/菱形不重叠）、PlayableRunUi 50 项（背包子控件在卡片内、页头包含 Run 信息）、AdventureMapTileMap 7、ResidentEventBattleProduction 10、StaleSaveColdResume 10、ActWorldHost 9 项 headless 通过。行走手感、视觉排版与整体美观只能人工判断。
 - User verdict: none.
 
 ### MQA-GODOT-MAW-BAT-SLICE — 大嘴蝠、浅水与 N2 实战纵切

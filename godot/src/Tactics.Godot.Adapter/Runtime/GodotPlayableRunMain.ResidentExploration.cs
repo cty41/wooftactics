@@ -169,7 +169,9 @@ public partial class GodotPlayableRunMain
 
     private void AddExplorationInventoryButton(Control root, PureRunState run)
     {
-        Button button = Button("Inventory", () => ShowInventory(run));
+        // The move is committed when a walk starts but the page (and this captured run) only refreshes when it
+        // lands, so the button waits for the walk instead of opening the inventory on the pre-move state.
+        Button button = Button("Inventory", () => { if (!IsAdventureWalking) ShowInventory(run); });
         button.Name = "ExplorationInventoryButton";
         root.AddChild(PlaceControl(button, ExplorationInventoryButtonRect.Position, ExplorationInventoryButtonRect.Size));
     }

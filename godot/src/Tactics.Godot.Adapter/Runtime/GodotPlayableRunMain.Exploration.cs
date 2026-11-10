@@ -71,6 +71,9 @@ public partial class GodotPlayableRunMain
         Action<PureRunState>? rerender = _adventureRerender;
         board.AnimateActorPath(leader.ActorId, path, () =>
         {
+            // The page may have changed during the walk (the old board is only queue-freed, so its tween can still
+            // finish this frame): a board that is no longer current must not re-render or interact.
+            if (!ReferenceEquals(_adventureBoard, board)) return;
             rerender?.Invoke(moved);
             arrived?.Invoke(moved);
         });
