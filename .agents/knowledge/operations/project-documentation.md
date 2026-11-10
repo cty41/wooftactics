@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics/tree/main/.agents/docs
 title: Project Documentation
 description: 当前设计、活跃计划、统一缺口与 OKF 综合层的文档生命周期。
 tags: [operations, documentation, plans, knowledge]
-timestamp: "2026-11-10T21:52:25+08:00"
+timestamp: "2026-11-10T22:22:38+08:00"
 status: active
 catalog_scope: project-documentation
 repo_paths:
@@ -12,7 +12,7 @@ repo_paths:
   - .agents/plans
   - .agents/skills/manual-qa-handoff/SKILL.md
 verified_revision: c9ff3a710fd9
-source_fingerprint: sha256:a97afa994cbd9cd75faf67da279b907fe1f1b39036116703091830fad0924c8a
+source_fingerprint: sha256:53fc69b50c2739bcd1183465414349073b851cf99592eda0482cf8224224f196
 ---
 
 # Current State
@@ -29,7 +29,7 @@ Pure Run 新装备的独立生产策略记录在 `.agents/docs/2026-08-25-pure-r
 
 诗人权威规则已收束在 `.agents/docs/poet-class-design.md`，动态行动顺序在 `.agents/docs/battle-initiative-rules.md`，Core Facing 合同已回写 `.agents/docs/battle-facing-rules.md`。本轮装备明确延期且没有 schema/Resource 实现，未来 family、资格、事务、背包满与存档迁移问题只记录在 `.agents/docs/equipment-system-future-design.md`；诗人已接入获批五红土松 Idle、Melee、Cast、Hit DR/UL 与单张 Death，正式分身美术仍是后续边界，完整运行时视觉仍等待人工验收。
 
-Agent 工作流改进的 P2 拆分试点（OKF 同步链与门禁日志分诊）记录在 `.agents/plans/2026-11-10-p2-split-pilots.md`：以真实子代理试跑验收 `.agents/rules/subagent-handback.md` 的四段回执契约，跑通后派发配方沉淀进 rules。
+Agent 工作流改进的 P2 拆分试点（OKF 同步链与门禁日志分诊）已交付：派发配方沉淀在 `.agents/rules/subagent-handback.md`，试跑证据与经验见 `docs/compose/spec/p2-split-pilots.md`；计划文件按约定清理，由 Git 历史保留。
 
 `.agents/plans/` 只保存仍需执行且 decision-complete 的计划。实现完成并验证后，长期规则回写 docs，未实施项进入已知缺口或经批准的新计划，completed plan 随后删除并由 Git 保留历史。
 
