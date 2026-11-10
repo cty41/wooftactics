@@ -2,7 +2,7 @@
 feature: subagent-handback
 status: delivered
 updated: 2026-11-09
-source: feat/subagent-handback
+source: https://github.com/cty41/wooftactics/pull/26
 ---
 
 # 子代理回执契约与拆分决策规则
