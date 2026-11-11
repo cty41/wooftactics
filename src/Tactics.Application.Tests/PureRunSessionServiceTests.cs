@@ -521,6 +521,11 @@ public sealed class PureRunSessionServiceTests
             Assert.That(settled.Snapshot.ActiveRun.AdventureState.BoardContentId.Value,
                 Does.EndWith(".resolved"));
             Assert.That(settled.Snapshot.ActiveRun.NodeTransaction!.Committed, Is.True);
+            // A layer 4/6 victory grows one character like every other victory, keyed by the node transaction.
+            PendingProgression growth = settled.Snapshot.ActiveRun.PendingProgression.Single();
+            Assert.That(growth.TransactionKey, Is.EqualTo("progression:node:layer_04_event:resolve"));
+            Assert.That(growth.EncounterId, Is.EqualTo(result.EncounterContentId.Value));
+            Assert.That(growth.CharacterId, Is.EqualTo(pending.Party[0].CharacterId));
             if (context == RunAdventureEventContextKind.LostVillagerEscort)
             {
                 Assert.That(settled.Snapshot.ActiveRun.EscortState!.Lifecycle,
@@ -555,6 +560,7 @@ public sealed class PureRunSessionServiceTests
             Assert.That(duplicate.Succeeded, Is.True);
             Assert.That(duplicate.WasDuplicate, Is.True);
             Assert.That(duplicate.Snapshot!.ActiveRun!.Gold, Is.EqualTo(gold));
+            Assert.That(duplicate.Snapshot.ActiveRun.PendingProgression, Has.Count.EqualTo(1));
             Assert.That(store.SaveCount, Is.EqualTo(2));
         });
     }

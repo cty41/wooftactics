@@ -8,12 +8,12 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 
 - Status: `pending`
 - Source: 倒地角色不升级计划（`PureRunSettlementService.ProgressionTarget`：成长候选排除战斗结束时倒地的角色）
-- Action: 使用隔离存档进入一场普通战斗，让队伍中等级最低的角色（例如法师）在战斗结束前倒地并保持倒地，由其余角色取胜；再打一场无人倒地的战斗作对照。
-- Expected: 第一场的升级页面显示的是仍站着的角色中等级最低的一名（同级按队伍顺序），不是倒地的那名；倒地角色战后恢复站起但等级不变。无人倒地的对照场仍由全队最低等级角色升级。
+- Action: 使用隔离存档进入一场普通战斗，让队伍中等级最低的角色（例如法师）在战斗结束前倒地并保持倒地，由其余角色取胜；再打一场无人倒地的战斗作对照。另外在第 4 或第 6 层各打一场战斗节点和一场事件战（诅咒宝箱/祭坛/护送）并取胜，事件战后分别试一次点 Continue 和直接走向出口。
+- Expected: 第一场的升级页面显示的是仍站着的角色中等级最低的一名（同级按队伍顺序），不是倒地的那名；倒地角色战后恢复站起但等级不变。无人倒地的对照场仍由全队最低等级角色升级。第 4/6 层战斗节点胜利后直接进入升级页；事件战胜利后先看到事件结果场景，点 Continue 或走到出口都会进入升级页，完成升级后回到该节点的已完成场景并可正常离开，每场胜利只升级一次。
 - Observe: 战斗结算后的升级/技能选择页、队伍等级与 HP、Godot Output。
 - Preserve on failure: Run seed、节点 ID、战斗结束时各角色 HP 与等级、升级页截图、存档副本和完整 Output。
 - Save boundary: 战斗和结算会修改当前 Run；使用 disposable/隔离存档。
-- Automated evidence: Core `Settlement_ProgressionTargetsOnlyCharactersStandingAtBattleEnd` 5 组（最低等级倒地、同级首位倒地、中间成员倒地、无人倒地两组），同时覆盖 `Apply` 与第 5 层 `ApplyFixedLateBattle`；Core 333 项、Application 419 项通过；Godot StaleSaveColdResume 10、ResidentEventBattleProduction 10、PlayableRunUi 50 项 headless 通过。实际战斗中升级页面的呈现只能人工确认。
+- Automated evidence: Core `Settlement_ProgressionTargetsOnlyCharactersStandingAtBattleEnd` 5 组（最低等级倒地、同级首位倒地、中间成员倒地、无人倒地两组），同时覆盖 `Apply` 与第 5 层 `ApplyFixedLateBattle`；满级不入选 2 组；Application 事件战结算断言追加一条以节点事务键命名的成长且重复结算不重复追加；Core 335 项、Application 419 项通过；Godot ResidentEventBattleProduction 11（含事件胜利后走出口先进升级页且不写档）、ResidentBattleProduction 4、StaleSaveColdResume 10、PlayableRunUi 50、ResidentExplorationPages 20 项 headless 通过；统一验证器（含 gameplay journeys，其中事件战后续普通战旅程已加入升级步骤）本地通过一次。实际战斗中升级页面的呈现只能人工确认。
 - User verdict: none.
 
 ### MQA-GODOT-EXPLORATION-WALK-ATLAS-LAYOUT — 探索点击自动走位、战后 atlas 与页面排版

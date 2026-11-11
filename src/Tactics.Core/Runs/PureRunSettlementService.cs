@@ -7,6 +7,8 @@ public sealed class PureRunSettlementService
 {
     public const string ContractId = "pure-run-settlement-v1";
     private const int GoldCap = 50;
+    /// <summary>Design cap carried over from <c>SkillSystem.MaxCharacterLevel</c>; a character at the cap no longer levels up.</summary>
+    public const int MaxCharacterLevel = 12;
 
     public PureRunSettlementResult Apply(
         PureRunDefinition definition,
@@ -129,6 +131,11 @@ public sealed class PureRunSettlementService
                 new ItemInstanceId($"drop-{state.BattlesCompleted + 1}-{item.Value}"), item, 1, 1)).ToArray();
             acquired = acquired.Append(item).OrderBy(value => value.Value, StringComparer.Ordinal).ToArray();
         }
+        // Keyed by the node transaction: the same encounter can settle on more than one node of a run.
+        PendingProgression[] progression = ProgressionTarget(party, result) is string target
+            ? state.PendingProgression.Append(new PendingProgression(
+                $"progression:{transaction.TransactionKey}", result.EncounterContentId.Value, target)).ToArray()
+            : state.PendingProgression.ToArray();
         bool layerSix = transaction.NodeId.StartsWith("layer_06_", StringComparison.Ordinal);
         PureRunMapState map = state.MapState! with
         {
@@ -142,7 +149,7 @@ public sealed class PureRunSettlementService
             .OrderBy(value => value, StringComparer.Ordinal).ToArray();
         var completed = new PureRunState(state.RunId, state.Seed, state.Revision + 1,
             layerSix ? PureRunPhase.ReadyForBoss : PureRunPhase.ReadyForLayerFive, state.EncounterIndex, state.EncounterContentId, party, backpack,
-            state.BackpackEquipment, state.PendingProgression, transactions, gold, state.BattlesCompleted + 1,
+            state.BackpackEquipment, progression, transactions, gold, state.BattlesCompleted + 1,
             checked(state.EnemiesDefeated + result.EnemiesDefeated), acquired, mapState: map,
             nodeTransaction: transaction with { Committed = true }, escortState: state.EscortState,
             adventureState: state.AdventureState);
@@ -199,13 +206,15 @@ public sealed class PureRunSettlementService
     /// <summary>
     /// The one character a victory levels up: the lowest level among those still standing when the battle ended,
     /// ties broken by party order. A character who was down at the end is excluded even though the post-victory
-    /// recovery in <see cref="MergeParty"/> has already put them back on their feet. Null when nobody qualifies.
+    /// recovery in <see cref="MergeParty"/> has already put them back on their feet. Characters at
+    /// <see cref="MaxCharacterLevel"/> are skipped. Null when nobody qualifies.
     /// </summary>
     private static string? ProgressionTarget(RunCharacterState[] party, PureRunBattleResult result)
     {
         HashSet<string> standing = result.Party.Where(member => !member.IsDead)
             .Select(member => member.CharacterId).ToHashSet(StringComparer.Ordinal);
-        return party.Where(character => !character.IsDead && standing.Contains(character.CharacterId))
+        return party.Where(character => !character.IsDead && character.Level < MaxCharacterLevel &&
+                standing.Contains(character.CharacterId))
             .OrderBy(character => character.Level)
             .ThenBy(character => Array.FindIndex(party, candidate => candidate.CharacterId == character.CharacterId))
             .Select(character => character.CharacterId).FirstOrDefault();

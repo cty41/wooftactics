@@ -158,6 +158,48 @@ public sealed class ResidentEventBattleProductionGodotTests
 
     [TestCase]
     [RequireGodotRuntime]
+    public async Task EventVictoryOwesALevelUpBeforeTheResolvedSceneCanBeLeft()
+    {
+        const int seed = 37;
+        var store = new MemoryStore();
+        var ui = new GodotPlayableRunMain();
+        ui.ConfigureTestContext(new GodotPlayableRunTestContext(store, seed, "resident-event-growth"));
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        tree.Root.AddChild(ui);
+        try
+        {
+            PureRunSessionService service = Field<PureRunSessionService>(ui, "_run");
+            RunSessionResult setup = CompleteSetup(service);
+            Invoke(ui, "RouteCommittedSetup", setup);
+            await WaitForBattle(ui, tree);
+            PureRunState pending = EventPending(setup.Snapshot!, LoadMap(), "layer_04_event",
+                RunAdventureEventContextKind.CursedChestMimic).ActiveRun!;
+            var victory = new PureRunBattleResult(pending.RunId, pending.Checkpoint!.Revision, pending.EncounterContentId,
+                true, 3, 3, pending.Checkpoint.Party.Select(member => new BattlePartyResult(member.CharacterId,
+                    member.MaxHealth, member.MaxMana, false, member.CarriedConsumables)).ToArray());
+            PureRunSettlementResult settled = new PureRunSettlementService().ApplyLayerFour(pending, victory, []);
+            AssertThat(settled.Succeeded).IsTrue();
+            PureRunState resolved = new RunAdventureTransitionService().ResolveEventBattle(settled.ActiveRun!);
+            AssertThat(resolved.PendingProgression.Count).IsEqual(1);
+            long revision = store.Load().Snapshot!.Revision;
+
+            // The event result scene comes first; leaving through an exit shows the level-up instead of moving on.
+            InvokePrivate(ui, "ShowPostEventScene", resolved, "CursedChestMimic");
+            AssertThat(ui.FindChild("ProgressionAttribute_Strength", true, false)).IsNull();
+            InvokePrivate(ui, "HandleAdventureExit", resolved, "layer_05_battle");
+            AssertThat(ui.FindChild("ProgressionAttribute_Strength", true, false)).IsNotNull();
+            AssertThat(store.Load().Snapshot!.Revision).IsEqual(revision);
+        }
+        finally
+        {
+            ui.QueueFree();
+            for (int frame = 0; frame < 4 && GodotObject.IsInstanceValid(ui); frame++)
+                await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        }
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
     public async Task ResolvedBattleNodeKeepsFormalSurfaceWithRimExitsAndVisibleRoutes()
     {
         const int seed = 37;

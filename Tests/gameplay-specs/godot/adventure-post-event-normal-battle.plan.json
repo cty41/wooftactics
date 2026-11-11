@@ -84,6 +84,30 @@
     {
       "adapter": "PlayerInput",
       "kind": "clickPointerTarget",
+      "target": "ProgressionAttribute_Strength",
+      "parameters": {
+        "targetKind": "UiElement"
+      }
+    },
+    {
+      "adapter": "PlayerInput",
+      "kind": "clickPointerTarget",
+      "target": "ProgressionAttributeContinue",
+      "parameters": {
+        "targetKind": "UiElement"
+      }
+    },
+    {
+      "adapter": "PlayerInput",
+      "kind": "clickPointerTarget",
+      "target": "ProgressionSkillChoice_0",
+      "parameters": {
+        "targetKind": "UiElement"
+      }
+    },
+    {
+      "adapter": "PlayerInput",
+      "kind": "clickPointerTarget",
       "target": "exit:layer_05_battle",
       "parameters": {
         "targetKind": "AdventureExitApproach"

@@ -1918,6 +1918,8 @@ public partial class GodotPlayableRunMain : Control
 
     private void HandleAdventureExit(PureRunState run, string targetNodeId)
     {
+        // An event battle returns to its resolved scene before the level-up page; the owed level-up comes before leaving.
+        if (run.PendingProgression.FirstOrDefault() is PendingProgression owed) { ShowProgression(run, owed); return; }
         if (run.NodeTransaction is { Kind: PureRunNodeKind.Store, Committed: false })
         {
             RunSessionResult left = _run!.ApplyLayerFourMutation(state =>

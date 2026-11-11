@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics/tree/main/src/Tactics.Core/Runs
 title: Roguelike Run
 description: Godot Pure Run 的七层路线、节点事务、队伍成长、存档和终局主链。
 tags: [gameplay, roguelike, map, progression, godot]
-timestamp: "2026-11-11T11:09:56+08:00"
+timestamp: "2026-11-11T12:17:06+08:00"
 status: active
 catalog_scope: roguelike-run
 repo_paths:
@@ -21,7 +21,7 @@ repo_paths:
   - godot/src/Tactics.Godot.Adapter/Runtime/GodotPlayableRunMain.cs
   - Tests/gameplay-specs/godot
 verified_revision: c56d71ad4ebd
-source_fingerprint: sha256:f2398da34e6b112e7cc8e41c50113308fbc11d5d621137c0d5321c61642c11e6
+source_fingerprint: sha256:0d8458d28aa9d2ce0579a30fa5b88b0234830a12075d7854155cd8807d09b67b
 ---
 
 # Current State
@@ -38,7 +38,7 @@ Godot Adventure Board 使用正式 Tile 投影和生产输入链呈现出口、�
 
 当前生产存档采用 V11、revision、payload hash、temp 重读、backup 回退与损坏文件隔离；兼容读取保留节点、领队、对象结果、发现、路线与遭遇 checkpoint，丢弃旧 ActorCells 和历史 Setup 草稿，并明确不保存相机、Tooltip、弹窗、选人/起始技能草稿或逐行动战斗状态。V11 writer 对 `PendingRunSetup` fail-closed；Continue 从模板槽重建 Actor 与相机，PendingBattle 以已保存 Encounter、Seed 和入口 checkpoint 重开。
 
-当前可选角色、战斗、事件、休息、商店、宝箱、Elite、Boss、成长和终局均由代码、typed Resource 与测试共同定义。成长选人（2026-11-11）：`PureRunSettlementService.ProgressionTarget` 由 `Apply` 与 `ApplyFixedLateBattle` 共用，候选只含战斗结束时未倒地（`BattlePartyResult.IsDead` 为 false）且未永久死亡的角色，按最低等级、再按队伍顺序选一人；战斗中倒地的角色即使被战后恢复救起，本场也不成长。L4/L6 走 `ApplyLayerFour` 的胜利目前不发放成长，选人也不排除满级角色，两者均为已知未处理项。人工验收见 `MQA-GODOT-PROGRESSION-DOWNED-EXCLUDED`（pending）。自动旅程验证逻辑和持久化边界；地图可读性、操作手感和视觉反馈由人工验收账本负责。
+当前可选角色、战斗、事件、休息、商店、宝箱、Elite、Boss、成长和终局均由代码、typed Resource 与测试共同定义。成长选人（2026-11-11）：`PureRunSettlementService.ProgressionTarget` 由 `Apply` 与 `ApplyFixedLateBattle` 共用，候选只含战斗结束时未倒地（`BattlePartyResult.IsDead` 为 false）且未永久死亡的角色，按最低等级、再按队伍顺序选一人；战斗中倒地的角色即使被战后恢复救起，本场也不成长；达到 `MaxCharacterLevel=12` 的角色不进候选，候选为空则不产生成长。L4/L6 战斗节点与事件战走 `ApplyLayerFour`，同样追加一条成长，事务键为 `progression:<节点事务键>`（同一遭遇可在多个节点结算）。事件战胜利后仍先显示事件结果场景，`HandleAdventureExit` 在有待完成成长时改为打开升级页，Continue 经 `RouteRunState` 同样先到升级页。人工验收见 `MQA-GODOT-PROGRESSION-DOWNED-EXCLUDED`（pending）。自动旅程验证逻辑和持久化边界；地图可读性、操作手感和视觉反馈由人工验收账本负责。
 
 # Relationships
 

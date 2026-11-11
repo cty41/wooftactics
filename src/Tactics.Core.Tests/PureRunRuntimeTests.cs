@@ -67,6 +67,31 @@ public sealed class PureRunRuntimeTests
         });
     }
 
+    [TestCase(new[] { 12, 12, 12 }, null, TestName = "Progression_EveryoneAtLevelCapGrantsNothing")]
+    [TestCase(new[] { 12, 12, 11 }, "amazon", TestName = "Progression_OnlyCharacterBelowCapIsPicked")]
+    public void Settlement_ProgressionSkipsCharactersAtLevelCap(int[] levels, string? expected)
+    {
+        PureRunDefinition definition = TestDefinition();
+        PureRunState pending = PendingState(definition, seed: 19, levels: levels);
+        PureRunBattleResult result = Result(pending, victory: true, rounds: 3, new[] { 9, 9, 8 }, mana: new[] { 1, 1, 1 });
+
+        PureRunSettlementResult first = new PureRunSettlementService().Apply(
+            definition, pending, result, Array.Empty<ContentId>());
+        PureRunSettlementResult late = new PureRunSettlementService().ApplyFixedLateBattle(
+            pending, result, Array.Empty<ContentId>(), PureRunPhase.Ready, boss: false);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(PureRunSettlementService.MaxCharacterLevel, Is.EqualTo(12));
+            foreach (PureRunSettlementResult settled in new[] { first, late })
+            {
+                Assert.That(settled.Succeeded, Is.True);
+                Assert.That(settled.ActiveRun!.PendingProgression.Select(value => value.CharacterId),
+                    Is.EqualTo(expected is null ? Array.Empty<string>() : new[] { expected }));
+            }
+        });
+    }
+
     [Test]
     public void Settlement_N3ProducesSliceCompletedInsteadOfBossVictory()
     {
