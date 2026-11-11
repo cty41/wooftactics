@@ -25,7 +25,7 @@ Use for every Godot migration task when the correct project boundary, specialist
 
 ## Workflow
 
-1. Confirm the worktree is `migration/godot` and the project is `godot/project.godot`.
+1. Confirm the current workspace (per `agent-worktree`) and the canonical project `godot/project.godot`.
 2. Read `.agents/knowledge/operations/godot-agent-workflow.md` and the task-relevant migration concept.
 3. Select the smallest specialist skill from the table; load multiple only when the task truly crosses boundaries.
 4. If the authorized work requires Editor session count `0`, route through `godot-editor-lifecycle`; restore only an Editor that workflow closed.

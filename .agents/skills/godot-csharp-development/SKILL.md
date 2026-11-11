@@ -19,7 +19,7 @@ Use for C# changes under `src/` or `godot/src/`, including Resource classes, lif
 ## Workflow
 
 1. Identify the target layer and prove its allowed dependencies.
-2. Search existing project types and APIs before adding names or `using` directives.
+2. Prefer existing project types and APIs over new names or `using` directives.
 3. For uncertain Godot APIs, use the router Research Guide and verify against 4.7.1.
 4. Keep gameplay transitions deterministic and engine-neutral; adapters translate Node/Resource state to commands/drafts and consume events.
 5. Disconnect signals, cancel tracked work and release temporary Nodes/Resources on exit, exception and reload paths.
