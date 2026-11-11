@@ -109,7 +109,7 @@ description: "Use when generating, editing, chroma-keying, calibrating, reviewin
 - 不把未校准候选标为可用 Sprite；武器或耳朵超出标准包围盒时，优先保持胶囊身体并显式记录例外。
 - 不把正反案例快照当成生成母图；快照只服务于快速 Review，正式母图以 `examples/cases.json` 的 `approved_assets` 原图路径为准。
 - 不把 `rejected` 或 `superseded` 中局部看似正确的版本继续传递到下一轮；反例只能用于写明禁止项和验收失败原因。
-- 不批量生成多个角色来“碰运气”，不复制完整聊天记录或完整提示词到 OKF；稳定结论写入指南，提示词文档仍由 `artworks-prompt-library` skill 负责。
+- 单角色逐张推进；不复制完整聊天记录或完整提示词到 OKF；稳定结论写入指南，提示词文档仍由 `artworks-prompt-library` skill 负责。
 - 不把 `read_image` 成功等同于 Web GUI 已显示图片：未装载专用 `read_image` tool-view renderer 时，单独或并行调用都可能只显示 Tool Call。不得承诺刷新即可修复；应提供绝对路径并记录 `manual_visual_qa_pending`，或在用户授权后安装/实现专用 Client 插件。
 - 不用耳朵、武器或脚掌的最高/最低点替代核心胶囊体量；未获人工确认不得批量套用校准结果或推进下一个角色。
 - 不用完整 Sprite 的耳尖到脚底高度或左右装备宽度校准方向图主体；核心蒙版未叠加通过时不得进入 128 预览或 Tile Review。

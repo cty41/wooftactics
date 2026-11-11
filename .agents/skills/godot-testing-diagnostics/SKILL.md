@@ -1,6 +1,6 @@
 ---
 name: godot-testing-diagnostics
-description: Use when building or testing Tactics Core, Application, Godot C#, GdUnit4Net, headless runtime/editor, migration tools, skills, Incidents, or diagnosing engine errors.
+description: Use when building or testing Tactics Core, Application, Godot C#, GdUnit4Net, headless runtime/editor, migration tools, skills, Incidents, or diagnosing engine errors. Gameplay automation test authoring belongs to gameplay-test-framework.
 ---
 
 # Godot Testing Diagnostics

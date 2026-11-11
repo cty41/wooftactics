@@ -16,7 +16,7 @@
 
 1. XML doc (`///`) for IDE tooltips and Agent-parseable structured docs
 2. `//` block comments for system rules, lifecycle, design decisions, side effects
-3. Comments explain **why** and **rules**, not **what** (no commenting obvious code)
+3. Comments explain **why** and **rules**, not **what**
 4. Every non-trivial class must have `<remarks>` explaining its role in the system
 
 ## XML Doc Rules
