@@ -14,6 +14,6 @@
 2026-11 评测与试点实测归拢（来源：`Tools/agent-eval/workflow/runs/baseline-2026-11-09.md`、`docs/compose/spec/` 各 Journey log）：
 
 - **`ProgramFiles`/`ProgramFiles(x86)` 被 shell 置空** → `dotnet`/NuGet 在 `CalculateFolderPath` 路径解析抛 `path1` 空引用。修法：同一 bash 调用内先置 `$env:ProgramFiles='C:\Program Files'; ${env:ProgramFiles(x86)}='C:\Program Files (x86)'` 再跑 dotnet（该 shell 环境变量不跨调用保留）。
-- **`python` 不在 PATH**（仅 `py -3`）→ OKF/Python 门禁需含 PyYAML 的解释器，本机用 `py -3`；受 PowerShell 引号转义影响，脚本以文件方式执行是既有实践（`Tools/okf` 验证命令注记）。
+- **`python` 不在 PATH**（仅 `py -3`）→ OKF/Python 门禁需含 PyYAML 的解释器，本机用 `py -3`（来源：baseline 运行记录；依赖清单见 `Tools/okf/requirements.txt`）。
 - **GdUnit 测试前置**：`GODOT_BIN` 指向 Godot console.exe；新 worktree 首跑先 `--headless --editor --path godot --import` 生成 `.uid`，import 后重建 TestHost 再 `dotnet test`。
 - **`Tools/vendor/maliang` 子模块默认未初始化** → 统一验证器的 artwork 用例误报失败。修法：`git submodule update --init Tools/vendor/maliang`。

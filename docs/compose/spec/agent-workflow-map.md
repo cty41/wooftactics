@@ -1,6 +1,6 @@
 ---
 feature: agent-workflow-map
-status: in-progress
+status: delivered
 updated: 2026-11-11
 source: docs/agent-workflow-map
 ---
@@ -8,6 +8,10 @@ source: docs/agent-workflow-map
 # Agent 工作流基础设施地图（双读者薄档案）
 
 ## Report
+
+**What was built** — `.agents/docs/agent-workflow-infrastructure.md`：双读者薄地图（缘起与方法论、五件事咬合图、9 条跨切面教训逐条注明出处、10 行场景速查、详档指针），零复述零新约束；`AGENTS.md` 与 `CONTRIBUTING.md` 各一行入口指针（产品 README 不动）；`.agents/rules/agent-environment.md` 新增「本机工具链环境坑」四条（成因+修法+来源）。
+
+**Verification** — 指针目标全树内可解析；零复述经 review 逐段核验（无 Report 拷贝）；9 条教训出处经复审抽查逐字吻合（L3/4/5/8 等）。首轮独立 review 判 FAIL（教训溯源、python 条无据、缘起失实），修复后复审 PASS-WITH-NITS，3 处出处瑕疵再修。纯文档变更，无代码测试适用。
 
 ## [S1] 问题
 
@@ -44,10 +48,10 @@ source: docs/agent-workflow-map
 
 ## Tasks
 
-- [ ] T1: 写地图文档 — acceptance: 五件事齐且咬合逻辑清楚；教训 8–9 条均可溯源并注明出处（Journey log / 裁决记录 / 规则正文）；场景索引每行有有效文件路径；全文零复述（无细节拷贝、无新约束）。(covers: S2.1, S2.2)
-- [ ] T2: 入口指针 — acceptance: AGENTS.md 索引区与 CONTRIBUTING.md 各新增一行指向地图，格式与邻居一致。(covers: S2.2)(depends: T1)
-- [ ] T3: 本机环境坑归拢进 agent-environment.md — acceptance: 四类坑齐（成因+修法各一行），来源注明散落记录；不新增行为约束。(covers: S2.2b)
-- [ ] T4: 独立 review 与收口 — acceptance: review 重点核验零复述/指针有效/教训准确/环境坑成因修法属实，无关键缺口；Report 记录验证结果。(covers: S2.3)(depends: T1, T2, T3)
+- [x] T1: 写地图文档 — acceptance: 五件事齐且咬合逻辑清楚；教训 8–9 条均可溯源并注明出处（Journey log / 裁决记录 / 规则正文）；场景索引每行有有效文件路径；全文零复述（无细节拷贝、无新约束）。(covers: S2.1, S2.2)
+- [x] T2: 入口指针 — acceptance: AGENTS.md 索引区与 CONTRIBUTING.md 各新增一行指向地图，格式与邻居一致。(covers: S2.2)(depends: T1)
+- [x] T3: 本机环境坑归拢进 agent-environment.md — acceptance: 四类坑齐（成因+修法各一行），来源注明散落记录；不新增行为约束。(covers: S2.2b)
+- [x] T4: 独立 review 与收口 — acceptance: review 重点核验零复述/指针有效/教训准确/环境坑成因修法属实，无关键缺口；Report 记录验证结果。(covers: S2.3)(depends: T1, T2, T3)
 
 ## Journey log
 

@@ -32,9 +32,9 @@ flowchart LR
 
 各特性留档（Journey log、裁决记录、规则正文）的聚合，注明出处如下——都是踩过坑换来的：
 
-1. **先度量再动架构**——没有基线读数的改动只能靠感觉（`docs/compose/spec/workflow-golden-evals.md` S1；`skill-audit.md` Report 的用量表动机）。
+1. **先度量再动架构**——没有基线读数的改动只能靠感觉（`docs/compose/spec/workflow-golden-evals.md` S1；`skill-audit.md` S1）。
 2. **盲态手法本身会泄漏**——`skip-worktree` 标志、主检出的 deleted 状态都会暴露被藏的评测材料；真盲态要让材料不在树中且被测方 cwd 不见主检出（`Tools/agent-eval/workflow/README.md`「盲态」节）。
-3. **自我声明不算证据**——回执和评分同源原则：只认工具调用、产物、git 痕迹，主循环必须抽查锚点（`.agents/rules/subagent-handback.md` 回执契约）。
+3. **自我声明不算证据**——回执和评分同源原则：只认工具调用、产物、git 痕迹，主循环必须抽查锚点（`.agents/rules/subagent-handback.md` 回执契约；判据源头 `Tools/agent-eval/workflow/README.md` 评分规则）。
 4. **跨文件"重复"多为独立加载自含性**，不是 Frankenprompt；收敛重复前先想清楚文件被单独加载的场景（`.agents/docs/prompt-audit-2026-11.md` 裁决节）。
 5. **事故溯源规则 ≠ 旧模型补丁**——可裁决锚点（如"不凭记忆答版本敏感问题"是 GO-04 判据）删了会失锚；删规则前先查 `.agents/incidents/`（`.agents/docs/prompt-audit-2026-11.md` 裁决节）。
 6. **506 ≠ 冻结**——Kernel-Power 506 只是进入可休眠状态；进程冻结判据是心跳连续性，真凶是"完全无活动的空闲"（`docs/compose/spec/agent-keep-awake.md` Journey log）。
