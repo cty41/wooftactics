@@ -49,10 +49,7 @@ public sealed class PureRunSettlementService
                 new ItemInstanceId(instanceId), drop.Value, remainingCharges: 1, maxCharges: 1)).ToArray();
         }
 
-        string? progressionTarget = party.Where(character => !character.IsDead)
-            .OrderBy(character => character.Level)
-            .ThenBy(character => Array.FindIndex(party, candidate => candidate.CharacterId == character.CharacterId))
-            .Select(character => character.CharacterId).FirstOrDefault();
+        string? progressionTarget = ProgressionTarget(party, result);
         PendingProgression[] progression = progressionTarget is null
             ? state.PendingProgression.ToArray()
             : state.PendingProgression.Append(new PendingProgression(
@@ -188,9 +185,7 @@ public sealed class PureRunSettlementService
             { BossDefeated = true, TerminalEncounterId = result.EncounterContentId };
             return new(true, null, null, summary, false);
         }
-        string target = party.Where(value => !value.IsDead).OrderBy(value => value.Level)
-            .ThenBy(value => Array.FindIndex(party, candidate => candidate.CharacterId == value.CharacterId))
-            .Select(value => value.CharacterId).FirstOrDefault() ?? string.Empty;
+        string target = ProgressionTarget(party, result) ?? string.Empty;
         PendingProgression[] progression = string.IsNullOrEmpty(target) ? state.PendingProgression.ToArray() :
             state.PendingProgression.Append(new PendingProgression($"progression:{result.EncounterContentId.Value}",
                 result.EncounterContentId.Value, target)).ToArray();
@@ -199,6 +194,21 @@ public sealed class PureRunSettlementService
             transactions, gold, battles, defeated, acquired, mapState: state.MapState,
             escortState: state.EscortState, adventureState: state.AdventureState);
         return new(true, null, next, null, false);
+    }
+
+    /// <summary>
+    /// The one character a victory levels up: the lowest level among those still standing when the battle ended,
+    /// ties broken by party order. A character who was down at the end is excluded even though the post-victory
+    /// recovery in <see cref="MergeParty"/> has already put them back on their feet. Null when nobody qualifies.
+    /// </summary>
+    private static string? ProgressionTarget(RunCharacterState[] party, PureRunBattleResult result)
+    {
+        HashSet<string> standing = result.Party.Where(member => !member.IsDead)
+            .Select(member => member.CharacterId).ToHashSet(StringComparer.Ordinal);
+        return party.Where(character => !character.IsDead && standing.Contains(character.CharacterId))
+            .OrderBy(character => character.Level)
+            .ThenBy(character => Array.FindIndex(party, candidate => candidate.CharacterId == character.CharacterId))
+            .Select(character => character.CharacterId).FirstOrDefault();
     }
 
     private static string? Validate(PureRunState state, PureRunBattleResult result)
