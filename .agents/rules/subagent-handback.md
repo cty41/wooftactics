@@ -52,13 +52,13 @@
 
 ### OKF 同步链
 
-机械段只含四步，子代理按序执行：`catalog_impact.py report --worktree` 影响检测 → 汇总受影响 scope 与概念清单 → 逐 scope `catalog_impact.py sync --worktree --scope <scope> --write` 写 metadata → `validate_bundle.py` 校验。其中 `sync --write` 自动写 frontmatter 时间戳/来源指纹并追加 `log.md` 的 Sync 记录，属命令固有产出，不算越界。归主循环的是概念正文（Current State、Relationships 等）落笔、`catalog-scopes.yaml` 修改，以及 `log.md` 中非 Sync 的知识状态记录。
+机械段对应 `knowledge-maintenance.md` 的第 1、4、5 步：`catalog_impact.py report --worktree` 影响检测 → 按任务书**给定的 scope 清单**逐 scope `catalog_impact.py sync --worktree --scope <scope> --write` 写 metadata → `validate_bundle.py` 校验。其中 `sync --write` 自动写 frontmatter 时间戳/来源指纹与 `log.md` 的 Sync 记录（同日同 scope 为去重替换），属命令固有产出，不算越界。归主循环的是**变更甄别**（第 2 步：对照工作区 diff 判定哪些 scope 属于本任务，剔除无关项后才给出清单）、概念正文落笔（第 3 步）、`catalog-scopes.yaml` 修改，以及 `log.md` 中非 Sync 的知识状态记录；脏工作区下不得同步清单外的 scope。
 
 任务书模板（四要素）：
 
 > 工作区路径：`<repo root>`，当前 workspace checkout。
-> 任务描述：对当前工作树变更执行 OKF 同步机械段四步（report → 汇总 → 逐 scope sync --write → validate_bundle）。只做这四步，不手动编辑概念正文、`catalog-scopes.yaml`、rules 与 `log.md`；sync --write 自动产出的 metadata 与 Sync 记录除外。
-> 验收判据：回执四段齐备；report 报出的每个 scope 都有 sync 输出锚点；`validate_bundle.py` 退出码 0。
+> 任务描述：执行 OKF 同步机械段（report → 对下列 scope 清单逐 scope sync --write → validate_bundle）。清单：`<scopes>`（主循环变更甄别后给出）。只做这三步，不手动编辑概念正文、`catalog-scopes.yaml`、rules 与 `log.md`；sync --write 自动产出的 metadata 与 Sync 记录除外。
+> 验收判据：回执四段齐备；清单内每个 scope 都有 sync 输出锚点，且**无清单外 scope 的 sync 输出**；`validate_bundle.py` 退出码 0。
 > 验证命令：`python Tools/okf/catalog_impact.py report --worktree`；`python Tools/okf/catalog_impact.py sync --worktree --scope <scope> --write`；`python Tools/okf/validate_bundle.py`（解释器需含 PyYAML；本机 Windows 用 `py -3`）。
 
 ### 门禁日志分诊
