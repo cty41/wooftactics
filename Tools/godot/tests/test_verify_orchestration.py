@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from Tools.godot.lib.verify_runner import run_verify_profile
+from Tools.godot.lib.verify_runner import STEP_HANDLERS, run_verify_profile
 from Tools.godot.lib.verify_steps import (
     PROFILE_AGENT,
     PROFILE_WINDOWS,
@@ -28,6 +28,20 @@ class VerifyOrchestrationTests(unittest.TestCase):
     def test_agent_profile_unchanged_count(self):
         steps = steps_for_profile(PROFILE_AGENT)
         self.assertEqual(len(steps), 20)
+
+    def test_every_dispatched_step_has_a_handler(self):
+        dispatched = {
+            step.step_id
+            for profile in (PROFILE_AGENT, PROFILE_WINDOWS)
+            for step in steps_for_profile(profile)
+            if step.kind in ("run", "conditional_skip")
+        }
+        missing = sorted(dispatched - set(STEP_HANDLERS))
+        self.assertEqual(
+            missing,
+            [],
+            f"registry steps dispatched by the runner without a STEP_HANDLERS entry: {missing}",
+        )
 
     def test_windows_profile_rejects_linux(self):
         exit_code = run_verify_profile(
