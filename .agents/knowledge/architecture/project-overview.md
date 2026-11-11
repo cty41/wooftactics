@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Tactics Project Overview
 description: Tactics 的 Godot 产品主线、纯 .NET 分层、运行时和主要游戏系统总入口。
 tags: [architecture, godot, agent-first]
-timestamp: "2026-11-10T22:30:06+08:00"
+timestamp: "2026-11-11T10:38:40+08:00"
 status: active
 catalog_scope: project-architecture
 repo_paths:
@@ -19,7 +19,7 @@ repo_paths:
   - godot/export_presets.cfg
   - godot/project.godot
 verified_revision: c56d71ad4ebd
-source_fingerprint: sha256:71e24ca0db86983a922044324dc1b4cefec5f07db28d5fc681e3cbc0be73de7e
+source_fingerprint: sha256:bc17408081256985d3ebdc45eb497277b778e270aa121f799464422894f7ebd7
 ---
 
 # Summary

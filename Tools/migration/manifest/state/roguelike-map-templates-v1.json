@@ -8,7 +8,7 @@
   "variantCount": 22,
   "catalogCount": 24,
   "sourceAuthority": "canonical-godot-catalog",
-  "sourceCommit": "5d1a73c169856fa42656fda561c81b096b6518c6",
+  "sourceCommit": "4754385055862eb55bcf081fe513fb8c02d32487",
   "sources": [
     {
       "resourcePath": "repo://godot/src/Tactics.Godot.Adapter/Editor/AdventureMapAssetBuilder.cs",
@@ -16,11 +16,11 @@
     },
     {
       "resourcePath": "repo://godot/src/Tactics.Godot.Adapter/Editor/AdventureMapAssetFactory.cs",
-      "sourceHash": "sha256:362b022b927dbc22d5b0907e2fb0dde5504fec594e8213a93c0504f5e0da5d9b"
+      "sourceHash": "sha256:7713a08c9b60c6626b7b9a3a2250be7a4a754fccabc89d9e885a25d7960faae4"
     },
     {
       "resourcePath": "repo://src/Tactics.Core/Runs/AdventureMapContracts.cs",
-      "sourceHash": "sha256:195e3710b2e4d9afe2657693db9c75da1b1055b0b3897d9338e31c6d9f37bfa3"
+      "sourceHash": "sha256:70cf52b57f843c5d6f29283944ef14ba3dbfca2b3d4eeb62df8ca8dd015b4a7c"
     },
     {
       "resourcePath": "repo://src/Tactics.Core/Runs/PureRunActBlueprint.cs",
@@ -28,7 +28,7 @@
     },
     {
       "resourcePath": "res://content/ContentCatalog.tres",
-      "sourceHash": "sha256:c9a58e5ae0277482624e49d4a33d9db01c900f2087f833c5679b723e9cfe102f"
+      "sourceHash": "sha256:c66362b62cc1b7a04c5690eaadbd9f7de671c3ad0f08d7520434dd2dde1c895c"
     },
     {
       "resourcePath": "res://content/ai_encounters/AiPureRunAoe.tres",
@@ -288,7 +288,7 @@
     },
     {
       "resourcePath": "res://content/demonbound/PureRunDemonbound.tres",
-      "sourceHash": "sha256:0ab9d88954be1d32c4934b13642250543912c99dc609dd4cf20296d2bfd07a5c"
+      "sourceHash": "sha256:20aedf1cc79eef0c146fdf0d44885c8973c91608e7d99fe1dfae1c303a0d857a"
     },
     {
       "resourcePath": "res://content/full_run/BattleLayoutPureRunSpecialOpen.tres",
@@ -349,6 +349,82 @@
     {
       "resourcePath": "res://content/map/PureRunStandardTreasure.tres",
       "sourceHash": "sha256:8ffb4c9cfdc73c6bcbb269c5aad0a6480954e2d9bd0f58f178495b044e108781"
+    },
+    {
+      "resourcePath": "res://content/poet/PoetAfterimage.tres",
+      "sourceHash": "sha256:f01c7004d53641acd4082eab2e782dd93a0e25b4264b4b2041b04cde7b0b9ed4"
+    },
+    {
+      "resourcePath": "res://content/poet/PureRunPoet.tres",
+      "sourceHash": "sha256:5755cbce2a083f6402bc07e3d7948b5c167ff931d5cf361b5f3bfb1d4cd2a200"
+    },
+    {
+      "resourcePath": "res://content/poet/SkillPoetJiangJinJiuLv1.tres",
+      "sourceHash": "sha256:a92395b651c569e6589ece7bc9ec78dbaa92497f97174018019f930459e69fff"
+    },
+    {
+      "resourcePath": "res://content/poet/SkillPoetJiangJinJiuLv2.tres",
+      "sourceHash": "sha256:be310c6f0a94db0954264e98d3d285079f6ed388796caf416f0bbb3c83c71e55"
+    },
+    {
+      "resourcePath": "res://content/poet/SkillPoetJiangJinJiuLv3.tres",
+      "sourceHash": "sha256:c1df58f94f9ca8c58eaeffc7bd906d58218af05571be6273ec5404a5a920f3b9"
+    },
+    {
+      "resourcePath": "res://content/poet/SkillPoetMoonDrinkLv1.tres",
+      "sourceHash": "sha256:f61baa090a283791f53cda250fc7e4f6d7766d2df069fe096df7bc954d79f2d9"
+    },
+    {
+      "resourcePath": "res://content/poet/SkillPoetMoonDrinkLv2.tres",
+      "sourceHash": "sha256:7bdb8c4d098c309232036f61d3f817564a8da69be9cbbb9ee8edcfd38625a21a"
+    },
+    {
+      "resourcePath": "res://content/poet/SkillPoetMoonDrinkLv3.tres",
+      "sourceHash": "sha256:d6a6a4305b9a2701e9516ec524f408e677f9e8f725fb929c612b476783e83a75"
+    },
+    {
+      "resourcePath": "res://content/poet/SkillPoetMountainDialogueLv1.tres",
+      "sourceHash": "sha256:9bc83a57eaf24bc084355e554da96acad7f32fdc64a4877f2c5f34414f3eaa7d"
+    },
+    {
+      "resourcePath": "res://content/poet/SkillPoetMountainDialogueLv2.tres",
+      "sourceHash": "sha256:e3b345c0af4744a6140fd92f5851337091bea54a775e134532824f31f65d3e26"
+    },
+    {
+      "resourcePath": "res://content/poet/SkillPoetRoadIsHardLv1.tres",
+      "sourceHash": "sha256:c6d132b8c38b970466b50472ec046280d1a16166ad8766345cb86e76218ee136"
+    },
+    {
+      "resourcePath": "res://content/poet/SkillPoetRoadIsHardLv2.tres",
+      "sourceHash": "sha256:950b5de0bc7b03898bc86fb1721f37e83ebfbaeaf93a059b7eed51a962ebbfc8"
+    },
+    {
+      "resourcePath": "res://content/poet/SkillPoetSwordRainLv1.tres",
+      "sourceHash": "sha256:20c68c30730087104f675e9fee4c16607432ba75883bd834a32a4ed6c401b7ad"
+    },
+    {
+      "resourcePath": "res://content/poet/SkillPoetSwordRainLv2.tres",
+      "sourceHash": "sha256:70da5e1f83718e834306f4f99c7ce331ad6248753434b61ebae75aa96cf5af0c"
+    },
+    {
+      "resourcePath": "res://content/poet/SkillPoetXiakeXingLv1.tres",
+      "sourceHash": "sha256:49c8d5eda608d55a816d5c6434f9d901fc150058459c3ec655ad7017b6e67257"
+    },
+    {
+      "resourcePath": "res://content/poet/SkillPoetXiakeXingLv2.tres",
+      "sourceHash": "sha256:411f5ccc8b41c15bc67bdf556ee51d2557e8f22c22fc7bae191970192593609a"
+    },
+    {
+      "resourcePath": "res://content/poet/SkillPoetXiakeXingLv3.tres",
+      "sourceHash": "sha256:c49adeaae4406093885b27f9161f46265fcc0c34f5444329c04c7385308b1fc6"
+    },
+    {
+      "resourcePath": "res://content/poet/StatusPoetAgilityVerse.tres",
+      "sourceHash": "sha256:94128300cf2d540db72855eb50b71f97f7d2838086fa44f52691438f18c43ed5"
+    },
+    {
+      "resourcePath": "res://content/poet/StatusPoetWineHeal.tres",
+      "sourceHash": "sha256:becb8870f88240aa0f52af3fe184625b5ece3f695ed0eedc3ad88fc00ae48d06"
     },
     {
       "resourcePath": "res://content/poison_spear/PoisonBuff.tres",
@@ -416,7 +492,7 @@
     },
     {
       "resourcePath": "res://content/runs/PureRunThreeEncounterV1.tres",
-      "sourceHash": "sha256:c3a3518e88d44ab7b2c33fb05242b838be1bd092ee21b8ed529d07a28d349237"
+      "sourceHash": "sha256:6f3416970eae247327c03cb7e354faf5e054d9e9792088a51786f0ab531c0b1c"
     },
     {
       "resourcePath": "res://content/skills/AmazonCombatTechniquesLv1.tres",
@@ -640,55 +716,55 @@
     },
     {
       "resourcePath": "res://content/units/PureRunAmazon.tres",
-      "sourceHash": "sha256:cf3669bb2a5fd37438db70ee7ff0a9375078336a144b9dba50664f1d779a5fa2"
+      "sourceHash": "sha256:fb3a62147319060afd83e32f5fc52c0e7f17b431da74ec9c6831b34ce5e4f61d"
     },
     {
       "resourcePath": "res://content/units/PureRunFireDemon.tres",
-      "sourceHash": "sha256:41cb0cf7ab1096c5fd534791ef4e43258d298ef02b285a777a6866717b080576"
+      "sourceHash": "sha256:bef1bdaa98f35a87d6155346f97eaa7352df760042cd471667be97ba46fb3134"
     },
     {
       "resourcePath": "res://content/units/PureRunGoatAoe.tres",
-      "sourceHash": "sha256:7a08aae4aad2c6ec44afaeb7e686fdd27c0edbe96a81b596c47744455440abbb"
+      "sourceHash": "sha256:24c365c5901bebbe9cc28a85b1b3484091aa89c485f9864c4c50a25437b875dd"
     },
     {
       "resourcePath": "res://content/units/PureRunGoatCharger.tres",
-      "sourceHash": "sha256:5a8bc3898b5a3d8fe07d33ec7010f7b0fe5a07c4c59b1d050fc35e6d30fb48ef"
+      "sourceHash": "sha256:95c49bbe64a1530340838fc127fb9f0b28796cf22b6d4ba398ab458af305e630"
     },
     {
       "resourcePath": "res://content/units/PureRunGoatEliteCharger.tres",
-      "sourceHash": "sha256:065ec14a973446a27c9d5b97ee8d88c2857afc918fd1459a92383c29dd4db553"
+      "sourceHash": "sha256:cc58a19b512a4d289b76710c7441ba32c1ac28fbb80ee95304ec9f62806e652d"
     },
     {
       "resourcePath": "res://content/units/PureRunGoatElitePoisonCaster.tres",
-      "sourceHash": "sha256:f95e6d7febd9ed5cdee5ccb1734d41fdef1fa340a234f25291090a6452209e23"
+      "sourceHash": "sha256:1eff65e90f7a81283982765f664690da096a9269d784a87c9ef230fa5bb8ea0b"
     },
     {
       "resourcePath": "res://content/units/PureRunGoatRanged.tres",
-      "sourceHash": "sha256:cd34dbfa19e2fc9d6be4fe421125d1a04a49d8cd46552a7faecdc5851d556763"
+      "sourceHash": "sha256:7ff47e0e6b5366187bcb5565bd09cf764f8d1028203ec14baf3a94c2d1088597"
     },
     {
       "resourcePath": "res://content/units/PureRunGoatSupport.tres",
-      "sourceHash": "sha256:ef5ea498dde3cf576880319e88d151335a336a7cca566fa407010744c9766fb1"
+      "sourceHash": "sha256:04a938a4933685ef61fc5ce99b32f01ef9072360e45d92a25a0d123742c9ae7a"
     },
     {
       "resourcePath": "res://content/units/PureRunMage.tres",
-      "sourceHash": "sha256:f40b40a2e645273ee67f534da1c4969619324c3f9799179f96f72b3b1f502d32"
+      "sourceHash": "sha256:9b9b3974721292e865f3c66c30c3422aa7307d8a4b4f59568436b857dbb3e416"
     },
     {
       "resourcePath": "res://content/units/PureRunMawBat.tres",
-      "sourceHash": "sha256:ec395f51f25dcd1669a6716dbfc118a00b7e176d8b53e08d2eaf476bf0221ddb"
+      "sourceHash": "sha256:dcdd4935dda79efe07a1f066c947166fa63b0333540b4b6e6ee7be3e62dfd0ae"
     },
     {
       "resourcePath": "res://content/units/PureRunNecromancer.tres",
-      "sourceHash": "sha256:ff9aa16d4c9f964e2c5eab4cb8bbd2ab28ff802c9b6c5a1e7894ad4a0f22c37e"
+      "sourceHash": "sha256:a37dd736d9e006ece805bbdf89cc106479e91588773a63c09d5910038fb37649"
     },
     {
       "resourcePath": "res://content/units/PureRunSkeletonMage.tres",
-      "sourceHash": "sha256:613682879ea9cb6e9d324bc1234b6e475ce8e5331c671cf0da251246cf008c56"
+      "sourceHash": "sha256:3f5cf9f5103da81238a495cd45d97c8319807fe035bfacb1006dffa6651e7199"
     },
     {
       "resourcePath": "res://content/units/PureRunSkeletonWarrior.tres",
-      "sourceHash": "sha256:ad497238e844fc64ae5d5f71e8ad1128537043331508760aa2cd379a1da39db6"
+      "sourceHash": "sha256:34be0f1f97f8a3d0ea7ef5eb9c2c7a0422815239c2624518fdaec6638d5d031c"
     },
     {
       "resourcePath": "res://content/units/UnitActor.tscn",
@@ -723,122 +799,122 @@
     {
       "resourcePath": "res://content/adventure_maps/nodes/layer-01-battle.tres",
       "resourceUid": "uid://b3pfgbginmplm",
-      "targetHash": "sha256:52db376b1acefc3d18df11814d6c521a2a732bd146953951cc032cc614a42a4e",
-      "semanticFingerprint": "sha256:71fe8cd394c75d02592c68f785dc5b7b5b6e541ad1a53f809f54ded499725d18"
+      "targetHash": "sha256:c36e9c5ba4e48f3774fb68f02f8b425e33c12f4e6ed0956ebaa2118e9d8cd4dc",
+      "semanticFingerprint": "sha256:78e9927511a23e891c9dd0af4d2c0940d3410c4bdb7450a053262aa259fca45f"
     },
     {
       "resourcePath": "res://content/adventure_maps/nodes/layer-02-battle.tres",
       "resourceUid": "uid://iah0icr6d28",
-      "targetHash": "sha256:308e86a00e20fa8b2f9dc35d3551d93ebca10d6dbefa3aa159197968d6f29c5f",
-      "semanticFingerprint": "sha256:744c56c40c53491796e606c86e9ac7492df753a502f29311d2381b92201fe3c5"
+      "targetHash": "sha256:1bca5b5c64cea0efb9e4cd1b77170287f5f6dd4f58fd31203ef7ff95102dc91b",
+      "semanticFingerprint": "sha256:941003c59f6d4f13efa516197a8d925296403ebd21f1c2db1a87e967b72eb681"
     },
     {
       "resourcePath": "res://content/adventure_maps/nodes/layer-03-battle.tres",
       "resourceUid": "uid://dnia2pjwmjbmu",
-      "targetHash": "sha256:73596d46f8429ea040ef8705b392a5dc1e172b0bc0c0644a5edd5c0155c6af60",
-      "semanticFingerprint": "sha256:1d60350e4da948e1e39847811cd5c1bb93d6e091c2f660165f2e7a33e08ece0a"
+      "targetHash": "sha256:ebe89a7ba31172a1aed4d6afd1feb9e04608906f4de84c5e3d69db315d088992",
+      "semanticFingerprint": "sha256:fff2ed1d95f1bbcd81dcb26b7b4e85645b197edbff1ab173ef3cd5c6007ad9c5"
     },
     {
       "resourcePath": "res://content/adventure_maps/nodes/layer-04-battle.tres",
       "resourceUid": "uid://c37rupy2ustkv",
-      "targetHash": "sha256:205ebca44db7e1f8e494db42cbf1c6b49af3b626f8418dd0da94508e47b63f25",
-      "semanticFingerprint": "sha256:51c24e81b31e6212685ee5d61a1c814239733af9ddc65e66c52a5979a9c43acc"
+      "targetHash": "sha256:fabd4935be177d285b59bd8a1f70ac6965936f44494c010439d87e3cfb42b538",
+      "semanticFingerprint": "sha256:1c048f97425df2737c40954bbb61624465b06a12dd751fd2b91c4a5d46dc299e"
     },
     {
       "resourcePath": "res://content/adventure_maps/nodes/layer-04-event.cursedchestmimic.tres",
       "resourceUid": "uid://hpwfjw54k11c",
-      "targetHash": "sha256:9a56d8ba5c7119b36a50ade0229bb14eadbbd278cb3ddc79001c8037dcf92edc",
-      "semanticFingerprint": "sha256:549d4065853a2cf00d1d46aad52c6e061d8c3c46f52d2dbefa1a7b905980e86a"
+      "targetHash": "sha256:13ed0cc76ebf70bbad195fd0fe236fe81d41b27332f70ab5ea2488674e7fc19c",
+      "semanticFingerprint": "sha256:477bb50fe30e131a2fe971a87bf98fdb930a88773d8d9ab4044bf94e9820b98c"
     },
     {
       "resourcePath": "res://content/adventure_maps/nodes/layer-04-event.fallenaltarguardian.tres",
       "resourceUid": "uid://b22t1a8mo5mtv",
-      "targetHash": "sha256:4877430e311a468894371cd0be829874deb9fee2cc506bd2b2e1eb734299ae6a",
-      "semanticFingerprint": "sha256:5d5341dd5068a49f3e80aba58f316dffacf1873b3b82b60819b07b4c79e98a3e"
+      "targetHash": "sha256:31c745d0200e84b5a684fd8a508509402cb0f770667d141f58df03b59306a888",
+      "semanticFingerprint": "sha256:3dc2baf9e60ac9b2afff38ee41cc12930ee053ad971e14910862d4323d9fb5ce"
     },
     {
       "resourcePath": "res://content/adventure_maps/nodes/layer-04-event.lostvillagerescort.tres",
       "resourceUid": "uid://c8m7n2tgnybq3",
-      "targetHash": "sha256:495617b536830f929f3789f3bb65c0a5c117619f582ab48ee211e3fe83bca586",
-      "semanticFingerprint": "sha256:96fe7e01e7cd341e06d4b198df480e4f03766e719d18533183553d7a9c2c4651"
+      "targetHash": "sha256:8a5ba2131339bedb1edc20eb4c0c95deca2aa260e6952905f3bc2b0eb49430d2",
+      "semanticFingerprint": "sha256:372d45af4938b90202b0d833430292a47d277eaa093f11069455bee4db064e12"
     },
     {
       "resourcePath": "res://content/adventure_maps/nodes/layer-04-rest.tres",
       "resourceUid": "uid://dwui1pmd6ij8n",
-      "targetHash": "sha256:15b984e82c50676903e893cdb8666d77656621fa71ed446414f6e835f0e24651",
-      "semanticFingerprint": "sha256:79856208ebe66eb961e360415cbf15ca49e7f459db1a9d510f76131233fc82a6"
+      "targetHash": "sha256:7d490c12226eb60209d84867a73d64dcfd3a749c6adf571cfece8645bf60e599",
+      "semanticFingerprint": "sha256:bcc3ca97258a5b5f5dc50417bc40b4387903ac6a15ef88750208e2776e12c683"
     },
     {
       "resourcePath": "res://content/adventure_maps/nodes/layer-04-store.tres",
       "resourceUid": "uid://wok508qryehp",
-      "targetHash": "sha256:193475acdd902535100386a8f7b98bb6efaa74f5478fbf32aa87d22709cb5e8b",
-      "semanticFingerprint": "sha256:9caf9c7a4ee9c83a7c2c9931ede427dcf56c26148801d8150aae8e125971d645"
+      "targetHash": "sha256:adad87b33640e971b7906cef6a9de7c1260f722680b5ddaa7d582f03c5a1d033",
+      "semanticFingerprint": "sha256:ec2a4ac1e4d2d984c5568c94d4511382158127d315aa419e01dc06564a6b6177"
     },
     {
       "resourcePath": "res://content/adventure_maps/nodes/layer-04-treasure.tres",
       "resourceUid": "uid://mh6ys4obijb6",
-      "targetHash": "sha256:60014d0ff9cb2183ce8dc75a69016eb73068e5d316d1ef69b0352ba1de7fd6d9",
-      "semanticFingerprint": "sha256:116adb8edcc6b7e194acbc4d6cac7efd4e300b9b61ea9e0447d1525074257a93"
+      "targetHash": "sha256:e0b4ae48ecb7372cd7bc965658c8b0315154636d08c03c93e58caac80bcb9063",
+      "semanticFingerprint": "sha256:6fc5624954e29b7db0801aff4df0ca6082fc678889283dc4ed20b821770c24bd"
     },
     {
       "resourcePath": "res://content/adventure_maps/nodes/layer-05-battle.e1.tres",
       "resourceUid": "uid://h5yv638shrys",
-      "targetHash": "sha256:6d32714e3810e787ef81f158495ba5a301ea47a886887aa49688eeb58c8fd387",
-      "semanticFingerprint": "sha256:0a98344d2e3677c396db7770a03f7b25bdaa52c44eafe0aa60cfd7acce9e45cb"
+      "targetHash": "sha256:849ae05c7ee4b8130f7db12d472af9178117e051a4118bff83553799ed5bb307",
+      "semanticFingerprint": "sha256:7fdb91ea2bfb24a23dfe2eb391907d94a4cacd27b11a115af38e77ebf40249d8"
     },
     {
       "resourcePath": "res://content/adventure_maps/nodes/layer-05-battle.e2.tres",
       "resourceUid": "uid://c8hxtfrlfkvrg",
-      "targetHash": "sha256:efbc9fda487e4be441000929ae0948af9a5d2c1fa213671af4202ef66c3ba32c",
-      "semanticFingerprint": "sha256:677ec4babeecb8de0eeb06fbc1db5721a01d5658f9709a02cd9988e27ef88b3b"
+      "targetHash": "sha256:48c94bc3c889d7c13843f0aefc2ea2f6faa61c258a712db710c5e28c140f4be1",
+      "semanticFingerprint": "sha256:07eaa0bad64c4437f980c867bbd4ce50fae3578ad3c9136cfd1441eb3e3170e2"
     },
     {
       "resourcePath": "res://content/adventure_maps/nodes/layer-06-battle.e1.tres",
       "resourceUid": "uid://dkcx8b3yj52ue",
-      "targetHash": "sha256:5d5f41f7b072ccc24911645aec8f9802c8ed945553ddfa7bb4f4468e44608311",
-      "semanticFingerprint": "sha256:ea2c56c53a392a64b86c9891db1ed70152d165006040dc0c6e481d78e6cf33c0"
+      "targetHash": "sha256:d0dff9026ad1d8a086fdbcf84cf7e2cdcd7c4d7bc4ab9807bdfc18a9896d90ba",
+      "semanticFingerprint": "sha256:c893d6db8840d7635455636dae3fedbc78460906d7e0011475b08c7cd79a36e4"
     },
     {
       "resourcePath": "res://content/adventure_maps/nodes/layer-06-battle.e2.tres",
       "resourceUid": "uid://dmw2eejohnowl",
-      "targetHash": "sha256:882332eb1722d5403d26d0ca033062ddd888ee3e2371ff58b94fd00fd157657d",
-      "semanticFingerprint": "sha256:902549c5133c23fa1e4bd0d7103bb2c0df92cea6293d5e61343c30d7a6f3dbb1"
+      "targetHash": "sha256:573aace9e65299d72c79a1a50d8cb544b1419692ddd3dd3ae785d460d5e627a2",
+      "semanticFingerprint": "sha256:0b215c9db141f5c07fcd0c36ad77132b04e91294a8dd016f3a6d84c2cd2ac074"
     },
     {
       "resourcePath": "res://content/adventure_maps/nodes/layer-06-event.cursedchestmimic.tres",
       "resourceUid": "uid://dwu6dw8fj7e7y",
-      "targetHash": "sha256:974f10f2063d8f96cb65e658e44eda6b21f10ac885f9ec2dd14928d6dbd62cd7",
-      "semanticFingerprint": "sha256:23f22c9b762239e786f8afec0196635c2396acf48fbee003fdec469faf131626"
+      "targetHash": "sha256:73194a984db8d63c9b64e2a53dd8968f8042cc60505ddf2c6f7e3d065b00d22a",
+      "semanticFingerprint": "sha256:83fbd6ab22beecbd01fd88e3fdccd555bc37e7b1d188e826b374ca6209f4f416"
     },
     {
       "resourcePath": "res://content/adventure_maps/nodes/layer-06-event.fallenaltarguardian.tres",
       "resourceUid": "uid://6s51msp0w3qj",
-      "targetHash": "sha256:ad215c816f134d93130640d2a2be5de42a5907c380605bebc48738b70660afa3",
-      "semanticFingerprint": "sha256:0c581dc9b4b75f652df318f63027a1c843fcc2aea9f22b3b10603c6adad95afc"
+      "targetHash": "sha256:b6282eb41345fb1c2c90d1f63d987fbefb33723032eb84fa68c3e2ac8196604b",
+      "semanticFingerprint": "sha256:f0cf185ebc4303521c4664d74349aa5954ee0eec65b23e6fcdd2d3d5dcb2bcca"
     },
     {
       "resourcePath": "res://content/adventure_maps/nodes/layer-06-event.lostvillagerescort.tres",
       "resourceUid": "uid://gp3um8d17vvk",
-      "targetHash": "sha256:b613f99080ba6ba014c54d664e5890ef57d5dc37d40ece4e33c0fc8e26706ee0",
-      "semanticFingerprint": "sha256:2e6f2e8d5275d284aca259c8de643aabb38b51457dde4e0f995b6db9bbf64203"
+      "targetHash": "sha256:ae7b080f95b49f6fa88a37c5f58dd3830fcd084a2dcc18fb3fe4fa3231deff85",
+      "semanticFingerprint": "sha256:d92d94bd7292943f63b413a9c6fae3d364a00408594caa05bbaee6c75caba41b"
     },
     {
       "resourcePath": "res://content/adventure_maps/nodes/layer-06-rest.tres",
       "resourceUid": "uid://dv353limgllaj",
-      "targetHash": "sha256:fc7708cb1e5fddbf1ace1b370e2ce1a9267c4414bb4c9bd615c5aac80cca77ce",
-      "semanticFingerprint": "sha256:23fedf32e4660d58caa8309bb459666f7df53df2267ac85d7392df3aaf3eebed"
+      "targetHash": "sha256:4c1c2d0ef58914e75a42d9ecd80d265a7c792202921c4ac7aafb58eca54bf2f1",
+      "semanticFingerprint": "sha256:87cea093e2d4e574c9c0e3d667e3caca5e718e5c5269a73a280453a82477a991"
     },
     {
       "resourcePath": "res://content/adventure_maps/nodes/layer-06-store.tres",
       "resourceUid": "uid://cs40hwv3bdbx4",
-      "targetHash": "sha256:1ed22e66c3fffa61507272f4530ce3c7f4f6b63eacdec564238e2d8f0fa42b95",
-      "semanticFingerprint": "sha256:4c8df07de6fd058c517079b2395e03096944665bc08b10e0b5e97b93c5be0b8b"
+      "targetHash": "sha256:8196e4b3c1ec43b7574c67408a3da03bfe25810e8ceaae4d8b55c3a2b85c40c2",
+      "semanticFingerprint": "sha256:aa709eadb1c711e49f0a1e8c26d673e4135e3b31bd7f14e2bb525173f19f52f4"
     },
     {
       "resourcePath": "res://content/adventure_maps/nodes/layer-06-treasure.tres",
       "resourceUid": "uid://b1uxo3ys1ikre",
-      "targetHash": "sha256:9026594f83473bdfadb4e85492f2301e716711614f2d8c8a74f79036c99d0b97",
-      "semanticFingerprint": "sha256:39dba49c4a482a81f8baa6e5326cd5feb9e50538be5e3840ad0dd62ab3e715d5"
+      "targetHash": "sha256:b1e1eac3b8dd2a2e5b7ae5ba1a0a5d8a1f3d2d2a0e39e11ed9bdd06209832a13",
+      "semanticFingerprint": "sha256:9c9f880476d10128f9ce598d4a56592daf1ab38d892739997a946b75c6baa65e"
     },
     {
       "resourcePath": "res://content/adventure_maps/nodes/layer-07-battle.tres",
@@ -849,8 +925,8 @@
     {
       "resourcePath": "res://content/adventure_maps/nodes/start.tres",
       "resourceUid": "uid://uxcjyudnjki5",
-      "targetHash": "sha256:07afb7572eabc5efccd59789100cadf2c377a85eba85332465ac11bf2e6dd1a4",
-      "semanticFingerprint": "sha256:9388f06317d7002d5480a8a8607c6a58875aa175a167191c33378dca4bcfe83d"
+      "targetHash": "sha256:6497fdaa974b333697321f8dc81abb7e5c371cc05db3a6e7abbd2524950b0f78",
+      "semanticFingerprint": "sha256:b1ea0d2049c093e196c139555b18a9ffc0daf52be19be8baaff39c44cfce9bdf"
     }
   ]
 }

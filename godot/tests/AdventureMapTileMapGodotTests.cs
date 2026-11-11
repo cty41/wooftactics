@@ -173,8 +173,12 @@ public sealed class AdventureMapTileMapGodotTests
         AdventureMapTemplateDefinition campDefinition = AdventureMapAssetFactory.CreateStartCampTemplate().ToCoreDefinition();
         AdventureMapTemplateDefinition previewDefinition = AdventureMapAssetFactory.CreateBasicBattleTemplate().ToCoreDefinition();
         (Vector2 from, Vector2 to) = view.ConnectionEndpoints["start->battle"];
-        AssertThat(from).IsEqual(view.AtlasNodeTransforms["start"] *
-            view.MapInstance.Surface.CellCenter(campDefinition.Exits.Single().Cell));
+        // Routes leave from the outer rim beside the exit cell, half a cell beyond it along grid +X.
+        GridPoint exitCell = campDefinition.Exits.Single().Cell;
+        AssertThat(from).IsEqual(view.AtlasNodeTransforms["start"] * GodotAdventureAtlasLayout.ExitRimPoint(
+            view.MapInstance.Surface.CellCenter(exitCell), view.MapInstance.Surface.CellCenter(new GridPoint(exitCell.X - 1, exitCell.Y))));
+        // A centred exit and the centred entry of the map one layer on join along the isometric +X slope.
+        AssertThat((to - from).Normalized().IsEqualApprox(GodotAdventureAtlasLayout.BoardAxisX(start.Size).Normalized())).IsTrue();
         AssertThat(to).IsEqual(view.AtlasNodeTransforms["battle"] *
             view.MapInstance.Surface.CellCenter(previewDefinition.Entries.Single().Cell));
         float currentMapZoom = GodotBattleBoardFitter.Fit(start, GodotStartCampView.AtlasViewport).X.Length();

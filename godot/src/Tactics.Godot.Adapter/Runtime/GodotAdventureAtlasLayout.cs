@@ -48,6 +48,28 @@ public static class GodotAdventureAtlasLayout
             StringComparer.Ordinal);
     }
 
+    /// <summary>
+    /// Places the successors of one map relative to it: one layer step up-right, spread along the lane axis and
+    /// centred on the map itself, in the given order (the exits' rim order). A single successor therefore sits
+    /// head-on, so its centred exit and the successor's centred entry join in one straight line along grid +X.
+    /// </summary>
+    public static IReadOnlyList<Vector2> ProjectSuccessors(Vector2 currentPosition, int count, Vector2 mapSize)
+    {
+        if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+        if (mapSize.X <= 0 || mapSize.Y <= 0) throw new ArgumentOutOfRangeException(nameof(mapSize));
+        Vector2 layerStep = BoardAxisX(mapSize) * (1f + LayerGapFraction);
+        Vector2 laneStep = BoardAxisY(mapSize) * (1f + LaneGapFraction);
+        return Enumerable.Range(0, count)
+            .Select(index => currentPosition + layerStep + laneStep * (index - (count - 1) * .5f)).ToArray();
+    }
+
+    /// <summary>
+    /// Surface-local point on the outer top-right rim beside an exit cell: half a cell beyond it along grid +X.
+    /// Exit markers and route lines both start here.
+    /// </summary>
+    public static Vector2 ExitRimPoint(Vector2 exitCellCenter, Vector2 innerCellCenter) =>
+        exitCellCenter + (exitCellCenter - innerCellCenter) * .5f;
+
     /// <summary>True when <paramref name="point"/> lies on the board diamond inscribed in <paramref name="bounds"/>.</summary>
     public static bool DiamondContains(Rect2 bounds, Vector2 point)
     {

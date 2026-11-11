@@ -86,14 +86,15 @@ public partial class GodotPlayableRunMain
         foreach ((string id, GodotAdventureMapInstance map) in host.Nodes)
             if (layout.TryGetValue(id, out GodotAdventureAtlasNodeLayout? node))
                 map.Transform = new Transform2D(0f, node.WorldBounds.Position - bounds.Position);
-        // Route lanes and template exit cells are authored separately; hand the successors' lane slots out in the
-        // exits' rim order (grid y) so no two route lines cross.
+        // The visible successors are placed relative to the fought map, not on their global atlas lanes: one layer
+        // up-right, in the exits' rim order (grid y) and centred on this map, so a single exit's route is one
+        // straight line along the isometric slope and several fan out symmetrically without crossing.
         string[] byExit = template.Exits.Where(value => allowedTargets.Contains(value.TargetNodeId, StringComparer.Ordinal) &&
-                                                        host.Nodes.ContainsKey(value.TargetNodeId) && layout.ContainsKey(value.TargetNodeId))
+                                                        value.TargetNodeId != nodeId && host.Nodes.ContainsKey(value.TargetNodeId))
             .OrderBy(value => value.Cell.Y).Select(value => value.TargetNodeId).Distinct(StringComparer.Ordinal).ToArray();
-        Transform2D[] slots = byExit.OrderBy(id => layout[id].Lane).Select(id => host.Nodes[id].Transform).ToArray();
+        IReadOnlyList<Vector2> slots = GodotAdventureAtlasLayout.ProjectSuccessors(current.Transform.Origin, byExit.Length, bounds.Size);
         for (int index = 0; index < byExit.Length; index++)
-            host.Nodes[byExit[index]].Transform = slots[index];
+            host.Nodes[byExit[index]].Transform = new Transform2D(0f, slots[index]);
 
         foreach ((string id, GodotAdventureMapInstance map) in host.Nodes)
             map.Visible = id == nodeId || allowedTargets.Contains(id, StringComparer.Ordinal);
@@ -130,7 +131,7 @@ public partial class GodotPlayableRunMain
                 continue;
             }
             Vector2 centre = current.Surface.CellCenter(exit.Cell);
-            Vector2 rim = centre + (centre - current.Surface.CellCenter(new GridPoint(exit.Cell.X - 1, exit.Cell.Y))) * .5f;
+            Vector2 rim = GodotAdventureAtlasLayout.ExitRimPoint(centre, current.Surface.CellCenter(new GridPoint(exit.Cell.X - 1, exit.Cell.Y)));
             Vector2 to = toCurrent * target.Transform * target.Surface.CellCenter(entry.Cell);
             routes.AddChild(new Line2D
             {

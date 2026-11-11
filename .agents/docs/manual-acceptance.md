@@ -9,11 +9,11 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 - Status: `pending`
 - Source: 探索页交互与布局修复计划（Overview 文字提示、atlas 等距平行排列、页头自适应、背包三列、点击目标自动走位）
 - Action: 使用隔离存档进入常驻探索页：点远处普通格；直接点远处的出口、事件对象和 Rest/Store/Treasure 对象；行走中连点其他格；战斗胜利后看战后地图并按 `[M]`/点 `[M] Overview` 切换；打开背包页并缩放窗口。
-- Expected: 单位以均匀速度逐格移动且朝向跟随每段方向，不瞬移；点目标会自动走到最合适的相邻格后立即触发交互（出口离开、事件开战、打开 Rest/Store/Treasure），锁定出口到位后提示先完成当前节点；行走中的点击被忽略；不可达目标只显示提示。战后后继地图沿右上等距斜度平行排开、与当前地图不平行重叠、连线互不交叉；`[M] Overview` 以文字形式显示在背包按钮左侧；页头 Run 信息不溢出；背包三列内容不越出各自卡片，Back 按钮居中。
+- Expected: 单位以均匀速度逐格移动且朝向跟随每段方向，不瞬移；点目标会自动走到最合适的相邻格后立即触发交互（出口离开、事件开战、打开 Rest/Store/Treasure），锁定出口到位后提示先完成当前节点；行走中的点击被忽略；不可达目标只显示提示。只有一个出口时出口在右上边缘正中、下一张图正对着摆在右上方、连线是一条顺着等距斜度的直线；多个出口时出口以正中对称排开、后继地图以正右上方为中心对称排开、连线呈对称扇形互不交叉；开局总览图里单线相连的几层连线也是直的（5 图汇入同一图的连线为斜线属预期）；`[M] Overview` 以文字形式显示在背包按钮左侧；页头 Run 信息不溢出；背包三列内容不越出各自卡片，Back 按钮居中。
 - Observe: 探索页、战后页、背包页、状态栏文字与 Godot Output。
 - Preserve on failure: Run seed、节点 ID、点击的格/对象、行走前后截图或短视频、存档副本和完整 Output。
 - Save boundary: 移动与交互会写当前 Run；使用 disposable/隔离存档。
-- Automated evidence: ResidentExplorationPages 20 项（含远处出口自动走位离开、行走中 Inventory 按钮不响应、已换页的旧棋盘走完不触发交互、步长 `(path-1)*0.16s`、行走期间点击被忽略、不可达不写档、战后路线不相交/菱形不重叠）、PlayableRunUi 50 项（背包子控件在卡片内、页头包含 Run 信息）、AdventureMapTileMap 7、ResidentEventBattleProduction 10、StaleSaveColdResume 10、ActWorldHost 9 项 headless 通过。行走手感、视觉排版与整体美观只能人工判断。
+- Automated evidence: ResidentExplorationPages 20 项（含远处出口自动走位离开、行走中 Inventory 按钮不响应、已换页的旧棋盘走完不触发交互、步长 `(path-1)*0.16s`、行走期间点击被忽略、不可达不写档、战后路线不相交/菱形不重叠）、PlayableRunUi 50 项（背包子控件在卡片内、页头包含 Run 信息）、AdventureMapTileMap 7、ResidentEventBattleProduction 10、StaleSaveColdResume 10、ActWorldHost 9 项 headless 通过。出口居中与连线拉直：ActMapTemplate 8 项（22 个生成模板出口关于 y=5 对称且按 lane 排序）、ResidentExplorationPages 单出口路线平行 +X/多出口对称不相交、AdventureMapTileMap 总览路线起点与方向通过；统一验证器（含 gameplay journeys）本地通过一次。行走手感、视觉排版与整体美观只能人工判断。
 - User verdict: none.
 
 ### MQA-GODOT-MAW-BAT-SLICE — 大嘴蝠、浅水与 N2 实战纵切

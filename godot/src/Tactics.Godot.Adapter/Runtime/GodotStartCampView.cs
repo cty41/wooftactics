@@ -206,7 +206,9 @@ public partial class GodotStartCampView : Control
             GodotAdventureMapInstance source = host.Nodes[edge.FromNodeId], target = host.Nodes[edge.ToNodeId];
             AdventureMapExitAnchor exit = source.Surface.Template!.ToCoreDefinition().Exits.Single(value => value.TargetNodeId == edge.ToNodeId);
             AdventureMapAnchor entry = target.Surface.Template!.ToCoreDefinition().Entries.Single(value => value.AnchorId == exit.TargetEntryId);
-            Vector2 from = source.Transform * source.Surface.CellCenter(exit.Cell);
+            // Same start point as the post-battle routes: the outer rim beside the exit cell.
+            Vector2 from = source.Transform * GodotAdventureAtlasLayout.ExitRimPoint(source.Surface.CellCenter(exit.Cell),
+                source.Surface.CellCenter(new GridPoint(exit.Cell.X - 1, exit.Cell.Y)));
             Vector2 to = target.Transform * target.Surface.CellCenter(entry.Cell);
             _connectionEndpoints[$"{edge.FromNodeId}->{edge.ToNodeId}"] = (from, to);
             _ownedAtlasDecorations.AddChild(new Line2D { Name = $"Route_{edge.FromNodeId}_{edge.ToNodeId}", Width = 6f,
@@ -498,7 +500,10 @@ public partial class GodotStartCampView : Control
         GridPoint cell = source
             ? definition.Exits.SingleOrDefault()?.Cell ?? throw new InvalidOperationException($"Atlas source node '{nodeId}' has no exit anchor.")
             : definition.Entries.SingleOrDefault()?.Cell ?? throw new InvalidOperationException($"Atlas target node '{nodeId}' has no entry anchor.");
-        return transform * MapInstance.Surface.CellCenter(cell);
+        Vector2 centre = MapInstance.Surface.CellCenter(cell);
+        return transform * (source
+            ? GodotAdventureAtlasLayout.ExitRimPoint(centre, MapInstance.Surface.CellCenter(new GridPoint(cell.X - 1, cell.Y)))
+            : centre);
     }
 
 }

@@ -358,8 +358,10 @@ public sealed class ResidentExplorationPagesGodotTests
         await Task.CompletedTask;
     });
 
-    /// <summary>A route whose target map or entry anchor is missing is skipped with a diagnostic; the rest still draw.</summary>
-    /// <summary>Successor maps sit up-right beyond the exit rim, parallel and apart; their route lines never cross.</summary>
+    /// <summary>
+    /// Successor maps sit one layer up-right of the current map, centred on it: a single exit's route is one straight
+    /// line along the isometric slope, several fan out symmetrically, and route lines never cross.
+    /// </summary>
     [TestCase]
     [RequireGodotRuntime]
     public async Task PostBattleSuccessorsLineUpParallelAndRoutesNeverCross() => await WithRun(async (ui, host, setup, _) =>
@@ -375,6 +377,7 @@ public sealed class ResidentExplorationPagesGodotTests
                 InvokePrivate(ui, "PreparePostBattleWorld", nodeId, template, targets, board);
                 Rect2 bounds = GodotBattleBoardFitter.BoardBounds();
                 Rect2 Diamond(string id) => new(host.Nodes[id].Transform * bounds.Position, bounds.Size);
+                float laneSum = 0f;
                 foreach (string target in targets)
                 {
                     // Beyond the rim: the successor's centre lies further along grid +X (up-right) than the current map.
@@ -382,12 +385,24 @@ public sealed class ResidentExplorationPagesGodotTests
                     var axes = new Transform2D(GodotAdventureAtlasLayout.BoardAxisX(bounds.Size),
                         GodotAdventureAtlasLayout.BoardAxisY(bounds.Size), Vector2.Zero);
                     Vector2 inBoards = axes.AffineInverse() * delta;
-                    AssertThat(inBoards.X).IsGreater(1f);
+                    AssertThat(inBoards.X).IsEqualApprox(1f + GodotAdventureAtlasLayout.LayerGapFraction, 1e-3f);
+                    laneSum += inBoards.Y;
                     AssertThat(GodotAdventureAtlasLayout.DiamondContains(Diamond(nodeId), Diamond(target).GetCenter())).IsFalse();
                     foreach (string other in targets.Where(value => string.CompareOrdinal(value, target) > 0))
                         AssertThat(GodotAdventureAtlasLayout.DiamondContains(Diamond(target), Diamond(other).GetCenter())).IsFalse();
                 }
+                // Centred on the current map: the successors' lane offsets cancel out (zero for a single successor).
+                AssertThat(laneSum).IsEqualApprox(0f, 1e-3f);
                 Line2D[] routes = host.Nodes[nodeId].GetNode("PostBattleRoutes").GetChildren().OfType<Line2D>().ToArray();
+                AssertThat(routes.Length).IsEqual(targets.Length);
+                if (routes.Length == 1)
+                {
+                    // One exit: centred on the rim and joined to the next map's entry by a line along grid +X.
+                    AssertThat(template.Exits.Single().Cell).IsEqual(new GridPoint(9, 5));
+                    Vector2 direction = (routes[0].Points[1] - routes[0].Points[0]).Normalized();
+                    AssertThat(direction.IsEqualApprox(GodotAdventureAtlasLayout.BoardAxisX(bounds.Size).Normalized()))
+                        .OverrideFailureMessage($"{routes[0].Name} direction {direction}").IsTrue();
+                }
                 for (int a = 0; a < routes.Length; a++)
                 for (int b = a + 1; b < routes.Length; b++)
                     AssertThat(Geometry2D.SegmentIntersectsSegment(routes[a].Points[0], routes[a].Points[1],

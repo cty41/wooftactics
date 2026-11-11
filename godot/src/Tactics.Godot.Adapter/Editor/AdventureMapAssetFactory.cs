@@ -189,6 +189,18 @@ public static class AdventureMapAssetFactory
         BattleLayoutResource? layout = null) =>
         CreateNodeTemplateCore(map, binding.NodeId, tileSet, encounter, layout, binding);
 
+    /// <summary>
+    /// Exit rows on the x = 9 rim, symmetric about the entry row y = 5 so a single exit faces the next map's entry
+    /// head-on: one exit sits on 5, up to five are two rows apart, six to eight are adjacent.
+    /// </summary>
+    public static int[] CenteredExitRows(int count)
+    {
+        if (count is < 0 or > 8) throw new ArgumentOutOfRangeException(nameof(count));
+        int step = count <= 5 ? 2 : 1;
+        int first = 5 - step * (count - 1) / 2;
+        return Enumerable.Range(0, count).Select(index => first + index * step).ToArray();
+    }
+
     private static AdventureMapTemplateResource CreateNodeTemplateCore(PureRunMapDefinition map, string nodeId,
         TileSet tileSet, EncounterDefinitionResource? encounter, BattleLayoutResource? layout,
         PureRunNodeContentBinding? binding)
@@ -202,8 +214,10 @@ public static class AdventureMapAssetFactory
             throw new ArgumentException($"Node '{nodeId}' has an ambiguous resource identity.", nameof(map));
         ContentId templateId = binding?.TemplateId ?? new ContentId($"adventure-map-template.pure-run.node.{key}");
         var boardId = new ContentId($"adventure-board.pure-run.node.{key}");
+        // Exits run along the x = 9 rim in the successors' lane order, so route lines to the atlas lanes never cross.
         PureRunMapConnectionDefinition[] successors = map.Connections.Where(edge => edge.FromNodeId == nodeId)
-            .OrderBy(edge => edge.ToNodeId, StringComparer.Ordinal).ToArray();
+            .OrderBy(edge => map.Nodes.Single(value => value.NodeId == edge.ToNodeId).Lane)
+            .ThenBy(edge => edge.ToNodeId, StringComparer.Ordinal).ToArray();
         bool terminal = successors.Length == 0 && node.Kind == PureRunNodeKind.Boss;
         if (successors.Length == 0 && !terminal)
             throw new NotSupportedException($"Non-Boss node '{nodeId}' has no successor; terminal intent must be explicit.");
@@ -264,7 +278,7 @@ public static class AdventureMapAssetFactory
         }
 
         GridPoint entry = new(0, 5);
-        GridPoint[] exitCells = Enumerable.Range(1, 8).Select(y => new GridPoint(9, y)).Take(successors.Length).ToArray();
+        GridPoint[] exitCells = CenteredExitRows(successors.Length).Select(y => new GridPoint(9, y)).ToArray();
         HashSet<GridPoint> occupied = blocked.Concat(playerCells).Concat(enemyCells).ToHashSet();
         if (occupied.Contains(entry) || exitCells.Any(occupied.Contains))
             throw new NotSupportedException($"Node '{nodeId}' layout conflicts with authored entry/exit anchors.");

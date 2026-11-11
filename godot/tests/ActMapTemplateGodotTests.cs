@@ -24,7 +24,8 @@ public sealed class ActMapTemplateGodotTests
             AssertThat(core.ContentId.Value).IsEqual($"adventure-map-template.pure-run.node.{nodeId.Replace('_', '-')}");
             AssertThat(core.Board.ContentId.Value).IsEqual($"adventure-board.pure-run.node.{nodeId.Replace('_', '-')}");
             AssertThat(core.Exits.Select(exit => exit.TargetNodeId).ToArray()).ContainsExactly(
-                map.Connections.Where(edge => edge.FromNodeId == nodeId).Select(edge => edge.ToNodeId).Order(StringComparer.Ordinal).ToArray());
+                map.Connections.Where(edge => edge.FromNodeId == nodeId).Select(edge => edge.ToNodeId)
+                    .OrderBy(id => map.Nodes.Single(value => value.NodeId == id).Lane).ThenBy(id => id, StringComparer.Ordinal).ToArray());
             AssertThat(core.Exits.Any(exit => exit.TargetNodeId == "next")).IsFalse();
             AssertThat(core.Board.Objects.Count(value => value.Kind == AdventureObjectKind.Exit)).IsEqual(core.Exits.Count);
             AssertThat(core.PartyEntrySlots.Count).IsEqual(3);
@@ -162,6 +163,37 @@ public sealed class ActMapTemplateGodotTests
                         value.Kind != AdventureObjectKind.Exit)).IsEqual(1);
             }
             finally { host.Free(); }
+        }
+    }
+
+    /// <summary>
+    /// Every generated node map keeps its exits on the x = 9 rim, symmetric about the entry row y = 5 (a single exit
+    /// sits on it) and in the successors' lane order.
+    /// </summary>
+    [TestCase]
+    [RequireGodotRuntime]
+    public void GeneratedExitsAreCentredOnTheRimInLaneOrder()
+    {
+        PureRunMapDefinition map = LoadMap();
+        AssertThat(AdventureMapAssetFactory.CenteredExitRows(1)).ContainsExactly(new[] { 5 });
+        AssertThat(AdventureMapAssetFactory.CenteredExitRows(2)).ContainsExactly(new[] { 4, 6 });
+        AssertThat(AdventureMapAssetFactory.CenteredExitRows(5)).ContainsExactly(new[] { 1, 3, 5, 7, 9 });
+        AssertThat(AdventureMapAssetFactory.CenteredExitRows(8)).ContainsExactly(new[] { 2, 3, 4, 5, 6, 7, 8, 9 });
+        string[] files = DirAccess.GetFilesAt("res://content/adventure_maps/nodes")
+            .Where(file => file.EndsWith(".tres", StringComparison.Ordinal)).ToArray();
+        AssertThat(files.Length).IsEqual(22);
+        foreach (string file in files)
+        {
+            AdventureMapTemplateDefinition core = ResourceLoader.Load<AdventureMapTemplateResource>(
+                "res://content/adventure_maps/nodes/" + file).ToCoreDefinition();
+            if (core.Exits.Count == 0) continue;
+            AssertThat(core.Entries.Single().Cell).IsEqual(new GridPoint(0, 5));
+            AssertThat(core.Exits.All(exit => exit.Cell.X == 9)).IsTrue();
+            int[] rows = core.Exits.Select(exit => exit.Cell.Y).ToArray();
+            AssertThat(rows).ContainsExactly(AdventureMapAssetFactory.CenteredExitRows(rows.Length));
+            AssertThat(rows.Sum()).IsEqual(5 * rows.Length);
+            float[] lanes = core.Exits.Select(exit => map.Nodes.Single(node => node.NodeId == exit.TargetNodeId).Lane).ToArray();
+            AssertThat(lanes.SequenceEqual(lanes.Order())).IsTrue();
         }
     }
 
