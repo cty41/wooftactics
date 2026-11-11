@@ -436,6 +436,27 @@ def _gameplay_spec_batch_compile(ctx: VerifyContext) -> None:
     )
 
 
+def _gameplay_contract_coverage(ctx: VerifyContext) -> None:
+    _ensure_gameplay_spec_dist(ctx)
+    allowlist = ctx.repo_root / "Tests/gameplay-specs/contract-coverage-allow-missing-spec-v1.json"
+    _run_checked(
+        "Enforce gameplay contract coverage gate",
+        [
+            ctx.node_exe,
+            "Tools/gameplay-test-spec/dist/src/cli.js",
+            "contract-coverage",
+            "--docs",
+            ".agents/docs",
+            "--specs",
+            "Tests/gameplay-specs",
+            "--allow-missing-spec",
+            str(allowlist),
+        ],
+        cwd=ctx.repo_root,
+        env=ctx.env,
+    )
+
+
 def _discover_one_gdunit_suite(project_root: Path) -> str | None:
     tests_root = project_root / "tests"
     for path in sorted(tests_root.rglob("*.cs")):
@@ -567,6 +588,7 @@ def _execute_run_step(ctx: VerifyContext, step: VerifyStepDefinition) -> None:
         ),
         "gameplay_spec_compiler": _gameplay_spec_compiler,
         "gameplay_spec_batch_compile": _gameplay_spec_batch_compile,
+        "gameplay_contract_coverage": _gameplay_contract_coverage,
         "gdunit_isolated_subset": _gdunit_isolated_subset,
         "sync_godot_ai_codex_check": _sync_godot_ai_codex_check,
         "dotnet_restore_test_host": _dotnet_restore_test_host,

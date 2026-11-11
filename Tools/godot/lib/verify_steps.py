@@ -103,6 +103,12 @@ def agent_profile_steps() -> tuple[VerifyStepDefinition, ...]:
             agent,
         ),
         VerifyStepDefinition(
+            "gameplay_contract_coverage",
+            "Enforce gameplay contract coverage gate",
+            "run",
+            agent,
+        ),
+        VerifyStepDefinition(
             "gdunit_isolated_subset",
             "Run isolated GdUnit4Net subset",
             "conditional_skip",
@@ -162,6 +168,7 @@ def windows_profile_steps() -> tuple[VerifyStepDefinition, ...]:
         "python_manual_qa_handoff",
         "gameplay_spec_compiler",
         "gameplay_spec_batch_compile",
+        "gameplay_contract_coverage",
     }
     steps: list[VerifyStepDefinition] = []
     for step in agent_profile_steps():

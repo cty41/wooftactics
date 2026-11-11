@@ -27,7 +27,7 @@ class VerifyOrchestrationTests(unittest.TestCase):
 
     def test_agent_profile_unchanged_count(self):
         steps = steps_for_profile(PROFILE_AGENT)
-        self.assertEqual(len(steps), 19)
+        self.assertEqual(len(steps), 20)
 
     def test_windows_profile_rejects_linux(self):
         exit_code = run_verify_profile(
