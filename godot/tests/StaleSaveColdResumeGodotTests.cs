@@ -95,6 +95,130 @@ public sealed class StaleSaveColdResumeGodotTests
         finally { await Free(ui, tree); }
     }
 
+    /// <summary>
+    /// Page-level evidence for MQA-GODOT-PROGRESSION-DOWNED-EXCLUDED: with everyone at the same level the first
+    /// party member would level up, unless it was down when the battle ended.
+    /// </summary>
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task ProgressionPageShowsAStandingCharacterWhenTheFirstInOrderEndedTheBattleDown()
+    {
+        var store = new GodotRunSaveStore(new MemoryRunSaveFileSystem(), SavePath);
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        GodotPlayableRunMain ui = await StartSetupRun(store, tree, "progression-first-down");
+        try
+        {
+            string[] order = store.Load().Snapshot!.ActiveRun!.Party.Select(member => member.CharacterId).ToArray();
+            await WinCurrentBattle(ui, store, tree, downedIndex: 0);
+
+            PureRunState settled = store.Load().Snapshot!.ActiveRun!;
+            AssertThat(settled.PendingProgression.Single().CharacterId).IsEqual(order[1]);
+            AssertThat(LevelUpHeadline(ui)).IsEqual($"{order[1]} leveled up");
+            // The down member is put back on its feet by the victory but keeps its level.
+            AssertThat(settled.Party[0].IsDead).IsFalse();
+            AssertThat(settled.Party[0].CurrentHealth > 0).IsTrue();
+            AssertThat(settled.Party.All(member => member.Level == 1)).IsTrue();
+            await ManualQaScreenshot.Capture(tree, "01-normal-battle-first-member-down");
+
+            await CompletePendingProgression(ui, store, tree);
+            int[] levels = store.Load().Snapshot!.ActiveRun!.Party.Select(member => member.Level).ToArray();
+            AssertThat(levels[0]).IsEqual(1);
+            AssertThat(levels[1]).IsEqual(2);
+            AssertThat(levels[2]).IsEqual(1);
+        }
+        finally { await Free(ui, tree); }
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task ProgressionPageShowsTheFirstInOrderWhenNobodyEndedTheBattleDown()
+    {
+        var store = new GodotRunSaveStore(new MemoryRunSaveFileSystem(), SavePath);
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        GodotPlayableRunMain ui = await StartSetupRun(store, tree, "progression-nobody-down");
+        try
+        {
+            string first = store.Load().Snapshot!.ActiveRun!.Party[0].CharacterId;
+            await WinCurrentBattle(ui, store, tree, downedIndex: null);
+
+            AssertThat(store.Load().Snapshot!.ActiveRun!.PendingProgression.Single().CharacterId).IsEqual(first);
+            AssertThat(LevelUpHeadline(ui)).IsEqual($"{first} leveled up");
+            await ManualQaScreenshot.Capture(tree, "02-normal-battle-nobody-down");
+        }
+        finally { await Free(ui, tree); }
+    }
+
+    /// <summary>
+    /// A layer 6 battle node settles through the layer 4/6 path and grows one character too, straight on the level-up
+    /// page, with the same rule. The layer 4 battle node is not used here: its encounter cannot start (see the ledger).
+    /// </summary>
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task LayerSixBattleNodeVictoryShowsAStandingCharacterOnTheProgressionPage()
+    {
+        var store = new GodotRunSaveStore(new MemoryRunSaveFileSystem(), SavePath);
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        GodotPlayableRunMain ui = await StartSetupRun(store, tree, "progression-layer-six");
+        try
+        {
+            await ClearFirstThreeLayers(ui, store, tree);
+            await ExitTo(ui, store, tree, "layer_04_rest");
+            InvokePrivate(ui, "CommitLayerFour", (Func<PureRunState, LayerFourNodeResolution>)(state =>
+                new PureRunLayerFourNodeService().ConfirmRest(state)));
+            await ExitTo(ui, store, tree, "layer_05_battle");
+            await SettleCurrentBattle(ui, store, tree);
+            await ExitTo(ui, store, tree, "layer_06_battle");
+            await WaitForBattle(ui, tree);
+            PureRunState before = store.Load().Snapshot!.ActiveRun!;
+            AssertThat(before.NodeTransaction?.NodeId).IsEqual("layer_06_battle");
+            // Four earlier victories: the first member is one level ahead, the other two tie for lowest.
+            int lowest = before.Party.Min(member => member.Level);
+            int downed = Array.FindIndex(before.Party.ToArray(), member => member.Level == lowest);
+            RunCharacterState expected = before.Party.Where((member, index) => index != downed)
+                .First(member => member.Level == lowest);
+
+            await WinCurrentBattle(ui, store, tree, downed);
+
+            PureRunState settled = store.Load().Snapshot!.ActiveRun!;
+            PendingProgression growth = settled.PendingProgression.Single();
+            AssertThat(growth.CharacterId).IsEqual(expected.CharacterId);
+            AssertThat(growth.TransactionKey).IsEqual("progression:node:layer_06_battle:resolve");
+            AssertThat(LevelUpHeadline(ui)).IsEqual($"{expected.CharacterId} leveled up");
+            AssertThat(settled.Party[downed].Level).IsEqual(lowest);
+            AssertThat(settled.Party[downed].IsDead).IsFalse();
+            await ManualQaScreenshot.Capture(tree, "03-layer-six-battle-lowest-member-down");
+
+            await CompletePendingProgression(ui, store, tree);
+            PureRunState done = store.Load().Snapshot!.ActiveRun!;
+            AssertThat(done.PendingProgression.Count).IsEqual(0);
+            AssertThat(done.Party.Single(member => member.CharacterId == expected.CharacterId).Level).IsEqual(lowest + 1);
+            AssertThat(done.Party[downed].Level).IsEqual(lowest);
+        }
+        finally { await Free(ui, tree); }
+    }
+
+    /// <summary>Wins the pending battle through the real settlement navigation and stops on whatever page follows.</summary>
+    private static async Task WinCurrentBattle(GodotPlayableRunMain ui, IRunSaveStore store, SceneTree tree, int? downedIndex)
+    {
+        PureRunState pending = store.Load().Snapshot!.ActiveRun!;
+        RunEncounterCheckpoint checkpoint = pending.Checkpoint
+            ?? throw new InvalidOperationException($"No checkpoint in phase {pending.Phase}");
+        var victory = new PureRunBattleResult(pending.RunId, checkpoint.Revision, checkpoint.EncounterContentId,
+            true, 3, 3, pending.Party.Select((member, index) => index == downedIndex
+                ? new BattlePartyResult(member.CharacterId, 0, 0, true, member.CarriedConsumables)
+                : new BattlePartyResult(member.CharacterId, member.MaxHealth, member.MaxMana, false,
+                    member.CarriedConsumables)).ToArray());
+        long before = store.Load().Snapshot!.Revision;
+        object diagnostic = typeof(GodotPlayableRunMain)
+            .GetMethod("CompleteBattle", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(ui, [victory])!;
+        for (int frame = 0; frame < 4; frame++) await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        if (store.Load().Snapshot!.Revision <= before)
+            throw new InvalidOperationException($"Settlement did not save: {diagnostic}");
+    }
+
+    private static string LevelUpHeadline(GodotPlayableRunMain ui) =>
+        AllLabels(ui).Single(text => text.EndsWith(" leveled up", StringComparison.Ordinal));
+
     private static IEnumerable<string> AllLabels(Node root)
     {
         foreach (Node child in root.GetChildren())

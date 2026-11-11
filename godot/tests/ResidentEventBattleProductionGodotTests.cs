@@ -185,9 +185,20 @@ public sealed class ResidentEventBattleProductionGodotTests
 
             // The event result scene comes first; leaving through an exit shows the level-up instead of moving on.
             InvokePrivate(ui, "ShowPostEventScene", resolved, "CursedChestMimic");
-            AssertThat(ui.FindChild("ProgressionAttribute_Strength", true, false)).IsNull();
+            AssertThat(LiveProgressionButton(ui)).IsNull();
+            await ManualQaScreenshot.Capture(tree, "04-event-battle-result-scene");
             InvokePrivate(ui, "HandleAdventureExit", resolved, "layer_05_battle");
-            AssertThat(ui.FindChild("ProgressionAttribute_Strength", true, false)).IsNotNull();
+            AssertThat(LiveProgressionButton(ui)).IsNotNull();
+            AssertThat(store.Load().Snapshot!.Revision).IsEqual(revision);
+            await ManualQaScreenshot.Capture(tree, "05-event-battle-exit-opens-level-up");
+
+            // The Continue button of the result scene leads to the same level-up page.
+            InvokePrivate(ui, "ShowPostEventScene", resolved, "CursedChestMimic");
+            for (int frame = 0; frame < 2; frame++) await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+            AssertThat(LiveProgressionButton(ui)).IsNull();
+            Button proceed = LiveButtons(ui).Single(button => button.Text == "Continue");
+            proceed.EmitSignal(BaseButton.SignalName.Pressed);
+            AssertThat(LiveProgressionButton(ui)).IsNotNull();
             AssertThat(store.Load().Snapshot!.Revision).IsEqual(revision);
         }
         finally
@@ -197,6 +208,19 @@ public sealed class ResidentEventBattleProductionGodotTests
                 await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
         }
     }
+
+    private static IEnumerable<Button> LiveButtons(Node root)
+    {
+        foreach (Node child in root.GetChildren())
+        {
+            if (child.IsQueuedForDeletion()) continue;
+            if (child is Button button) yield return button;
+            foreach (Button nested in LiveButtons(child)) yield return nested;
+        }
+    }
+
+    private static Button? LiveProgressionButton(Node root) =>
+        LiveButtons(root).FirstOrDefault(button => button.Name == "ProgressionAttribute_Strength");
 
     [TestCase]
     [RequireGodotRuntime]
