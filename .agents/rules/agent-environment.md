@@ -8,3 +8,12 @@
 - 该工具只阻止睡眠，不改电源计划、不阻止关屏；进程退出即自动释放。细节见 `Tools/power/README.md`。
 - 仅在接通电源场景使用；电池供电时允许系统休眠。
 - 不得用修改电源计划（如 `monitor-timeout-ac 0`）或注册表禁用 Modern Standby（`PlatformAoAcOverride`）的方式替代。
+
+## 本机工具链环境坑
+
+2026-11 评测与试点实测归拢（来源：`Tools/agent-eval/workflow/runs/baseline-2026-11-09.md`、`docs/compose/spec/` 各 Journey log）：
+
+- **`ProgramFiles`/`ProgramFiles(x86)` 被 shell 置空** → `dotnet`/NuGet 在 `CalculateFolderPath` 路径解析抛 `path1` 空引用。修法：同一 bash 调用内先置 `$env:ProgramFiles='C:\Program Files'; ${env:ProgramFiles(x86)}='C:\Program Files (x86)'` 再跑 dotnet（该 shell 环境变量不跨调用保留）。
+- **`python` 不在 PATH**（仅 `py -3`）→ OKF/Python 门禁需含 PyYAML 的解释器，本机用 `py -3`（来源：baseline 运行记录；依赖清单见 `Tools/okf/requirements.txt`）。
+- **GdUnit 测试前置**：`GODOT_BIN` 指向 Godot console.exe；新 worktree 首跑先 `--headless --editor --path godot --import` 生成 `.uid`，import 后重建 TestHost 再 `dotnet test`。
+- **`Tools/vendor/maliang` 子模块默认未初始化** → 统一验证器的 artwork 用例误报失败。修法：`git submodule update --init Tools/vendor/maliang`。

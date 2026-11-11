@@ -27,6 +27,7 @@
 - `.agents/rules/knowledge-maintenance.md`：OKF 查询、写回、替代和校验。
 - `.agents/rules/godot-migration.md`：退役完成前的历史迁移与来源审计边界。
 - `.agents/rules/subagent-handback.md`：子代理拆分判据、四段回执契约与主循环核验义务。
+- 参考 `.agents/docs/agent-workflow-infrastructure.md`：agent 工作流基础设施地图（P0–P4 产物索引与场景速查）。
 
 Unity-only rules、skills、MCP 和工具的退役证据保存在 `Tools/migration/manifest/retirement/unity-governance-retirement-v1.json`；它们不得再指导新实现。公开根不包含 Unity 工程；固定的 MIT godot-ai EditorPlugin 源码随仓库审计，但不进入游戏发布包。
 
