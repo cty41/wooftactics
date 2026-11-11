@@ -1,4 +1,4 @@
-本文件为 P4 产物（prompt-audit 初筛：只标记不修改；裁决与修订落地由主循环按 `docs/compose/spec/prompt-audit.md` S2.2/S2.3 执行）。
+本文件为 P4 产物（prompt-audit 初筛 + 主循环裁决：初筛只标记不修改；裁决与修订落地见文末「裁决」节，依据 `docs/compose/spec/prompt-audit.md` S2.2/S2.3）。
 
 ## 初筛候选清单
 
@@ -342,5 +342,7 @@
 - **硬约束域只列观察（6 条）**：C1-9（提交检查=门禁操作细节）、C1-10、C1-14、C1-15（OKF/派发配方操作细节）、C2-7（自动≠人工=合规边界）、C2-8（前台 default-deny=安全政策）。
 - **独立加载自含性（3 条）**：C2-5（worktree 例外清单供 skill 独立加载）、C2-12、C2-16。跨文件"重复"在 agent 指令文件中多为自含性设计而非 Frankenprompt——此为类别 2 的通用裁决原则。
 - **可裁决锚点（2 条）**：C1-4（"≤10 行"是新契约回执的可裁决参数，非旧模型补丁）；C3-1（"不凭记忆答版本敏感问题"兼为 GO-04 golden eval 的判据锚点，且溯源不确定——删除会使 eval 失锚）。
+
+注：初筛统计"不确定 7 条"含 C3-1；裁决时 C3-1 移入本组（可裁决锚点）并仍不修改，故保护组为 6 条，非漏裁决。
 
 修订落地于 6 个文件（plan-plain、godot-workflow、godot-csharp-development、code-documentation、gameplay-test-framework、pure-run-artwork-pipeline），diff 见 git；被审文件的语义边界经主循环逐条比对，零丢失。

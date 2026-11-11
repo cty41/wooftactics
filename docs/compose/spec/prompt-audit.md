@@ -1,6 +1,6 @@
 ---
 feature: prompt-audit
-status: in-progress
+status: delivered
 updated: 2026-11-11
 source: feat/prompt-audit
 ---
@@ -8,6 +8,10 @@ source: feat/prompt-audit
 # P4 Prompt Audit（旧模型规则清理）
 
 ## Report
+
+**What was built** — `.agents/docs/prompt-audit-2026-11.md`：24 文件（AGENTS.md + 8 rules + 15 SKILL.md）全量初筛 44 条候选（过度具体 16 / 冗余重复 18 / 时代补丁 10，含行号锚点、建议 diff、事故溯源初判）与主循环逐条裁决（修 13 / 不动 31，分组理由含两条裁决原则：跨文件"重复"多为独立加载自含性；可裁决锚点非旧补丁）。13 处低风险修订落地 6 个文件（plan-plain ×4、gameplay-test-framework ×5、godot-workflow、godot-csharp-development、code-documentation、pure-run-artwork-pipeline 各 ×1）。
+
+**Verification** — T1 回执四段齐备，主循环核验：锚点抽查 3/3 命中、候选计数复算 16/18/10=44 一致、被审文件零改动属实。T2 裁决后 diff 面复核：恰好 6 文件 13 行 = 13 处修订。独立 review PASS-WITH-NITS：13 组新旧逐行比对语义零丢失、14 条溯源=是与 6 条不确定条目字节级未动、裁决表与 diff 一一对应、C1-7 修正与现行 worktree 规则无矛盾；2 处收口瑕疵（报告首行措辞、7/6 计数口径注记）已修复。纯文档变更，无代码测试适用。
 
 ## [S1] 问题
 
@@ -52,9 +56,9 @@ source: feat/prompt-audit
 
 ## Tasks
 
-- [ ] T1: 子代理初筛 — acceptance: 覆盖 AGENTS.md + 全部 rules + 15 个 SKILL.md；每条候选含行号锚点与建议 diff；回执四段齐备。(covers: S2.1, S2.2)
-- [ ] T2: 主循环裁决与低风险修订 — acceptance: 每条候选有裁决（修/不修+理由）；修订语义零丢失；事故溯源条目零改动。(covers: S2.2, S2.3)(depends: T1)
-- [ ] T3: 审计报告 — acceptance: 报告含候选清单/逐条裁决/修订摘要。(covers: S2.4)(depends: T2)
-- [ ] T4: 独立 review 与收口 — acceptance: review 无关键缺口；Report 记录验证命令与结果。(covers: S2.5)(depends: T1, T2, T3)
+- [x] T1: 子代理初筛 — acceptance: 覆盖 AGENTS.md + 全部 rules + 15 个 SKILL.md；每条候选含行号锚点与建议 diff；回执四段齐备。(covers: S2.1, S2.2)
+- [x] T2: 主循环裁决与低风险修订 — acceptance: 每条候选有裁决（修/不修+理由）；修订语义零丢失；事故溯源条目零改动。(covers: S2.2, S2.3)(depends: T1)
+- [x] T3: 审计报告 — acceptance: 报告含候选清单/逐条裁决/修订摘要。(covers: S2.4)(depends: T2)
+- [x] T4: 独立 review 与收口 — acceptance: review 无关键缺口；Report 记录验证命令与结果。(covers: S2.5)(depends: T1, T2, T3)
 
 ## Journey log
