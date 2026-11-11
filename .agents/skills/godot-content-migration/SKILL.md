@@ -1,6 +1,6 @@
 ---
 name: godot-content-migration
-description: Use when compiling frozen migration DTOs, generating Godot Resource or PackedScene assets, updating catalogs, or validating batch ownership and idempotency.
+description: Use when compiling frozen migration DTOs, generating migration-batch Godot Resource or PackedScene assets, updating catalogs, or validating batch ownership and idempotency. Day-to-day C# Resource class code belongs to godot-csharp-development.
 ---
 
 # Godot Content Migration

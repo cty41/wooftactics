@@ -1,6 +1,6 @@
 ---
 name: godot-csharp-development
-description: Use when adding or modifying Godot 4.7 C# Node, Resource, signal, lifecycle, tool script, runtime adapter, or project reference code.
+description: Use when adding or modifying Godot 4.7 C# Node, Resource, signal, lifecycle, tool script, runtime adapter, or project reference code. Resource here means the C# class; migration-batch asset generation belongs to godot-content-migration.
 ---
 
 # Godot C# Development

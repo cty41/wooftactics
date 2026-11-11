@@ -1,6 +1,6 @@
 ---
 name: godot-workflow
-description: Use when a task changes, diagnoses, tests, researches, or migrates the canonical Godot 4.7 C# project; routes work to the smallest specialist skill and evidence set.
+description: Use when a Godot 4.7 C# task's correct specialist skill, project boundary, or evidence level is not already explicit — routing entry point that dispatches to the smallest specialist skill; reach a specialist directly only when its domain is already unambiguous.
 ---
 
 # Godot Workflow

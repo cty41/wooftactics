@@ -63,6 +63,15 @@ class ValidateBundleTests(unittest.TestCase):
         with temporary:
             self.assertEqual([], validate_bundle(bundle, repo_root))
 
+    def test_log_archive_files_are_reserved(self) -> None:
+        temporary, repo_root, bundle = self.create_bundle()
+        with temporary:
+            (bundle / "log-archive-2026-07.md").write_text(
+                "# log-archive-2026-07\n\n## 2026-07-01\n* **Sync**: Archived entry.\n",
+                encoding="utf-8",
+            )
+            self.assertEqual([], validate_bundle(bundle, repo_root))
+
     def test_missing_required_field_fails(self) -> None:
         temporary, repo_root, bundle = self.create_bundle()
         with temporary:

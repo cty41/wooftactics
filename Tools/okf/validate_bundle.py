@@ -15,6 +15,11 @@ import yaml
 
 
 RESERVED_NAMES = {"index.md", "log.md"}
+RESERVED_PREFIXES = ("log-archive-",)
+
+
+def _is_reserved(name: str) -> bool:
+    return name in RESERVED_NAMES or name.startswith(RESERVED_PREFIXES)
 CATALOG_MAP_NAME = "catalog-scopes.yaml"
 REQUIRED_FIELDS = ("type", "title", "description", "timestamp")
 VALID_STATUSES = {"draft", "active", "superseded", "archived"}
@@ -271,7 +276,7 @@ def validate_bundle(
     active_scopes: dict[str, str] = {}
     implementation_scopes: dict[str, Path] = {}
     for path, document in documents.items():
-        if path.name not in RESERVED_NAMES:
+        if not _is_reserved(path.name):
             errors.extend(
                 _validate_concept(
                     document,
@@ -322,7 +327,7 @@ def validate_bundle(
                 )
 
     for path, document in documents.items():
-        if path.name in RESERVED_NAMES:
+        if _is_reserved(path.name):
             continue
         parent_index = (path.parent / "index.md").resolve()
         index_document = documents.get(parent_index)
@@ -381,7 +386,7 @@ def main() -> int:
     concept_count = sum(
         1
         for path in args.bundle.rglob("*.md")
-        if path.name not in RESERVED_NAMES
+        if not _is_reserved(path.name)
     )
     print(f"OKF_CHECK_OK concepts={concept_count} bundle={args.bundle.as_posix()}")
     return 0
