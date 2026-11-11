@@ -558,51 +558,53 @@ def _gdunit_isolated_subset(ctx: VerifyContext) -> None:
             runner_source.unlink()
 
 
+STEP_HANDLERS = {
+    "preflight": _preflight,
+    "godot_ai_vendor": _godot_ai_vendor,
+    "dotnet_restore_build": _dotnet_restore_build,
+    "dotnet_core_tests": lambda c: _dotnet_test(
+        c, "Run Tactics.Core NUnit", "src/Tactics.Core.Tests/Tactics.Core.Tests.csproj"
+    ),
+    "dotnet_application_tests": lambda c: _dotnet_test(
+        c,
+        "Run Tactics.Application NUnit",
+        "src/Tactics.Application.Tests/Tactics.Application.Tests.csproj",
+    ),
+    "dotnet_frozen_oracle_tests": lambda c: _dotnet_test(
+        c,
+        "Run repository-owned frozen source Oracle NUnit",
+        "src/Tactics.FrozenOracle.Tests/Tactics.FrozenOracle.Tests.csproj",
+    ),
+    "python_agent_policy": lambda c: _python_discover(c, "Run agent policy unittest", "Tools/agent-policy"),
+    "python_godot_incidents": lambda c: _python_script(
+        c, "Validate Godot Incidents", "Tools/agent-policy/validate_godot_incidents.py"
+    ),
+    "python_content_ownership": lambda c: _python_module(
+        c, "Validate canonical Godot content ownership", "Tools.migration.tests.test_godot_content_ownership"
+    ),
+    "python_manual_qa_handoff": lambda c: _python_script(
+        c, "Validate manual QA handoff policy", "Tools/agent-policy/validate_manual_qa_handoff.py"
+    ),
+    "gameplay_spec_compiler": _gameplay_spec_compiler,
+    "gameplay_spec_batch_compile": _gameplay_spec_batch_compile,
+    "gameplay_contract_coverage": _gameplay_contract_coverage,
+    "gdunit_isolated_subset": _gdunit_isolated_subset,
+    "sync_godot_ai_codex_check": _sync_godot_ai_codex_check,
+    "dotnet_restore_test_host": _dotnet_restore_test_host,
+    "assert_godot_editor_dependency_graph": _assert_godot_editor_dependency_graph,
+    "prime_godot_uid_cache": _prime_godot_uid_cache,
+    "dotnet_authoring_mcp_build": _dotnet_authoring_mcp_build,
+    "dotnet_authoring_mcp_tests": _dotnet_authoring_mcp_tests,
+    "validate_codex_skills": _validate_codex_skills,
+    "gameplay_plan_hash_contract": _gameplay_plan_hash_contract,
+    "python_godot_tooling_tests": lambda c: _python_discover(
+        c, "Run Godot tooling Python unittest", "Tools/godot/tests"
+    ),
+}
+
+
 def _execute_run_step(ctx: VerifyContext, step: VerifyStepDefinition) -> None:
-    handlers = {
-        "preflight": _preflight,
-        "godot_ai_vendor": _godot_ai_vendor,
-        "dotnet_restore_build": _dotnet_restore_build,
-        "dotnet_core_tests": lambda c: _dotnet_test(
-            c, "Run Tactics.Core NUnit", "src/Tactics.Core.Tests/Tactics.Core.Tests.csproj"
-        ),
-        "dotnet_application_tests": lambda c: _dotnet_test(
-            c,
-            "Run Tactics.Application NUnit",
-            "src/Tactics.Application.Tests/Tactics.Application.Tests.csproj",
-        ),
-        "dotnet_frozen_oracle_tests": lambda c: _dotnet_test(
-            c,
-            "Run repository-owned frozen source Oracle NUnit",
-            "src/Tactics.FrozenOracle.Tests/Tactics.FrozenOracle.Tests.csproj",
-        ),
-        "python_agent_policy": lambda c: _python_discover(c, "Run agent policy unittest", "Tools/agent-policy"),
-        "python_godot_incidents": lambda c: _python_script(
-            c, "Validate Godot Incidents", "Tools/agent-policy/validate_godot_incidents.py"
-        ),
-        "python_content_ownership": lambda c: _python_module(
-            c, "Validate canonical Godot content ownership", "Tools.migration.tests.test_godot_content_ownership"
-        ),
-        "python_manual_qa_handoff": lambda c: _python_script(
-            c, "Validate manual QA handoff policy", "Tools/agent-policy/validate_manual_qa_handoff.py"
-        ),
-        "gameplay_spec_compiler": _gameplay_spec_compiler,
-        "gameplay_spec_batch_compile": _gameplay_spec_batch_compile,
-        "gameplay_contract_coverage": _gameplay_contract_coverage,
-        "gdunit_isolated_subset": _gdunit_isolated_subset,
-        "sync_godot_ai_codex_check": _sync_godot_ai_codex_check,
-        "dotnet_restore_test_host": _dotnet_restore_test_host,
-        "assert_godot_editor_dependency_graph": _assert_godot_editor_dependency_graph,
-        "prime_godot_uid_cache": _prime_godot_uid_cache,
-        "dotnet_authoring_mcp_build": _dotnet_authoring_mcp_build,
-        "dotnet_authoring_mcp_tests": _dotnet_authoring_mcp_tests,
-        "validate_codex_skills": _validate_codex_skills,
-        "gameplay_plan_hash_contract": _gameplay_plan_hash_contract,
-        "python_godot_tooling_tests": lambda c: _python_discover(
-            c, "Run Godot tooling Python unittest", "Tools/godot/tests"
-        ),
-    }
-    handler = handlers.get(step.step_id)
+    handler = STEP_HANDLERS.get(step.step_id)
     if handler is None:
         raise RuntimeError(f"No handler registered for step {step.step_id}")
     handler(ctx)
