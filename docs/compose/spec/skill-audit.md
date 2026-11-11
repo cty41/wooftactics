@@ -1,6 +1,6 @@
 ---
 feature: skill-audit
-status: in-progress
+status: delivered
 updated: 2026-11-11
 source: feat/skill-audit
 ---
@@ -8,6 +8,10 @@ source: feat/skill-audit
 # P3 Skill 体检（用量审计 · 触发去重 · log 归档）
 
 ## Report
+
+**What was built** — `.agents/docs/skill-audit-2026-11.md` 体检报告（15 skill 用量数据表含可复算 SQL、4 对触发重叠清单与修订、建议清单、归档说明）；5 个 SKILL.md description 消歧（godot-workflow 路由定位、Resource 双义、testing 归属、美术双雄）；log.md 628→107 行，旧段按月归档至 `log-archive-2026-09/08/07.md` 并留独立 `## 归档` 指针段；`validate_bundle` 增加 `log-archive-` 保留前缀豁免与一正一反回归测试。零加载 5 skill 仅列观察建议，未删除任何 skill。
+
+**Verification** — 用量表主口径抽查复算一致（22/0/5/1）；OKF 单测 18/18（含新增归档豁免与杂散 md 反向用例）；真 bundle `OKF_CHECK_OK concepts=17`；归档后真实 sync 兼容实测通过（update_log 顶部插段与去重替换正常、归档零触碰，经 P2 配方派发机械段）；归档逐字性经独立 review 对 `fceb364e` 逐行比对确认（仅接缝两条空白差）。独立 review PASS-WITH-NITS，3 处非关键瑕疵（报告行数口径、PEP8 空行、反向回归测试）已修复并复验。
 
 ## [S1] 问题
 
@@ -47,10 +51,10 @@ source: feat/skill-audit
 
 ## Tasks
 
-- [ ] T1: 用量审计数据表 — acceptance: 15 个 skill 每个有加载次数与最近使用时间，查询口径可复算。(covers: S2.1)
-- [ ] T2: 触发边界比对与低风险修订 — acceptance: 重叠对清单 + description 修订 diff；消歧后触发语义无丢失、无新增重叠。(covers: S2.2, S2.4)(depends: T1)
-- [ ] T3: log.md 归档 — acceptance: log.md 降至 <200 行且保留近期段；归档文件完整；实测再触发一次 sync 不破坏归档结构。(covers: S2.3)
-- [ ] T4: 体检报告与收口 — acceptance: 报告含数据表/重叠清单/建议清单；独立 review 无关键缺口。(covers: S2.5)(depends: T1, T2, T3)
+- [x] T1: 用量审计数据表 — acceptance: 15 个 skill 每个有加载次数与最近使用时间，查询口径可复算。(covers: S2.1)
+- [x] T2: 触发边界比对与低风险修订 — acceptance: 重叠对清单 + description 修订 diff；消歧后触发语义无丢失、无新增重叠。(covers: S2.2, S2.4)(depends: T1)
+- [x] T3: log.md 归档 — acceptance: log.md 降至 <200 行且保留近期段；归档文件完整；实测再触发一次 sync 不破坏归档结构。(covers: S2.3)
+- [x] T4: 体检报告与收口 — acceptance: 报告含数据表/重叠清单/建议清单；独立 review 无关键缺口。(covers: S2.5)(depends: T1, T2, T3)
 
 ## Journey log
 

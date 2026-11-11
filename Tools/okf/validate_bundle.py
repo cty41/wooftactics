@@ -20,6 +20,8 @@ RESERVED_PREFIXES = ("log-archive-",)
 
 def _is_reserved(name: str) -> bool:
     return name in RESERVED_NAMES or name.startswith(RESERVED_PREFIXES)
+
+
 CATALOG_MAP_NAME = "catalog-scopes.yaml"
 REQUIRED_FIELDS = ("type", "title", "description", "timestamp")
 VALID_STATUSES = {"draft", "active", "superseded", "archived"}

@@ -72,6 +72,13 @@ class ValidateBundleTests(unittest.TestCase):
             )
             self.assertEqual([], validate_bundle(bundle, repo_root))
 
+    def test_stray_markdown_without_frontmatter_fails(self) -> None:
+        temporary, repo_root, bundle = self.create_bundle()
+        with temporary:
+            (bundle / "notes.md").write_text("# Notes\n\nStray file.\n", encoding="utf-8")
+            errors = validate_bundle(bundle, repo_root)
+            self.assertTrue(any("notes.md" in error and "frontmatter" in error for error in errors))
+
     def test_missing_required_field_fails(self) -> None:
         temporary, repo_root, bundle = self.create_bundle()
         with temporary:

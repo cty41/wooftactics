@@ -60,8 +60,8 @@ WHERE tool_name='skill' AND body LIKE '%"name":"<skill>"%';
 
 ## log.md 归档
 
-- 归档前 562 行 → 归档后 102 行（含 `## 归档` 指针段）。
-- 切口：保留 `## 2026-09-16` 及更新的段；`## 2026-09-15` 及更早按月移入 `log-archive-2026-09/08/07.md`（56/317/155 行），归档段此后只读。
+- 归档前 628 行 → 现 107 行（`splitlines()` 总行口径，含 `## 归档` 指针段与归档后 sync 增段）。
+- 切口：保留 `## 2026-09-16` 及更新的段；`## 2026-09-15` 及更早按月移入 `log-archive-2026-09/08/07.md`（57/318/157 行），归档段此后只读；两文件接缝各少一条空白分隔行（标题/条目零丢失，拼接还原时补回）。
 - 工具兼容实测：归档后触发真实 sync（2 个 scope，按 P2 配方派发机械段）——`update_log` 新日期段正常插入顶部、同日同 scope 去重替换正常、归档文件零触碰。
 - **发现与修正（pivot）**：`validate_bundle` 将非保留名 `.md` 一律按概念页校验，归档文件触发 6 错（缺 frontmatter、未收录 index）。裁决采用「扩保留名」方案：`validate_bundle.py` 对 `log-archive-` 前缀豁免（归档本就是 log 家族），补回归测试 `test_log_archive_files_are_reserved`；OKF 单测 17/17，真 bundle `OKF_CHECK_OK concepts=17`。
 - 归档指针独立成 `## 归档` 段置于文件尾，避免被 `update_log` 的顶部插段挤进日期段内。
