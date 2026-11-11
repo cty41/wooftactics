@@ -4,7 +4,7 @@
 
 ## 缘起
 
-2026-11，从 Anthropic《Building agents: When to fold subagents into your main agent loop》一文出发，对本仓的 agent 开发工作流做了一轮系统优化。方法论取自该文：**先度量再动架构，一次只改一件事，留得住的才保留**。优先级划分为 P0–P5；P0–P4 已全部落地并经独立 review，P5（评测 case 扩充、hillclimb、事件时间戳）留待有复测数据后按需启动。
+2026-11，从 Anthropic《Building agents: When to fold subagents into your main agent loop》一文出发，对本仓的 agent 开发工作流做了一轮系统优化。方法论取自该文：**先度量再动架构，一次只改一件事，留得住的才保留**。优先级划分为 P0–P5；P0–P4 已全部落地（P2 为另一会话交付、事后补过一次独立评审，评审记录未入库），P5（评测 case 扩充、hillclimb、事件时间戳）留待有复测数据后按需启动。
 
 ## 五件事与咬合
 
@@ -30,17 +30,17 @@ flowchart LR
 
 ## 跨切面教训
 
-各特性 Journey log 的聚合（出处见括号；都是踩过坑换来的）：
+各特性留档（Journey log、裁决记录、规则正文）的聚合，注明出处如下——都是踩过坑换来的：
 
-1. **先度量再动架构**——没有基线读数的改动只能靠感觉（P0 的存在理由；workflow-golden-evals / skill-audit spec）。
-2. **盲态手法本身会泄漏**——`skip-worktree` 标志、主检出的 deleted 状态都会暴露被藏的评测材料；真盲态要让材料不在树中且被测方 cwd 不见主检出（workflow-golden-evals README「盲态」节）。
-3. **自我声明不算证据**——回执和评分同源原则：只认工具调用、产物、git 痕迹，主循环必须抽查锚点（subagent-handback.md）。
-4. **跨文件"重复"多为独立加载自含性**，不是 Frankenprompt；收敛重复前先想清楚文件被单独加载的场景（prompt-audit-2026-11.md 裁决原则）。
-5. **事故溯源规则 ≠ 旧模型补丁**——`可裁决锚点`（如"不凭记忆答版本敏感问题"是 GO-04 判据）删了会失锚；删规则前先查 `.agents/incidents/`（prompt-audit-2026-11.md）。
-6. **506 ≠ 冻结**——Kernel-Power 506 只是进入可休眠状态；进程冻结判据是心跳连续性，真凶是"完全无活动的空闲"（agent-keep-awake spec Journey log）。
-7. **机械段按命令固有行为划界**，不按任务书字面禁令（`sync --write` 自动写 metadata 不算越界）（p2-split-pilots spec Journey log）。
-8. **契约文本要过两道筛**：真实样本试填 + 独立评审——两轮各能抓出试填抓不到的歧义（subagent-handback / skill-audit Journey log）。
-9. **对既有文件的局部修改用编辑/追加**，勿整文件写入（曾覆盖掉用量数据表，靠回执复原）（skill-audit spec Journey log）。
+1. **先度量再动架构**——没有基线读数的改动只能靠感觉（`docs/compose/spec/workflow-golden-evals.md` S1；`skill-audit.md` Report 的用量表动机）。
+2. **盲态手法本身会泄漏**——`skip-worktree` 标志、主检出的 deleted 状态都会暴露被藏的评测材料；真盲态要让材料不在树中且被测方 cwd 不见主检出（`Tools/agent-eval/workflow/README.md`「盲态」节）。
+3. **自我声明不算证据**——回执和评分同源原则：只认工具调用、产物、git 痕迹，主循环必须抽查锚点（`.agents/rules/subagent-handback.md` 回执契约）。
+4. **跨文件"重复"多为独立加载自含性**，不是 Frankenprompt；收敛重复前先想清楚文件被单独加载的场景（`.agents/docs/prompt-audit-2026-11.md` 裁决节）。
+5. **事故溯源规则 ≠ 旧模型补丁**——可裁决锚点（如"不凭记忆答版本敏感问题"是 GO-04 判据）删了会失锚；删规则前先查 `.agents/incidents/`（`.agents/docs/prompt-audit-2026-11.md` 裁决节）。
+6. **506 ≠ 冻结**——Kernel-Power 506 只是进入可休眠状态；进程冻结判据是心跳连续性，真凶是"完全无活动的空闲"（`docs/compose/spec/agent-keep-awake.md` Journey log）。
+7. **机械段按命令固有行为划界**，不按任务书字面禁令（`sync --write` 自动写 metadata 不算越界）（`docs/compose/spec/p2-split-pilots.md` Journey log）。
+8. **契约文本要过两道筛**：真实样本试填 + 独立评审（`docs/compose/spec/subagent-handback.md` Journey log）。
+9. **对既有文件的局部修改用编辑/追加**，勿整文件写入（曾覆盖掉用量数据表，靠回执复原）（`docs/compose/spec/skill-audit.md` Journey log）。
 
 ## 场景速查
 

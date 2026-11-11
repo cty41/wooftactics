@@ -26,7 +26,7 @@ source: docs/agent-workflow-map
 
 ### S2.2 落点与入口
 
-`.agents/docs/agent-workflow-infrastructure.md`（无日期领域文档惯例）。可发现性三处一行指针：`AGENTS.md` 当前规则索引区（标注"参考"）、`CONTRIBUTING.md`（开发者入口）。产品 README（中/英）不动——受众是产品/许可证，不混 agent 工具链内容。
+`.agents/docs/agent-workflow-infrastructure.md`（无日期领域文档惯例）。可发现性两处一行指针：`AGENTS.md` 当前规则索引区（标注"参考"）、`CONTRIBUTING.md`（开发者入口）。产品 README（中/英）不动——受众是产品/许可证，不混 agent 工具链内容。
 
 ### S2.2b 本机环境坑归拢
 
@@ -44,9 +44,12 @@ source: docs/agent-workflow-map
 
 ## Tasks
 
-- [ ] T1: 写地图文档 — acceptance: 五件事齐且咬合逻辑清楚；教训 8–9 条均可溯源到 Journey log；场景索引每行有有效文件路径；全文零复述（无细节拷贝、无新约束）。(covers: S2.1, S2.2)
+- [ ] T1: 写地图文档 — acceptance: 五件事齐且咬合逻辑清楚；教训 8–9 条均可溯源并注明出处（Journey log / 裁决记录 / 规则正文）；场景索引每行有有效文件路径；全文零复述（无细节拷贝、无新约束）。(covers: S2.1, S2.2)
 - [ ] T2: 入口指针 — acceptance: AGENTS.md 索引区与 CONTRIBUTING.md 各新增一行指向地图，格式与邻居一致。(covers: S2.2)(depends: T1)
 - [ ] T3: 本机环境坑归拢进 agent-environment.md — acceptance: 四类坑齐（成因+修法各一行），来源注明散落记录；不新增行为约束。(covers: S2.2b)
 - [ ] T4: 独立 review 与收口 — acceptance: review 重点核验零复述/指针有效/教训准确/环境坑成因修法属实，无关键缺口；Report 记录验证结果。(covers: S2.3)(depends: T1, T2, T3)
 
 ## Journey log
+
+- 首轮独立 review 判 FAIL，三个关键缺口均为真问题：教训引用标错出处（含误挂 skill-audit）、python 环境条混入无据的桌面运行时变量（全仓零命中）且"勿…"句式偷渡行为约束、缘起宣称"全部经独立 review"而 P2 无入库评审记录。教训类文案的验收由"均可溯源到 Journey log"修正为"可溯源并注明出处"——教训的合法来源本就含裁决记录与规则正文，原验收口径过窄。
+- 环境事实入库前须对权威记录逐条核对：`CalculateFolderPath` 与 `GetFolderPath` 的抛出点差异就是没逐字对照栽的跟头。
