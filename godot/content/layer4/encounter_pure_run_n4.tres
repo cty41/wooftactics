@@ -10,9 +10,9 @@ PayloadJson = "{
     \"contentId\": \"encounter.pure-run.n4\",
     \"layout\": \"battle-layout.pure-run.split-flank\",
     \"monsters\": [
-      \"unit.pure-run.ranged\",
-      \"unit.pure-run.ranged\",
-      \"unit.pure-run.aoe\",
-      \"unit.pure-run.charger\"
+      \"unit.pure-run.goat-ranged\",
+      \"unit.pure-run.goat-ranged\",
+      \"unit.pure-run.goat-aoe\",
+      \"unit.pure-run.goat-charger\"
     ]
   }"

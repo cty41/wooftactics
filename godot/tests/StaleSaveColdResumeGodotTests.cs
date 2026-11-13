@@ -148,9 +148,30 @@ public sealed class StaleSaveColdResumeGodotTests
         finally { await Free(ui, tree); }
     }
 
+    /// <summary>Entering the layer 4 battle node starts the fight instead of stopping on the entry page.</summary>
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task LayerFourBattleNodeStartsTheFight()
+    {
+        var store = new GodotRunSaveStore(new MemoryRunSaveFileSystem(), SavePath);
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        GodotPlayableRunMain ui = await StartSetupRun(store, tree, "layer-four-battle-start");
+        try
+        {
+            await ClearFirstThreeLayers(ui, store, tree);
+            await ExitTo(ui, store, tree, "layer_04_battle");
+            await WaitForBattle(ui, tree);
+            AssertThat(ui.CaptureTestProbe().BattleActive).IsTrue();
+            AssertThat(store.Load().Snapshot!.ActiveRun!.Phase).IsEqual(PureRunPhase.PendingBattle);
+            AssertThat(store.Load().Snapshot!.ActiveRun!.EncounterContentId.Value).IsEqual("encounter.pure-run.n4");
+            AssertThat(SafeStatus(ui).Contains("battle.start_failed", StringComparison.Ordinal)).IsFalse();
+        }
+        finally { await Free(ui, tree); }
+    }
+
     /// <summary>
     /// A layer 6 battle node settles through the layer 4/6 path and grows one character too, straight on the level-up
-    /// page, with the same rule. The layer 4 battle node is not used here: its encounter cannot start (see the ledger).
+    /// page, with the same rule.
     /// </summary>
     [TestCase]
     [RequireGodotRuntime]
