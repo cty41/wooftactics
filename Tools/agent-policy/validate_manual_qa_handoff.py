@@ -28,8 +28,12 @@ def validate_manual_qa_handoff(root: Path) -> list[str]:
     metadata = (root / METADATA).read_text(encoding="utf-8")
     ledger = (root / LEDGER).read_text(encoding="utf-8")
 
-    if "自动证据不得把人工项目改为 `passed`。" not in skill:
-        errors.append("Skill must state that 自动证据 cannot promote manual acceptance to passed.")
+    boundary = "观感、操作手感、难度体验和编辑器实际操作仍须用户明确说通过才能改为 `passed`。"
+    if boundary not in skill or boundary not in reference:
+        errors.append("Manual QA contract must keep experiential acceptance on an explicit user verdict.")
+    factual = "预期结果已全部被测试断言的事实（页面文字、存档字段、导航落点）"
+    if factual not in skill or factual not in reference:
+        errors.append("Manual QA contract must allow fully asserted facts to close without a screenshot review.")
     for token in ("人工验收", "manual QA", "code review", "自动门禁", "references/output-contract.md"):
         if token not in skill:
             errors.append(f"Skill trigger/workflow is missing required token: {token}")

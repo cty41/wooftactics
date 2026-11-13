@@ -24,7 +24,7 @@ Do not announce that work is ready for acceptance while a required 自动门禁 
 2. Update only items supported by explicit feedback or the current verified change.
 3. Add new human boundaries as `pending`. Move a reported defect to `failed`; after its fix passes review and gates, reopen it as `pending` with a reason.
 4. Mark `deferred` or `blocked` only from the user's statement or an evidenced external blocker.
-5. Mark `passed` only from the user's explicit verdict. 自动证据不得把人工项目改为 `passed`。
+5. 观感、操作手感、难度体验和编辑器实际操作仍须用户明确说通过才能改为 `passed`。预期结果已全部被测试断言的事实（页面文字、存档字段、导航落点）不新增人工条目，也不要求看截图；已有条目被测试完全覆盖后可改为 `passed`，`User verdict` 写明依据是自动证据和本规则，不写成用户看过。
 6. Reopen a passed item only when its relevant behavior, UI, presentation, flow, or Editor lifecycle changed.
 7. Render the shortest coherent user journey using the required four sections, then replace `Last Emitted Order` with the emitted stable IDs.
 

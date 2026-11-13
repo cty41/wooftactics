@@ -67,7 +67,7 @@ Adventure 事件战的随机状态会从 checkpoint revision 中扣除 Adventure
 
 Pure Run 三职业、敌人、召唤物和固定遭遇均从 Godot-owned Catalog/Resource 组合；N6/E2 使用的
 `battle-layout.pure-run.split-flank` 已由正式 `BattleLayoutResource` 提供，不再由运行时硬编码补建。内容
-ownership 与人工验收分开记录；自动测试通过不能把视觉或操作验收直接标为 passed。
+ownership 与人工验收分开记录；自动测试通过不能把视觉或操作验收直接标为 passed。页面文字、存档字段和导航落点已被断言时，可以按自动证据收口。
 
 棋盘地形现区分 Ground 与 ShallowWater，单位移动类型为 Land、Air、Swim。Land 进入浅水消耗 2 点，
 Air/Swim 消耗 1 点；路径范围按累计点数裁决，但冲刺等按路径格数计数的机制继续读取实际经过格数。

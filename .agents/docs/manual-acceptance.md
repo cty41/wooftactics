@@ -4,18 +4,6 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 
 ## Pending
 
-### MQA-GODOT-PROGRESSION-DOWNED-EXCLUDED — 战斗结束时倒地的角色不升级
-
-- Status: `pending`
-- Source: 倒地角色不升级计划（`PureRunSettlementService.ProgressionTarget`：成长候选排除战斗结束时倒地的角色）
-- Action: 使用隔离存档进入一场普通战斗，让队伍中等级最低的角色（例如法师）在战斗结束前倒地并保持倒地，由其余角色取胜；再打一场无人倒地的战斗作对照。另外在第 4 或第 6 层各打一场战斗节点和一场事件战（诅咒宝箱/祭坛/护送）并取胜，事件战后分别试一次点 Continue 和直接走向出口。
-- Expected: 第一场的升级页面显示的是仍站着的角色中等级最低的一名（同级按队伍顺序），不是倒地的那名；倒地角色战后恢复站起但等级不变。无人倒地的对照场仍由全队最低等级角色升级。第 4/6 层战斗节点胜利后直接进入升级页；事件战胜利后先看到事件结果场景，点 Continue 或走到出口都会进入升级页，完成升级后回到该节点的已完成场景并可正常离开，每场胜利只升级一次。
-- Observe: 战斗结算后的升级/技能选择页、队伍等级与 HP、Godot Output。
-- Preserve on failure: Run seed、节点 ID、战斗结束时各角色 HP 与等级、升级页截图、存档副本和完整 Output。
-- Save boundary: 战斗和结算会修改当前 Run；使用 disposable/隔离存档。
-- Automated evidence: Core `Settlement_ProgressionTargetsOnlyCharactersStandingAtBattleEnd` 5 组（最低等级倒地、同级首位倒地、中间成员倒地、无人倒地两组），同时覆盖 `Apply` 与第 5 层 `ApplyFixedLateBattle`；满级不入选 2 组；Application 事件战结算断言追加一条以节点事务键命名的成长且重复结算不重复追加；Core 335 项、Application 419 项通过；Godot ResidentEventBattleProduction 11（含事件胜利后走出口先进升级页且不写档）、ResidentBattleProduction 4、StaleSaveColdResume 10、PlayableRunUi 50、ResidentExplorationPages 20 项 headless 通过；统一验证器（含 gameplay journeys，其中事件战后续普通战旅程已加入升级步骤）本地通过一次。页面层证据（2026-11-11）：StaleSaveColdResume 14 项。其中 3 项经真实 `CompleteBattle` 结算导航断言升级页标题——同级时队首倒地则显示第二名且倒地者被救起、等级不变，完成升级后只有获选者 +1；无人倒地显示队首；第 6 层战斗节点（走第 4/6 层结算路径）最低等级者倒地则显示另一名最低等级者，事务键为 `progression:node:layer_06_battle:resolve`。ResidentEventBattleProduction 11 项中事件战用例补了“点 Continue 也进入升级页且不写档”。设置 `TACTICS_QA_SCREENSHOT_DIR` 后同批用例输出 5 张截图到 `artifacts/manual-qa/progression-downed/`（不入库，门禁运行不写文件）。第 4 层战斗节点（2026-11-13）：`encounter.pure-run.n4` 的怪物已改为现有的 `unit.pure-run.goat-ranged`、`goat-ranged`、`goat-aoe`、`goat-charger`，`LayerFourBattleNodeStartsTheFight` 确认进入 `layer_04_battle` 后战斗会开始，不再停在 “Starting battle…”。未覆盖：战斗结果是测试直接构造的，没有在实战中真的把角色打倒。截图与测试是供人工判断的证据，不是人工结论。Status 仍为 `pending`。
-- User verdict: none.
-
 ### MQA-GODOT-EXPLORATION-WALK-ATLAS-LAYOUT — 探索点击自动走位、战后 atlas 与页面排版
 
 - Status: `pending`
@@ -410,6 +398,18 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 - User verdict: none.
 
 ## Passed
+
+### MQA-GODOT-PROGRESSION-DOWNED-EXCLUDED — 战斗结束时倒地的角色不升级
+
+- Status: `passed`
+- Source: 倒地角色不升级计划（`PureRunSettlementService.ProgressionTarget`：成长候选排除战斗结束时倒地的角色）
+- Action: 使用隔离存档进入一场普通战斗，让队伍中等级最低的角色在战斗结束前倒地并保持倒地，由其余角色取胜；再打一场无人倒地的战斗作对照。另外在第 4 或第 6 层各打一场战斗节点和一场事件战并取胜，事件战后分别试一次点 Continue 和直接走向出口。
+- Expected: 升级页面显示仍站着的角色中等级最低的一名（同级按队伍顺序）；倒地角色战后恢复站起但等级不变。无人倒地时仍由全队最低等级角色升级。第 4/6 层战斗节点胜利后进入升级页；事件战胜利后先看到事件结果场景，点 Continue 或走到出口都会进入升级页。
+- Observe: 战斗结算后的升级页、队伍等级与 HP、Godot Output。
+- Preserve on failure: Run seed、节点 ID、战斗结束时各角色 HP 与等级、升级页截图、存档副本和完整 Output。
+- Save boundary: 战斗和结算会修改当前 Run；使用 disposable/隔离存档。
+- Automated evidence: Core `Settlement_ProgressionTargetsOnlyCharactersStandingAtBattleEnd` 5 组，同时覆盖 `Apply` 与第 5 层 `ApplyFixedLateBattle`；满级不入选 2 组；Application 事件战结算断言追加一条以节点事务键命名的成长且重复结算不重复追加。页面层：StaleSaveColdResume 中 3 项经真实 `CompleteBattle` 断言升级页标题（队首倒地则显示第二名且倒地者被救起、等级不变，完成升级后只有获选者 +1；无人倒地显示队首；第 6 层战斗节点最低等级者倒地则显示另一名最低等级者）。ResidentEventBattleProduction 断言事件战走出口和点 Continue 都进入升级页且当时不写档。`LayerFourBattleNodeStartsTheFight` 确认进入 `layer_04_battle` 后战斗会开始。未计入本次通过：测试直接构造战斗结束 HP，没有在实战里打倒角色；第 4 层只证明能开战，升级页断言走的是第 6 层同一条结算路径。
+- User verdict: passed by automated evidence under the narrowed manual-acceptance rule (2026-11-13). 依据是测试已断言的页面文字、存档字段和导航落点，不是用户看过截图。
 
 ### MQA-ARTWORK-DEMONBOUND-DEATH — Rounded death Sprite identity and size
 

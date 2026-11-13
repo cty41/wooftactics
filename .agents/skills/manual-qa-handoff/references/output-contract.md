@@ -11,9 +11,9 @@ Use stable IDs shaped as `MQA-<SYSTEM>-<SUBSYSTEM>`. Each item is a level-three 
 - `Reopen reason`: only when a previously passed item is reopened.
 - `Action`, `Expected`, `Observe`, `Preserve on failure`, and `Save boundary`.
 - `Automated evidence`: what automation proves and the remaining human boundary.
-- `User verdict`: latest explicit user conclusion, or `none`.
+- `User verdict`: latest explicit user conclusion, `none`, or the automated-evidence basis when a fully asserted item is closed by rule.
 
-Keep items under the matching status section. Never infer `passed` from test results. Preserve pending items when plans are archived.
+Keep items under the matching status section. 观感、操作手感、难度体验和编辑器实际操作仍须用户明确说通过才能改为 `passed`。预期结果已全部被测试断言的事实（页面文字、存档字段、导航落点）不新增人工条目；已有条目被测试完全覆盖后可改为 `passed`，并在 `User verdict` 写明依据是自动证据和本规则。Preserve pending items when plans are archived.
 
 `## Last Emitted Order` maps the most recent numbered output to stable IDs:
 
