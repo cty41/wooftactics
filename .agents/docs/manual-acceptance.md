@@ -1,400 +1,400 @@
-# Tactics Manual Acceptance Ledger
+# 人工验收账本
 
-This is the current cross-project manual acceptance state. Stable IDs are authoritative; list numbers are temporary.
+当前跨项目人工验收状态。稳定 ID 是权威身份，列表编号只是临时顺序。
 
 ## Pending
 
-### MQA-GODOT-EXPLORATION-WALK-ATLAS-LAYOUT — 探索点击自动走位、战后 atlas 与页面排版
+### MQA-GODOT-EXPLORATION-WALK-ATLAS-LAYOUT — 探索走位手感、连线观感与页面排版
 
 - Status: `pending`
-- Source: 探索页交互与布局修复计划（Overview 文字提示、atlas 等距平行排列、页头自适应、背包三列、点击目标自动走位）
-- Action: 使用隔离存档进入常驻探索页：点远处普通格；直接点远处的出口、事件对象和 Rest/Store/Treasure 对象；行走中连点其他格；战斗胜利后看战后地图并按 `[M]`/点 `[M] Overview` 切换；打开背包页并缩放窗口。
-- Expected: 单位以均匀速度逐格移动且朝向跟随每段方向，不瞬移；点目标会自动走到最合适的相邻格后立即触发交互（出口离开、事件开战、打开 Rest/Store/Treasure），锁定出口到位后提示先完成当前节点；行走中的点击被忽略；不可达目标只显示提示。只有一个出口时出口在右上边缘正中、下一张图正对着摆在右上方、连线是一条顺着等距斜度的直线；多个出口时出口以正中对称排开、后继地图以正右上方为中心对称排开、连线呈对称扇形互不交叉；开局总览图里单线相连的几层连线也是直的（5 图汇入同一图的连线为斜线属预期）；`[M] Overview` 以文字形式显示在背包按钮左侧；页头 Run 信息不溢出；背包三列内容不越出各自卡片，Back 按钮居中。
-- Observe: 探索页、战后页、背包页、状态栏文字与 Godot Output。
-- Preserve on failure: Run seed、节点 ID、点击的格/对象、行走前后截图或短视频、存档副本和完整 Output。
-- Save boundary: 移动与交互会写当前 Run；使用 disposable/隔离存档。
-- Automated evidence: ResidentExplorationPages 20 项（含远处出口自动走位离开、行走中 Inventory 按钮不响应、已换页的旧棋盘走完不触发交互、步长 `(path-1)*0.16s`、行走期间点击被忽略、不可达不写档、战后路线不相交/菱形不重叠）、PlayableRunUi 50 项（背包子控件在卡片内、页头包含 Run 信息）、AdventureMapTileMap 7、ResidentEventBattleProduction 10、StaleSaveColdResume 10、ActWorldHost 9 项 headless 通过。出口居中与连线拉直：ActMapTemplate 8 项（22 个生成模板出口关于 y=5 对称且按 lane 排序）、ResidentExplorationPages 单出口路线平行 +X/多出口对称不相交、AdventureMapTileMap 总览路线起点与方向通过；统一验证器（含 gameplay journeys）本地通过一次。行走手感、视觉排版与整体美观只能人工判断。
+- Source: 探索页交互与布局修复计划
+- Action: 用隔离存档在探索页走一段远路，看战后地图的出口连线，再打开背包并缩放窗口。
+- Expected: 走路速度和朝向看着自然，不发飘；单出口连线看着是直的，多出口扇形不别扭；页头和背包三列不挤、不溢出。点击是否生效、出口是否对称、控件是否越界已由测试断言，不用再看。
+- Observe: 探索页、战后页、背包页。
+- Preserve on failure: 行走前后截图或短视频、窗口大小、Run seed。
+- Save boundary: 移动会写当前 Run；使用隔离存档。
+- Automated evidence: `ResidentExplorationPages`、`PlayableRunUi`、`AdventureMapTileMap` 已断言走位提交、点击忽略、出口对称、连线不相交和控件边界。不再要人看这些事实。
 - User verdict: none.
 
-### MQA-GODOT-MAW-BAT-SLICE — 大嘴蝠、浅水与 N2 实战纵切
+### MQA-GODOT-MAW-BAT-SLICE — 大嘴蝠悬浮、浅水观感与 N2 难度
 
 - Status: `pending`
-- Source: 大嘴蝠 EnemySlice、通用移动地形与 N2 浅水布局实现
-- Action: 使用隔离存档进入 N2，观察大嘴蝠待机、跨越地面单位/浅水移动、咬击命中与吸血、受击和死亡；分别悬停浅水与普通地面，并至少完成三局相同队伍/不同 seed 的 N2。
-- Expected: 大嘴蝠稳定悬浮且移动时显示在地面单位上方，咬击使用双方向专用动作并在伤害后显示有效吸血，死亡时停止悬浮、短暂下落后落尸；浅水呈蓝绿色静态波纹且悬停显示“浅水”。Land 进入浅水明显消耗 2 移动力，Air 可越过但不能停在占位/障碍上；Predatory Diver 优先可击杀的低 HP 目标，低血时不撤退。三局无卡死，并记录 N2 难度相对原体验是否明显漂移。
-- Observe: N2 棋盘、单位 Body/Shadow/状态层、悬停 Tooltip、Turn Order、战斗事件日志、CheatConsole 与 Godot Output。
-- Preserve on failure: Run seed、双方阵容与格子、行动前后 HP、目标选择、短视频或连续截图、战斗 checkpoint/save 副本和完整 Output。
-- Save boundary: 战斗和结算会修改当前 Run；必须使用 disposable/隔离存档，不覆盖生产存档，失败时先复制 checkpoint 再重试。
-- Automated evidence: Core 146 项与 Application 183 项覆盖移动成本、Air 穿越/落点、绝对障碍、召唤落点、吸血事件顺序和真实 Transition 可击杀排序；Resource/Catalog、AI Encounter、Unit 与 Playable UI headless 验证通过。悬浮节奏、素材接触、浅水可读性和 N2 体验平衡仍只能人工判断。
+- Source: 大嘴蝠纵切与 N2 浅水布局
+- Action: 用隔离存档打至少三局不同 seed 的 N2，看大嘴蝠待机、移动、咬击、受击、死亡，并悬停浅水。
+- Expected: 悬浮稳定且压在地面单位上方；咬击和吸血看着连得上；死亡先停悬浮再落尸。浅水是蓝绿色波纹，悬停能认出“浅水”。三局不卡死，并记下难度相对以前是否明显变了。移动力和目标选择规则已由测试断言。
+- Observe: N2 棋盘、单位身体和影子、悬停提示。
+- Preserve on failure: 短视频或连续截图、Run seed、双方格子。
+- Save boundary: 战斗会改当前 Run；使用隔离存档。
+- Automated evidence: Core 与 Application 已断言移动消耗、飞行穿越、吸血顺序和可击杀排序。不再要人看这些规则。
 - User verdict: none.
 
-### MQA-GODOT-MAW-BAT-POSES-DEATH — 蝙蝠各姿态与死亡落点
+### MQA-GODOT-MAW-BAT-POSES-DEATH — 蝙蝠姿态与死亡落点观感
 
 - Status: `pending`
-- Source: 蝙蝠死亡位置修复（`MawBatAssetFactory` 按尸体不透明像素 AABB 居中；`GodotUnitActor` 死亡下落从当前悬浮高度落到接地点）。
-- Action: 在隔离存档的战斗或 Unit Gallery 中观察蝙蝠存活 DR/UL、近战咬击、受击、死亡姿态，并分别在 East/West 朝向（镜像）下复查；击杀悬浮中的蝙蝠观察落点。
-- Expected: 各姿态无明显错位或跳变；East/West 翻转后姿态与落点一致；死亡后尸体居中落在所在 Tile 接地点，不偏低、不悬空、不穿出格子。
-- Observe: 战斗棋盘或 Unit Gallery 中的单位 Body/Shadow 与 Tile 对齐、Godot Output。
-- Preserve on failure: 朝向、击杀时机、短视频或连续截图、Run seed 与 Output。
-- Save boundary: 战斗会修改当前 Run；使用 disposable/隔离存档。
-- Automated evidence: UnitBatchGodotTests 覆盖死亡偏移与下落终点；统一 verifier 中 Godot 套件无失败（仅已知 MaLiang artwork 单测失败）。目视效果不能由自动测试替代。
+- Source: 蝙蝠死亡位置修复
+- Action: 在战斗或单位图库里看蝙蝠存活、咬击、受击、死亡，并在东西朝向各看一次；击杀悬浮中的蝙蝠看落点。
+- Expected: 各姿态不跳、不错位；东西翻转后仍一致；尸体落在格子接地点，不偏低、不悬空、不穿出格子。
+- Observe: 单位身体、影子与格子的对齐。
+- Preserve on failure: 朝向、击杀时机、短视频或连续截图。
+- Save boundary: 战斗会改当前 Run；使用隔离存档。
+- Automated evidence: `UnitBatchGodotTests` 已断言死亡偏移和下落终点。目视是否自然仍要人看。
 - User verdict: none.
 
-### MQA-GODOT-UNIT-VISUAL — Unit Gallery and Spawn framing baseline
+### MQA-GODOT-UNIT-VISUAL — 单位图库与出生夹具的画面密度
 
 - Status: `pending`
-- Source: 大嘴蝠加入后 13-unit Gallery/Spawn 布局更新
-- Reopen reason: Unit Catalog 新增大嘴蝠，Gallery 从 4×3 改为 5×3、缩放与间距变化，SpawnFixture 增加第 13 个位置。
-- Action: 打开 Unit Gallery 与 Unit SpawnFixture，依次切换四方向和死亡模式，重点检查大嘴蝠及最外圈单位。
-- Expected: 13 个单位及标签均在 1600×900 安全区内，无重叠、裁切或明显比例跳变；旧单位方向、羊魔染色和死亡显示保持原基线，大嘴蝠素材在两个夹具中均正确装载。
-- Observe: Unit Gallery、Unit SpawnFixture、画布边缘和 Godot Output。
-- Preserve on failure: 当前夹具截图、单位 ContentId/索引、方向/死亡模式及第一条 Output 异常。
-- Save boundary: 只读预览，不修改 Run 存档或正式 Resource。
-- Automated evidence: 13 个唯一 Spawn cell、资源类型、纹理与边界检查已自动覆盖；新版 5×3 视觉密度与标签可读性仍需人工复验。
-- User verdict: 原 Phase 4 基线曾通过；本次因布局与内容变化重新 pending。
+- Source: 大嘴蝠加入后的 13 单位图库布局
+- Reopen reason: 图库从 4×3 改为 5×3，出生夹具增加第 13 个位置。
+- Action: 打开单位图库和出生夹具，切换四方向和死亡模式，重点看大嘴蝠和最外圈。
+- Expected: 13 个单位和标签在 1600×900 里不重叠、不裁切、比例不跳；旧单位的染色和死亡样子保持原基线。格子唯一性和贴图是否装上已由测试断言。
+- Observe: 单位图库、出生夹具、画布边缘。
+- Preserve on failure: 夹具截图、方向和死亡模式。
+- Save boundary: 只读预览，不改 Run 或正式资源。
+- Automated evidence: 13 个出生格、资源类型、贴图和边界已自动检查。视觉密度和标签好不好认仍要人看。
+- User verdict: 原第 4 阶段基线曾通过；这次因布局变化重新待验收。
 
-### MQA-GODOT-AGENT-FIRST-EDITOR — Clean worktree Editor and Godot AI Dock startup
+### MQA-GODOT-AGENT-FIRST-EDITOR — 编辑器与 Godot AI 面板的真实启动
 
 - Status: `pending`
-- Source: Unified multi-worktree Godot development launcher
-- Action: In a fresh worktree, start with `Tools/godot/Open-GodotDev.ps1`; after the first `CODEX_RESTART_REQUIRED`, restart Codex once, rerun the entry, and inspect the Editor and Godot AI Dock. Repeat while another Godot worktree Editor is open.
-- Expected: The correct project opens without manually running `dotnet build`; both C# EditorPlugins remain enabled; the Godot AI Dock is visible; the Agent session routes only to this worktree; the other worktree Editor remains running and unchanged.
-- Observe: Editor title/project path, Project Settings plugin list, Godot AI Dock/session list, `.godot/tactics-dev-session.json`, and Output errors.
-- Preserve on failure: Launcher output, both worktree paths/PIDs, plugin state, Dock screenshot, session listing, and first Godot error.
-- Save boundary: Use worktree-isolated user data; do not use `SharedManualQA` for Agent acceptance.
-- Automated evidence: Vendor hash, launcher policy, Codex bootstrap/profile, production assembly identity, release exclusion and same-worktree mutex checks are automated. Real Dock visibility, Editor reload and two-window routing remain human-only.
+- Source: 多工作区 Godot 开发启动器
+- Action: 在一个新工作区用 `Tools/godot/Open-GodotDev.ps1` 打开编辑器；若提示 `CODEX_RESTART_REQUIRED`，重启一次 Codex 再开。另一个工作区的编辑器开着时再重复一次。
+- Expected: 不用手敲 `dotnet build` 就打开正确项目；Godot AI 面板看得见，而且只连到这个工作区；另一个工作区的编辑器还在、没有被换掉。程序集身份和同工作区互斥已由测试断言。
+- Observe: 编辑器标题、插件列表、Godot AI 面板。
+- Preserve on failure: 启动输出、两个工作区路径、面板截图、第一条 Godot 错误。
+- Save boundary: 使用工作区隔离的用户数据。
+- Automated evidence: 启动器策略、程序集身份、发布排除和同工作区互斥已自动检查。面板是否看得见、两个窗口是否各走各的，仍要人看。
 - User verdict: none.
 
-### MQA-GODOT-DEMONBOUND-ACTION-ART — Demonbound native pose integration
+### MQA-GODOT-DEMONBOUND-ACTION-ART — 魔剑士动作是否像正式素材
 
 - Status: `pending`
-- Source: Approved Demonbound Idle, Melee, Cast, Hit and Death artwork integration
-- Action: In a representative battle, rotate Demonbound between DR/UL, trigger melee, cast and hit in both native directions, then defeat the unit.
-- Expected: Every state uses Demonbound artwork rather than Hunter placeholders; action poses return to the correct Idle, Cast/Hit sword layering remains intact, and Death is centered without unexpected mirroring or scale jumps.
-- Observe: Body silhouette, sword/hand occlusion, feet, transition offsets and corpse placement at normal Game View scale.
-- Preserve on failure: Screenshot, facing, action state and first incorrect texture/offset.
-- Save boundary: Use an isolated test Run; do not overwrite the production save.
-- Automated evidence: ResourceSaver-generated `PureRunDemonbound.tres` binds nine Demonbound textures, texture-copy hashes match approved sources, and automated Resource loading/assertions pass. Automation does not establish visual transition quality.
-- User verdict: Pending runtime visual verification after integration.
+- Source: 魔剑士待机、近战、施法、受击和死亡素材接入
+- Action: 在一场战斗里让魔剑士转向、近战、施法、受击，然后击倒它。两个朝向都看。
+- Expected: 用的是魔剑士自己的图，不是猎人占位；动作结束后回到正确待机；施法和受击时剑的前后关系还在；死亡居中，没有突然镜像或比例跳变。贴图是否绑上已由测试断言。
+- Observe: 身体轮廓、剑和手的遮挡、脚、尸体位置。
+- Preserve on failure: 截图、朝向、动作，以及第一张不对的图。
+- Save boundary: 使用隔离 Run。
+- Automated evidence: `PureRunDemonbound.tres` 已绑定九张魔剑士贴图，且与批准来源的哈希一致。动作过渡好不好看仍要人看。
+- User verdict: 接入后的运行时画面尚未人工确认。
 
-### MQA-GODOT-DEMONBOUND-HUD — Active-unit card, corruption meter and hover tooltip
+### MQA-GODOT-DEMONBOUND-HUD — 当前行动者卡片、腐化条和悬停是否好读
 
 - Status: `pending`
-- Source: Demonbound active-unit status-card implementation
-- Action: Enter a disposable battle containing Demonbound. Observe at least one player turn, one enemy turn, corruption values in each visual band (0–4, 5–8, 9–10), and the possessed state. Hover units, empty cells, legal/illegal skill targets and one LOS blocker near every screen edge.
-- Expected: The top-left card always follows only the current actor, including enemies during their turns; portrait, name, HP and MP remain readable; units without a special resource omit the third row; Demonbound shows a continuous `N/10` corruption bar with three clear risk colors and a legible possessed pulse. Hover detail follows the pointer, stays inside the canvas, preserves targeting/LOS information and never blocks board input.
-- Observe: Top-left BattleUnitPanel, corruption bar, turn order, pointer tooltip, target highlights, CheatConsole and Godot Output.
-- Preserve on failure: Screenshot or short video, resolution, active unit ID, corruption value, hovered cell/target, exact pointer position, Run seed and Output excerpt.
-- Save boundary: Ordinary battle actions mutate the current Run; use a disposable Run or preserve the battle checkpoint before testing possession.
-- Automated evidence: Godot UI tests cover active-unit/faction projection, portrait and value binding, missing-special-row collapse, 0/4/5/8/9/10 stage mapping, possessed pulse state, tooltip canvas clamping and `MouseFilter.Ignore`. PlayableRun UI 39/39 and Gameplay Spec journeys 15/15 passed. Visual hierarchy, portrait crop, color discrimination, pulse comfort and pointer interference remain manual. The unified verifier later stopped on an unrelated dirty artwork provenance failure, not this UI slice.
+- Source: 魔剑士当前行动者状态卡
+- Action: 用隔离战斗看一回合我方、一回合敌方、腐化在低中高三段以及附身时的卡片；把鼠标移到屏幕四边的单位、空格和技能目标上。
+- Expected: 卡片只跟着当前行动者，字和头像看得清；腐化条三种风险色分得开，附身脉冲突出但不晃眼；悬停说明跟着指针、不出画面、不挡住点棋盘。跟谁、数值、钳制在画面内已由测试断言。
+- Observe: 左上战斗单位面板、腐化条、指针旁说明。
+- Preserve on failure: 截图或短视频、分辨率、腐化值、悬停位置。
+- Save boundary: 使用隔离 Run；测附身前先留战斗检查点。
+- Automated evidence: 界面测试已断言当前行动者、数值绑定、腐化分段、附身状态、提示不超出画面且不挡输入。层次、裁切和颜色好不好认仍要人看。
 - User verdict: none.
 
-### MQA-GODOT-DEMONBOUND-BANE — Two-cell purple crescent readability and timing
+### MQA-GODOT-DEMONBOUND-BANE — 祸源紫月刃的形状和时机
 
 - Status: `pending`
-- Source: Demonbound Bane active-skill redesign
-- Action: In a disposable battle, cast Hex: Bane in all four directions. Include one cast through a wall, one with only a far-cell enemy, and one with enemies in both the first and second cells. Repeat once at 2× or 4× speed and once while Demonbound is possessed.
-- Expected: The actor uses the melee swing pose; a purple crescent travels exactly two cells, passes through walls and the first target, triggers the first-cell hit before continuing to the second-cell hit, and disappears only after the second cell. No persistent blade glow remains. Possession changes target hostility without changing the visual path.
-- Observe: Battle board actors, target highlights, damage numbers, Debuff status overlay, corruption bar and Godot Output.
-- Preserve on failure: Short video, direction, unit cells, wall cell, speed, corruption, possession state, Run seed and Output excerpt.
-- Save boundary: Skill use mutates the disposable battle and Run resources; preserve the pre-battle checkpoint if testing possession.
-- Automated evidence: Core/Application cover two-cell legality, wall piercing, near-to-far independent rolls, level damage/status progression and main-attribute scaling. Godot tests cover the two-segment programmatic FX queue and transient cleanup. Crescent shape, timing clarity and speed-dependent feel remain manual.
+- Source: 魔剑士主动技能祸源重做
+- Action: 用隔离战斗朝四个方向放一次祸源，其中一次穿墙、一次只有远格有敌人、一次两格都有敌人；再在二倍或四倍速以及附身时各看一次。
+- Expected: 紫色月刃看着正好飞过两格，先打近格再打远格，结束后没有残留刀光；变速和附身时轨迹仍然看得清。能否穿墙、伤害和两段结算已由测试断言。
+- Observe: 棋盘上的月刃、命中数字、状态层。
+- Preserve on failure: 短视频、方向、墙的位置、速度、是否附身。
+- Save boundary: 使用隔离战斗；测附身前保留战前检查点。
+- Automated evidence: Core 与 Godot 测试已断言两格合法性、穿墙、由近到远的独立结算和特效队列会清掉。月刃形状和时机手感仍要人看。
 - User verdict: none.
 
-### MQA-GODOT-DEMONBOUND-RUN — Three-party full-Run balance baseline
+### MQA-GODOT-DEMONBOUND-RUN — 带魔剑士打完整局的平衡手感
 
 - Status: `pending`
-- Source: Demonbound continuous-loop implementation and fixed-seed automation checkpoint
-- Action: Use three disposable Runs containing Demonbound, once each with Mage+Amazon, Mage+Necromancer, and Amazon+Necromancer. Complete the Run while recording the seeded starting branch, peak corruption, Meditation count, first possession timing, friendly damage/Down/permanent death, and any dominant or unusable skill.
-- Expected: Four-select-three and the seeded starting skill are understandable; Charisma growth and all non-master skill chains remain usable; corruption creates deliberate risk; Meditation choices are legible; possession cannot silently change faction or stall battle/settlement.
-- Observe: New Run party selection, progression cards, Battle HUD corruption and disabled reasons, skill effects, settlement, terminal Summary, CheatConsole and Godot Output.
-- Preserve on failure: Run seed, party, growth choices, encounter/node, turn/action sequence, corruption history, save/backup copy, screenshot or short video, and Output excerpt.
-- Save boundary: Each journey mutates and completes a Run; use disposable saves and do not overwrite a diagnostic failure before copying it.
-- Automated evidence: Core/Application, Resource/Catalog, Workbench round-trip, Gameplay Spec v3 and the unified verifier cover deterministic legality and state transitions. The 3x10 fixed-seed suite is an automated balance signal only; it does not prove full-Run feel.
+- Source: 魔剑士连续循环与固定种子检查点
+- Action: 用三局隔离 Run，魔剑士分别搭配法师加亚马逊、法师加死灵、亚马逊加死灵，尽量打完，记下腐化峰值、冥想次数、第一次附身和有没有过强或没用的技能。
+- Expected: 四人里选三人和起始技能让人明白；魅力成长和技能链都能用；腐化是故意的风险而不是误操作；冥想选项看得懂；附身不会让人以为换了阵营，也不会把结算卡住。合法性已由测试断言。
+- Observe: 开局选人、成长卡、战斗里的腐化、结算和终局摘要。
+- Preserve on failure: Run seed、队伍、成长选择、腐化过程、短视频。
+- Save boundary: 每局都会写完一个 Run；使用隔离存档。
+- Automated evidence: Core、Application 和玩法规格已断言确定性规则和状态转换。固定种子套件只是平衡信号，整局手感仍要人看。
 - User verdict: none.
 
-### MQA-GODOT-DEMONBOUND-POSSESSION — Possession readability and terminal behavior
+### MQA-GODOT-DEMONBOUND-POSSESSION — 附身能不能一眼认出来
 
 - Status: `pending`
-- Source: Demonbound possession AI, possessed-form boost/projection, unified target pool, permanent-death luck correction and special-victory implementation (2026-08-22 P1–P3)
+- Source: 魔剑士附身形态与永久死亡表现
 - Execution checklist: [`demonbound-possession-manual-checklist.md`](demonbound-possession-manual-checklist.md)
-- Action: In a disposable battle, push Demonbound to 10 corruption and observe the possessed form: the actor tint changes to the possessed-form color, the corruption bar pulses `POSSESSED`, boosted HP/MP and projected skill levels are visible on the status card, and the possessed AI chooses from a unified pool (allies, enemies and summons) by value rather than always preferring allies. Confirm the AI can attack allies and enemies in the same battle, never changes faction, and a possessed sole survivor still wins after enemies are defeated. If practical, replay a fixed setup until both ordinary Down and permanent-death outcomes are observed, and verify a permanently dead character does not appear in the next battle while staying on the terminal Summary.
-- Expected: The possessed actor is immediately distinguishable (form tint, POSSESSED pulse, boosted resources/skill levels); unified targeting never hard-codes a faction; friendly lethal damage rolls permanent death exactly once with the lucky-correction formula and settlement clearly reflects the result; permanently dead characters are excluded from subsequent battles but remain as tombstones in the Summary.
-- Observe: Actor glow/tint, corruption/POSSESSED label, boosted HP/MP and skill levels, target choice, event log, Down/permanent roster state, settlement and terminal Summary, and the next battle's party composition.
-- Preserve on failure: RNG seed/state, unit cells and HP, selected skill, event sequence, battle checkpoint, save/backup copy, screenshot/video and full Output.
-- Save boundary: Permanent death mutates the current Run roster; use a disposable Run and preserve the pre-battle checkpoint.
-- Automated evidence: Possessed-form state/boost idempotency, skill projection, unified target pool, luck-corrected one-time permanent-death settlement, dead-character battle exclusion and tombstone preservation are covered by Core/Application/GdUnit tests and the fixed-seed probe. Visual distinction, unified-target readability and cross-battle roster clarity remain manual.
+- Action: 把魔剑士推到 10 点腐化，看附身形态和它选谁打；若方便，再看到一次普通倒地和一次永久死亡后的下一场队伍。
+- Expected: 附身立刻能认出来：变色、`POSSESSED` 脉冲突出、血蓝和技能等级变高。目标选择让人看得出不是只打队友。永久死亡在结算里写清楚，下一场名册也看得懂谁没了。数值、目标池和墓碑规则已由测试断言。
+- Observe: 单位染色、腐化标签、状态卡、结算和终局摘要。
+- Preserve on failure: 种子、格子和血量、事件顺序、截图或短视频。
+- Save boundary: 永久死亡会改当前 Run 名册；使用隔离 Run。
+- Automated evidence: 附身加成、技能投影、统一目标池、永久死亡只判一次、死者不进下一场但留在摘要，均已由测试断言。看起来像不像、名册清不清楚仍要人看。
 - User verdict: none.
 
-### MQA-GODOT-DEMONBOUND-WORKBENCH — Corruption-cost authoring round-trip
+### MQA-GODOT-DEMONBOUND-WORKBENCH — 编辑器里改腐化消耗的真实重载
 
 - Status: `pending`
-- Source: Demonbound typed Resource and Skill Workbench integration
-- Action: Duplicate one Demonbound skill to a disposable authoring resource, change `executionProfile.corruptionCost` and `executionProfile.damageScaling`, Validate and Apply, Reload the C# assembly, confirm both values, then Undo/Redo and delete the disposable copy through the Workbench transaction.
-- Expected: Catalog, typed Resource and Workbench preserve both values through Apply, Reload, Undo and Redo; validation failures or cancellation create no partial resource, UID or reference side effects.
-- Observe: Skill page field, diagnostics, Catalog/reference audit, filesystem result and Godot Output.
-- Preserve on failure: Source/destination ContentId and path, revision, exact action, resource copy, screenshot and Output.
-- Save boundary: Never edit a canonical Demonbound resource for this acceptance; use a disposable duplicate and Workbench lifecycle actions only.
-- Automated evidence: Authoring compiler, ResourceSaver generation, byte-idempotency, Catalog ownership and semantic round-trip tests pass; real Editor Reload interaction remains manual.
+- Source: 魔剑士技能工作台
+- Action: 复制一个魔剑士技能到临时资源，改 `executionProfile.corruptionCost` 和 `executionProfile.damageScaling`，在编辑器里验证、应用、重载 C#，再撤销、重做并删掉这份副本。
+- Expected: 在真正的编辑器里，重载后两个值还在；撤销和重做手感正常；失败或取消不会留下半份资源。编译和字节级往返已由测试断言。
+- Observe: 技能页字段、诊断、Godot 输出。
+- Preserve on failure: 源和目标内容 ID、操作、资源副本、输出。
+- Save boundary: 不要改正式魔剑士资源；只用临时副本。
+- Automated evidence: 编写编译器、资源保存、幂等和语义往返已通过。真正的编辑器重载操作仍要人做一次。
 - User verdict: none.
 
-### MQA-GODOT-OWNERSHIP-CONTENT — Lv3, Treasure and authoritative Map journey
+### MQA-GODOT-OWNERSHIP-CONTENT — 三级技能、宝箱和地图的跨页可读性
 
 - Status: `pending`
-- Source: `82c073f5`, `78f032a3`, ownership closure content checkpoints
-- Action: In a disposable Run, obtain and use one player Lv3, resolve a Treasure node, Reload, and continue through the authoritative Map.
-- Expected: Lv2 upgrades to the implemented Lv3 contract; Treasure resolves once without rerolling or duplicate rewards; Map route, pending node and current V10 identity survive Reload.
-- Observe: Progression cards/current skills, Battle HUD and CheatConsole, Treasure result, Rogue Map node state, Inventory and Godot Output.
-- Preserve on failure: Run seed/revision, selected skill/branch, Treasure node/result, save and backup copy, screenshot and Output excerpt.
-- Save boundary: This journey mutates progression, rewards and the current V10 save; use a disposable Run or preserve the current save first.
-- Automated evidence: Core/Application cover all nine player Lv3 contracts, Skeleton Warrior Lv3, deterministic Treasure rewards/idempotency, arbitrary Map topology and current V10 round-trip; historical migration behavior has separate compatibility tests. Catalog, ResourceSaver idempotency, Gameplay Specs and both renderers cover the structural boundary. Gameplay feel and cross-page readability remain manual.
+- Source: 内容所有权收口
+- Action: 用隔离 Run 升到一次玩家三级技能，结算一个宝箱，重载后继续在正式地图上走。
+- Expected: 三级技能卡和宝箱结果在各页上都看得懂，重载后地图还能对上当前节点。升级合同、宝箱不重复发奖和存档往返已由测试断言。
+- Observe: 成长卡、宝箱结果、地图节点、背包。
+- Preserve on failure: Run seed、所选技能、宝箱结果、存档副本、截图。
+- Save boundary: 会改成长、奖励和当前存档；先留副本。
+- Automated evidence: 九个玩家三级技能、骷髅战士三级、宝箱幂等和地图往返已由测试断言。手感和跨页好不好读仍要人看。
 - User verdict: none.
 
-### MQA-GODOT-CONTENT-WORKBENCH — Unified authoring and fixture shell
+### MQA-GODOT-CONTENT-WORKBENCH — 编辑器里拖节点和检查器的手感
 
 - Status: `pending`
-- Source: `6cf74ce0`, unified Godot Content Workbench checkpoint; 2026-08-16 reload-safe Resource loading repair; 2026-08-17 unified authoring kernel and Unity-style hierarchy; 2026-08-18 three-surface navigation, Event/Treasure graph and TS→MCP authoring chain
-- Reopen reason: Event/Treasure navigation and graph interaction changed after the earlier partial pass.
-- Action: Open Tactics Tooling and confirm the only top-level tabs are Map, Event and Skill / Presentation. In Event, open one Event and one Treasure: inspect the constrained Event choice graph, drag nodes, toggle a Check between None and an attribute, confirm hidden Failure data returns, then edit/reorder a Treasure weighted row. Use disposable drafts on Map and Event and complete Validate All → Apply All → Undo → Redo. Finally preview one native Presentation, perform one C# Reload and repeat the preview.
-- Expected: Treasure appears as an Event-page resource category rather than a top-level tab; Encounter, AI, Audio and QA do not instantiate visible pages. Event shows Start→Option→Check→Success/Failure→End without arbitrary Branch/cycle semantics; Auto Success hides but does not erase Failure data. Treasure shows Root→Gold/Equipment/Consumable/Buff and edits weighted rows in the Inspector. Layout survives Apply/Undo/Redo/Reload, the global batch remains one Undo action, and page switch/Reload leaves no temporary preview nodes or Output errors.
-- Observe: Tactics Tooling top tabs, Event resource list, GraphEdit, right Inspector, global status, Presentation SubViewport and Godot Output.
-- Preserve on failure: Tab name, selected ContentId/resource path, exact action, screenshot, full Output and whether Assembly Reload occurred.
-- Save boundary: Use read-only validation/preview actions unless working on a disposable resource copy; do not overwrite canonical content during first acceptance.
-- Automated evidence: Full `Verify-GodotProject.ps1` passes: Core 132, Application 176, Frozen Oracle 15, MCP protocol, TypeScript authoring compiler, isolated GdUnit (including Editor lifecycle 6/6 and authoring round-trip 6/6), Gameplay journeys 27/27, both renderers and Release isolation. Layout backward compatibility/revision, unknown node rejection, three-tab navigation, eight typed spec kinds, dependency cycles and Create `initialSnapshot` are covered. `PlayableRunUi` retains its separately tracked four-orphan-node infrastructure warning while passing 39/39. Graph readability, drag/Inspector feel and real Editor Reload remain human-only.
-- User verdict: Partial pass: after rebuilding C# in the real Editor, the repeated `AuthoringWorkspaceCoordinator` Output errors stopped. Remaining page interaction and visual checks are still pending.
+- Source: 统一内容工作台
+- Reopen reason: 事件和宝箱的导航、图交互在上次部分通过之后又改过。
+- Action: 打开 Tactics 工具，只看页签是不是地图、事件、技能与表现。在事件页打开一个事件和一个宝箱，拖节点，把检定在“无”和一个属性之间切换，再改一行宝箱权重。用临时草稿走一遍全部验证、全部应用、撤销、重做，然后预览一次表现并做一次 C# 重载。
+- Expected: 图好读，拖动和检查器顺手；自动成功只是藏起失败数据，不是删掉。重载后没有残留预览节点。三个页签、节点种类和依赖环已由测试断言。
+- Observe: 顶部页签、图编辑器、右侧检查器、Godot 输出。
+- Preserve on failure: 页签名、所选内容 ID、操作、截图、是否重载过。
+- Save boundary: 只对临时副本做验证和预览，不覆盖正式内容。
+- Automated evidence: 统一验证器曾覆盖编辑器生命周期和编写往返。图好不好读、拖动和检查器手感、真实重载仍要人看。
+- User verdict: 部分通过：在真实编辑器里重新编译后，重复的 `AuthoringWorkspaceCoordinator` 输出错误已消失。页面操作和观感仍待验收。
 
-### MQA-GODOT-FORMAL-UI — Formal Pure Run visual shell
-
-- Status: `pending`
-- Source: `3c9a29bc` through `422b9caa`, Godot root UI closure
-- Action: Traverse Home, Options, Rogue Map, Progression, Inventory, Battle HUD, Settlement, Pause and Terminal Summary in one disposable Run and judge the shared hierarchy and readability.
-- Expected: Near-black background, translucent panels, orange focus/accent and white/gray text form one coherent UI; Map detail, growth cards and Inventory three-column layout remain readable; no decorative panel blocks a button or board input.
-- Observe: Main scene pages, focus/hover/pressed/disabled states, Battle HUD safe areas, Pause overlay and Godot Output.
-- Preserve on failure: Screenshot with page name and resolution, exact control/action that was obscured or blocked, current Run state and Output excerpt.
-- Save boundary: New Run, purchases and progression mutate the active save; use a disposable Run or preserve a copy before the journey.
-- Automated evidence: Theme states, semantic panels, Control bounds, mouse filters, production input nodes, five isolated Gameplay Specs, Compatibility/Forward+ and Catalog 131 are asserted. Visual balance, text density and interaction feel remain manual.
-- User verdict: none after the formal Theme and page-shell pass.
-
-### MQA-GODOT-DAMAGE-NUMBERS — Floating combat feedback
+### MQA-GODOT-FORMAL-UI — 整局界面是否是同一套
 
 - Status: `pending`
-- Source: Phase 8E camera/menu/damage/growth transaction
-- Reopen reason: Poison tick now has an explicit committed Impact cue instead of falling through at frame completion.
-- Action: Visually sample Miss, healing, and MP recovery once at a comfortable speed; normal, Poison and critical feedback no longer need repeating.
-- Expected: Healing shows green `+N`, MP recovery blue `+N MP`, and Miss gray; each appears above the affected unit at its committed impact, pauses with presentation, and leaves no residue.
-- Observe: Unit head anchor, animation timing, HUD speed, and Godot Output.
-- Preserve on failure: Screenshot/video plus event log and speed/pause state.
-- Save boundary: Ordinary battle state changes apply; use a disposable Run if exact replay matters.
-- Automated evidence: Gameplay Specs now execute deterministic Miss and Mana recovery through Main.tscn and assert event identity, color node, pause/speed behavior, cleanup and production-save isolation. Healing event mapping is covered at the Application/presentation layer; only readability and animation feel remain manual.
-- User verdict: Partial pass: normal damage, Poison tick and gold critical numbers were observed; Miss, healing and MP recovery remain unconfirmed.
+- Source: Godot 根界面收口
+- Action: 用一局隔离 Run 走主页、选项、地图、成长、背包、战斗抬头、结算、暂停和终局摘要。
+- Expected: 近黑底、半透明面板、橙色重点和白灰字看着是一套；地图详情、成长卡和背包三列不挤；装饰面板不挡按钮和棋盘。控件边界和鼠标过滤已由测试断言。
+- Observe: 各页面的焦点、悬停、按下和禁用状态，以及暂停遮罩。
+- Preserve on failure: 带页面名和分辨率的截图，以及被挡住的控件。
+- Save boundary: 使用隔离 Run。
+- Automated evidence: 主题状态、面板语义、控件边界和鼠标过滤已断言。疏密和手感仍要人看。
+- User verdict: 正式主题通过后尚未再给结论。
 
-### MQA-GODOT-RELOAD-OUTPUT — Reload and diagnostics cleanup
-
-- Status: `pending`
-- Source: Phase 7B–8E combined acceptance; 2026-08-16 ExportRelease dependency-graph isolation repair
-- Action: Trigger one real Godot C# Assembly Reload, Continue the active Run, replay one battle action, and inspect logs.
-- Expected: No stale Tween, temporary node, duplicate signal, input lock, corrupted save, or Unicode/NUL error.
-- Observe: Godot Output and CheatConsole; verify current page and actor state visually.
-- Preserve on failure: Full Output excerpt, page/encounter, save copy, and reproduction order.
-- Save boundary: Reload may restart the current battle from its committed checkpoint; retain save evidence on failure.
-- Automated evidence: Gameplay Specs restart the real Main scene/process, Continue a PendingBattle, verify normalized state, input and zero temporary presentation nodes, and prove the production save unchanged. ExportRelease now uses an isolated Godot project/artifacts root and preserves the Editor dependency graph hash; the verifier preflight, build, GdUnit suites and 15 Gameplay Spec journeys passed with `GodotSharpEditor/4.7.1` present. Two later full-verifier attempts were interrupted by unrelated native-host exits after those assertions passed, so they are not recorded as complete green runs. Only the real Editor Assembly Reload lifecycle remains manual.
-- User verdict: none after latest lifecycle-affecting changes.
-
-### MQA-GODOT-DEFEAT-FLOW — Party defeat terminal flow
+### MQA-GODOT-DAMAGE-NUMBERS — 治疗、回蓝和落空飘字的观感
 
 - Status: `pending`
-- Source: Phase 7B–8E summon AI and defeat-flow repair
-- Reopen reason: The prior Elite run stalled after the visible party died; friendly summon ownership and terminal submission now share the automatic controller path.
-- Action: In one disposable encounter, let the final player-faction entity die and observe the visible transition into Defeated Summary and Home.
-- Expected: The last defeat presentation reads naturally, the Summary appears once, and Return Home has no visible hitch or duplicate page.
-- Observe: Battle phase, Turn Order, presentation queue, terminal summary, Home, CheatConsole, and Godot Output.
-- Preserve on failure: Keep the battle open; record surviving units including summons, current actor, playback pause state, event log, Run seed/revision, and Output.
-- Save boundary: The current Elite checkpoint is valuable diagnostic evidence; do not overwrite or abandon it before copying the save.
-- Automated evidence: Gameplay Specs and Application tests cover with/without summon survival, automatic summon turns, one-shot BattleResult, presentation drain, Defeated Summary, Return Home cleanup and production-save isolation. Only visual transition feel remains manual.
-- User verdict: Failed before this repair: after the whole visible party died in the first Elite battle, the battle remained stuck instead of showing defeat and returning Home.
+- Source: 相机、菜单、伤害和成长事务
+- Reopen reason: 毒伤现在有单独的命中提示，不再拖到帧结束。
+- Action: 用舒服的速度各看一次落空、治疗和回蓝。普通伤害、毒伤和暴击不用再看。
+- Expected: 治疗是绿色 `+N`，回蓝是蓝色 `+N MP`，落空是灰色；都出现在单位头顶，停顿和播放一致，消失后不留残影。颜色节点和清理已由测试断言。
+- Observe: 单位头顶、动画时机、界面速度。
+- Preserve on failure: 截图或短视频、事件日志、速度和暂停状态。
+- Save boundary: 使用隔离 Run。
+- Automated evidence: 玩法规格已通过正式主场景断言落空和回蓝的事件、颜色、暂停和清理。好不好认、动得自然不自然仍要人看。
+- User verdict: 部分通过：普通伤害、毒伤和金色暴击已看过；落空、治疗和回蓝还没确认。
 
-### MQA-GODOT-INVENTORY — Backpack and loadout workflow
-
-- Status: `pending`
-- Source: Phase 7B–8E Inventory projector and navigation parity repair
-- Reopen reason: Inventory now consumes Application-owned base/bonus/total/derived projections and is reachable only from Rogue Map.
-- Action: From the Rogue Map, inspect one purchased Equipment item, equip it, and judge whether the base/bonus/total and slot presentation are easy to understand.
-- Expected: The selected item, affected slot and positive/negative deltas are readable without guessing; Inventory remains a Map-only workflow.
-- Observe: Inventory item detail, equipment slots, character stats/derived stats, Rogue Map entry, Home menu, and Output.
-- Preserve on failure: Screenshot, item definition/instance ID, character before/after values, source route, save copy, and Output.
-- Save boundary: Purchases and loadout operations persist; keep a copy of the Store save.
-- Automated evidence: Gameplay Specs now equip through the production Main UI, enter a real battle, compare BattleUnitState against Application base/bonus/total and derived projection, Reload, and prove instance uniqueness plus production-save isolation. Only UI readability and interaction feel remain manual.
-- User verdict: Partial pass: Inventory operation and equipment detail UI are OK; the resulting battle-stat increase has not yet been verified in combat.
-
-### MQA-GODOT-WINDOWS-RC — Windows export and clean launch
+### MQA-GODOT-RELOAD-OUTPUT — 编辑器里真正重载一次
 
 - Status: `pending`
-- Source: `eba98f9b`, GitHub Actions run `31889338418`
-- Action: Download `tactics-godot-windows-eba98f9b-19` and launch its EXE/PCK on a Windows machine without the Godot or Unity Editor installed.
-- Expected: The package contains production managed assemblies and no GdUnit/TestPlatform payload; Main opens, New Run works, and exit leaves no startup/resource errors.
-- Observe: GitHub Actions artifact/build manifest or local `Build/Godot/Windows`, launched game window, and process/console output.
-- Preserve on failure: Workflow run URL or local build log, build manifest, artifact file list/hashes and startup Output.
-- Save boundary: Use a clean user-data directory; do not point the RC at the current production save.
-- Automated evidence: GitHub Actions run `31889338418` passed the Godot-owned verifier, Windows ExportRelease, 199-file package audit, Compatibility/default renderer EXE startup, and artifact upload. Artifact ID `9248204605`, archive digest `9eaf62b652eee81dbfb18e74f702c3c8a016903876fe9336fe815ffb506f1456`, semantic manifest SHA-256 `dff242be1586f85e99cd1fa2f84ebd734306d1286145aa3679b2dcf6373d39ca`.
-- User verdict: Pending one clean-machine download, launch, New Run, and exit smoke; automated CI must not mark this passed.
+- Source: 导出依赖图隔离修复
+- Action: 在打开的 Godot 编辑器里做一次真正的 C# 程序集重载，继续当前 Run，再做一次战斗操作，看输出。
+- Expected: 重载后页面和单位还在，没有卡住的动画、点不了、存档损坏，或输出里的乱码。进程内重启主场景已由测试断言。
+- Observe: Godot 输出、当前页面和单位。
+- Preserve on failure: 完整输出、页面、存档副本、复现顺序。
+- Save boundary: 重载可能从已提交的战斗检查点重开；失败时留下存档。
+- Automated evidence: 玩法规格会重启主场景、继续未完成战斗，并确认没有残留表现节点、生产存档不变。真正的编辑器重载仍要人做一次。
+- User verdict: 最近一次影响生命周期的改动之后尚未再给结论。
 
-### MQA-GODOT-AVAILABILITY-TURNS-LOS — Skill availability, defeated turns, and LOS
-
-- Status: `pending`
-- Source: 2026-08-16 Godot shadow-cone LoS contract repair
-- Reopen reason: Current Godot LoS changed from diagonal supercover to open-interior shadow-cone geometry, so the previously accepted corner-blocking behavior is intentionally different.
-- Action: Recreate the battle arrangement from the reported screenshot, select the Mage's Ice Bolt, target the nearest upper-left enemy across the allied unit's corner, then compare with a second arrangement where a living unit clearly occupies the ray interior.
-- Expected: The corner-touching target is legal and Ice Bolt can be committed; the true interior blocker remains illegal and Hover identifies the nearest blocking cell/unit. Corpses and dropped spears remain non-blocking.
-- Observe: Target highlights, Hover rejection/detail, committed Ice Bolt action, CheatConsole and Godot Output.
-- Preserve on failure: Screenshot, actor/target/blocker cells, skill ID, Hover text, event log and full Output excerpt.
-- Save boundary: Ordinary battle mutation; use a disposable Run if the exact encounter state must be replayed.
-- Automated evidence: Core covers corner/edge tangency, non-axial interior crossing and nearest blocker; Application proves Ice Bolt preview and commit through a corner-touching ally; GdUnit covers the Godot contract boundary. Visual targeting and the reported isometric arrangement remain manual.
-- User verdict: none after the shadow-cone contract change.
-
-### MQA-GODOT-TILE-READABILITY — Adventure Tile readability
+### MQA-GODOT-DEFEAT-FLOW — 团灭过场顺不顺
 
 - Status: `pending`
-- Source: Gameplay-Test-Driven Tile Adventure Goal
-- Action: From Start Camp, traverse every implemented adventure node type and inspect the 10×10 isometric board at the supported window sizes.
-- Expected: Walkable cells, blocked cells, current position, actors, interaction objects, route exits, and node state changes remain distinguishable without relying on debug text.
-- Observe: Adventure board, tile highlights, actor/object silhouettes, overlay, and Godot Output.
-- Preserve on failure: Screenshot with window size, node ID, leader cell, pointer position, and Output; do not continue to the next node.
-- Save boundary: Visual inspection and hover do not mutate the Run; entering or resolving a node does.
-- Automated evidence: Projection round trips, board readiness, cell coordinates, object state, and node lifecycle assertions pass through the formal Main scene.
-- User verdict: None; pending human acceptance.
+- Source: 召唤物 AI 与失败流程修复
+- Reopen reason: 以前精英战在可见队伍死后会停住；友方召唤物和终局提交已走同一条自动控制。
+- Action: 用一场隔离战斗让最后一名我方单位死掉，看失败摘要和回主页。
+- Expected: 最后一下死亡看着自然，摘要只出现一次，回主页不卡、不叠两页。是否提交失败、召唤物回合和回主页清理已由测试断言。
+- Observe: 战斗阶段、行动顺序、终局摘要、主页。
+- Preserve on failure: 保持战斗不关；记下存活单位、当前行动者、暂停状态和输出。
+- Save boundary: 当前精英检查点有诊断价值；覆盖前先复制存档。
+- Automated evidence: 玩法规格和应用测试已断言有无召唤物、自动回合、一次结算、失败摘要和回主页清理。过场手感仍要人看。
+- User verdict: 修复前失败过：第一场精英战可见队伍死后，战斗停住，没有进失败摘要。
 
-### MQA-GODOT-TILE-INPUT-FEEL — Adventure click and leader-switch feel
-
-- Status: `pending`
-- Source: Gameplay-Test-Driven Tile Adventure Goal
-- Action: Click near cell edges and occupied cells, move the leader along short and long valid paths, switch portraits, and repeat movement with each available leader.
-- Expected: Intended cells and actors are selected consistently; paths commit once; the selected leader changes clearly; fixed Idle companions do not appear to accept movement.
-- Observe: Pointer highlight, route preview, leader portrait, actor motion, final cell, and Godot Output.
-- Preserve on failure: Short video or sequential screenshots, clicked screen position, expected/actual cell, leader ID, and Output; stop before another input hides the state.
-- Save boundary: Leader selection is transient; committed movement and interactions may mutate the Run checkpoint.
-- Automated evidence: AdventureCell and AdventureActor production-input targets, leader-switch checkpoints, and final coordinate assertions pass.
-- User verdict: None; pending human acceptance.
-
-### MQA-GODOT-TILE-SCENE-CHANGE — Interaction and event-battle scene changes
+### MQA-GODOT-INVENTORY — 背包数值好不好懂
 
 - Status: `pending`
-- Source: Gameplay-Test-Driven Tile Adventure Goal
-- Action: Resolve a normal treasure, cursed chest, and guarded altar, including the transition into battle and return to the changed adventure scene.
-- Expected: Each interaction has an unambiguous before/after state; event battle opens once with the correct context; victory returns to the same node with the chest or altar visibly resolved.
-- Observe: Interaction object, scene overlay, battle context, post-battle board, reward state, and Godot Output.
-- Preserve on failure: Pre/post screenshots, node and object IDs, battle context, reward summary, save/backup copy, and Output; do not retry the interaction.
-- Save boundary: Interaction and battle settlement mutate the Run; preserve the pre-event checkpoint and production backup.
-- Automated evidence: Interaction-settled, Event Battle Ready, overlay-updated, event-result, battle-context, and idempotent-state assertions pass.
-- User verdict: None; pending human acceptance.
+- Source: 背包投影与只从地图进入
+- Reopen reason: 背包现在用应用层的基础、加成、合计和派生值，并且只能从地图打开。
+- Action: 从地图打开背包，看一件买来的装备，穿上，判断基础值、加成和合计能不能看懂。
+- Expected: 不用猜就知道选中的是哪件、影响哪个槽、加减了多少。穿上后进战斗数值是否变了已由测试断言。
+- Observe: 背包物品详情、装备槽、角色数值。
+- Preserve on failure: 截图、物品实例 ID、穿上前后的数值。
+- Save boundary: 购买和穿戴会写存档；先留商店前的副本。
+- Automated evidence: 玩法规格已通过正式界面穿戴、进战斗，并对照基础、加成、合计。好不好读、点起来顺不顺仍要人看。
+- User verdict: 部分通过：背包操作和装备详情界面可以；战斗里的数值提升当时还没看。
 
-### MQA-GODOT-TILE-ROUTE-MISCLICK — Immediate exits and accidental transition risk
-
-- Status: `pending`
-- Source: Gameplay-Test-Driven Tile Adventure Goal; `781fd5fd`, immediate-successor Tile exits
-- Reopen reason: The earlier Route Overview and two-route submission flow was removed; route choice now occurs through visible exits inside the current node scene.
-- Action: At every implemented multi-exit node, identify each visible destination, click near an exit edge, between adjacent exits and on unrelated board/background cells, then deliberately enter one exit.
-- Expected: Only the current node's directly reachable successors appear; near-miss/background clicks do not transition; a valid exit click transitions immediately and exactly once to the indicated node, without an overview or separate submit step.
-- Observe: Adventure Board exit objects/labels, pointer highlight, destination node/overlay, lifecycle state and Godot Output.
-- Preserve on failure: Screenshot or short video, pointer position, source/expected/actual node IDs, visible exit set, save/backup copy and Output; stop before another transition.
-- Save boundary: Inspection and near-miss clicks should not mutate the Run; a valid exit immediately commits the next node, so preserve the pre-exit checkpoint.
-- Automated evidence: Formal Main-scene input proves that each exit targets only an immediate successor, locked/non-successor nodes cannot be selected, and the transition commits once. Destination readability and accidental-click risk remain human-only.
-- User verdict: None; pending human acceptance.
-
-### MQA-GODOT-START-FLOW — Automatic startup and recovery
+### MQA-GODOT-WINDOWS-RC — 没有编辑器的机器上启动安装包
 
 - Status: `pending`
-- Source: Restored Start-first flow (`c08499c3`)
-- Action: Start the application with an empty save, a partial PendingRunSetup, a normal-node save, a PendingBattle save, and a disposable corrupt copy.
-- Expected: There is no legacy Home page; empty or unrecoverable state enters a new camp, recoverable state resumes the appropriate page, PendingBattle preserves Encounter/Seed and restarts from its entry checkpoint, and corrupt evidence is quarantined.
-- Observe: First interactive page, Run seed/revision, battle entry, `user://pure-run` files, and Godot Output.
-- Preserve on failure: Save/backup/corrupt files, first-screen screenshot, seed/revision, page title, and the first Output error.
-- Save boundary: Use isolated copies; never run corruption checks against the only production save.
-- Automated evidence: V11 serialization/hash, normalization, session resume, and fixed-seed behavior pass pure .NET tests. The real first frame and process restart remain manual.
+- Source: `eba98f9b`，GitHub Actions 运行 `31889338418`
+- Action: 下载 `tactics-godot-windows-eba98f9b-19`，在没装 Godot 或 Unity 编辑器的 Windows 上启动。
+- Expected: 主页面能开，新游戏能进，退出时没有启动或资源错误。包里有没有测试程序集已由持续集成审计。
+- Observe: 游戏窗口和进程输出。
+- Preserve on failure: 工作流地址或本地构建日志、启动输出。
+- Save boundary: 用干净的用户数据目录，不要指向当前生产存档。
+- Automated evidence: 运行 `31889338418` 已通过导出、199 个文件审计和可执行文件启动。制品 `9248204605`。没装编辑器的机器上真正点一次仍要人做。
+- User verdict: 还差一次干净机器上的下载、启动、新游戏和退出。持续集成不能把这条写成通过。
+
+### MQA-GODOT-AVAILABILITY-TURNS-LOS — 等距画面上的视线好不好认
+
+- Status: `pending`
+- Source: 阴影锥视线合同修复
+- Reopen reason: 视线从对角线超覆盖改成开放内部的阴影锥，贴角不再算挡住。
+- Action: 按当时的截图摆一次法师冰箭，目标是友军贴角后方的敌人；再摆一次有活着的单位真正挡在射线中间。
+- Expected: 贴角那次看着能放，真正挡住的那次悬停能指出是谁挡住。合法与否已由测试断言。
+- Observe: 目标高亮、悬停说明、放出的冰箭。
+- Preserve on failure: 截图、施法者、目标和阻挡者的格子、悬停文字。
+- Save boundary: 使用隔离 Run。
+- Automated evidence: Core 与 Application 已断言贴角合法、内部穿越非法，以及冰箭可以提交贴角目标。等距画面上认不认得出仍要人看。
+- User verdict: 阴影锥合同改完后尚未再给结论。
+
+### MQA-GODOT-TILE-READABILITY — 冒险格子不用调试文字也能分清
+
+- Status: `pending`
+- Source: 玩法规格驱动的格子冒险
+- Action: 从起始营地走过每种已实现的冒险节点，在支持的窗口大小下看 10×10 等距棋盘。
+- Expected: 能走的格、挡住的格、当前位置、角色、互动物件、出口和节点状态变化，不靠调试文字也能分开。坐标和对象状态已由测试断言。
+- Observe: 冒险棋盘、格子高亮、角色和物件轮廓。
+- Preserve on failure: 带窗口大小的截图、节点 ID、领队格。不要接着进下一节点。
+- Save boundary: 只看和悬停不改 Run；进入或结算节点会改。
+- Automated evidence: 正式主场景已断言投影往返、棋盘就绪、格子坐标和对象状态。分不分辨得出仍要人看。
+- User verdict: 尚未人工确认。
+
+### MQA-GODOT-TILE-INPUT-FEEL — 点格子和换领队的手感
+
+- Status: `pending`
+- Source: 玩法规格驱动的格子冒险
+- Action: 点格子边缘和有人的格子，让领队走短路和长路，换头像后再用每个领队走一次。
+- Expected: 想点的格和人能稳定点中；选中的领队变化明显；站着不动的同伴看起来不会接受移动。路径只提交一次已由测试断言。
+- Observe: 指针高亮、路线预览、领队头像、走路。
+- Preserve on failure: 短视频或连续截图、点击位置、期望格和实际格。
+- Save boundary: 选领队是临时的；提交移动可能改检查点。
+- Automated evidence: 正式输入已断言格子和角色目标、换领队检查点以及最终坐标。手感仍要人看。
+- User verdict: 尚未人工确认。
+
+### MQA-GODOT-TILE-SCENE-CHANGE — 交互前后现场是否一眼能看出来
+
+- Status: `pending`
+- Source: 玩法规格驱动的格子冒险
+- Action: 做一次普通宝箱、诅咒宝箱和守卫祭坛，包括进战斗再回到原来的场景。
+- Expected: 每个物件交互前后不一样，看得明白；胜利回到同一节点时，箱子或祭坛明显已经解决。只结算一次、战斗上下文正确已由测试断言。
+- Observe: 互动物件、场景遮罩、战后棋盘。
+- Preserve on failure: 前后截图、节点和物件 ID、存档副本。不要重试同一次交互。
+- Save boundary: 交互和战斗结算会改 Run；先留事件前检查点。
+- Automated evidence: 交互结算、事件战就绪、遮罩更新和幂等状态已断言。前后好不好认仍要人看。
+- User verdict: 尚未人工确认。
+
+### MQA-GODOT-TILE-ROUTE-MISCLICK — 出口会不会一点就误离开
+
+- Status: `pending`
+- Source: 当前节点里的直接后继出口
+- Reopen reason: 以前的路线总览和两段提交已去掉，现在在当前场景里点出口。
+- Action: 在每个有多个出口的节点，点出口边缘、两个出口之间，以及无关的棋盘或背景，再故意进入一个出口。
+- Expected: 差点点到或点背景不会离开；看出口标签就能知道要去哪。只显示直接后继、点中后只离开一次已由测试断言。
+- Observe: 出口物件和标签、指针高亮、到达的节点。
+- Preserve on failure: 截图或短视频、指针位置、源节点和实际到达的节点。不要再点下一次离开。
+- Save boundary: 看和误点不应改 Run；点中出口会立刻进入下一节点，先留副本。
+- Automated evidence: 正式主场景已断言每个出口只指向直接后继，锁定节点点不了，离开只提交一次。标签好不好认、会不会误点仍要人看。
+- User verdict: 尚未人工确认。
+
+### MQA-GODOT-START-FLOW — 真正重启进程后的第一屏
+
+- Status: `pending`
+- Source: 恢复后的先营地流程
+- Action: 分别用空存档、半截开局、普通节点、未完成战斗，以及一份可丢弃的损坏副本，真正关掉再打开程序。
+- Expected: 第一屏就是该去的地方，没有旧主页；损坏档被隔离开，不把正常档一起弄坏。序列化、恢复和固定种子已由测试断言。
+- Observe: 第一屏、Run 种子、`user://pure-run` 文件、Godot 输出。
+- Preserve on failure: 存档和损坏副本、第一屏截图、第一条输出错误。
+- Save boundary: 用隔离副本；不要拿唯一的生产存档做损坏测试。
+- Automated evidence: V11 序列化、规范化和会话恢复已由纯 .NET 测试断言。真正的第一帧和进程重启仍要人看。
 - User verdict: none.
 
-### MQA-GODOT-MAP-CAMERA — Start atlas preview and camera controls
+### MQA-GODOT-MAP-CAMERA — 开局总览好不好读、镜头顺不顺
 
 - Status: `pending`
-- Source: Restored atlas stabilization (`c1207f0a`)
-- Action: In Current mode click candidate bodies and move the leader; press `M` for Overview, browse with right-drag and WASD/arrow keys, click a Preview, use the wheel, then return with `M` and focus with `F/Home`.
-- Expected: Current reliably selects actors and shows the complete Start board; Overview remains readable, permits only browsing/Preview, and reaches the farthest node. The wheel has no effect; `M` switches modes regardless of focus; titles stay centered above their own TileMaps; mode-specific hints do not overlap.
-- Observe: StartCampView, 10×10 bounds, Start→N1 endpoint, route direction, node scale/titles, Party Setup, hints, Esc overlay, and Godot Output.
-- Preserve on failure: Short video, window size, input sequence, click position, node ID, camera state, and the first Output error.
-- Save boundary: Camera and Preview are read-only; do not advance through an exit while preserving a failure.
-- Automated evidence: exact code HEAD `a501b359` ran with the pinned Godot 4.7.1 Mono executable and passed the unified verifier. Godot tests cover body/overlap targeting, Overview selection restrictions, wheel invariance, `M`/`F` state changes, layout scale and title hierarchy; visual readability and input feel remain manual.
-- User verdict: none after restoration.
+- Source: 恢复后的地图集稳定
+- Action: 在当前模式点候选身体并移动领队；按 `M` 进总览，用右键拖动和方向键浏览，点一次预览，滚轮试一次，再按 `M` 回来，用 `F` 或 Home 对焦。
+- Expected: 当前模式能看全起始棋盘；总览仍然看得清，并且能浏览到最远的节点；提示不互相压住。点谁、滚轮无效、`M` 和 `F` 会切换已由测试断言。
+- Observe: 起始营地、节点标题、队伍设置、提示、Esc 遮罩。
+- Preserve on failure: 短视频、窗口大小、输入顺序、点击位置。
+- Save boundary: 镜头和预览是只读的；保留失败现场时不要从出口离开。
+- Automated evidence: Godot 测试已断言身体点选、总览限制、滚轮不变、`M`/`F` 状态和标题层级。好不好读、镜头手感仍要人看。
+- User verdict: 恢复之后尚未再给结论。
 
-### MQA-GODOT-START-ESC — Start exit, skill setup and Esc run controls
+### MQA-GODOT-START-ESC — 营地菜单好不好读，以及真正退出再开
 
 - Status: `pending`
-- Source: Restored Start-first flow (`c08499c3`)
-- Action: Test the exit at 0/3 through 3/3, complete starting skills, inspect Esc, then separately exercise setup Abandon Run and PendingBattle Save and Quit with isolated saves.
-- Expected: The exit cannot advance before 3/3 and commits once afterward; the menu exposes the documented Run controls; Abandon creates an Abandoned summary and a new camp; Save and Quit resumes the same Encounter/Seed entry checkpoint.
-- Observe: Start exit, skill page, Esc overlay, Terminal Summary, resumed battle entry, and Godot Output.
-- Preserve on failure: Menu/summary screenshots, complete input sequence, Run seed/revision, checkpoint save/backup, and Output.
-- Save boundary: Abandon, skill selection, and quit mutate the isolated Run; preserve a copy first.
-- Automated evidence: Setup transitions, persistence, PendingBattle checkpoint, and quit behavior have pure .NET coverage; menu readability and real restart remain manual.
+- Source: 恢复后的先营地流程
+- Action: 看 0/3 到 3/3 的出口，完成起始技能，打开 Esc。再用隔离存档分别试放弃本局，以及战斗中保存并退出后真正重启。
+- Expected: 菜单字看得清，列出的是本局控制而不是旧主页。三人未满不能走、满了只走一次，以及放弃和保存后的恢复，已由测试断言；真正关掉进程再打开仍要人看。
+- Observe: 起始出口、技能页、Esc 遮罩、终局摘要、恢复后的战斗入口。
+- Preserve on failure: 菜单截图、完整输入顺序、Run 种子、检查点副本。
+- Save boundary: 放弃、选技能和退出会改隔离 Run；先留副本。
+- Automated evidence: 开局转移、持久化、未完成战斗检查点和退出已有纯 .NET 覆盖。菜单好不好读、真正重启仍要人看。
 - User verdict: none.
 
-### MQA-GODOT-TILE-ESCORT-DIFFICULTY — Lost villager escort readability and difficulty
+### MQA-GODOT-TILE-ESCORT-DIFFICULTY — 迷路村民护送清不清晰、难不难
 
 - Status: `pending`
-- Source: Gameplay-Test-Driven Tile Adventure Goal
-- Action: Accept the lost-villager escort, cross the relevant nodes, and play the escort battle while allowing enemies at least one opportunity to threaten the villager.
-- Expected: Escort ownership and destination remain clear; villager AI behavior is understandable; enemy threat is noticeable but recoverable; villager death and party defeat produce the documented failure, while survival produces one reward and completion.
-- Observe: Escort overlay, villager position/HP, enemy target choices, objective result, reward, node state, and Godot Output.
-- Preserve on failure: Run seed, node/battle IDs, turn sequence, villager HP/cell, enemy targets, result, save/backup copy, and Output.
-- Save boundary: Accepting, battle turns, and settlement mutate the Run; use the pre-battle checkpoint for replay and keep production backup unchanged.
-- Automated evidence: Escort state, protected-NPC AI, enemy priority target, special victory/failure, reward, current V10 round-trip, and idempotent settlement assertions pass.
-- User verdict: None; pending human acceptance.
+- Source: 玩法规格驱动的格子冒险
+- Action: 接受迷路村民护送，走过相关节点，战斗里至少给敌人一次威胁村民的机会。
+- Expected: 谁是护送对象、要去哪，都看得清；村民的行动让人明白；威胁明显但还有机会救；死亡和存活的结果在画面上分得开。状态、优先目标和奖励规则已由测试断言。
+- Observe: 护送遮罩、村民位置和血量、敌人打谁、奖励。
+- Preserve on failure: Run seed、回合顺序、村民血量和格子、敌人目标。
+- Save boundary: 接受、战斗和结算会改 Run；用战前检查点重放。
+- Automated evidence: 护送状态、受保护村民的 AI、敌人优先目标、胜负和奖励已断言。清不清晰、难不难仍要人看。
+- User verdict: 尚未人工确认。
 
-### MQA-GODOT-POET-RUNTIME — 诗人开局、技能表现与临时分身
-
-- Status: `pending`
-- Source: 第五职业诗人、六套技能与临时分身功能实现；本轮接入获批 Melee/Cast/Hit DR/UL 与独立 Death 后重开
-- Reopen reason: 诗人战斗表现从 Idle/Death 占位改为正式动作与死亡姿态，原 deferred 结论不能覆盖新的视觉行为。
-- Action: 使用三个 disposable Run，在 Start Camp 确认五名候选均有独立站位；每次选择“诗人”与另外两人，并分别从剑仙、诗仙、酒仙起步。进入战斗后实际使用普攻、侠客行、剑雨、将进酒、行路难、月下独酌和山中与幽人对酌，并让诗人从南/北/东/西朝向发动 Melee/Cast、受到攻击和死亡；观察冲锋/范围攻击、三次回合开始治疗、敏捷提升、自疗净化，以及按施法前朝向后退并在原地留下分身。
-- Expected: 候选和战斗 UI 显示“诗人”，第五候选不重叠或崩溃；Idle、Melee、Cast、Hit 在南/西使用 DR、北/东使用 UL，只有东/西镜像，动作恢复后回到正确 Idle 且无脚底跳位、裁切或额外蓝色 tint。普攻与侠客行显示 Melee，其余主动技能显示 Cast，受击显示 Hit，Death 使用居中且不镜像的独立倒地图；Ranged 缺图仍安全回退方向 Idle。分身只继承 Idle 身份并以半透明青色明显区分，不错误播放本体动作或死亡图。技能反馈、HP/MP/状态变化容易理解；后退和生成原子完成，敌人在合法直接攻击范围内优先攻击分身。
-- Observe: Start Camp 候选区、Battle action bar、棋盘单位/状态层、HP/MP、事件日志、CheatConsole 与 Godot Output。
-- Preserve on failure: Run seed、起始分支、技能等级、双方格子与朝向、具体错误姿态、施法前后 HP/MP/状态、截图或短视频、battle checkpoint/save 副本和完整 Output。
-- Save boundary: 选择队伍、成长和战斗会修改当前 Run；只使用 disposable/隔离存档，不覆盖生产存档。
-- Automated evidence: 7 份不可变 runtime authorization receipt 绑定 approved source→runtime SHA、`PureRunPoet.tres`、cty41 决定与本人工边界；ResourceSaver 重复生成、Poet Resource/Actor 定向 GdUnit 5/5、Melee/Cast/Hit×四方向、Ranged fallback、白色 tint、独立 Death offset、分身字段清理，以及 Application presentation 10/10 对诗人 cue 分类均通过。技能公式与 AI 分身优先仍由既有自动化覆盖；动作可读性、镜像观感、Tile 落点、半透明分身辨识度和职业体验仍需人工判断。统一 Godot verifier 在本轮运行至 manual QA policy 前的 Core 209/209、Application 206/206、FrozenOracle 15/15 均通过；其后修复账本分区并通过 agent-policy 17/17，但按“一次统一 verifier”上限未重复整套。
-- User verdict: none after this visual change; previous 2026-09-17 defer applied only to the Idle/placeholder implementation.
-
-### MQA-GODOT-STALE-SAVE-RESET — 当前构建存档冷恢复与旧半截档清档
+### MQA-GODOT-POET-RUNTIME — 诗人动作、分身和职业手感
 
 - Status: `pending`
-- Source: S1 Act 状态推导接入 `ResumeRun`；开发期矛盾存档清档决策（2026-10-22）
-- Action: 用当前构建分别在 N1–N3 节点探索中、L4 商店/事件选择后、L5–L6 节点各 Save and Quit 一次，重启后点 Continue；再用一份由结算完成但 Board 未 `.resolved` 的旧构建隔离存档启动。
-- Expected: 当前构建产生的所有存档都直接 Continue 到原节点，不被清除；旧半截存档回到主页，状态栏显示 "Save is from an older build and was cleared. Start a new run."，Continue 变灰，New Run 正常。
-- Observe: 主页状态栏、Continue 按钮、恢复后的页面/节点、`user://pure-run` 存档与 `.bak`、Godot Output。
-- Preserve on failure: 被误清前的 save/backup 副本（先复制再点 Continue）、节点 ID、Run seed/revision 和 Output。
-- Save boundary: 清档会覆盖当前存档；每次测试前复制 `user://pure-run`，不得用唯一生产存档测试。
-- Automated evidence: 清档只针对 `act_state.inconsistent_resolution`（其他推导拒绝仍走旧恢复流程，避免误删）。Core 265、Application 398；隔离 GdUnit 10 套件 95/95（含常驻普通/事件战斗冷热恢复），过程中修复了事件战斗 PendingBattle 被误判的推导缺陷。正式门禁在任务外 public-release 工具测试处中断。2026-10-23 新增 `StaleSaveColdResumeGodotTests` 3/3：脚本玩家经 `GodotRunSaveStore` 写真实 V11 文档（固定 seed 37，调用界面结算、出口与成长按钮同一路径），在第一场结算后、L4 休息选中后、L5 战斗检查点与 L5 结算后分别新建 Main 冷启动，断言局仍在、revision 不变、未显示清档提示、未回主页。2026-10-27 在变基后的 HEAD 上重跑仍为 3/3：首战改为先点营地出口再显式「开战」（由 `EnterBattle` 断言恰好写一次检查点，等待函数不再代点）；Application 415/415；验证器因只比对存活成员而让全员阵亡的局以空队伍通过，已改为存活为空即拒绝并补 3 条用例；控制台打开时 ESC 只关控制台的用例已加入 UI 套件（该套件 48/48）。2026-10-28 规则：`ResumeRun` 新增窄判定，PendingBattle 的检查点含死者或全员死亡一律视为旧构建产物，清档并返回 `run.reset_stale_save`（诊断码 `checkpoint.party_contains_dead`），仅存活者的检查点不被清；Application 418/418。冷读档套件扩至 8/8，新增 L4 商店开店与购买后不重刷库存、L4 事件选中、L6 休息节点，以及两份旧版存档（结算后 Board 未 `.resolved`、检查点含死者）冷启动后被清、状态栏显示清档提示、回主页、Continue 变灰、New Run 可进入 START CAMP。仍需人工确认：真正关闭进程再打开的一次冒烟，以及页面观感。
+- Source: 第五职业诗人与临时分身；接入近战、施法、受击和死亡后重开
+- Reopen reason: 战斗表现从待机和死亡占位换成正式动作，以前的暂缓不能覆盖新画面。
+- Action: 用三局隔离 Run 选诗人，分别从剑仙、诗仙、酒仙起步。战斗里看南、北、东、西的近战、施法、受击和死亡，并看后退后留下的分身。
+- Expected: 五个候选人站位不挤；动作恢复后回到正确待机，脚底不跳、没有多余蓝色；死亡图居中且不镜像；分身是半透明青色，一眼能和本体分开，不跟着播死亡。技能公式和分身优先攻击已由测试断言。
+- Observe: 起始营地候选人、棋盘单位、血量和法力、事件日志。
+- Preserve on failure: Run seed、起始分支、朝向、错误姿态、短视频。
+- Save boundary: 只使用隔离存档。
+- Automated evidence: 诗人资源重复生成、四方向动作、死亡偏移、分身字段清理和表现分类已通过。动作好不好看、分身认不认得出、职业手感仍要人看。
+- User verdict: 这次画面改动后尚未再给结论。2026-09-17 的暂缓只针对当时的待机占位。
+
+### MQA-GODOT-STALE-SAVE-RESET — 真正关掉进程再打开
+
+- Status: `pending`
+- Source: 开发期矛盾存档清档
+- Action: 用当前构建在前三层探索、第 4 层商店或事件、第 5 到 6 层各保存并退出一次，真正关掉再打开后点继续。再用一份结算完成但棋盘未标记完成的旧隔离存档启动。
+- Expected: 当前构建的存档回到原节点，页面正常；旧半截档回到主页，状态栏是“存档来自旧版本，已清除，请开始新游戏”，继续变灰，新游戏能进。冷启动逻辑已由 `StaleSaveColdResumeGodotTests` 断言。
+- Observe: 主页状态栏、继续按钮、恢复后的页面。
+- Preserve on failure: 点继续之前先复制存档和备份、节点 ID、Run seed。
+- Save boundary: 清档会覆盖当前存档；不要用唯一的生产存档。
+- Automated evidence: `StaleSaveColdResumeGodotTests` 已断言当前存档冷启动仍在、旧半截档被清、状态栏提示和继续变灰。真正关闭进程再打开，以及页面观感，仍要人看。
 - User verdict: none.
 
-### MQA-GODOT-TILE-RESIDENT-EXPLORATION — 探索页统一复用驻留战斗地图与战斗单位
+### MQA-GODOT-TILE-RESIDENT-EXPLORATION — 探索页地图和角色看着像战斗里那一套
 
 - Status: `pending`
-- Source: 探索页统一复用驻留地图（初始营地、战斗入口、战后、休息、商店、宝箱、事件共用节点正式 Act 地图）
-- Action: 在隔离 Run 中依次走过战后页、休息、商店、宝箱与一个事件节点（普通、精英、Boss 战斗节点进入即自动开战，无探索页，不在此列）；每页移动领队、点击场景物件，再从右侧出口离开；休息页移动领队后点 Inventory 再返回；另用一份旧版起始探索存档确认仍显示起始营地兜底页。
-- Expected: 每页都是该节点的正式地图（阻挡物与战斗中一致），三名队员显示为与战斗相同的角色精灵而非文字；领队移动后刷新/返回仍停在原位；锁定出口可见但点击提示先完成节点；Inventory 按钮（初始页与已解决页同在右下角同一位置）不遮挡右侧出口；Output 无 `exploration.resident_template_mismatch`，状态栏也不出现 `exploration.*` 提示；战后路线图无 `postbattle.route_*` 警告。
-- Observe: 探索棋盘、角色精灵、右侧出口标记、状态栏、Inventory 按钮、Godot Output。
-- Preserve on failure: 截图（含窗口大小）、节点 ID、领队格、点击位置、Output 的 mismatch 警告。
-- Save boundary: 使用隔离 Run；移动与离开节点会写入存档。
-- Automated evidence: Core `PlaceParty` 用例；`ResidentExplorationPagesGodotTests` 14/14 覆盖各页正式地图、精灵、移动持久化、回退原因上屏、无效站位重新落座、点击规则、全部正式地图物件相邻格可达、Inventory 共用槽位不遮挡出口标记、战后缺目标路线跳过；20 条 gameplay journey 与批量报告 29/29 在新出口几何（右缘 `9,y`）下通过。观感、点击手感与遮挡仍需人工判断。
+- Source: 探索页复用驻留地图
+- Action: 用隔离 Run 看战后、休息、商店、宝箱和一个事件节点。每页走一走、点物件，再从出口离开。休息页打开背包再返回。普通、精英和首领战斗节点会自动开战，不用在这里看探索页。
+- Expected: 每页的地图和三名队员看着就是战斗里那一套，不是文字块；背包按钮不觉得挡出口。正式地图、精灵、站位和按钮不重叠已由测试断言。
+- Observe: 探索棋盘、角色精灵、右侧出口、背包按钮。
+- Preserve on failure: 含窗口大小的截图、节点 ID、领队格。
+- Save boundary: 使用隔离 Run；移动和离开会写存档。
+- Automated evidence: `ResidentExplorationPagesGodotTests` 和玩法旅程已断言正式地图、精灵、移动持久化、点击规则和背包不挡出口标记。观感和点击手感仍要人看。
 - User verdict: none.
 
-### MQA-GODOT-SETTLEMENT-BATTLE-HUD-POLISH — 结算加点/技能卡、战后镜头与战斗行动条复验
+### MQA-GODOT-SETTLEMENT-BATTLE-HUD-POLISH — 加点页、技能卡、战后镜头和战斗抬头好不好看
 
 - Status: `pending`
-- Source: 用户 2026-11-05 截图 review（加点页主属性位置与 Continue 长度、技能卡样式不统一、右上 Progression 文字超框、战后镜头直接俯瞰、行动条头像重复且缺敌人次序、左上角色卡头像未对齐）。
-- Action: 在隔离 Run 中打完 N1：在加点页确认主属性标注并加点、点 Continue；在技能页对比"已掌握"与候选卡；选完后进入战后地图，先观察默认镜头，再点 `Overview`、再按 `M` 切回；进入下一场战斗观察顶部行动条与左上角色卡，轮到敌人行动后再看一次。
-- Expected: 主属性在对应属性行上以金色 `★ Primary` 标注，标题下不再单独一行；Continue 为短按钮并与 `+1` 列右对齐；已掌握技能卡与候选卡尺寸一致、文字不出框；右上 Progression 面板每名角色一行，文字不超出面板；战后默认镜头与战斗时一样只框当前地图，`Overview`/`M` 在俯瞰与当前地图间切换且按钮文字随之变化；行动条只显示圆点、不显示头像（头像已暂时屏蔽）：本回合剩余 + 分隔符 + 下回合完整顺序，敌我颜色区分，可见敌人次序；左上角色卡头像与名字/血条整块垂直对齐。
-- Observe: 加点页、技能页、右上 Progression 面板、战后地图镜头与 Overview 按钮、战斗顶部行动条、左上角色卡。
-- Preserve on failure: 截图（含窗口大小）、所在页面、当前回合与行动单位、Godot Output。
-- Save boundary: 使用隔离 Run；加点、选技能与离开节点会写入存档。
-- Automated evidence: `PlayableRunUiGodotTests`（主属性标签挂在对应属性行、Continue 宽度 ≤240、四张技能卡同尺寸、左上角色卡头像与资源列同一中线）；`ResidentExplorationPagesGodotTests`（战后默认 `FrameExtraPoints` 为空、Overview 按钮与 `M` 键切换并改变缩放、Overview 按钮不遮挡出口标记）；`InitiativeStripGodotTests`（分隔符后接下回合、槽位预算、头像为独立裁切贴图而非 `AtlasTexture`）；Application `Snapshot_PreviewsTheFullNextRoundForBothSidesWithoutACurrentMarker`；统一验证器 `-RequireArtwork` 通过。观感与对齐仍需人工判断。
+- Source: 2026-11-05 截图复查
+- Action: 用隔离 Run 打完第一场：看加点页和技能卡，进战后地图看默认镜头，点总览再按 `M` 切回；下一场看行动条和左上角色卡，等敌人行动时再看一次。
+- Expected: 主属性金色标记不别扭，继续按钮不显得太长；两列技能卡看起来一样大、字不出框；右上每位角色一行、不超框；战后镜头不是突然拉成俯瞰；行动条圆点能分清敌我；左上头像和名字、血条看着对齐。位置、宽度、四张卡同尺寸和镜头缩放已由测试断言。
+- Observe: 加点页、技能页、右上面板、战后镜头、行动条、左上角色卡。
+- Preserve on failure: 含窗口大小的截图、所在页面、当前回合。
+- Save boundary: 使用隔离 Run；加点和选技能会写存档。
+- Automated evidence: `PlayableRunUiGodotTests`、`ResidentExplorationPagesGodotTests` 和 `InitiativeStripGodotTests` 已断言主属性位置、按钮宽度、技能卡尺寸、镜头缩放和行动条顺序。观感和齐不齐仍要人看。
 - User verdict: none.
 
 ## Passed
@@ -402,278 +402,278 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 ### MQA-GODOT-PROGRESSION-DOWNED-EXCLUDED — 战斗结束时倒地的角色不升级
 
 - Status: `passed`
-- Source: 倒地角色不升级计划（`PureRunSettlementService.ProgressionTarget`：成长候选排除战斗结束时倒地的角色）
-- Action: 使用隔离存档进入一场普通战斗，让队伍中等级最低的角色在战斗结束前倒地并保持倒地，由其余角色取胜；再打一场无人倒地的战斗作对照。另外在第 4 或第 6 层各打一场战斗节点和一场事件战并取胜，事件战后分别试一次点 Continue 和直接走向出口。
-- Expected: 升级页面显示仍站着的角色中等级最低的一名（同级按队伍顺序）；倒地角色战后恢复站起但等级不变。无人倒地时仍由全队最低等级角色升级。第 4/6 层战斗节点胜利后进入升级页；事件战胜利后先看到事件结果场景，点 Continue 或走到出口都会进入升级页。
-- Observe: 战斗结算后的升级页、队伍等级与 HP、Godot Output。
-- Preserve on failure: Run seed、节点 ID、战斗结束时各角色 HP 与等级、升级页截图、存档副本和完整 Output。
-- Save boundary: 战斗和结算会修改当前 Run；使用 disposable/隔离存档。
-- Automated evidence: Core `Settlement_ProgressionTargetsOnlyCharactersStandingAtBattleEnd` 5 组，同时覆盖 `Apply` 与第 5 层 `ApplyFixedLateBattle`；满级不入选 2 组；Application 事件战结算断言追加一条以节点事务键命名的成长且重复结算不重复追加。页面层：StaleSaveColdResume 中 3 项经真实 `CompleteBattle` 断言升级页标题（队首倒地则显示第二名且倒地者被救起、等级不变，完成升级后只有获选者 +1；无人倒地显示队首；第 6 层战斗节点最低等级者倒地则显示另一名最低等级者）。ResidentEventBattleProduction 断言事件战走出口和点 Continue 都进入升级页且当时不写档。`LayerFourBattleNodeStartsTheFight` 确认进入 `layer_04_battle` 后战斗会开始。未计入本次通过：测试直接构造战斗结束 HP，没有在实战里打倒角色；第 4 层只证明能开战，升级页断言走的是第 6 层同一条结算路径。
-- User verdict: passed by automated evidence under the narrowed manual-acceptance rule (2026-11-13). 依据是测试已断言的页面文字、存档字段和导航落点，不是用户看过截图。
+- Source: 倒地角色不升级计划
+- Action: 用隔离存档让等级最低的角色在战斗结束前倒地并取胜，再打一场无人倒地作对照；第 4 或第 6 层的战斗和事件战也各看一次升级页从哪进来。
+- Expected: 升级页显示仍站着的人里等级最低的一名；倒地者被救起但等级不变。事件战先看到结果，再从继续或出口进入升级页。
+- Observe: 升级页、队伍等级和血量。
+- Preserve on failure: Run seed、战斗结束时的血量和等级、升级页截图。
+- Save boundary: 使用隔离存档。
+- Automated evidence: 结算测试和升级页测试已断言倒地者不入选、无人倒地选队首、第 6 层同一路径，以及事件战的继续和出口会打开升级页。未计入：没有在实战里打倒角色；第 4 层只证明能开战。
+- User verdict: 2026-11-13 按收窄后的规则，用自动证据收口。依据是测试断言的页面文字、存档字段和导航，不是用户看过截图。
 
-### MQA-ARTWORK-DEMONBOUND-DEATH — Rounded death Sprite identity and size
-
-- Status: `passed`
-- Source: Demonbound Death Round v04 visual review
-- Action: Compare Demonbound Idle DR, previous Death v02, approved Hunter Death and Round v04 at the same 128-pixel scale.
-- Expected: Round v04 preserves the Demonbound identity, X eyes, detached sword and cohesive rounded corpse; its centered `56×48` preview footprint does not introduce a visible scale problem relative to the approved references.
-- Observe: `Tools/artworks/doge/reviews/doge_capsule_demonbound_death_round_size_compare_v05.png`.
-- Preserve on failure: Comparison PNG, selected candidate and exact observed size or identity mismatch.
-- Save boundary: Artwork review only; no Godot runtime Resource or save data is changed.
-- Automated evidence: Artwork strict inventory reports 385 items with zero issues; release Sprite validation reports 129 files with zero failures. Automation covers RGBA, chroma residue, centered AABB and paired preview, not visual approval.
-- User verdict: User explicitly reported `ok 没问题` after reviewing the four-way size comparison on 2026-08-20.
-
-### MQA-ARTWORK-DEMONBOUND-HIT-UL — Hit UL recoil, rear layering and right-hand sword
+### MQA-ARTWORK-DEMONBOUND-DEATH — 魔剑士圆角死亡图的身份和尺寸
 
 - Status: `passed`
-- Source: Demonbound Hit UL v3 visual review
-- Action: Compare the approved Demonbound Melee UL sword reference, accepted swordless Hit UL v2 and right-hand sword Hit UL v3.
-- Expected: The native rear three-quarter body recoils toward screen-left while both ears trail screen-right; the body covers both feet upper edges; exactly one visible eye and tear remain; the anatomical right hand at screen-left grips the approved compact narrow ancestral sword without changing the accepted body pose.
-- Observe: `Tools/artworks/doge/reviews/doge_capsule_demonbound_hit_ul_sword_compare_v03.png`.
-- Preserve on failure: The comparison image and the first incorrect ear, foot, hand, sword or body edge.
-- Save boundary: Offline artwork review only; no runtime asset or Run save is modified.
-- Automated evidence: Invocation/delivery and immutable human feedback are recorded, and artwork strict provenance validation passes. Semantic masking, deterministic calibration, complete bound reviews, approval receipt and runtime integration remain outside this visual verdict.
-- User verdict: Passed explicitly on 2026-08-20; approval is limited to the Hit UL v3 visual arrangement.
+- Source: 魔剑士死亡第四轮画面复查
+- Action: 把魔剑士待机、上一版死亡、已批准的猎人死亡和第四轮圆角死亡放在同一 128 像素比例下比较。
+- Expected: 第四轮仍是魔剑士，有叉形眼、脱手的剑和完整的圆形尸体；居中的 56×48 预览相对已批准参考没有明显比例问题。
+- Observe: `Tools/artworks/doge/reviews/doge_capsule_demonbound_death_round_size_compare_v05.png`。
+- Preserve on failure: 对比图、所选候选，以及看到的尺寸或身份差异。
+- Save boundary: 只审图，不改 Godot 运行时资源或存档。
+- Automated evidence: 严格清单 385 项无问题，发布精灵 129 个文件无失败。自动检查覆盖通道、色边、居中包围盒和成对预览，不代替看图。
+- User verdict: 用户在 2026-08-20 看过四面尺寸对比后明确说没问题。
 
-### MQA-ARTWORK-DEMONBOUND-HIT-DR — Hit DR body pose and reaction language
-
-- Status: `passed`
-- Source: Demonbound Hit DR v2 visual review
-- Action: Compare the approved Demonbound Idle DR identity, approved Hunter Hit reaction language, failed Hit DR v1 and swordless Hit DR v2.
-- Expected: Demonbound keeps its gray-black identity and red collar while the rigid capsule core leans screen-right; folded ears, widened eyes, exactly two tear streaks and the tense mouth read as the approved hit peak; the incorrect generated sword is absent so the approved Demonbound sword can be assembled separately.
-- Observe: `Tools/artworks/doge/reviews/doge_capsule_demonbound_hit_dr_identity_pose_review_v02.png`.
-- Preserve on failure: The comparison image and the first identity, pose or expression mismatch.
-- Save boundary: Offline artwork review only; no runtime asset or Run save is modified.
-- Automated evidence: Invocation/delivery and immutable feedback receipts are recorded, and artwork strict provenance validation passes. Chroma cleanup, semantic masking, final equipment assembly and runtime integration remain outside this visual verdict.
-- User verdict: Passed explicitly on 2026-08-20; approval is limited to the swordless Hit DR v2 body frame.
-
-### MQA-ARTWORK-DEMONBOUND-CAST-UL — Cast UL component depth and silhouette
+### MQA-ARTWORK-DEMONBOUND-HIT-UL — 魔剑士左上受击的后仰、层次和右手剑
 
 - Status: `passed`
-- Source: Capsule sprite component assembly v08 visual review
-- Action: Compare the approved Cast DR pose with Cast UL v08 and inspect the feet, hidden paws, reused sword silhouette and body occlusion.
-- Expected: Both paws are fully hidden behind the back-facing body; the accepted DR sword keeps its width and scale, sits behind the body and exposes only the short tip between the ears; both feet retain the accepted partial body occlusion.
-- Observe: `Tools/artworks/doge/reviews/doge_capsule_demonbound_cast_dr_ul_sword_depth_compare_wip_v08.png`.
-- Preserve on failure: The comparison image, exact component transform and the first incorrect visible edge.
-- Save boundary: Offline artwork review only; no runtime asset or Run save is modified.
-- Automated evidence: Artwork strict provenance validation passes. Layering, silhouette readability and 3D interpretation remain human-only.
-- User verdict: Passed explicitly on 2026-08-20; approval is limited to the Cast UL v08 visual arrangement and does not authorize runtime integration.
+- Source: 魔剑士左上受击第三版画面复查
+- Action: 比较已批准的左上近战剑、无剑受击第二版，以及右手持剑的受击第三版。
+- Expected: 后侧四分之三的身体向画面左侧后仰，双耳甩向画面右侧；身体盖住双脚上沿；只剩一只眼睛和一道泪；画面左侧的解剖学右手握住那把短剑，身体姿势不变。
+- Observe: `Tools/artworks/doge/reviews/doge_capsule_demonbound_hit_ul_sword_compare_v03.png`。
+- Preserve on failure: 对比图，以及第一处不对的耳、脚、手、剑或身体边缘。
+- Save boundary: 只审图，不改运行时资源或存档。
+- Automated evidence: 调用、交付和不可变的人工反馈已记录，严格来源校验通过。抠图、校准和运行时接入不在这次画面结论里。
+- User verdict: 2026-08-20 明确通过；只批准左上受击第三版的画面安排。
 
-### MQA-GODOT-FULL-RUN — Complete Run shell and route recovery
-
-- Status: `passed`
-- Source: Phase 8E Boss settlement transaction revision fix
-- Reopen reason: The second live replay proved terminal detection and presentation drain completed; the actual failure was `save.non_increasing_revision` after terminal transition reused revision 148. The transition and settlement coordinator are now fixed and reviewed.
-- Action: Continue the preserved Boss checkpoint, defeat the final enemy, inspect the terminal settlement lines, then use Return Home.
-- Expected: The final animation completes, settlement advances from Submitting to Saved and NavigationCompleted, BossVictory Summary appears once, and Return Home ends the Run.
-- Observe: Battle page, CheatConsole `BattleSettlementDiagnostic`, BossVictory Summary, Home Continue state, and Godot Output.
-- Preserve on failure: Keep the page open; copy all CheatConsole logs, retain the production save and backup, and record the last settlement stage/error.
-- Save boundary: This replay commits the terminal Summary and ends the Run.
-- Automated evidence: Terminal revision increases through ApplyFullRunTransition and a controlled store; ActiveRun becomes null, Summary is one-shot, failed readback recovery and duplicate callbacks are guarded.
-- User verdict: Passed in the latest report.
-
-### MQA-GODOT-CHEAT-CONSOLE-COPY — Read-only battle log copying
+### MQA-ARTWORK-DEMONBOUND-HIT-DR — 魔剑士右下受击的身体和表情
 
 - Status: `passed`
-- Source: Phase 8E Boss settlement diagnostics and CheatConsole copy
-- Action: Open CheatConsole, drag-select several lines and copy with Ctrl+C and the right-click menu; then test Copy Visible under a filter and Copy All.
-- Expected: Selected text copies normally; Copy Visible contains only rendered filtered lines, Copy All contains all retained lines, and no console interaction triggers battle commands.
-- Observe: CheatConsole selection/context menu/status text and an external text editor used only for paste verification.
-- Preserve on failure: Screenshot, selected filter, copied text, and any Godot Output error.
-- Save boundary: Console copying does not mutate the Run or save.
-- Automated evidence: Selection mode, filtered/all rendering, injected clipboard behavior and gameplay input blocking are asserted.
-- User verdict: Passed in the latest report.
+- Source: 魔剑士右下受击第二版画面复查
+- Action: 比较已批准的右下待机、猎人受击语言、失败的第一版和无剑的第二版。
+- Expected: 保持灰黑身份和红项圈，硬核胶囊向画面右侧倾；折耳、睁大的眼、正好两道泪和绷紧的嘴读得出是受击顶点；错误生成的剑不在，以便另装正式的剑。
+- Observe: `Tools/artworks/doge/reviews/doge_capsule_demonbound_hit_dr_identity_pose_review_v02.png`。
+- Preserve on failure: 对比图，以及第一处身份、姿势或表情差异。
+- Save boundary: 只审图，不改运行时资源或存档。
+- Automated evidence: 调用、交付和反馈收据已记录，严格来源校验通过。去色边、抠图、装剑和运行时接入不在这次结论里。
+- User verdict: 2026-08-20 明确通过；只批准无剑的右下受击第二版身体。
 
-### MQA-GODOT-MYSTERY-ADJUDICATION — Fixed-option deterministic event adjudicator
-
-- Status: `passed`
-- Source: Phase 7B–8E Mystery adjudicator redesign
-- Action: Enter a Mystery node, note the assigned party member and all fixed options, Reload before choosing, then Continue and resolve one option.
-- Expected: The assigned member, options, rates and eventual result remain deterministic across Reload.
-- Observe: Mystery page, result page, Continue and Output.
-- Preserve on failure: Run seed, event ID, assigned character, options/rates and save copy.
-- Save boundary: Resolving an option mutates the Run.
-- Automated evidence: Deterministic assignment, option attributes, roll and Save V5 round-trip are asserted.
-- User verdict: Passed in the latest report.
-
-### MQA-GODOT-SUMMON-CONTROL — Unity summon AI ownership parity
+### MQA-ARTWORK-DEMONBOUND-CAST-UL — 魔剑士左上施法的层次和轮廓
 
 - Status: `passed`
-- Source: Phase 7B–8E frozen summon AI and controller repair
-- Reopen reason: Skeleton Warrior, Skeleton Mage and Fire Demon now resolve internal AI/loadout by Unit ContentId; Decoy is explicitly non-acting.
-- Action: Summon Skeleton Warrior, Skeleton Mage and Fire Demon, then advance to each summon turn.
-- Expected: AI-authored summons act automatically; Decoy remains non-attacking.
-- Observe: Turn Order, input lock, CheatConsole AI log and unit actions.
-- Preserve on failure: Summon type/level, current actor, AI log and Output.
-- Save boundary: Ordinary battle mutation.
-- Automated evidence: Internal resources, loadouts, automatic turns, input rejection and Decoy skip are asserted.
-- User verdict: Passed with no anomaly in the latest report.
+- Source: 胶囊精灵组件第八版画面复查
+- Action: 把已批准的右下施法姿势和左上施法第八版放在一起，看脚、藏起的爪、复用的剑轮廓和身体遮挡。
+- Expected: 两只爪完全藏在背对镜头的身体后面；剑保持原宽度，在身体后面，只在双耳之间露出短尖；双脚仍保留原来的部分遮挡。
+- Observe: `Tools/artworks/doge/reviews/doge_capsule_demonbound_cast_dr_ul_sword_depth_compare_wip_v08.png`。
+- Preserve on failure: 对比图、组件变换，以及第一处不该露出来的边。
+- Save boundary: 只审图，不改运行时资源或存档。
+- Automated evidence: 严格来源校验通过。层次、轮廓和立体读法仍是当时的人工结论。
+- User verdict: 2026-08-20 明确通过；只批准左上施法第八版的画面，不授权接入运行时。
 
-### MQA-GODOT-PROGRESSION-ATOMIC — Non-skippable atomic growth
-
-- Status: `passed`
-- Source: Phase 8E camera/menu/damage/growth transaction
-- Action: Allocate an attribute, close before choosing a skill, Continue, then finish progression once.
-- Expected: Continue restarts at attribute allocation; final confirmation applies once and unlocks the next node once.
-- Observe: Progression pages, map node state and Home Continue.
-- Preserve on failure: Save copy, screenshots and Output.
-- Save boundary: PendingProgression persists; unfinished UI drafts are not written.
-- Automated evidence: Revision, V5 normalization, one-shot transaction and unlock semantics are asserted.
-- User verdict: Passed with no anomaly in the latest report.
-
-### MQA-GODOT-TURN-PACING — Playable enemy initiative pacing
+### MQA-GODOT-FULL-RUN — 完整一局的终局外壳
 
 - Status: `passed`
-- Source: Phase 7B–8E playable enemy speed profile
-- Action: Observe the first two rounds of a normal encounter.
-- Expected: Enemy archetypes retain relative differences without the entire enemy team consistently preceding all player characters.
-- Observe: Turn Order and CheatConsole.
-- Preserve on failure: Encounter ID, Turn Order and actor sequence.
-- Save boundary: Ordinary battle mutation.
-- Automated evidence: Speed profile generation, player preservation and derived-stat recomputation remain asserted.
-- User verdict: Passed in the latest report.
+- Source: 首领结算事务修订修复
+- Reopen reason: 第二次实机重放证明终局检测和表现队列已经走完；真正的失败是终局转移复用了修订号 148。转移和结算协调已修好并复查。
+- Action: 从保留的首领检查点继续，打倒最后的敌人，看终局结算，再回主页。
+- Expected: 最后的动画播完，结算从提交走到已保存和导航完成，首领胜利摘要只出现一次，回主页后本局结束。
+- Observe: 战斗页、作弊控制台里的结算诊断、首领胜利摘要、主页的继续状态。
+- Preserve on failure: 页面先别关；复制控制台日志，留下生产存档和备份，记下最后的结算阶段。
+- Save boundary: 这次重放会提交终局摘要并结束本局。
+- Automated evidence: 终局修订经完整转移递增；活跃 Run 变空，摘要只写一次，失败回读和重复回调有保护。
+- User verdict: 最近一次报告中通过。
 
-### MQA-GODOT-L4-RECOVERY — Layer 4 legacy-save recovery
-
-- Status: `passed`
-- Source: Phase 7B–8E L4 map invariant repair
-- Reopen reason: The live V5 save reached `AwaitingLayerFourChoice` with three completed battles but no MapState, leaving all Layer 4 routes locked.
-- Action: Continue the preserved current Run and enter Layer 4.
-- Expected: Layer 4 routes are reachable and the selected route advances to the first Elite battle.
-- Observe: Rogue Map, selected route, Continue, and Godot Output.
-- Preserve on failure: Save/backup, Run seed/revision, map screenshot, and Output.
-- Save boundary: Uses the current persistent Run.
-- Automated evidence: Legacy V5 repair, deterministic projection and invariant checks remain covered.
-- User verdict: Passed; the Run has advanced to the first Elite encounter.
-
-### MQA-GODOT-FIRE-DEMON-COMBAT — Dedicated Fire Demon attack
+### MQA-GODOT-CHEAT-CONSOLE-COPY — 只读战斗日志复制
 
 - Status: `passed`
-- Source: Phase 7B–8E frozen Fire Demon attack migration
-- Action: Summon a Fire Demon and use its dedicated attack.
-- Expected: The attack targets correctly and follows its frozen damage, Ignite, range and per-turn contract.
-- Observe: Fire Demon action, target HP/status, CheatConsole, and Output.
-- Preserve on failure: Cells, HP before/after, log and current turn.
-- Save boundary: Ordinary battle mutation.
-- Automated evidence: Frozen contract, Resource identity, damage/status/no-crit and use limit remain covered.
-- User verdict: Passed in the latest report.
+- Source: 首领结算诊断和控制台复制
+- Action: 打开作弊控制台，拖选几行，用 Ctrl+C 和右键菜单复制；再在筛选下试“复制可见”和“全部复制”。
+- Expected: 选中文字能正常复制；复制可见只有筛出来的行，全部复制含保留的所有行；控制台操作不会发出战斗指令。
+- Observe: 控制台的选择、右键菜单、状态文字，以及用来粘贴核对的外部文本编辑器。
+- Preserve on failure: 截图、筛选、复制到的文字、Godot 输出错误。
+- Save boundary: 复制不改 Run 或存档。
+- Automated evidence: 选择模式、筛选与全部渲染、注入剪贴板，以及不触发玩法输入，均已断言。
+- User verdict: 最近一次报告中通过。
 
-### MQA-GODOT-HUD-SKILL-PRESENTATION — HUD and committed skill visuals
-
-- Status: `passed`
-- Source: Phase 8E compact action bar and committed-presentation highlight fix
-- Reopen reason: Action buttons now use display names and compact second-line costs; active-tile highlighting is suppressed during committed action playback.
-- Action: Check the compact action bar, vertical Lightning, overlapping alpha-aware selection, Poison Spear held/unarmed/drop/Pickup or Recover, HUD controls, and Backquote CheatConsole.
-- Expected: Basic attacks have no MP line; skill IDs have no `skill.` prefix; positive MP cost is on line two; during action animation the acting unit has no selected tile. Remaining skill/HUD visuals follow their committed state.
-- Observe: Action buttons, actor feet/tile, battle actors, HUD, hover detail, CheatConsole, and Output.
-- Preserve on failure: Screenshot/video, selected actor ID/tile, button text, skill event log, and current encounter.
-- Save boundary: Skills mutate the battle; use a replayable encounter checkpoint.
-- Automated evidence: Label formatting, action-state marker suppression, event-derived targets, alpha hit ordering, spear lifecycle, console guards, and renderer smoke are asserted; sizing and visual parity remain manual.
-- User verdict: Passed in the latest user report.
-
-### MQA-GODOT-BOARD-FIT — Isometric board framing and input
+### MQA-GODOT-MYSTERY-ADJUDICATION — 固定选项的事件判定
 
 - Status: `passed`
-- Source: Phase 8E camera/menu/damage/growth transaction
-- Action: Open a battle, resize across 16:9, 16:10, and 21:9, then hover and click edge and overlapping units.
-- Expected: The complete 10×10 board is centered without the old right-side reserve; HUD stays clear and pointer selection remains accurate.
-- Observe: Battle board, HUD bounds, hover details, and selected tile/unit.
-- Preserve on failure: Screenshot with resolution, selected coordinate, and current encounter.
-- Save boundary: Uses the current Run; resizing and selection do not mutate the save.
-- Automated evidence: Board AABB fitting and screen/grid round trips are asserted; visual framing and pointer feel remain manual.
-- User verdict: Passed in the latest user report.
+- Source: 神秘事件判定重做
+- Action: 进入一个神秘节点，记下被指定的队员和全部固定选项，选之前重载，再继续并结算一个选项。
+- Expected: 指定的人、选项、成功率和最终结果在重载前后一致。
+- Observe: 神秘事件页、结果页、继续。
+- Preserve on failure: Run seed、事件 ID、指定角色、选项和存档副本。
+- Save boundary: 结算选项会改 Run。
+- Automated evidence: 确定性分配、选项属性、掷点和第五版存档往返已断言。
+- User verdict: 最近一次报告中通过。
 
-### MQA-GODOT-PROGRESSION — Growth priority and three-card UI
-
-- Status: `passed`
-- Source: Phase 7B–8E selected-starting-branch and class-attribute fixes
-- Action: Historical growth priority, requirements, card details and current skills acceptance.
-- Expected: Three unique candidates with correct branch priority and class attribute requirements.
-- Observe: Progression attribute and skill pages.
-- Preserve on failure: Screenshot, character, starting skill, attributes and all cards.
-- Save boundary: Drafts remain transient until final confirmation.
-- Automated evidence: Ordering, uniqueness, metadata, branches and requirements remain covered.
-- User verdict: Passed in the latest user report.
-
-### MQA-GODOT-UNIT-MOTION-CONTACT — Unit motion, hit, defeat, and ground contact
+### MQA-GODOT-SUMMON-CONTROL — 召唤物由谁控制
 
 - Status: `passed`
-- Source: Phase 8 presentation parity fix after user screenshot feedback
-- Reopen reason: Fourteen approved Mage/Necromancer/Amazon Cast/Hit/Melee/Thrown textures are now migrated and combined with the existing programmatic motion.
-- Action: In one battle, move at least two cells; cast with Mage and Necromancer; use Amazon Thrust and Poison Spear; receive a nonlethal hit; defeat one unit; pause midway, then resume at 0.5× and 4×.
-- Expected: Player Body switches to the correct directional action pose during the authored window and returns to idle at Release/Recovery; enemies/summons safely use programmatic fallback. Move sway, hit recoil, lethal collapse and corpse landing remain serial; Shadow and overlays do not inherit Body deformation; dead units show no status icons.
-- Observe: Unit Body, feet, Shadow, status layer and HP/MP anchor during Move, Hit and Defeat.
-- Preserve on failure: Short video or sequential screenshots, actor/unit, speed, cue type, and Godot Output.
-- Save boundary: Uses the current battle checkpoint; presentation speed and pause do not alter gameplay state.
-- Automated evidence: Hash-bound 14-texture converter, ResourceSaver references, directional pose/fallback tests, Body-only transforms, interrupt cleanup, serial cue order, death status cleanup, GdUnit, Compatibility and Forward+ are asserted; motion feel and contact spacing remain manual.
-- User verdict: Passed in the latest user report.
+- Source: 冻结的召唤物 AI 与控制器修复
+- Reopen reason: 骷髅战士、骷髅法师和火魔按单位内容 ID 解析内部 AI 和装备；诱饵明确不行动。
+- Action: 召唤骷髅战士、骷髅法师和火魔，再把回合推到每个召唤物。
+- Expected: 有 AI 的召唤物自动行动；诱饵不攻击。
+- Observe: 行动顺序、输入锁、作弊控制台里的 AI 日志。
+- Preserve on failure: 召唤类型和等级、当前行动者、AI 日志。
+- Save boundary: 普通战斗会改状态。
+- Automated evidence: 内部资源、装备、自动回合、拒绝输入和跳过诱饵已断言。
+- User verdict: 最近一次报告中通过，没有异常。
+
+### MQA-GODOT-PROGRESSION-ATOMIC — 成长不能跳过、只生效一次
+
+- Status: `passed`
+- Source: 相机、菜单、伤害和成长事务
+- Action: 分配一点属性，在选技能前关掉，再继续，然后把这次成长做完。
+- Expected: 继续会回到分配属性；最终确认只生效一次，并且只解锁下一个节点一次。
+- Observe: 成长页、地图节点、主页的继续。
+- Preserve on failure: 存档副本、截图、输出。
+- Save boundary: 待完成的成长会保存；没做完的界面草稿不写入。
+- Automated evidence: 修订、第五版规范化、一次事务和解锁语义已断言。
+- User verdict: 最近一次报告中通过，没有异常。
+
+### MQA-GODOT-TURN-PACING — 敌人先攻节奏
+
+- Status: `passed`
+- Source: 可玩的敌人速度配置
+- Action: 看一场普通遭遇的前两回合。
+- Expected: 不同敌人仍有相对快慢，但不会整队敌人总是排在所有我方前面。
+- Observe: 行动顺序和作弊控制台。
+- Preserve on failure: 遭遇 ID、行动顺序和行动者序列。
+- Save boundary: 普通战斗会改状态。
+- Automated evidence: 速度配置生成、玩家速度保留和派生属性重算已断言。
+- User verdict: 最近一次报告中通过。
+
+### MQA-GODOT-L4-RECOVERY — 第 4 层旧存档恢复
+
+- Status: `passed`
+- Source: 第 4 层地图不变量修复
+- Reopen reason: 当时的第五版存档已到等待第 4 层选择，三场战斗已完成，但没有地图状态，所以第 4 层路线全锁着。
+- Action: 继续保留的当前 Run，进入第 4 层。
+- Expected: 第 4 层路线可以走，所选路线能进第一场精英战。
+- Observe: 地图、所选路线、继续、Godot 输出。
+- Preserve on failure: 存档和备份、Run 种子和修订、地图截图、输出。
+- Save boundary: 使用当前持久 Run。
+- Automated evidence: 旧第五版修复、确定性投影和不变量检查仍有覆盖。
+- User verdict: 已通过；该局已进入第一场精英遭遇。
+
+### MQA-GODOT-FIRE-DEMON-COMBAT — 火魔的专用攻击
+
+- Status: `passed`
+- Source: 冻结的火魔攻击迁移
+- Action: 召唤火魔并使用它的专用攻击。
+- Expected: 目标正确，并遵守冻结的伤害、点燃、射程和每回合次数。
+- Observe: 火魔行动、目标血量和状态、作弊控制台、输出。
+- Preserve on failure: 格子、行动前后血量、日志、当前回合。
+- Save boundary: 普通战斗会改状态。
+- Automated evidence: 冻结合同、资源身份、伤害、状态、不暴击和使用次数仍有覆盖。
+- User verdict: 最近一次报告中通过。
+
+### MQA-GODOT-HUD-SKILL-PRESENTATION — 抬头和已提交技能的画面
+
+- Status: `passed`
+- Source: 紧凑行动条和已提交表现的高亮修复
+- Reopen reason: 行动按钮改为显示名和紧凑的第二行消耗；动作播放期间不再高亮当前格。
+- Action: 看紧凑行动条、纵向闪电、重叠处按不透明像素点选、毒矛的持有、丢下和捡回、抬头控件，以及反引号打开的作弊控制台。
+- Expected: 普攻没有法力行；技能 ID 不带 `skill.` 前缀；正的法力消耗在第二行；动作动画期间行动者脚下没有选中格。其余技能和抬头按已提交状态显示。
+- Observe: 行动按钮、角色脚下的格子、战斗单位、抬头、悬停详情、作弊控制台。
+- Preserve on failure: 截图或短视频、选中单位和格子、按钮文字、技能事件日志、当前遭遇。
+- Save boundary: 技能会改战斗；使用可重放的遭遇检查点。
+- Automated evidence: 标签格式、行动中取消高亮、由事件得到的目标、不透明点击顺序、毒矛生命周期和控制台保护已断言。尺寸和画面一致当时仍记为人工项，本条结论已经通过。
+- User verdict: 最近一次用户报告中通过。
+
+### MQA-GODOT-BOARD-FIT — 等距棋盘的取景和点击
+
+- Status: `passed`
+- Source: 相机、菜单、伤害和成长事务
+- Action: 打开一场战斗，在 16:9、16:10 和 21:9 之间缩放，再悬停和点击边缘以及重叠的单位。
+- Expected: 完整的 10×10 棋盘居中，不再留出旧的右侧空档；抬头不挡棋盘，指针点选仍然准。
+- Observe: 战斗棋盘、抬头边界、悬停详情、选中的格子或单位。
+- Preserve on failure: 带分辨率的截图、选中坐标、当前遭遇。
+- Save boundary: 使用当前 Run；缩放和点选不改存档。
+- Automated evidence: 棋盘包围盒适配和屏幕与格子的往返已断言。取景和指针手感当时仍记为人工项，本条结论已经通过。
+- User verdict: 最近一次用户报告中通过。
+
+### MQA-GODOT-PROGRESSION — 成长优先级和三张技能卡
+
+- Status: `passed`
+- Source: 选定起始分支和职业属性修复
+- Action: 当时对成长优先级、需求、卡片详情和已有技能的验收。
+- Expected: 三张不重复的候选，分支优先级和职业属性需求正确。
+- Observe: 成长的属性和技能页。
+- Preserve on failure: 截图、角色、起始技能、属性和全部卡片。
+- Save boundary: 草稿在最终确认前是临时的。
+- Automated evidence: 排序、唯一性、元数据、分支和需求仍有覆盖。
+- User verdict: 最近一次用户报告中通过。
+
+### MQA-GODOT-UNIT-MOTION-CONTACT — 单位动作、受击、死亡和接地
+
+- Status: `passed`
+- Source: 用户截图之后的第 8 阶段表现对齐
+- Reopen reason: 十四张已批准的法师、死灵和亚马逊施法、受击、近战、投掷贴图已迁入，并和原有的程序动作合在一起。
+- Action: 在一场战斗里至少走两格；法师和死灵施法；亚马逊刺击和毒矛；受一次非致命伤；击倒一个单位；中途暂停，再以 0.5 倍和 4 倍速继续。
+- Expected: 我方身体在规定窗口换成对应方向的动作，释放或恢复时回到待机；敌人和召唤物安全地用程序回退。移动摇晃、受击后仰、致命倒下和尸体落地仍是串行的；影子和覆盖层不跟着身体变形；死者不显示状态图标。
+- Observe: 移动、受击和死亡时的身体、脚、影子、状态层、血量和法力锚点。
+- Preserve on failure: 短视频或连续截图、单位、速度、提示类型、Godot 输出。
+- Save boundary: 使用当前战斗检查点；表现速度和暂停不改玩法状态。
+- Automated evidence: 十四张贴图的哈希转换、资源引用、方向姿势和回退、只变形身体、中断清理、串行提示、死亡清状态，以及两种渲染器已断言。动作手感和接地间距当时仍记为人工项，本条结论已经通过。
+- User verdict: 最近一次用户报告中通过。
 
 ## Deferred or Blocked
 
-### MQA-GODOT-TILE-START-CAMP — Start Camp presentation and setup flow
+### MQA-GODOT-TILE-START-CAMP — 起始营地的选人、移动和技能衔接
 
 - Status: `deferred`
-- Source: Restored Start Camp TileMap flow (`c08499c3`, `c1207f0a`)
-- Action: Start with an isolated empty save, click three candidates in order, test a repeated selection and a fourth candidate after the party is full, move the first selected leader, restart, then continue through starting-skill selection into the first node.
-- Expected: The UI clearly shows the three-member requirement, order, slots, leader, and exit lock reason; selection is incremental and cannot overflow; only the first selected leader moves; restart preserves selection but resets template cells; the exit unlocks at 3/3 and commits once.
-- Observe: StartCampView, actor Body/Shadow, campfire and exit, Party status, skill cards, first node, and Godot Output.
-- Preserve on failure: Screenshots of each setup page, click positions, selected order and skills, actor cells, save/backup copy, and the first Output error.
-- Save boundary: Each selection mutates PendingRunSetup; use an isolated save and preserve save/backup before continuing after a failure.
-- Automated evidence: Application covers incremental order, duplicate/full rejection, setup persistence and V11 round-trip; Godot tests cover the real actors, 10×10 TileMap, body/overlap hit targets, and exit structure. Readability, misclick risk, and movement feel remain manual.
-- User verdict: On 2026-09-17 the user explicitly chose to defer this manual gate and merge PR #4 immediately without treating it as passed.
+- Source: 恢复后的起始营地格子流程
+- Action: 用隔离空档启动，按顺序点三名候选人，试重复选择和满员后再点第四人，移动第一名领队，重启，再经起始技能进入第一个节点。
+- Expected: 界面清楚显示要三人、顺序、槽位、领队和出口锁的原因；选择是逐步的，不能超出；只有第一个选中的领队会动；重启保留选择但重置模板格子；满三人后出口解锁且只提交一次。
+- Observe: 起始营地、角色身体和影子、营火和出口、队伍状态、技能卡、第一个节点。
+- Preserve on failure: 每个设置页的截图、点击位置、选择顺序和技能、角色格子、存档副本、第一条输出错误。
+- Save boundary: 每次选择都会改待完成的开局；使用隔离存档，失败后继续之前先留存档和备份。
+- Automated evidence: Application 已覆盖逐步顺序、重复和满员拒绝、开局持久化和第十一版往返；Godot 测试覆盖真实角色、10×10 格子、身体点击和出口结构。好不好读、会不会点错、移动手感仍是人工项。
+- User verdict: 2026-09-17 用户明确选择暂缓这条人工门禁，并立刻合并拉取请求 4，不把它当成通过。
 
-### MQA-GODOT-PAUSE-MENU — Esc Run lifecycle controls
-
-- Status: `deferred`
-- Source: PR #4 main integration; `a501b359`
-- Reopen reason: The integrated Start Camp, Tile Adventure and battle flow intentionally replaces the legacy Home/Main Menu contract with Run-scoped `CONTINUE`, `OPTIONS`, `ABANDON RUN` and `SAVE AND QUIT` controls.
-- Action: In an isolated Run, press Esc from Start Camp, Tile Adventure and a PendingBattle page; exercise Continue and Options/Back, then separately test Abandon Run and Save and Quit followed by process restart.
-- Expected: The overlay covers the active page; only the current Run controls appear. Continue closes the overlay, Options returns safely, Abandon creates an Abandoned summary and routes to a fresh camp, while Save and Quit exits and resumes the same committed Encounter/Seed checkpoint after restart. No legacy Home or Main Menu action appears.
-- Observe: Esc overlay, active page title, Terminal Summary, resumed battle entry, `user://pure-run` files, CheatConsole and Godot Output.
-- Preserve on failure: Overlay/summary screenshots, exact Esc/menu sequence, Run seed/revision, checkpoint save/backup and the first Output error.
-- Save boundary: Continue and Options are read-only; Abandon and Save and Quit mutate the isolated Run. Preserve a copy before either destructive action.
-- Automated evidence: exact code HEAD `a501b359` passes the unified Godot verifier, 29/29 gameplay journeys and focused restart/quit production-input coverage. Overlay readability, input feel and real process restart remain human-only.
-- User verdict: On 2026-09-17 the user explicitly chose to defer this manual gate and merge PR #4 immediately without treating it as passed.
-
-### MQA-GODOT-INITIATIVE-HUD — 动态先攻头像条、Hover 联动与输入锁
+### MQA-GODOT-PAUSE-MENU — Esc 的本局控制
 
 - Status: `deferred`
-- Source: Core 权威动态先攻与右上角圆形头像行动条实现
-- Action: 在 disposable battle 中依次完成普通行动、施放行路难改变未行动单位敏捷、召唤或替换召唤物、击杀一个单位，并让一个带不可行动状态的单位轮到行动；悬停友方和敌方头像，再把队列扩展到十个以上单位观察省略号。
-- Expected: 右上条只显示当前与未行动单位，当前头像为金框、友敌底色明确、相同先攻保持玩家方优先；已行动头像消失，未行动头像按新先攻平滑重排，召唤物按当前先攻插入。队列最多显示九个头像和不可交互的“…”；隐藏队列变化时省略号脉冲。Hover 显示白框，并在棋盘对应单位上显示阵营色轮廓及 HP/MP；约 0.22 秒 Tween 期间点击不会重复提交，结束后输入立即恢复。不可行动单位自动跳过但只消费一次 EndTurn/状态时长。
-- Observe: 右上 initiative strip、Round 标签、头像框与省略号、棋盘单位轮廓/HP/MP、action bar、事件日志、CheatConsole 和 Godot Output。
-- Preserve on failure: 短视频、Round、完整可见/隐藏队列、各单位先攻与 acted 状态、悬停单位 ID、点击时刻、事件日志、Run seed/checkpoint 和 Output。
-- Save boundary: 战斗行动和召唤会修改 disposable Run；悬停本身只读，失败时先复制 checkpoint 再继续。
-- Automated evidence: integrated code HEAD `a501b359` 的统一 Godot verifier 已通过；Core/Application 覆盖逐轮重排、未行动队列同步、召唤插入/替换、昏迷自动 EndTurn 和无重复行动；Godot tests 覆盖九头像省略、0.22 秒过渡、五候选和生产输入锁，Gameplay journeys 29/29 通过。动画手感、Hover 对应关系、视觉层级和高速连续操作仍需人工验收。
-- User verdict: On 2026-09-17 the user explicitly chose to defer this manual gate and merge PR #4 immediately without treating it as passed.
+- Source: 拉取请求 4 合入主线
+- Reopen reason: 合入后的起始营地、格子冒险和战斗流程，用本局范围的继续、选项、放弃本局、保存并退出，替换了旧的主页合同。
+- Action: 在隔离 Run 里，从起始营地、格子冒险和未完成战斗按 Esc；试继续和选项返回，再分别试放弃本局，以及保存并退出后真正重启进程。
+- Expected: 遮罩盖住当前页，只出现本局控制。继续关掉遮罩，选项能安全返回；放弃生成已放弃摘要并去新营地；保存并退出后，重启回到同一个已提交的遭遇和种子。不出现旧主页动作。
+- Observe: Esc 遮罩、当前页标题、终局摘要、恢复后的战斗入口、`user://pure-run` 文件。
+- Preserve on failure: 遮罩和摘要截图、按键顺序、Run 种子和修订、检查点副本、第一条输出错误。
+- Save boundary: 继续和选项是只读的；放弃以及保存并退出会改隔离 Run。做这两个之前先留副本。
+- Automated evidence: 当时的代码通过了统一验证器、29 条玩法旅程，以及重启和退出的正式输入覆盖。遮罩好不好读、手感和真正重启进程仍是人工项。
+- User verdict: 2026-09-17 用户明确选择暂缓这条人工门禁，并立刻合并拉取请求 4，不把它当成通过。
+
+### MQA-GODOT-INITIATIVE-HUD — 动态先攻头像条、悬停和输入锁
+
+- Status: `deferred`
+- Source: 动态先攻与右上圆形头像行动条
+- Action: 在隔离战斗里完成普通行动、用行路难改变还没行动的单位的敏捷、召唤或替换召唤物、击杀一个单位，并让一个不能行动的单位轮到；悬停友方和敌方头像，再把队列加到十个以上看省略号。
+- Expected: 右上只显示当前和还没行动的单位，当前是金框，敌我底色清楚，先攻相同则我方在前。已行动的头像消失，未行动的按新先攻平滑重排。最多九个头像加一个不能点的省略号。悬停有白框，并在棋盘单位上显示阵营色轮廓和血量、法力。约 0.22 秒的过渡里点击不会重复提交。不能行动的单位自动跳过，但只消耗一次结束回合。
+- Observe: 右上先攻条、回合标签、头像框和省略号、棋盘轮廓、行动条、事件日志。
+- Preserve on failure: 短视频、回合、可见和隐藏队列、各单位先攻、悬停的单位、点击时刻、Run 种子和检查点。
+- Save boundary: 战斗和召唤会改隔离 Run；悬停本身只读。失败时先复制检查点。
+- Automated evidence: Core 与 Application 覆盖逐轮重排、未行动队列、召唤插入、昏迷自动结束回合；Godot 测试覆盖九个头像、0.22 秒过渡和输入锁。动画手感、悬停对不对得上、视觉层次仍是人工项。
+- User verdict: 2026-09-17 用户明确选择暂缓这条人工门禁，并立刻合并拉取请求 4，不把它当成通过。
 
 ### MQA-GODOT-POET-DECOY-ART — 青川犬正式分身美术
 
 - Status: `deferred`
-- Source: 诗人功能优先范围决定；当前分身继承获批诗人 Idle 并使用半透明青色占位
-- Action: 后续美术任务中完成青川犬身份、四方向、受击/消散与 Tile 落点设计，经逐图人工审核后再接入分身 Resource。
-- Expected: 正式分身在正常战斗缩放下可立即识别为青川犬，与诗人本体、敌方和其他召唤物不混淆；方向、脚底锚点、直接命中段数反馈和消失表现清晰。
-- Observe: Artwork review panel、Unit Gallery/SpawnFixture、Battle board、分身受击/替换/消失和 Godot Output。
-- Preserve on failure: 母图/候选版本、prompt/job/attempt ID、方向、Tile 对比截图、运行时截图与 Output。
-- Save boundary: 美术生产只能通过 artwork pipeline；未获人工批准不得替换当前运行时素材或改写生产存档。
-- Automated evidence: 当前半透明诗人 Idle 占位的 Resource 类型、装载、显式动作/死亡清理、分身规则和战斗清理已自动验证；独立正式分身美术尚未生产，不能自动验收。
-- User verdict: Deferred by the user; formal Qingchuan Hound artwork is outside this implementation round.
+- Source: 诗人功能优先；当前分身继承诗人待机并用半透明青色占位
+- Action: 以后的美术任务里完成青川犬身份、四方向、受击或消散和格子落点，逐图审过再接入分身资源。
+- Expected: 正式分身在正常战斗缩放下能立刻认出是青川犬，不和诗人本体、敌人或其他召唤物混淆；方向、脚底锚点、受击段数和消失都清楚。
+- Observe: 审图面板、单位图库、战斗棋盘、分身受击和消失。
+- Preserve on failure: 母图和候选版本、方向、格子对比截图、运行时截图。
+- Save boundary: 美术只能走作品管线；没批准不得替换当前运行时素材或改生产存档。
+- Automated evidence: 当前半透明诗人待机占位的资源类型、装载、动作和死亡清理、分身规则已自动验证。独立的正式分身美术还没做，不能自动验收。
+- User verdict: 用户暂缓。正式青川犬美术不在那一轮实现里。
 
-### MQA-GODOT-AUDIO-ASSETS — Licensed audio payload and listening pass
+### MQA-GODOT-AUDIO-ASSETS — 可再分发的音频和试听
 
 - Status: `deferred`
-- Source: `0b2a3c81`, Godot audio framework checkpoint
-- Action: Provide or approve an audio pack whose license permits redistribution, then audition Music/SFX/UI cues through the Audio Workbench and one complete Run.
-- Expected: File-level provenance/hash is recorded; Master/Music/SFX/UI buses, volume/mute, concurrency and cleanup sound correct without changing gameplay timing.
-- Observe: Audio Workbench, bus meters/settings, battle/page transitions and Godot Output.
-- Preserve on failure: Asset/license identity, cue/bus, reproduction step and Output.
-- Save boundary: Audio settings use their own versioned settings file and do not modify Run Save.
-- Automated evidence: Bus creation, independent settings, cue/profile validation, concurrency and cleanup framework are tested. No redistributable audio payload is currently registered, so content migration and listening acceptance cannot be claimed.
-- User verdict: Deferred by the user for this version; the Windows RC is intentionally silent and does not require an audio payload.
+- Source: Godot 音频框架检查点
+- Action: 提供或批准一套允许再分发的音频包，再在音频工作台和一整局里试听音乐、音效和界面提示。
+- Expected: 文件级来源和哈希有记录；主音量、音乐、音效、界面四条总线的音量、静音、同时播放和清理听着正确，而且不改变玩法时机。
+- Observe: 音频工作台、总线表、战斗和页面切换、Godot 输出。
+- Preserve on failure: 资源和许可身份、提示和总线、复现步骤、输出。
+- Save boundary: 音频设置用自己的版本化设置文件，不改 Run 存档。
+- Automated evidence: 总线创建、独立设置、提示和配置校验、同时播放和清理框架已测试。目前没有登记可再分发的音频内容，不能宣称内容迁移或试听已验收。
+- User verdict: 用户为这一版暂缓。Windows 候选包故意没有声音，也不要求音频内容。
 
 ## Last Emitted Order
 
-1. `MQA-GODOT-TILE-START-CAMP` — Start Camp 选人、移动与技能衔接
-2. `MQA-GODOT-PAUSE-MENU` — Esc、Abandon、Save and Quit 与重启恢复
-3. `MQA-GODOT-POET-RUNTIME` — 诗人开局、六套技能与临时分身
-4. `MQA-GODOT-INITIATIVE-HUD` — 动态先攻头像条、Hover 与输入锁
+1. `MQA-GODOT-TILE-START-CAMP` — 起始营地选人、移动和技能衔接
+2. `MQA-GODOT-PAUSE-MENU` — Esc、放弃、保存并退出和重启恢复
+3. `MQA-GODOT-POET-RUNTIME` — 诗人开局、六套技能和临时分身
+4. `MQA-GODOT-INITIATIVE-HUD` — 动态先攻头像条、悬停和输入锁

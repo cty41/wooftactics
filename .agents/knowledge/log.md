@@ -1,7 +1,8 @@
 # Tactics Knowledge Update Log
 
 ## 2026-11-13
-* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:b4d7fccfb59a0af6f39bff7df8d4377699b96342941cb604fc59a451a6b08d49`。
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:60f149f3d0cb09366816122047c8f6fae6a882f9f89d993e26957b730fb74ae6`。
+* **Update**: 人工验收账本改为中文，待验收只保留观感、手感、难度和编辑器操作；`project-documentation` 记下这条边界。
 * **Sync**: `project-architecture` 已同步到来源指纹 `sha256:3a7731642665d0e26be86c5eb73476ecae3ebfae1b8fdc11f620c8a974ca1291`。
 * **Sync**: `okf-maintenance` 已同步到来源指纹 `sha256:db241d4f96685136a364f4aac5e5d665764515ae6658473958208f7f23c62d96`。
 * **Sync**: `godot-agent-workflow` 已同步到来源指纹 `sha256:111d608e0fa72891b1ad60ee8b1429bee631da49e96e24b3d09e1fc15131dc48`。
