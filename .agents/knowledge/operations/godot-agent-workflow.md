@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Godot agent workflow
 description: Godot 4.7 C# 主线的项目、分层、Editor 生命周期、验证和发布边界。
 tags: [godot, agent, workflow, testing]
-timestamp: "2026-11-11T10:35:04+08:00"
+timestamp: "2026-11-15T15:29:16+08:00"
 status: active
 catalog_scope: godot-agent-workflow
 repo_paths:
@@ -21,7 +21,7 @@ repo_paths:
   - Tools/godot/Build-GodotWindows.ps1
   - Tools/migration/manifest/godot-tooling.json
 verified_revision: d092a955
-source_fingerprint: sha256:c16caffa872e7bb818ed60bd60474e05ac1f9a7520eb92c349257925108da61f
+source_fingerprint: sha256:1b46d68b3de3f6a6b769ff3337541ca821b2de247ada335fcd37d9e59b4f16ec
 ---
 
 # Current State
@@ -46,10 +46,11 @@ Windows 构建使用单一 `Windows Desktop` preset、锁定工具链和受审�
 
 - 当前规则：`.agents/rules/godot-agent-workflow.md`
 - 拆分与回执：`.agents/rules/subagent-handback.md`
+- 试行评审约定：根目录 `REVIEW.md`。非纯文档改动按它开工对齐并在收口前评审；代理评审不能代替人工验收。
 - 迁移 provenance：[Godot migration provenance](../plans/godot-migration.md)
 - 文档生命周期：[Project Documentation](project-documentation.md)
 - 历史工具索引：[Archived Unity Agent Workflow](unity-agent-workflow.md)
 
 # Verification Guidance
 
-未知 API、生命周期、插件或引擎错误必须按 Research Guide 和本地复现取证。自动门禁只报告覆盖到的层级，人工和发布边界必须单独记录。
+未知 API、生命周期、插件或引擎错误必须按 Research Guide 和本地复现取证。自动门禁只报告覆盖到的层级，人工和发布边界必须单独记录。新的 Godot 事故在 `Cause and resolution` 里写明本该由哪一层拦住：本地测试、统一验证器、评审契约、人工验收，或当时没有这层。不回填已有事故。
