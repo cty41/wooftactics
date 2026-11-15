@@ -46,7 +46,7 @@ actions:
     parameters: { targetKind: UiElement }
   - kind: waitForPlayerObservable
     adapter: PlayerInput
-    parameters: { observable: adventureBoardReady, maximumFrames: 180 }
+    parameters: { observable: battleReady, maximumFrames: 180 }
 assertions:
   - kind: activePartyStartingSkillIdsEqual
     adapter: Map

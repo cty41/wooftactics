@@ -19,6 +19,7 @@ DisplayName = "Necromancer"
 Category = "player"
 FamilyId = "player"
 RoleId = "necromancer"
+PrimaryAttributeValue = "Constitution"
 Strength = 5
 Agility = 3
 Constitution = 6

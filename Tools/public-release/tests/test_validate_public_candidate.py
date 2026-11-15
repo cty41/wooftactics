@@ -70,6 +70,15 @@ class PublicCandidateAuditTests(unittest.TestCase):
         (self.root / "Tools/public-release/asset-provenance.json").write_text(
             json.dumps(manifest), encoding="utf-8")
 
+    def test_local_user_path_rule_allows_only_placeholder_names(self):
+        pattern = MODULE.LOCAL_USER_PATH
+        for allowed in (r"C:\Users\<user>\uvx.exe", r"`C:\Users\foo\uvx.exe`", "C:/Users/foo/x", r"C:\Users\foo"):
+            self.assertIsNone(pattern.search(allowed), allowed)
+        # Built at runtime so this file does not itself contain a literal local-user path.
+        drive = "C:" + "\\Users\\"
+        for rejected in (drive + "alice\\x", drive + "foobar\\x", drive + "someone\\AppData"):
+            self.assertIsNotNone(pattern.search(rejected), rejected)
+
     def test_candidate_accepts_registered_asset(self):
         result = audit(self.root, candidate=True)
         self.assertTrue(result.ok, result.errors)

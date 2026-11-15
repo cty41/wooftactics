@@ -43,6 +43,7 @@ public partial class GodotPlayableRunMain
             throw new InvalidOperationException("battle.resident_template_mismatch");
         GodotActWorldHost host = _actWorld!;
         GodotNodeActivationLease lease = host.ActivateNode(identity.NodeId);
+        RestoreHostBaseline(host);
         GodotIsometricTileMapSurface surface = host.Nodes[identity.NodeId].Surface;
         foreach (var node in host.Nodes) node.Value.Visible = node.Key == identity.NodeId;
 

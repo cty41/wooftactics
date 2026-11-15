@@ -57,6 +57,29 @@ public sealed class RunAdventureTransitionServiceTests
             Is.EqualTo(new GridPoint(3, 5)));
     }
 
+    [Test]
+    public void PlacePartyReseatsEveryMemberAndRejectsForeignOrOverlappingCells()
+    {
+        var service = new RunAdventureTransitionService();
+        PureRunState run = Run(service);
+        RunAdventureActorCell[] cells =
+        [
+            new("mage", new GridPoint(2, 2)), new("necro", new GridPoint(2, 3)), new("amazon", new GridPoint(2, 4))
+        ];
+        PureRunState placed = service.PlaceParty(run, cells);
+        Assert.Multiple(() =>
+        {
+            Assert.That(placed.AdventureState!.ActorCells.Select(value => (value.ActorId, value.Cell)),
+                Is.EquivalentTo(cells.Select(value => (value.ActorId, value.Cell))));
+            Assert.That(placed.AdventureState.SceneRevision, Is.GreaterThan(run.AdventureState!.SceneRevision));
+            Assert.That(placed.Revision, Is.GreaterThan(run.Revision));
+        });
+        Assert.Throws<InvalidOperationException>(() => service.PlaceParty(run,
+            [new("mage", new GridPoint(2, 2)), new("necro", new GridPoint(2, 2)), new("amazon", new GridPoint(2, 4))]));
+        Assert.Throws<InvalidOperationException>(() => service.PlaceParty(run,
+            [new("mage", new GridPoint(2, 2)), new("necro", new GridPoint(2, 3)), new("stranger", new GridPoint(2, 4))]));
+    }
+
     private static PureRunState Run(RunAdventureTransitionService service)
     {
         UnitAttributes attributes = new(5, 5, 5, 5, 5, 5);

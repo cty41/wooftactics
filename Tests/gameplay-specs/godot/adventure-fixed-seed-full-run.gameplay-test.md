@@ -37,105 +37,65 @@ actions:
     parameters: { targetKind: UiElement }
   - kind: waitForPlayerObservable
     adapter: PlayerInput
-    parameters: { observable: adventureBoardReady, maximumFrames: 180 }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: 7,5
-    parameters: { targetKind: AdventureCell }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: "exit:layer_01_battle"
-    parameters: { targetKind: AdventureObject }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: 6,5
-    parameters: { targetKind: AdventureCell }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: encounter
-    parameters: { targetKind: AdventureObject }
+    parameters: { observable: battleReady, maximumFrames: 300 }
   - kind: playBattleThroughInput
     adapter: PlayerInput
     parameters: { maximumActions: 100 }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: Continue — Progression
-    parameters: { targetKind: UiElement }
   - kind: clickPointerTarget
     adapter: PlayerInput
     target: ProgressionAttribute_Strength
     parameters: { targetKind: UiElement }
   - kind: clickPointerTarget
     adapter: PlayerInput
-    target: ProgressionSkillChoice_0
+    target: ProgressionAttributeContinue
     parameters: { targetKind: UiElement }
   - kind: clickPointerTarget
     adapter: PlayerInput
-    target: Continue
+    target: ProgressionSkillChoice_0
     parameters: { targetKind: UiElement }
 
   - kind: clickPointerTarget
     adapter: PlayerInput
-    target: 8,7
-    parameters: { targetKind: AdventureCell }
+    target: "exit:layer_02_battle"
+    parameters: { targetKind: AdventureExitApproach }
   - kind: clickPointerTarget
     adapter: PlayerInput
     target: "exit:layer_02_battle"
     parameters: { targetKind: AdventureObject }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: 6,5
-    parameters: { targetKind: AdventureCell }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: encounter
-    parameters: { targetKind: AdventureObject }
   - kind: playBattleThroughInput
     adapter: PlayerInput
     parameters: { maximumActions: 100 }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: Continue — Progression
-    parameters: { targetKind: UiElement }
   - kind: clickPointerTarget
     adapter: PlayerInput
     target: ProgressionAttribute_Strength
     parameters: { targetKind: UiElement }
   - kind: clickPointerTarget
     adapter: PlayerInput
-    target: ProgressionSkillChoice_0
+    target: ProgressionAttributeContinue
     parameters: { targetKind: UiElement }
   - kind: clickPointerTarget
     adapter: PlayerInput
-    target: Continue
+    target: ProgressionSkillChoice_0
     parameters: { targetKind: UiElement }
 
   - kind: clickPointerTarget
     adapter: PlayerInput
-    target: 8,7
-    parameters: { targetKind: AdventureCell }
+    target: "exit:layer_03_battle"
+    parameters: { targetKind: AdventureExitApproach }
   - kind: clickPointerTarget
     adapter: PlayerInput
     target: "exit:layer_03_battle"
     parameters: { targetKind: AdventureObject }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: 6,5
-    parameters: { targetKind: AdventureCell }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: encounter
-    parameters: { targetKind: AdventureObject }
   - kind: playBattleThroughInput
     adapter: PlayerInput
     parameters: { maximumActions: 100 }
   - kind: clickPointerTarget
     adapter: PlayerInput
-    target: Continue — Progression
+    target: ProgressionAttribute_Strength
     parameters: { targetKind: UiElement }
   - kind: clickPointerTarget
     adapter: PlayerInput
-    target: ProgressionAttribute_Strength
+    target: ProgressionAttributeContinue
     parameters: { targetKind: UiElement }
   - kind: clickPointerTarget
     adapter: PlayerInput
@@ -144,8 +104,8 @@ actions:
 
   - kind: clickPointerTarget
     adapter: PlayerInput
-    target: 3,7
-    parameters: { targetKind: AdventureCell }
+    target: "exit:layer_04_rest"
+    parameters: { targetKind: AdventureExitApproach }
   - kind: clickPointerTarget
     adapter: PlayerInput
     target: "exit:layer_04_rest"
@@ -165,30 +125,22 @@ actions:
 
   - kind: clickPointerTarget
     adapter: PlayerInput
-    target: 8,7
-    parameters: { targetKind: AdventureCell }
+    target: "exit:layer_05_battle"
+    parameters: { targetKind: AdventureExitApproach }
   - kind: clickPointerTarget
     adapter: PlayerInput
     target: "exit:layer_05_battle"
-    parameters: { targetKind: AdventureObject }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: 6,5
-    parameters: { targetKind: AdventureCell }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: encounter
     parameters: { targetKind: AdventureObject }
   - kind: playBattleThroughInput
     adapter: PlayerInput
     parameters: { maximumActions: 100 }
   - kind: clickPointerTarget
     adapter: PlayerInput
-    target: Continue — Progression
+    target: ProgressionAttribute_Strength
     parameters: { targetKind: UiElement }
   - kind: clickPointerTarget
     adapter: PlayerInput
-    target: ProgressionAttribute_Strength
+    target: ProgressionAttributeContinue
     parameters: { targetKind: UiElement }
   - kind: clickPointerTarget
     adapter: PlayerInput
@@ -197,8 +149,8 @@ actions:
 
   - kind: clickPointerTarget
     adapter: PlayerInput
-    target: 8,8
-    parameters: { targetKind: AdventureCell }
+    target: "exit:layer_06_treasure"
+    parameters: { targetKind: AdventureExitApproach }
   - kind: clickPointerTarget
     adapter: PlayerInput
     target: "exit:layer_06_treasure"
@@ -218,19 +170,11 @@ actions:
 
   - kind: clickPointerTarget
     adapter: PlayerInput
-    target: 8,7
-    parameters: { targetKind: AdventureCell }
+    target: "exit:layer_07_battle"
+    parameters: { targetKind: AdventureExitApproach }
   - kind: clickPointerTarget
     adapter: PlayerInput
     target: "exit:layer_07_battle"
-    parameters: { targetKind: AdventureObject }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: 6,5
-    parameters: { targetKind: AdventureCell }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: encounter
     parameters: { targetKind: AdventureObject }
   - kind: playBattleThroughInput
     adapter: PlayerInput

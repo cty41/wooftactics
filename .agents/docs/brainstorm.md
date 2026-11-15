@@ -267,5 +267,6 @@ mindmap
 
 ## 收件箱
 
+- `2026-11-05`：`[已收束]` Frank 拍板 `Tools/godot` 跨平台迁移——编排 Python、规格留 TypeScript；原则稿见 [godot-tooling-cross-platform-migration.md](godot-tooling-cross-platform-migration.md)（非实现合同）。
 - `2026-11-04` 某职业教学：怒气转化成进攻招式／战斗系统。→ 已归入「新手教学」
 - `2026-11-04` 《皇牌空战 Zero》式睡前故事开场选人。→ 已归入「新手教学」「肉鸽结构」「参考作品库」

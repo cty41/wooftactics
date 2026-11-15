@@ -16,6 +16,18 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 - Automated evidence: Core 146 项与 Application 183 项覆盖移动成本、Air 穿越/落点、绝对障碍、召唤落点、吸血事件顺序和真实 Transition 可击杀排序；Resource/Catalog、AI Encounter、Unit 与 Playable UI headless 验证通过。悬浮节奏、素材接触、浅水可读性和 N2 体验平衡仍只能人工判断。
 - User verdict: none.
 
+### MQA-GODOT-MAW-BAT-POSES-DEATH — 蝙蝠各姿态与死亡落点
+
+- Status: `pending`
+- Source: 蝙蝠死亡位置修复（`MawBatAssetFactory` 按尸体不透明像素 AABB 居中；`GodotUnitActor` 死亡下落从当前悬浮高度落到接地点）。
+- Action: 在隔离存档的战斗或 Unit Gallery 中观察蝙蝠存活 DR/UL、近战咬击、受击、死亡姿态，并分别在 East/West 朝向（镜像）下复查；击杀悬浮中的蝙蝠观察落点。
+- Expected: 各姿态无明显错位或跳变；East/West 翻转后姿态与落点一致；死亡后尸体居中落在所在 Tile 接地点，不偏低、不悬空、不穿出格子。
+- Observe: 战斗棋盘或 Unit Gallery 中的单位 Body/Shadow 与 Tile 对齐、Godot Output。
+- Preserve on failure: 朝向、击杀时机、短视频或连续截图、Run seed 与 Output。
+- Save boundary: 战斗会修改当前 Run；使用 disposable/隔离存档。
+- Automated evidence: UnitBatchGodotTests 覆盖死亡偏移与下落终点；统一 verifier 中 Godot 套件无失败（仅已知 MaLiang artwork 单测失败）。目视效果不能由自动测试替代。
+- User verdict: none.
+
 ### MQA-GODOT-UNIT-VISUAL — Unit Gallery and Spawn framing baseline
 
 - Status: `pending`
@@ -346,7 +358,19 @@ This is the current cross-project manual acceptance state. Stable IDs are author
 - Observe: 主页状态栏、Continue 按钮、恢复后的页面/节点、`user://pure-run` 存档与 `.bak`、Godot Output。
 - Preserve on failure: 被误清前的 save/backup 副本（先复制再点 Continue）、节点 ID、Run seed/revision 和 Output。
 - Save boundary: 清档会覆盖当前存档；每次测试前复制 `user://pure-run`，不得用唯一生产存档测试。
-- Automated evidence: 清档只针对 `act_state.inconsistent_resolution`（其他推导拒绝仍走旧恢复流程，避免误删）。Core 265、Application 398；隔离 GdUnit 10 套件 95/95（含常驻普通/事件战斗冷热恢复），过程中修复了事件战斗 PendingBattle 被误判的推导缺陷。正式门禁在任务外 public-release 工具测试处中断。2026-10-23 新增 `StaleSaveColdResumeGodotTests` 3/3：脚本玩家经 `GodotRunSaveStore` 写真实 V11 文档（固定 seed 37，调用界面结算、出口与成长按钮同一路径），在第一场结算后、L4 休息选中后、L5 战斗检查点与 L5 结算后分别新建 Main 冷启动，断言局仍在、revision 不变、未显示清档提示、未回主页。商店/事件选择、L6 节点、进程级退出与旧构建半截存档清档仍需人工确认。
+- Automated evidence: 清档只针对 `act_state.inconsistent_resolution`（其他推导拒绝仍走旧恢复流程，避免误删）。Core 265、Application 398；隔离 GdUnit 10 套件 95/95（含常驻普通/事件战斗冷热恢复），过程中修复了事件战斗 PendingBattle 被误判的推导缺陷。正式门禁在任务外 public-release 工具测试处中断。2026-10-23 新增 `StaleSaveColdResumeGodotTests` 3/3：脚本玩家经 `GodotRunSaveStore` 写真实 V11 文档（固定 seed 37，调用界面结算、出口与成长按钮同一路径），在第一场结算后、L4 休息选中后、L5 战斗检查点与 L5 结算后分别新建 Main 冷启动，断言局仍在、revision 不变、未显示清档提示、未回主页。2026-10-27 在变基后的 HEAD 上重跑仍为 3/3：首战改为先点营地出口再显式「开战」（由 `EnterBattle` 断言恰好写一次检查点，等待函数不再代点）；Application 415/415；验证器因只比对存活成员而让全员阵亡的局以空队伍通过，已改为存活为空即拒绝并补 3 条用例；控制台打开时 ESC 只关控制台的用例已加入 UI 套件（该套件 48/48）。2026-10-28 规则：`ResumeRun` 新增窄判定，PendingBattle 的检查点含死者或全员死亡一律视为旧构建产物，清档并返回 `run.reset_stale_save`（诊断码 `checkpoint.party_contains_dead`），仅存活者的检查点不被清；Application 418/418。冷读档套件扩至 8/8，新增 L4 商店开店与购买后不重刷库存、L4 事件选中、L6 休息节点，以及两份旧版存档（结算后 Board 未 `.resolved`、检查点含死者）冷启动后被清、状态栏显示清档提示、回主页、Continue 变灰、New Run 可进入 START CAMP。仍需人工确认：真正关闭进程再打开的一次冒烟，以及页面观感。
+- User verdict: none.
+
+### MQA-GODOT-TILE-RESIDENT-EXPLORATION — 探索页统一复用驻留战斗地图与战斗单位
+
+- Status: `pending`
+- Source: 探索页统一复用驻留地图（初始营地、战斗入口、战后、休息、商店、宝箱、事件共用节点正式 Act 地图）
+- Action: 在隔离 Run 中依次走过战后页、休息、商店、宝箱与一个事件节点（普通、精英、Boss 战斗节点进入即自动开战，无探索页，不在此列）；每页移动领队、点击场景物件，再从右侧出口离开；休息页移动领队后点 Inventory 再返回；另用一份旧版起始探索存档确认仍显示起始营地兜底页。
+- Expected: 每页都是该节点的正式地图（阻挡物与战斗中一致），三名队员显示为与战斗相同的角色精灵而非文字；领队移动后刷新/返回仍停在原位；锁定出口可见但点击提示先完成节点；Inventory 按钮不遮挡右侧出口；Output 无 `exploration.resident_template_mismatch`。
+- Observe: 探索棋盘、角色精灵、右侧出口标记、状态栏、Inventory 按钮、Godot Output。
+- Preserve on failure: 截图（含窗口大小）、节点 ID、领队格、点击位置、Output 的 mismatch 警告。
+- Save boundary: 使用隔离 Run；移动与离开节点会写入存档。
+- Automated evidence: Core `PlaceParty` 用例；`ResidentExplorationPagesGodotTests` 5/5 覆盖各页正式地图、精灵、移动持久化；20 条 gameplay journey 与批量报告 29/29 在新出口几何（右缘 `9,y`）下通过。观感、点击手感与遮挡仍需人工判断。
 - User verdict: none.
 
 ## Passed

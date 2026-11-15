@@ -54,6 +54,25 @@ public sealed class RunAdventureTransitionService
         });
     }
 
+    /// <summary>
+    /// Re-seats the party on cells authored by the current board template. <see cref="EnterBoard"/> uses fixed
+    /// legacy cells that may be blocked or occupied on a formal map; the view calls this once to repair that.
+    /// </summary>
+    public PureRunState PlaceParty(PureRunState run, IReadOnlyList<RunAdventureActorCell> cells)
+    {
+        ArgumentNullException.ThrowIfNull(cells);
+        RunAdventureState state = Require(run);
+        string[] expected = state.ActorCells.Select(value => value.ActorId).Order(StringComparer.Ordinal).ToArray();
+        string[] actual = cells.Select(value => value.ActorId).Order(StringComparer.Ordinal).ToArray();
+        if (!expected.SequenceEqual(actual, StringComparer.Ordinal) || cells.Select(value => value.Cell).Distinct().Count() != cells.Count)
+            throw new InvalidOperationException("adventure.party_placement_invalid");
+        return Copy(run, state with
+        {
+            ActorCells = cells.ToArray(),
+            SceneRevision = state.SceneRevision + 1
+        });
+    }
+
     public PureRunState ResolveBoard(PureRunState run)
     {
         RunAdventureState state = Require(run);

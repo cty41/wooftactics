@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics/tree/main/Tools/gameplay-test-spec
 title: Gameplay Test Framework
 description: 将受控 gameplay spec 编译为 Godot runtime runner 可执行的确定性计划。
 tags: [testing, gameplay, automation, godot]
-timestamp: "2026-08-28T13:05:39+08:00"
+timestamp: "2026-10-30T11:59:13+08:00"
 status: active
 catalog_scope: gameplay-test-framework
 repo_paths:
@@ -16,7 +16,7 @@ repo_paths:
   - godot/src/Tactics.Godot.Adapter/Runtime/GodotPlayableRunMain.cs
   - Tests/gameplay-specs
 verified_revision: c56d71ad4ebd
-source_fingerprint: sha256:718bbb7740bb514482f834fcc906dea03032a16b1d8e4e5ca10b12ed3b734742
+source_fingerprint: sha256:4210f39c239c71a9bd5167e33cbeeb3ebe9f0e9689e2eb271e2de2ac93c62b3b
 ---
 
 # Current State
@@ -38,6 +38,8 @@ OpenCode Go Key 与普通 provider 配置分离，secrets ACL 只允许当前用
 
 测试按非零最小测试、相关 fixture、相关门禁和统一 verifier 逐级升级；输入、场景、缓存 UI、异步状态或 reload fixture 首次通过后连续复跑一轮。同一 canonical Editor、runner 和 verifier 只有一个 mutating job owner。长任务以实际进度判断 active/stalled，90 秒无可验证进展时检查进程、runner 和日志，确认卡死后只恢复当前门禁。当前任务失败必须修复；基线失败需要可核验证据和用户或仓库政策授权。
 
+Adventure journey 的指针目标对应正式驻留地图几何:出口位于右缘 `9,y`(按后继顺序 y=1…),领队需站到 `8,y` 再点击出口;场景物件在 `5,5`,领队站 `6,5` 交互。编辑源 spec 后须用 `batch-compile` 重新生成并提交同名 `.plan.json`。
+
 框架覆盖 Battle、Map、UI、Skill、Adventure 和作者 spec。Adventure 合同使用 `exitCommitted`、`immediateSuccessorNodeIdsEqual` 和权威 Adventure revision/state hash 验证节点内即时出口，不再表达全局 RouteNode 预提交。自动化证明规则、事务、生产输入、重载和清理；视觉、动画、可读性、Editor Assembly Reload 与操作手感仍由人工验收。
 
 # Relationships
@@ -45,6 +47,14 @@ OpenCode Go Key 与普通 provider 配置分离，secrets ACL 只允许当前用
 - Battle 场景验证 [Battle System](battle.md)与[Monster AI](monster-ai.md)。
 - Skill 场景验证 [SkillGraph](skill-graph.md)。
 - Map/Adventure 场景验证 [Roguelike Run](roguelike-run.md)。
+
+# Adventure Exit Approach Target
+
+玩家输入 spec 用 `targetKind: AdventureExitApproach` 加出口对象名（如 `exit:layer_04_rest`）走到出口内侧邻格，不再硬编码格坐标；校验器、Godot plan 校验与 `GodotAdventureBoardView.TryResolveTarget` 共同支持。`AdventureMapTemplateDefinition.Validate` 保证每个出口的 (X-1,Y) 邻格存在且可通行。
+
+# Battle Node Entry In Specs
+
+普通战斗节点进入即开战，spec 点击出口后直接进入 `playBattleThroughInput`，不再包含走到格子并点击 `encounter` 的步骤。起始营地 `start-exit` 与起始技能选择之后同样直接进入战斗（等待 `battleReady`），`adventure-exploration-controls` 现在只在营地内验证队长自由寻路。
 
 # Verification Guidance
 

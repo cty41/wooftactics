@@ -13,8 +13,8 @@ setup:
 actions:
   - kind: clickPointerTarget
     adapter: PlayerInput
-    target: 7,7
-    parameters: { targetKind: AdventureCell }
+    target: "exit:layer_04_event"
+    parameters: { targetKind: AdventureExitApproach }
   - kind: clickPointerTarget
     adapter: PlayerInput
     target: "exit:layer_04_event"
@@ -36,19 +36,11 @@ actions:
     parameters: { targetKind: UiElement }
   - kind: clickPointerTarget
     adapter: PlayerInput
-    target: 8,7
-    parameters: { targetKind: AdventureCell }
+    target: "exit:layer_05_battle"
+    parameters: { targetKind: AdventureExitApproach }
   - kind: clickPointerTarget
     adapter: PlayerInput
     target: "exit:layer_05_battle"
-    parameters: { targetKind: AdventureObject }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: 6,5
-    parameters: { targetKind: AdventureCell }
-  - kind: clickPointerTarget
-    adapter: PlayerInput
-    target: encounter
     parameters: { targetKind: AdventureObject }
   - kind: waitForPlayerObservable
     adapter: PlayerInput

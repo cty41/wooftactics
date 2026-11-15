@@ -197,15 +197,8 @@ public sealed class PlayableBattleSessionFactory
 
     public static int CalculatePrimaryAttributeDamageBonus(UnitAttributes attributes, SkillRole role)
     {
-        int primary = role switch
-        {
-            SkillRole.Mage => attributes.Intelligence,
-            SkillRole.Necromancer => attributes.Constitution,
-            SkillRole.Demonbound => attributes.Charisma,
-            SkillRole.Amazon => attributes.Agility,
-            SkillRole.Poet => attributes.Strength,
-            _ => 5
-        };
+        UnitPrimaryAttribute source = PrimaryAttributeRules.DamageBonusSource(role);
+        int primary = source == UnitPrimaryAttribute.None ? 5 : PrimaryAttributeRules.Value(attributes, source);
         return Math.Max(0, primary - 5);
     }
 

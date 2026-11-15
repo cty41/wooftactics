@@ -65,11 +65,19 @@ public sealed class ResidentEventBattleProductionGodotTests
             AssertThat(exploration.UsesResidentSurface).IsTrue();
             AssertThat(exploration.ResidentSurface!.GetInstanceId()).IsEqual(surfaceId);
             AssertThat(exploration.Definition.BlockedCells.SequenceEqual(formal.Board.BlockedCells)).IsTrue();
-            AssertThat(exploration.Definition.Objects.SequenceEqual(formal.Board.Objects)).IsTrue();
-            AssertThat(exploration.Definition.Actors.Select(value => value.Cell)
-                .OrderBy(value => value.Y).ThenBy(value => value.X)
-                .SequenceEqual(formal.PartyEntrySlots.Select(value => value.Cell)
-                    .OrderBy(value => value.Y).ThenBy(value => value.X))).IsTrue();
+            // The interaction object is the formal one; exits stay visible but locked until the event is resolved.
+            AssertThat(exploration.Definition.Objects.Where(value => value.Kind != AdventureObjectKind.Exit)
+                .SequenceEqual(formal.Board.Objects.Where(value => value.Kind != AdventureObjectKind.Exit))).IsTrue();
+            AdventureBoardObject[] entryExits = exploration.Definition.Objects.Where(value => value.Kind == AdventureObjectKind.Exit).ToArray();
+            AssertThat(entryExits.Length > 0).IsTrue();
+            AssertThat(entryExits.All(value => value.IsLocked)).IsTrue();
+            // The party is shown where the run state says it stands (here the fixture's cells), not reset to the
+            // entry slots on every refresh, and as the same battle sprites instead of text labels.
+            AssertThat(exploration.Definition.Actors.Select(value => (value.ActorId, value.Cell))
+                .OrderBy(value => value.ActorId, StringComparer.Ordinal)
+                .SequenceEqual(fixture.ActiveRun!.AdventureState!.ActorCells.Select(value => (value.ActorId, value.Cell))
+                    .OrderBy(value => value.ActorId, StringComparer.Ordinal))).IsTrue();
+            AssertThat(fixture.ActiveRun.AdventureState.ActorCells.All(value => exploration.IsActorUnit(value.ActorId))).IsTrue();
             TileMapLayer ownedTiles = InstanceField<TileMapLayer>(exploration, "_tiles");
             AssertThat(ownedTiles.Visible).IsFalse();
             AssertThat(ownedTiles.GetUsedCells().Count).IsEqual(0);
@@ -139,6 +147,130 @@ public sealed class ResidentEventBattleProductionGodotTests
                 .IsEqual(new GridPoint(5, 5));
             AssertThat(map.Surface.GetInstanceId()).IsEqual(surfaceId);
             AssertThat(host.ActiveNodeId).IsEqual("layer_04_event");
+        }
+        finally
+        {
+            ui.QueueFree();
+            for (int frame = 0; frame < 4 && GodotObject.IsInstanceValid(ui); frame++)
+                await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        }
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task ResolvedBattleNodeKeepsFormalSurfaceWithRimExitsAndVisibleRoutes()
+    {
+        const int seed = 37;
+        var store = new MemoryStore();
+        var ui = new GodotPlayableRunMain();
+        ui.ConfigureTestContext(new GodotPlayableRunTestContext(store, seed, "resident-battle-resolved"));
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        tree.Root.AddChild(ui);
+        try
+        {
+            PureRunSessionService service = Field<PureRunSessionService>(ui, "_run");
+            RunSessionResult setup = CompleteSetup(service);
+            Invoke(ui, "RouteCommittedSetup", setup);
+            await WaitForBattle(ui, tree);
+            GodotActWorldHost host = ui.ActWorld!;
+            PureRunState run = setup.Snapshot!.ActiveRun!;
+            string nodeId = RunAdventureTransitionService.CurrentNodeId(run);
+            GodotAdventureMapInstance map = host.Nodes[nodeId];
+            ulong surfaceId = map.Surface.GetInstanceId();
+            InvokePrivate(ui, "ShowResolvedAdventureNode", run);
+            GodotAdventureBoardView view = Field<GodotAdventureBoardView>(ui, "_adventureBoard");
+            AssertThat(view.UsesResidentSurface).IsTrue();
+            AssertThat(view.ResidentSurface!.GetInstanceId()).IsEqual(surfaceId);
+            AdventureBoardObject[] exits = view.Definition.Objects.Where(value => value.Kind == AdventureObjectKind.Exit).ToArray();
+            AssertThat(exits.Length > 0).IsTrue();
+            Node2D routes = map.GetNode<Node2D>("PostBattleRoutes");
+            AssertThat(routes.GetChildCount()).IsEqual(exits.Length);
+            foreach (AdventureBoardObject exit in exits)
+            {
+                AssertThat(host.Nodes[exit.TargetNodeId!].Visible).IsTrue();
+                AssertThat(view.TryGetExitRimPosition(exit.ObjectId, out Vector2 rim)).IsTrue();
+                // Rim marker sits beyond the interior exit tile along the top-right edge.
+                AssertThat(rim.X > view.CellCenter(exit.Cell).X).IsTrue();
+            }
+            AssertThat(host.Nodes.Count(pair => pair.Value.Visible)).IsEqual(exits.Length + 1);
+        }
+        finally
+        {
+            ui.QueueFree();
+            for (int frame = 0; frame < 4 && GodotObject.IsInstanceValid(ui); frame++)
+                await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        }
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task ResolvedNodeRenderIsReadOnlyAndAtlasLayoutIsIdempotentAndRestorable()
+    {
+        const int seed = 37;
+        var store = new MemoryStore();
+        var ui = new GodotPlayableRunMain();
+        ui.ConfigureTestContext(new GodotPlayableRunTestContext(store, seed, "resident-readonly-render"));
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        tree.Root.AddChild(ui);
+        try
+        {
+            PureRunSessionService service = Field<PureRunSessionService>(ui, "_run");
+            RunSessionResult setup = CompleteSetup(service);
+            Invoke(ui, "RouteCommittedSetup", setup);
+            await WaitForBattle(ui, tree);
+            GodotActWorldHost host = ui.ActWorld!;
+            PureRunState run = setup.Snapshot!.ActiveRun!;
+            Dictionary<string, Transform2D> original = host.Nodes.ToDictionary(pair => pair.Key, pair => pair.Value.Transform);
+
+            int saves = store.SaveCount;
+            InvokePrivate(ui, "ShowResolvedAdventureNode", run);
+            Dictionary<string, Transform2D> first = host.Nodes.ToDictionary(pair => pair.Key, pair => pair.Value.Transform);
+            InvokePrivate(ui, "ShowResolvedAdventureNode", run);
+            InvokePrivate(ui, "ShowResolvedAdventureNode", run);
+            // Rendering never writes: repeated entry leaves the save untouched and the layout stable.
+            AssertThat(store.SaveCount).IsEqual(saves);
+            foreach ((string id, GodotAdventureMapInstance map) in host.Nodes)
+                AssertThat(map.Transform).IsEqual(first[id]);
+
+            // "Overview then post-battle": the baseline comes back whole and the next layout lands on the same values.
+            InvokePrivate(ui, "RestoreHostBaseline", host);
+            foreach ((string id, GodotAdventureMapInstance map) in host.Nodes)
+                AssertThat(map.Transform).IsEqual(original[id]);
+            InvokePrivate(ui, "ShowResolvedAdventureNode", run);
+            foreach ((string id, GodotAdventureMapInstance map) in host.Nodes)
+                AssertThat(map.Transform).IsEqual(first[id]);
+        }
+        finally
+        {
+            ui.QueueFree();
+            for (int frame = 0; frame < 4 && GodotObject.IsInstanceValid(ui); frame++)
+                await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        }
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task FailedEnterNodeSaveLeavesTheRunUntouched()
+    {
+        const int seed = 37;
+        var store = new MemoryStore();
+        var ui = new GodotPlayableRunMain();
+        ui.ConfigureTestContext(new GodotPlayableRunTestContext(store, seed, "resident-enter-save-failure"));
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        tree.Root.AddChild(ui);
+        try
+        {
+            PureRunSessionService service = Field<PureRunSessionService>(ui, "_run");
+            RunSessionResult setup = CompleteSetup(service);
+            Invoke(ui, "RouteCommittedSetup", setup);
+            await WaitForBattle(ui, tree);
+            PureRunState run = store.Load().Snapshot!.ActiveRun!;
+            long revision = store.Load().Snapshot!.Revision;
+            store.FailSaves = true;
+            // Entering a different node must seat the party inside the one CAS; when it fails nothing else saves.
+            InvokePrivate(ui, "HandleAdventureExit", run, "layer_02_battle");
+            AssertThat(store.Load().Snapshot!.Revision).IsEqual(revision);
+            store.FailSaves = false;
         }
         finally
         {
@@ -497,8 +629,7 @@ public sealed class ResidentEventBattleProductionGodotTests
             if (ui.ActWorldReady && ui.CaptureTestProbe().BattleActive) return;
             string? page = ui.CaptureTestProbe().PageTitle;
             if (ui.ActWorldReady && page is not null &&
-                (page.Contains("TILE ADVENTURE", StringComparison.Ordinal) ||
-                 page.Contains("TILE BATTLE", StringComparison.Ordinal)))
+                page.Contains("TILE ADVENTURE", StringComparison.Ordinal))
                 InvokePrivate(ui, "BeginReadyEncounter");
         }
         string? status = Field<Label>(ui, "_status")?.Text;
@@ -521,10 +652,12 @@ public sealed class ResidentEventBattleProductionGodotTests
     {
         private PureRunSaveSnapshot? _snapshot;
         public int SaveCount { get; private set; }
+        public bool FailSaves { get; set; }
         public void RestoreFixture(PureRunSaveSnapshot snapshot) => _snapshot = snapshot;
         public RunStoreResult Load() => new(true, null, _snapshot);
         public RunStoreResult Save(PureRunSaveSnapshot snapshot, long expectedRevision)
         {
+            if (FailSaves) return new(false, "save.io_failed", _snapshot);
             if ((_snapshot?.Revision ?? 0) != expectedRevision)
                 return new(false, "save.revision_conflict", _snapshot);
             _snapshot = snapshot;

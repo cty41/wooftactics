@@ -1,6 +1,7 @@
 #if TOOLS
 using Godot;
 using Tactics.Application.Units;
+using Tactics.Core.Units;
 using Tactics.Godot.Adapter.Runtime;
 
 namespace Tactics.Godot.Adapter.Editor;
@@ -140,6 +141,7 @@ public static class PoetAssetFactory
         poet.Speed = 5; poet.MaxHealth = 20; poet.MaxMana = 18; poet.StartingMana = 6;
         poet.MoveRange = 4; poet.Initiative = 10; poet.MovementTraitModifier = 0;
         poet.DerivedStatModeValue = "frozen-formula";
+        UnitAssetFactory.ApplyPrimaryAttribute(poet);
         ConfigurePoetVisuals(poet, poetDownRightTexture, poetUpLeftTexture, poetDeathTexture,
             poetMeleeDownRightTexture, poetMeleeUpLeftTexture,
             poetCastDownRightTexture, poetCastUpLeftTexture,
@@ -155,6 +157,7 @@ public static class PoetAssetFactory
         decoy.DisplayName = "Poet Afterimage";
         decoy.FamilyId = "summon";
         decoy.RoleId = "poet-decoy";
+        decoy.PrimaryAttributeValue = nameof(UnitPrimaryAttribute.None);
         decoy.DerivedStatModeValue = "explicit";
         decoy.Strength = 1; decoy.Agility = 1; decoy.Constitution = 1;
         decoy.Intelligence = 1; decoy.Charisma = 1; decoy.Luck = 1;

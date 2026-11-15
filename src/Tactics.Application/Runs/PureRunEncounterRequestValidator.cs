@@ -26,6 +26,8 @@ public static class PureRunEncounterRequestValidator
         if (adventureRevision < 0 || request.AdventureRevision != adventureRevision)
             return Fail("encounter.adventure_revision_conflict");
         RunCharacterState[] living = run.Party.Where(member => !member.IsDead).ToArray();
+        // A battle with nobody alive is not a resumable encounter; it must never validate as an empty party.
+        if (living.Length == 0) return Fail("encounter.party_conflict");
         if (request.Party is null || checkpoint.Party is null || request.Party.Any(member => member is null) ||
             checkpoint.Party.Any(member => member is null) || request.Party.Count != living.Length ||
             checkpoint.Party.Count != living.Length ||

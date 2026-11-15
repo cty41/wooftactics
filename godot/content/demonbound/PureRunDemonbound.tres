@@ -21,6 +21,7 @@ DisplayName = "Demonbound"
 Category = "player"
 FamilyId = "player"
 RoleId = "demonbound"
+PrimaryAttributeValue = "Charisma"
 Strength = 5
 Agility = 5
 Constitution = 5

@@ -18,6 +18,66 @@ public class UnitBatchGodotTests
 {
     [TestCase]
     [RequireGodotRuntime]
+    public void AllGlobalCatalogUnitsSatisfyVisualResourceContracts()
+    {
+        var catalog = ResourceLoader.Load<GodotResourceCatalog>(
+            "res://content/ContentCatalog.tres", string.Empty, ResourceLoader.CacheMode.Ignore);
+        AssertThat(catalog).IsNotNull();
+        if (catalog is null)
+            return;
+
+        GodotResourceEntry[] unitEntries = catalog.Entries
+            .Where(entry => entry.ResourceTypeIdValue == "unit")
+            .OrderBy(entry => entry.ContentIdValue, StringComparer.Ordinal)
+            .ToArray();
+        AssertThat(unitEntries.Length).IsGreater(0);
+
+        foreach (GodotResourceEntry entry in unitEntries)
+        {
+            var definition = ResourceLoader.Load<UnitDefinitionResource>(
+                entry.DiagnosticPathValue, string.Empty, ResourceLoader.CacheMode.Ignore);
+            AssertThat(definition).IsNotNull();
+            if (definition is null)
+                continue;
+
+            definition.ValidateVisualContract();
+            AssertBodyOffsetWithinTexture(definition.DownRightTexture!, definition.DownRightBodyOffset);
+            AssertBodyOffsetWithinTexture(definition.UpLeftTexture!, definition.UpLeftBodyOffset);
+            if (definition.DeathTexture is not null)
+                AssertBodyOffsetWithinTexture(definition.DeathTexture, definition.DeathBodyOffset);
+            AssertThat(definition.ShadowTexture).IsNotNull();
+            AssertThat(definition.ShadowScale.X).IsGreater(0f);
+            AssertThat(definition.ShadowScale.Y).IsEqual(definition.ShadowScale.X);
+            AssertThat(definition.ShadowOpacity).IsGreaterEqual(0f);
+            AssertThat(definition.ShadowOpacity).IsLessEqual(1f);
+        }
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public void MawBatCorpseCentersOnGroundContactAndSettlesWithoutExtraDescent()
+    {
+        var bat = ResourceLoader.Load<UnitDefinitionResource>(
+            "res://content/units/PureRunMawBat.tres", string.Empty, ResourceLoader.CacheMode.Ignore);
+        AssertThat(bat).IsNotNull();
+        if (bat is null) return;
+
+        Texture2D death = bat.DeathTexture!;
+        Rect2I used = death.GetImage().GetUsedRect();
+        var corpseCenter = new Vector2(used.Position.X + used.Size.X / 2f, used.Position.Y + used.Size.Y / 2f);
+        Vector2 canvasCenter = new(death.GetWidth() / 2f, death.GetHeight() / 2f);
+        // Corpse AABB centre lands on the actor origin (the shadow's ground contact).
+        AssertThat((corpseCenter - canvasCenter + bat.DeathBodyOffset).Length() < 2f).IsTrue();
+        AssertThat(bat.DeathBodyOffset.IsEqualApprox(Vector2.Zero)).IsFalse();
+
+        GodotUnitActor actor = GodotUnitFactory.InstantiateActor(bat);
+        actor.SetDeathVisual(true);
+        actor._Process(1.0);
+        AssertThat(actor.Body!.GetParent<Node2D>().Position.IsEqualApprox(Vector2.Zero)).IsTrue();
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
     public void DemonboundUsesAuthoredMoveFourContractWithoutChangingFrozenUnits()
     {
         var resource = ResourceLoader.Load<UnitDefinitionResource>(
@@ -458,5 +518,13 @@ public class UnitBatchGodotTests
             bounds.Position.Y >= safeRect.Position.Y &&
             boundsEnd.X <= safeEnd.X &&
             boundsEnd.Y <= safeEnd.Y;
+    }
+
+    private static void AssertBodyOffsetWithinTexture(Texture2D texture, Vector2 offset)
+    {
+        AssertThat(texture.GetWidth()).IsGreater(0);
+        AssertThat(texture.GetHeight()).IsGreater(0);
+        AssertThat(Mathf.Abs(offset.X)).IsLessEqual(texture.GetWidth());
+        AssertThat(Mathf.Abs(offset.Y)).IsLessEqual(texture.GetHeight());
     }
 }

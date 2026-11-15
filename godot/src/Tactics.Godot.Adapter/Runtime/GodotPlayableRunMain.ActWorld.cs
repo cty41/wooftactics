@@ -116,8 +116,16 @@ public partial class GodotPlayableRunMain
             _actBelongsToSetup = false;
             _actOwnerRunId = run.RunId;
         }
+        _directExitRunId = run.RunId;
         RouteRunState(result.Snapshot!);
     }
+
+    /// <summary>
+    /// Run id of a freshly committed setup: the camp already was the start map, so that run's first battle starts directly.
+    /// Bound to the run id so a flag left over from an unconsumed route can never skip the fallback page of another
+    /// (resumed legacy) run; <see cref="RouteRunState"/> consumes it on the first route that sees any run.
+    /// </summary>
+    private string? _directExitRunId;
 
     private void PrepareActWorld(int seed, string? runId, Action resume, PureRunActBlueprint? contentPlan = null)
     {

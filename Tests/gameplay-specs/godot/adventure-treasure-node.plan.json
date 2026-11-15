@@ -44,9 +44,9 @@
     {
       "adapter": "PlayerInput",
       "kind": "clickPointerTarget",
-      "target": "8,8",
+      "target": "exit:layer_04_treasure",
       "parameters": {
-        "targetKind": "AdventureCell"
+        "targetKind": "AdventureExitApproach"
       }
     },
     {

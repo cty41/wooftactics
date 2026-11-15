@@ -99,6 +99,7 @@ public static class DemonboundAssetFactory
         unit.Strength = 6; unit.Agility = 4; unit.Constitution = 6; unit.Intelligence = 6; unit.Charisma = 6; unit.Luck = 2;
         unit.Speed = 4; unit.MaxHealth = 24; unit.MaxMana = 18; unit.StartingMana = 6; unit.MoveRange = 5; unit.Initiative = 8;
         unit.MovementTraitModifier = 0;
+        UnitAssetFactory.ApplyPrimaryAttribute(unit);
         unit.DerivedStatModeValue = "explicit";
         unit.DownRightTexture = Texture("res://assets/units/doge_demonbound.png");
         unit.UpLeftTexture = Texture("res://assets/units/doge_demonbound_ul.png");

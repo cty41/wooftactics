@@ -12,10 +12,24 @@
 ## 2026-10-30
 * **Sync**: `pure-run-artwork` 已同步到来源指纹 `sha256:ff4c374a7151cb4e067bf70ccfc7d31c896013e7896b96df1802eafc38ffa898`。
 * **Sync**: `project-documentation` 已同步到来源指纹 `sha256:d011bd32edb922163ab7818e7fab7f6115f3ffe81b6ba652dbbbfd95846e7102`。
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:60ccb2fc3d922a7efc809340f9914b6eac5d3df5294f2d91717a964cfdd5373a`。
+* **Sync**: `project-architecture` 已同步到来源指纹 `sha256:172e8c4d43213701c9243a2b719f49c90d5b00f56b69df7e4a22291477443466`。
+* **Sync**: `godot-migration` 已同步到来源指纹 `sha256:72c1c47c3eb098931e6e78a610a04f6f17acef1297c90ff4578a7f421e968b7b`。
+* **Sync**: `battle-system` 已同步到来源指纹 `sha256:7b471c97dc582bb88864fdb4711f7f7c79898eeeb1c7c187dd3c3dbfeefaa6d3`。
+* **Sync**: `roguelike-run` 已同步到来源指纹 `sha256:97585efb5506f23376c6797fe7dc2c404146822d3c6425563adaa343c51afdb4`。
+* **Sync**: `gameplay-test-framework` 已同步到来源指纹 `sha256:4210f39c239c71a9bd5167e33cbeeb3ebe9f0e9689e2eb271e2de2ac93c62b3b`。
 
 ## 2026-10-29
 * **Sync**: `project-documentation` 已同步到来源指纹 `sha256:750ee952e11366b76962fe6af75df22758b6daf676587181942630b6432e73d1`。
 * **Sync**: `pure-run-artwork` 已同步到来源指纹 `sha256:b68ac9db0a3266db692294d1cb6d2f9a21fcc8fe1b6f33b7f7cd8b0b91846251`。
+
+## 2026-10-28
+* **Sync**: `godot-migration` 已同步到来源指纹 `sha256:ddb4aa11e6487c780afdf6e50ac9407c5744ab0d4a430e04f25c28dcbca24f22`。
+* **Sync**: `gameplay-test-framework` 已同步到来源指纹 `sha256:1d967f2271eee9dea46a94a6b3bbbebcacd47a2edcbfc24fb3ae24beaf5740d3`。
+* **Sync**: `battle-system` 已同步到来源指纹 `sha256:dbdcb3d3c8bffea9ad186974b8fe7bf3104ffdc1a7bc539600018b047ec18522`。
+* **Sync**: `roguelike-run` 已同步到来源指纹 `sha256:1e9a8a5b107be9d8fd4c8846bc279cf4d1efc2ebe7217316e445d3fa02cad488`。
+* **Sync**: `project-architecture` 已同步到来源指纹 `sha256:af3347165e2dee3848c443d42b95686997f0792e1e2a43d5a137fafc974efa89`。
+* **Sync**: `pure-run-artwork` 已同步到来源指纹 `sha256:9ddae4b59b972577d18733577003a326dca242a18b5dd9b283908329b6c9bb1b`。
 
 ## 2026-10-27
 * **Sync**: `godot-migration` 已同步到来源指纹 `sha256:f7fe18e3154733d11127366070867d40e1050d600d42208b1afe8e8c82628df7`。

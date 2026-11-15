@@ -16,6 +16,7 @@
 !godot/**/*.csproj
 !godot/**/*.props
 !godot/**/*.targets
+!Tools/godot/lib/read_assembly_name/*.csproj
 !Tactics.Migration.slnx
 !Tactics.Migration.runsettings
 !src/**/packages.lock.json

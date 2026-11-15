@@ -41,8 +41,11 @@ public sealed class UnitDefinition
         UnitMovementKind movementKind,
         bool canProduceCorpse,
         UnitDerivedStatMode derivedStatMode = UnitDerivedStatMode.FrozenFormula,
-        int movementTraitModifier = 0)
+        int movementTraitModifier = 0,
+        UnitPrimaryAttribute primaryAttribute = UnitPrimaryAttribute.None)
     {
+        if (!Enum.IsDefined(primaryAttribute))
+            throw new ArgumentOutOfRangeException(nameof(primaryAttribute));
         if (!float.IsFinite(speed) || speed < 0)
             throw new ArgumentOutOfRangeException(nameof(speed));
         if (attackRange < 0)
@@ -79,7 +82,11 @@ public sealed class UnitDefinition
         CanProduceCorpse = canProduceCorpse;
         DerivedStatMode = derivedStatMode;
         MovementTraitModifier = movementTraitModifier;
+        PrimaryAttribute = primaryAttribute;
     }
+
+    /// <summary>Authored class identity attribute; <see cref="UnitPrimaryAttribute.None"/> for all-rounders and monsters.</summary>
+    public UnitPrimaryAttribute PrimaryAttribute { get; }
 
     public ContentId ContentId { get; }
     public string SourceId { get; }

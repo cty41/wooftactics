@@ -19,6 +19,11 @@ public partial class UnitDefinitionResource : Resource
     [Export] public string Category { get; set; } = string.Empty;
     [Export] public string FamilyId { get; set; } = string.Empty;
     [Export] public string RoleId { get; set; } = string.Empty;
+    /// <summary>
+    /// Class identity attribute ("None", "Strength" ... "Luck"). Serialized as a string, like RoleValue, so Resource
+    /// reloads never depend on a C# enum ordinal. Missing in older resources, which therefore read as "None".
+    /// </summary>
+    [Export] public string PrimaryAttributeValue { get; set; } = nameof(UnitPrimaryAttribute.None);
     [Export] public int Strength { get; set; }
     [Export] public int Agility { get; set; }
     [Export] public int Constitution { get; set; }
@@ -90,6 +95,10 @@ public partial class UnitDefinitionResource : Resource
             _ => throw new InvalidOperationException(
                 $"Unit '{ContentIdValue}' has unknown derived stat mode '{DerivedStatModeValue}'.")
         };
+        if (!Enum.TryParse(PrimaryAttributeValue, ignoreCase: false, out UnitPrimaryAttribute primaryAttribute) ||
+            !Enum.IsDefined(primaryAttribute) || int.TryParse(PrimaryAttributeValue, out _))
+            throw new InvalidOperationException(
+                $"Unit '{ContentIdValue}' has unknown primary attribute '{PrimaryAttributeValue}'.");
         return new UnitDefinition(
             new ContentId(ContentIdValue),
             SourceId,
@@ -105,7 +114,8 @@ public partial class UnitDefinitionResource : Resource
             movementKind,
             CanProduceCorpse,
             derivedStatMode,
-            MovementTraitModifier);
+            MovementTraitModifier,
+            primaryAttribute);
     }
 
     /// <summary>

@@ -19,6 +19,7 @@ DisplayName = "Mage"
 Category = "player"
 FamilyId = "player"
 RoleId = "mage"
+PrimaryAttributeValue = "Intelligence"
 Strength = 4
 Agility = 5
 Constitution = 3

@@ -135,7 +135,7 @@ const playerInputActionKinds = new Set([
 
 const supportedPointerTargetKinds = new Set([
   "UiElement", "MapNode", "BattleUnit", "BattleCell",
-  "AdventureCell", "AdventureActor", "AdventureObject", "RouteNode"
+  "AdventureCell", "AdventureActor", "AdventureObject", "AdventureExitApproach", "RouteNode"
 ]);
 const supportedPlayerObservables = new Set([
   "uiElement",
@@ -721,7 +721,7 @@ function validatePlayerInputTarget(step: ScenarioStep, diagnostics: ExpectationD
     diagnostics.push({
       code: "InvalidPlayerInputTargetKind",
       severity: "error",
-      message: `${step.kind} targetKind must be UiElement, MapNode, BattleUnit, BattleCell, AdventureCell, AdventureActor, AdventureObject, or RouteNode.`,
+      message: `${step.kind} targetKind must be UiElement, MapNode, BattleUnit, BattleCell, AdventureCell, AdventureActor, AdventureObject, AdventureExitApproach, or RouteNode.`,
       path: step.id ?? step.kind
     });
     return;

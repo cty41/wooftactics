@@ -114,13 +114,24 @@ def _verify_pinned_checkout(repo: Path, expected_commit: str) -> None:
         raise RuntimeError(f"pinned MaLiang checkout contains untracked content: {relative}")
 
 
+SUBMODULE_MISSING_MESSAGE = (
+    "MaLiang submodule Tools/vendor/maliang is not initialized; "
+    "run: git submodule update --init Tools/vendor/maliang"
+)
+
+
+def is_available() -> bool:
+    """MaLiang is an optional art-generation dependency; False means the submodule is not checked out."""
+    return (ROOT / "Tools" / "vendor" / "maliang" / "src" / "maliang_art" / "__init__.py").is_file()
+
+
 def activate() -> dict[str, Any]:
     config = load_config()
     checkout = ROOT / config["engine"]["submodulePath"]
-    _verify_pinned_checkout(checkout, config["engine"]["commit"])
     source = checkout / "src"
     if not (source / "maliang_art" / "__init__.py").is_file():
-        raise RuntimeError("pinned MaLiang submodule is missing; run git submodule update --init")
+        raise RuntimeError(SUBMODULE_MISSING_MESSAGE)
+    _verify_pinned_checkout(checkout, config["engine"]["commit"])
     source_text = str(source)
     if source_text not in sys.path:
         sys.path.insert(0, source_text)

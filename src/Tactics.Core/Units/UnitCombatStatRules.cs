@@ -28,14 +28,7 @@ public static class UnitCombatStatRules
         }
         else
         {
-            int primary = role switch
-            {
-                SkillRole.Mage => effectiveAttributes.Intelligence,
-                SkillRole.Necromancer => effectiveAttributes.Constitution,
-                SkillRole.Demonbound => effectiveAttributes.Charisma,
-                SkillRole.Poet => effectiveAttributes.Strength,
-                _ => 0
-            };
+            int primary = PrimaryAttributeRules.Value(effectiveAttributes, PrimaryAttributeRules.For(role));
             contribution = FloorDiv(primary, divisor);
         }
 

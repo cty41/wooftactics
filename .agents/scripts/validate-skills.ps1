@@ -18,7 +18,17 @@ if (-not (Test-Path -LiteralPath $SkillsRoot)) {
 $files = Get-ChildItem -Path $SkillsRoot -Recurse -Filter SKILL.md | Sort-Object FullName
 
 foreach ($file in $files) {
-    $prefixBytes = Get-Content -LiteralPath $file.FullName -Encoding Byte -TotalCount 3
+    $prefixBytes = @()
+    $bomStream = [System.IO.File]::OpenRead($file.FullName)
+    try {
+        $bomBuffer = New-Object byte[] 3
+        $bomRead = $bomStream.Read($bomBuffer, 0, 3)
+        if ($bomRead -gt 0) {
+            $prefixBytes = @($bomBuffer[0..($bomRead - 1)])
+        }
+    } finally {
+        $bomStream.Dispose()
+    }
     $hasUtf8Bom = $prefixBytes.Count -ge 3 -and $prefixBytes[0] -eq 0xEF -and $prefixBytes[1] -eq 0xBB -and $prefixBytes[2] -eq 0xBF
     if ($hasUtf8Bom) {
         $rel = Resolve-Path -Relative $file.FullName

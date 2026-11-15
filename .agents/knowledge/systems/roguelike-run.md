@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics/tree/main/src/Tactics.Core/Runs
 title: Roguelike Run
 description: Godot Pure Run 的七层路线、节点事务、队伍成长、存档和终局主链。
 tags: [gameplay, roguelike, map, progression, godot]
-timestamp: "2026-10-22T16:00:43+08:00"
+timestamp: "2026-10-30T11:59:14+08:00"
 status: active
 catalog_scope: roguelike-run
 repo_paths:
@@ -21,7 +21,7 @@ repo_paths:
   - godot/src/Tactics.Godot.Adapter/Runtime/GodotPlayableRunMain.cs
   - Tests/gameplay-specs/godot
 verified_revision: c56d71ad4ebd
-source_fingerprint: sha256:e84efc7d3a1aab9a0748ab7d3177615888e9ec6b60ed57ffec5372ec54ad07b9
+source_fingerprint: sha256:97585efb5506f23376c6797fe7dc2c404146822d3c6425563adaa343c51afdb4
 ---
 
 # Current State

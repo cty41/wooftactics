@@ -37,6 +37,73 @@ public sealed class StaleSaveColdResumeGodotTests
         await AssertColdResume(store, tree, "cold-first-settlement-resume");
     }
 
+    /// <summary>
+    /// Real path CompleteBattle → progression → RouteRunState: no settlement page in between, the player lands on
+    /// the node's own resident Surface, and the top-right rim marker is clickable.
+    /// </summary>
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task BattleSettlementReturnsToResidentSurfaceWithClickableRimExit()
+    {
+        var store = new GodotRunSaveStore(new MemoryRunSaveFileSystem(), SavePath);
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        GodotPlayableRunMain ui = await StartSetupRun(store, tree, "post-battle-resident");
+        try
+        {
+            GodotActWorldHost host = ui.ActWorld!;
+            await SettleCurrentBattle(ui, store, tree);
+            for (int frame = 0; frame < 4; frame++) await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+
+            PureRunState run = store.Load().Snapshot!.ActiveRun!;
+            string nodeId = RunAdventureTransitionService.CurrentNodeId(run);
+            AssertThat(ui.CaptureTestProbe().PageTitle.Contains("SETTLEMENT", StringComparison.OrdinalIgnoreCase)).IsFalse();
+            AssertThat(AllLabels(ui).Any(text => text.Contains("BATTLE SETTLEMENT", StringComparison.Ordinal))).IsFalse();
+
+            GodotAdventureBoardView view = Field<GodotAdventureBoardView?>(ui, "_adventureBoard")
+                ?? throw new InvalidOperationException("No exploration board after progression.");
+            AssertThat(view.UsesResidentSurface).IsTrue();
+            AssertThat(view.ResidentSurface!.GetInstanceId()).IsEqual(host.Nodes[nodeId].Surface.GetInstanceId());
+
+            AdventureBoardObject exit = view.Definition.Objects.First(value => value.Kind == AdventureObjectKind.Exit);
+            AssertThat(view.TryGetExitRimPosition(exit.ObjectId, out Vector2 rim)).IsTrue();
+            var pressed = new List<string>();
+            view.ObjectPressed += id => pressed.Add(id);
+            view.EmitSignal(Control.SignalName.GuiInput, new InputEventMouseButton
+            { ButtonIndex = MouseButton.Left, Pressed = true, Position = rim });
+            AssertThat(pressed.Contains(exit.ObjectId)).IsTrue();
+        }
+        finally { await Free(ui, tree); }
+    }
+
+    /// <summary>Entering a battle node starts the fight with no click, writes one checkpoint, and never starts twice.</summary>
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task EnteringBattleNodeStartsBattleOnceWithoutAnyClick()
+    {
+        var store = new GodotRunSaveStore(new MemoryRunSaveFileSystem(), SavePath);
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        GodotPlayableRunMain ui = await StartSetupRun(store, tree, "auto-battle-start");
+        try
+        {
+            AssertThat(ui.CaptureTestProbe().BattleActive).IsTrue();
+            PureRunState pending = store.Load().Snapshot!.ActiveRun!;
+            AssertThat(pending.Phase).IsEqual(PureRunPhase.PendingBattle);
+            long revision = store.Load().Snapshot!.Revision;
+            for (int frame = 0; frame < 20; frame++) await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+            AssertThat(store.Load().Snapshot!.Revision).IsEqual(revision);
+        }
+        finally { await Free(ui, tree); }
+    }
+
+    private static IEnumerable<string> AllLabels(Node root)
+    {
+        foreach (Node child in root.GetChildren())
+        {
+            if (child is Label label && !label.IsQueuedForDeletion()) yield return label.Text;
+            foreach (string nested in AllLabels(child)) yield return nested;
+        }
+    }
+
     [TestCase]
     [RequireGodotRuntime]
     public async Task LayerFourRestSelectionSurvivesColdResume()
@@ -87,6 +154,179 @@ public sealed class StaleSaveColdResumeGodotTests
         await AssertColdResume(store, tree, "cold-layer-five-settled");
     }
 
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task LayerFourStoreOfferAndPurchaseSurviveColdResumeWithoutRerolling()
+    {
+        var store = new GodotRunSaveStore(new MemoryRunSaveFileSystem(), SavePath);
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        GodotPlayableRunMain ui = await StartSetupRun(store, tree, "cold-store");
+        try
+        {
+            await ClearFirstThreeLayers(ui, store, tree);
+            await ExitTo(ui, store, tree, "layer_04_store");
+            InvokePrivate(ui, "ShowStore", store.Load().Snapshot!.ActiveRun!);
+            AssertThat(store.Load().Snapshot!.ActiveRun!.MapState!.StoreOffers!.Count > 0).IsTrue();
+        }
+        finally { await Free(ui, tree); }
+
+        string opened = OffersFingerprint(store);
+        GodotPlayableRunMain resumed = await AssertColdResume(store, tree, "cold-store-opened", keep: true);
+        try
+        {
+            InvokePrivate(resumed, "ShowStore", store.Load().Snapshot!.ActiveRun!);
+            AssertThat(OffersFingerprint(store)).IsEqual(opened);
+
+            PureRunState run = store.Load().Snapshot!.ActiveRun!;
+            RunStoreOfferState? affordable = run.MapState!.StoreOffers!
+                .Where(offer => !offer.Purchased && offer.Price <= run.Gold).OrderBy(offer => offer.Price).FirstOrDefault();
+            AssertThat(affordable).IsNotNull();
+            InvokePrivate(resumed, "PurchaseStore", affordable!.InstanceId);
+            AssertThat(store.Load().Snapshot!.ActiveRun!.MapState!.StoreOffers!
+                .Single(offer => offer.InstanceId == affordable.InstanceId).Purchased).IsTrue();
+        }
+        finally { await Free(resumed, tree); }
+
+        string purchased = OffersFingerprint(store);
+        GodotPlayableRunMain again = await AssertColdResume(store, tree, "cold-store-purchased", keep: true);
+        try
+        {
+            InvokePrivate(again, "ShowStore", store.Load().Snapshot!.ActiveRun!);
+            AssertThat(OffersFingerprint(store)).IsEqual(purchased);
+        }
+        finally { await Free(again, tree); }
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task LayerFourEventSelectionSurvivesColdResume()
+    {
+        var store = new GodotRunSaveStore(new MemoryRunSaveFileSystem(), SavePath);
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        GodotPlayableRunMain ui = await StartSetupRun(store, tree, "cold-event");
+        try
+        {
+            await ClearFirstThreeLayers(ui, store, tree);
+            await ExitTo(ui, store, tree, "layer_04_event");
+            AssertThat(store.Load().Snapshot!.ActiveRun!.NodeTransaction?.NodeId).IsEqual("layer_04_event");
+        }
+        finally { await Free(ui, tree); }
+
+        await AssertColdResume(store, tree, "cold-event-resume");
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task LayerSixNodeSelectionSurvivesColdResume()
+    {
+        var store = new GodotRunSaveStore(new MemoryRunSaveFileSystem(), SavePath);
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        GodotPlayableRunMain ui = await StartSetupRun(store, tree, "cold-layer-six");
+        try
+        {
+            await ClearFirstThreeLayers(ui, store, tree);
+            await ExitTo(ui, store, tree, "layer_04_rest");
+            InvokePrivate(ui, "CommitLayerFour", (Func<PureRunState, LayerFourNodeResolution>)(state =>
+                new PureRunLayerFourNodeService().ConfirmRest(state)));
+            await ExitTo(ui, store, tree, "layer_05_battle");
+            await SettleCurrentBattle(ui, store, tree);
+            await ExitTo(ui, store, tree, "layer_06_rest");
+            AssertThat(store.Load().Snapshot!.ActiveRun!.NodeTransaction?.NodeId).IsEqual("layer_06_rest");
+        }
+        finally { await Free(ui, tree); }
+
+        await AssertColdResume(store, tree, "cold-layer-six-resume");
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task OldBuildSettledRunWithUnresolvedBoardIsClearedWithNotice()
+    {
+        var store = new GodotRunSaveStore(new MemoryRunSaveFileSystem(), SavePath);
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        GodotPlayableRunMain ui = await StartSetupRun(store, tree, "cold-old-board");
+        try
+        {
+            await SettleCurrentBattle(ui, store, tree);
+            Rewrite(store, run => With(run, adventure: run.AdventureState! with
+            {
+                BoardContentId = new ContentId("adventure-board.pure-run.node.layer-01-battle")
+            }));
+        }
+        finally { await Free(ui, tree); }
+
+        await AssertClearedWithNotice(store, tree, "cold-old-board-resume");
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task OldBuildCheckpointCarryingADeadMemberIsClearedWithNotice()
+    {
+        var store = new GodotRunSaveStore(new MemoryRunSaveFileSystem(), SavePath);
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        GodotPlayableRunMain ui = await StartSetupRun(store, tree, "cold-old-dead");
+        try
+        {
+            AssertThat(store.Load().Snapshot!.ActiveRun!.Phase).IsEqual(PureRunPhase.PendingBattle);
+            Rewrite(store, run =>
+            {
+                RunCharacterState[] party = run.Party.Select((member, index) => index == 0 ? AsDead(member) : member).ToArray();
+                return With(run, party: party, checkpoint: run.Checkpoint! with { Party = party });
+            });
+        }
+        finally { await Free(ui, tree); }
+
+        await AssertClearedWithNotice(store, tree, "cold-old-dead-resume");
+    }
+
+    private static async Task AssertClearedWithNotice(IRunSaveStore store, SceneTree tree, string id)
+    {
+        var ui = new GodotPlayableRunMain();
+        ui.ConfigureTestContext(new GodotPlayableRunTestContext(store, Seed, id));
+        tree.Root.AddChild(ui);
+        try
+        {
+            for (int frame = 0; frame < 180 && ui.CaptureTestProbe().PageTitle != "PURE RUN"; frame++)
+                await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+            string resetMessage = (string)typeof(GodotPlayableRunMain)
+                .GetField("StaleSaveResetMessage", BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null)!;
+            AssertThat(store.Load().Snapshot?.ActiveRun).IsNull();
+            AssertThat(SafeStatus(ui)).IsEqual(resetMessage);
+            AssertThat(ui.CaptureTestProbe().PageTitle).IsEqual("PURE RUN");
+            AssertThat(FindButton(ui, button => button.Text == "Continue")!.Disabled).IsTrue();
+
+            await Press(ui, tree, button => button.Text == "New Run");
+            for (int frame = 0; frame < 180 && !ui.CaptureTestProbe().PageTitle.Contains("START CAMP", StringComparison.Ordinal); frame++)
+                await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+            AssertThat(ui.CaptureTestProbe().PageTitle).Contains("START CAMP");
+        }
+        finally { await Free(ui, tree); }
+    }
+
+    private static string OffersFingerprint(IRunSaveStore store) => string.Join('|',
+        store.Load().Snapshot!.ActiveRun!.MapState!.StoreOffers!
+            .Select(offer => $"{offer.InstanceId.Value}:{offer.ContentId.Value}:{offer.Price}:{offer.Purchased}"));
+
+    private static void Rewrite(IRunSaveStore store, Func<PureRunState, PureRunState> change)
+    {
+        PureRunSaveSnapshot current = store.Load().Snapshot!;
+        PureRunState next = change(current.ActiveRun!);
+        RunStoreResult saved = store.Save(new PureRunSaveSnapshot(next.Revision, next, current.TerminalSummary), current.Revision);
+        if (!saved.Succeeded) throw new InvalidOperationException($"Legacy fixture rejected: {saved.ErrorCode}");
+    }
+
+    private static PureRunState With(PureRunState run, RunCharacterState[]? party = null,
+        RunEncounterCheckpoint? checkpoint = null, RunAdventureState? adventure = null) => new(run.RunId, run.Seed,
+        run.Revision + 1, run.Phase, run.EncounterIndex, run.EncounterContentId, party ?? run.Party.ToArray(),
+        run.BackpackConsumables, run.BackpackEquipment, run.PendingProgression, run.AppliedTransactionKeys, run.Gold,
+        run.BattlesCompleted, run.EnemiesDefeated, run.AcquiredItems, checkpoint ?? run.Checkpoint, run.MapState,
+        run.NodeTransaction, run.EscortState, adventure ?? run.AdventureState);
+
+    private static RunCharacterState AsDead(RunCharacterState member) => new(member.CharacterId, member.UnitContentId,
+        member.Level, member.Attributes, 0, member.MaxHealth, member.CurrentMana, member.MaxMana, true,
+        member.LearnedSkills, member.Equipment, member.CarriedConsumables, member.LearnedSkillStates,
+        member.StartingSkillContentId);
+
     private static async Task<GodotPlayableRunMain> StartSetupRun(IRunSaveStore store, SceneTree tree, string id)
     {
         var ui = new GodotPlayableRunMain();
@@ -100,9 +340,9 @@ public sealed class StaleSaveColdResumeGodotTests
         InvokePrivate(ui, "RouteCommittedSetup", setup);
         for (int frame = 0; frame < 180 && !ui.ActWorldReady; frame++)
             await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
-        PureRunState ready = store.Load().Snapshot?.ActiveRun
+        _ = store.Load().Snapshot?.ActiveRun
             ?? throw new InvalidOperationException($"Setup did not persist a ready run: {SafeStatus(ui)}");
-        InvokePrivate(ui, "HandleAdventureExit", ready, "layer_01_battle");
+        // Committing setup leaves the start map for the first battle node by itself; just wait for the fight.
         await WaitForBattle(ui, tree);
         return ui;
     }
@@ -145,6 +385,7 @@ public sealed class StaleSaveColdResumeGodotTests
             if (FindButton(ui, button => button.Name == "ProgressionAttribute_Strength") is null)
                 InvokePrivate(ui, "ShowProgression", run, run.PendingProgression[0]);
             await Press(ui, tree, button => button.Name == "ProgressionAttribute_Strength");
+            await Press(ui, tree, button => button.Name == "ProgressionAttributeContinue");
             long before = store.Load().Snapshot!.Revision;
             await Press(ui, tree, button => button.Name == "ProgressionSkillChoice_0" || button.Text == "Confirm Attribute");
             if (store.Load().Snapshot!.Revision <= before)
@@ -179,20 +420,11 @@ public sealed class StaleSaveColdResumeGodotTests
         for (int frame = 0; frame < 4; frame++) await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
         if (store.Load().Snapshot!.Revision <= before)
             throw new InvalidOperationException($"Exit to {node} did not save: {SafeStatus(ui)}");
-        if (!ui.CaptureTestProbe().BattleActive &&
-            ui.CaptureTestProbe().PageTitle.Contains("TILE BATTLE", StringComparison.Ordinal))
-        {
-            string begin = node switch
-            {
-                "layer_05_battle" => "BeginLayerFive",
-                "layer_07_battle" => "BeginBoss",
-                _ => "BeginReadyEncounter"
-            };
-            InvokePrivate(ui, begin);
-            for (int frame = 0; frame < 4; frame++) await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
-        }
+        // Battle nodes start on entry; give the deferred start a few frames instead of clicking anything.
+        if (ui.CaptureTestProbe().PageTitle.Contains(" — BATTLE", StringComparison.Ordinal))
+            for (int frame = 0; frame < 60 && !ui.CaptureTestProbe().BattleActive; frame++)
+                await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
     }
-
     private static async Task<GodotPlayableRunMain> AssertColdResume(IRunSaveStore store, SceneTree tree, string id,
         bool keep = false)
     {
@@ -232,10 +464,6 @@ public sealed class StaleSaveColdResumeGodotTests
         {
             await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
             if (ui.ActWorldReady && ui.CaptureTestProbe().BattleActive) return;
-            string? page = ui.CaptureTestProbe().PageTitle;
-            if (ui.ActWorldReady && page is not null &&
-                page.Contains("TILE BATTLE", StringComparison.Ordinal))
-                InvokePrivate(ui, "BeginReadyEncounter");
         }
         throw new InvalidOperationException(
             $"Battle not ready: page={ui.CaptureTestProbe().PageTitle}, status={SafeStatus(ui)}");

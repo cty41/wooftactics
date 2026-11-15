@@ -47,6 +47,7 @@ HitUpLeftTexture = ExtResource("5_qaiwi")
 ShadowTexture = ExtResource("8_ncigh")
 DownRightBodyOffset = Vector2(0, -108)
 UpLeftBodyOffset = Vector2(0, -108)
+DeathBodyOffset = Vector2(0, -70.5)
 ShadowOffset = Vector2(0, 3.84)
 ShadowScale = Vector2(1.6, 1.6)
 ShadowOpacity = 0.9
