@@ -36,7 +36,7 @@ source: feat/review-nits-to-gates
 
 | # | 类别 | 证据 | 可机器化 | 处置 |
 |---|---|---|---|---|
-| A | spec/文档内部不一致 | `ab5b7424`（Tasks 与 S2.4 矛盾、Report 空）；`2a2ce1fd`（任务框/Journey 空）；`ddc33f41`（宣称超证据）；`b3ebe621` | 是 | **本轮 A1–A6 落地** |
+| A | spec/文档内部不一致 | `ab5b7424`（Tasks 与 S2.4 矛盾、Report 空）；`2a2ce1fd`（任务框/Journey 空）；`ddc33f41`（宣称超证据）；`b3ebe621` | 是 | **本轮 A1–A6 落地**（任务框=A4；Journey 空与"宣称超证据"属收口纪律，人工域，见 REVIEW.md） |
 | B | 引用/出处失实 | `ddc33f41` workflow-map 首轮 FAIL：教训挂错出处、无据变量（全仓零命中） | 部分 | 后置：文档内路径/变量存在性检查；语义出处人工核 |
 | C | 文档-代码漂移 | `ab5b7424` README 漏 `ES_CONTINUOUS` | 部分 | 后置：一次性文档-代码对照清单；不建全自动 |
 | D | 环境事实未逐字核对 | workflow-map Journey（`CalculateFolderPath` vs `GetFolderPath`） | 否 | 已落 Journey 记录与 agent-environment.md，流程性 |
@@ -69,6 +69,12 @@ source: feat/review-nits-to-gates
 - TLA+/Lean/Bombadil、外循环工厂
 - 收编 feat/all-tilemap 的 16 个提交；处置 local-review-contract 会话遗留（未删计划 + 未提交 log.md 重写）
 - OKF sync 收尾（工作区含他人未提交知识改动，见 Risks）
+
+## Risks
+
+- **OKF sync 延后**：主工作区含另一会话未提交的知识改动（`local-review-contract` 遗留：未删计划 + `log.md` 重写）。新文件 `Tools/agent-policy/validate_compose_spec.py` 落在 `Tools/agent-policy/` 受监控根内但暂无 scope 映射；待工作区干净后补 `catalog-scopes.yaml` 映射并跑 report→正文→sync，本次未执行。
+- **与 feat/all-tilemap 的合并摩擦**：该分支（未合）改了 `Tools/agent-policy/validate_manual_qa_handoff.py` 与 `AGENTS.md` 相邻行；建议其先收编，再合本分支。
+- **真树测试的耦合**：`test_real_tree_specs_pass` 将 unittest 绿度与现存 spec 内容绑定，后续新 spec 违例会直接打红全套测试——这是预期门禁行为，不是回归。
 
 ## Tasks
 

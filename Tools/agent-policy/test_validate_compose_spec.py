@@ -100,6 +100,24 @@ class ComposeSpecPolicyTests(unittest.TestCase):
         errors = self.validate(stale)
         self.assertTrue(any("unchecked task 'T2'" in error for error in errors))
 
+    def test_delivered_report_only_spec_passes(self) -> None:
+        body = delivered_variant()
+        start = body.index("## Tasks")
+        end = body.index("## Journey log") if "## Journey log" in body else len(body)
+        report_only = body[:start] + body[end:]
+        self.assertEqual([], self.validate(report_only))
+
+    def test_delivered_unchecked_box_without_id_fails(self) -> None:
+        mixed = delivered_variant().replace(
+            "- [x] T1: build it", "- [ ] write docs\n- [x] T1: build it", 1
+        )
+        errors = self.validate(mixed)
+        self.assertTrue(any("unchecked task item" in error for error in errors))
+
+    def test_uppercase_checked_marker_passes(self) -> None:
+        upper = delivered_variant().replace("- [x] T1:", "- [X] T1:", 1)
+        self.assertEqual([], self.validate(upper))
+
     def test_malformed_tasks_section_fails(self) -> None:
         broken = DESIGNED_SPEC.replace("- [ ] T1:", "- no marker T1:", 1).replace(
             "- [ ] T2:", "- no marker T2:", 1

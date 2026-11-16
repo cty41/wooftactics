@@ -19,7 +19,8 @@ from pathlib import Path
 REQUIRED_FIELDS = {"feature", "status", "updated", "source"}
 ALLOWED_STATUS = {"designed", "in-progress", "delivered"}
 PLACEHOLDER_PATTERN = re.compile(r"TBD|TODO|完成实现|添加适当")
-TASK_PATTERN = re.compile(r"^- \[(?P<mark>[ x])\] (?P<id>T\d+):", re.MULTILINE)
+TASK_PATTERN = re.compile(r"^- \[(?P<mark>[ xX])\] (?P<id>T\d+):", re.MULTILINE)
+UNCHECKED_LINE_PATTERN = re.compile(r"^- \[ \]")
 COVERS_PATTERN = re.compile(r"covers:\s*((?:S\d+(?:\.\d+)?)(?:\s*,\s*S\d+(?:\.\d+)?)*)")
 DEPENDS_PATTERN = re.compile(r"depends:\s*((?:T\d+)(?:\s*,\s*T\d+)*)")
 SECTION_ANCHOR_PATTERN = re.compile(r"^#{2,3} \[?(?P<anchor>S\d+(?:\.\d+)?)\]?", re.MULTILINE)
@@ -87,8 +88,11 @@ def validate_spec(path: Path) -> list[str]:
         errors.append(f"{path}: Tasks section has no parseable task items")
     if status == "delivered":
         for task_id, mark in sorted(task_marks.items()):
-            if mark != "x":
+            if mark.strip().lower() != "x":
                 errors.append(f"{path}: delivered spec has unchecked task '{task_id}'")
+        for line in tasks_section.splitlines():
+            if UNCHECKED_LINE_PATTERN.match(line) and not TASK_PATTERN.match(line):
+                errors.append(f"{path}: delivered spec has unchecked task item: {line.strip()[:60]}")
 
     for line in tasks_section.splitlines():
         if PLACEHOLDER_PATTERN.search(line):
@@ -126,9 +130,10 @@ def main() -> int:
     errors = validate_root(args.root)
     if errors:
         for error in errors:
-            print(error)
+            print(f"ERROR: {error}")
         return 1
-    print(f"OK compose specs: {len(list(args.root.glob('*.md')))} files")
+    count = len(list(args.root.glob("*.md")))
+    print(f"Compose spec validation passed: {count} spec(s) checked.")
     return 0
 
 
