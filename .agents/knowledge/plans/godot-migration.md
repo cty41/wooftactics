@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Godot migration provenance
 description: 已完成迁移的冻结来源、Godot ownership、生成批次与验证边界。
 tags: [migration, godot, provenance, testing]
-timestamp: "2026-11-13T09:53:07+08:00"
+timestamp: "2026-11-16T22:26:34+08:00"
 status: active
 catalog_scope: godot-migration
 repo_paths:
@@ -16,7 +16,7 @@ repo_paths:
   - Tools/migration
   - Tools/migration/manifest/retirement
 verified_revision: 2b341cb3
-source_fingerprint: sha256:3e548122f1d775fe8a5e872aad79c4321c45bc2a391df081f4ffedc83e96c61d
+source_fingerprint: sha256:ffa549e1abd2d5d24936039b38d9a05049254a185f268f6587388a73fb4454fe
 ---
 
 # Current State

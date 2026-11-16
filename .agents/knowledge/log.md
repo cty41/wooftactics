@@ -1,6 +1,11 @@
 # Tactics Knowledge Update Log
 
 ## 2026-11-16
+* **Sync**: `project-architecture` 已同步到来源指纹 `sha256:9cd7e40ffa9b56e63d11326fc438c3d8ac8202850215d8038ba7dbd28252221d`。
+* **Sync**: `godot-migration` 已同步到来源指纹 `sha256:ffa549e1abd2d5d24936039b38d9a05049254a185f268f6587388a73fb4454fe`。
+* **Sync**: `gameplay-test-framework` 已同步到来源指纹 `sha256:25ffc7a5396671c500f4adaf507d86886bf473e78b99bd98d56473f9ea2c8712`。
+* **Sync**: `roguelike-run` 已同步到来源指纹 `sha256:efad656ae258b0f21dca3840bd64f3ba1710204d59d957f749e719fcdbc2321f`。
+* **Update**: 节点完成自己回答欠不欠升级。战斗和会开战的事件欠一次标准升级，首领、休息、商店、检定和默认宝箱不欠；宝箱可以单独打开这同一种升级。
 * **Sync**: `project-documentation` 已同步到来源指纹 `sha256:83d1cc2e8613196417793a72faf2b0f0cac36059dbbd18596ee243f4ecffb414`。
 * **Update**: 人工验收收成打一局法师、死灵、亚马逊；旧切片暂缓；已通过结论挪到 `manual-acceptance-history.md`。
 

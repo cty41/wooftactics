@@ -24,6 +24,7 @@ public sealed class PureRunLayerFourNodeServiceTests
             Assert.That(result.State.Phase, Is.EqualTo(PureRunPhase.ReadyForLayerFive));
             Assert.That(result.State.MapState!.NodeLifecycle, Is.EqualTo(RunNodeLifecycle.Committed));
             Assert.That(result.State.MapState.ReachableNodeIds, Is.Empty);
+            Assert.That(result.State.PendingProgression, Is.Empty);
         });
         Assert.That(_service.ConfirmRest(result.State).WasDuplicate, Is.True);
     }
@@ -51,7 +52,9 @@ public sealed class PureRunLayerFourNodeServiceTests
         Assert.That(bought.State.BackpackConsumables.Single().InstanceId, Is.EqualTo(offer.InstanceId));
         Assert.That(_service.Purchase(bought.State, offer.InstanceId, definitions,
             new Dictionary<ContentId, EquipmentDefinition>()).RejectionCode, Is.EqualTo("store.offer_already_purchased"));
-        Assert.That(_service.LeaveStore(bought.State).State.Phase, Is.EqualTo(PureRunPhase.ReadyForLayerFive));
+        LayerFourNodeResolution left = _service.LeaveStore(bought.State);
+        Assert.That(left.State.Phase, Is.EqualTo(PureRunPhase.ReadyForLayerFive));
+        Assert.That(left.State.PendingProgression, Is.Empty);
     }
 
     [Test]
@@ -73,6 +76,7 @@ public sealed class PureRunLayerFourNodeServiceTests
             Assert.That(confirmed.State.Party.Single(value => value.CharacterId == adjudicator).IsDead, Is.True);
             Assert.That(confirmed.State.Phase, Is.EqualTo(PureRunPhase.ReadyForLayerFive));
             Assert.That(confirmed.State.MapState!.MysteryResolution!.Confirmed, Is.True);
+            Assert.That(confirmed.State.PendingProgression, Is.Empty);
         });
     }
 
@@ -184,9 +188,42 @@ public sealed class PureRunLayerFourNodeServiceTests
             Assert.That(committed.State.BackpackConsumables, Has.Count.EqualTo(1));
             Assert.That(committed.State.MapState!.PendingStatuses, Has.Count.EqualTo(1));
             Assert.That(committed.State.AppliedTransactionKeys, Does.Contain("node:layer_04_treasure:resolve"));
+            Assert.That(committed.State.PendingProgression, Is.Empty);
         });
         LayerFourNodeResolution duplicate = _service.ConfirmTreasure(committed.State, definition, equipment, consumables);
         Assert.That(duplicate.WasDuplicate, Is.True);
+    }
+
+    [Test]
+    public void TreasureConfirmationCanOweTheStandardLevelUpWithoutASeparateSettlement()
+    {
+        PureRunState run = Select(CreateRun(), "layer_04_treasure").State;
+        var definition = new PureRunTreasureDefinition(new ContentId("treasure.pure-run.standard-v1"), 2, 5,
+            [new WeightedContentDefinition(new ContentId("item.equipment.staff-01"), 1)],
+            [new WeightedContentDefinition(new ContentId("item.consumable.life-potion"), 1)],
+            [new WeightedContentDefinition(new ContentId("buff.event-damage-reduction"), 1)]);
+        var equipment = new Dictionary<ContentId, EquipmentDefinition>
+        {
+            [new ContentId("item.equipment.staff-01")] = new(new ContentId("item.equipment.staff-01"), "source",
+                "Staff", EquipmentSlot.Weapon, ItemRarity.Common, 1, new UnitAttributes(0, 0, 0, 1, 0, 0))
+        };
+        var consumables = new Dictionary<ContentId, ConsumableDefinition>
+        {
+            [new ContentId("item.consumable.life-potion")] = new(new ContentId("item.consumable.life-potion"),
+                "source", "Potion", "", ItemRarity.Common, 1, 1, ConsumableEffectKind.RestoreHealth, 4, 1,
+                ConsumableTargetMode.Self)
+        };
+        LayerFourNodeResolution resolved = _service.ResolveTreasure(run, definition);
+
+        LayerFourNodeResolution committed = _service.ConfirmTreasure(resolved.State, definition, equipment, consumables, grantsGrowth: true);
+
+        PendingProgression growth = committed.State.PendingProgression.Single();
+        Assert.Multiple(() =>
+        {
+            Assert.That(growth.TransactionKey, Is.EqualTo("progression:node:layer_04_treasure:resolve"));
+            Assert.That(growth.CharacterId, Is.EqualTo("mage"));
+            Assert.That(committed.State.BackpackEquipment, Has.Count.EqualTo(1));
+        });
     }
 
     private LayerFourNodeResolution Select(PureRunState run, string nodeId) => _service.SelectNode(run, Map(), nodeId);

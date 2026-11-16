@@ -106,6 +106,38 @@
         "observable": "adventureSceneChanged",
         "maximumFrames": 600
       }
+    },
+    {
+      "adapter": "PlayerInput",
+      "kind": "clickPointerTarget",
+      "target": "Continue",
+      "parameters": {
+        "targetKind": "UiElement"
+      }
+    },
+    {
+      "adapter": "PlayerInput",
+      "kind": "clickPointerTarget",
+      "target": "ProgressionAttribute_Strength",
+      "parameters": {
+        "targetKind": "UiElement"
+      }
+    },
+    {
+      "adapter": "PlayerInput",
+      "kind": "clickPointerTarget",
+      "target": "ProgressionAttributeContinue",
+      "parameters": {
+        "targetKind": "UiElement"
+      }
+    },
+    {
+      "adapter": "PlayerInput",
+      "kind": "clickPointerTarget",
+      "target": "ProgressionSkillChoice_0",
+      "parameters": {
+        "targetKind": "UiElement"
+      }
     }
   ],
   "assertionPlans": [

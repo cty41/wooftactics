@@ -209,6 +209,56 @@ public sealed class ResidentEventBattleProductionGodotTests
         }
     }
 
+    [TestCase]
+    [RequireGodotRuntime]
+    public async Task LayerSixFallenAltarVictoryContinueOpensTheLevelUp()
+    {
+        const int seed = 37;
+        var store = new MemoryStore();
+        var ui = new GodotPlayableRunMain();
+        ui.ConfigureTestContext(new GodotPlayableRunTestContext(store, seed, "resident-altar-growth"));
+        SceneTree tree = (SceneTree)Engine.GetMainLoop();
+        tree.Root.AddChild(ui);
+        try
+        {
+            PureRunSessionService service = Field<PureRunSessionService>(ui, "_run");
+            RunSessionResult setup = CompleteSetup(service);
+            Invoke(ui, "RouteCommittedSetup", setup);
+            await WaitForBattle(ui, tree);
+            PureRunSaveSnapshot pendingSnapshot = EventPending(setup.Snapshot!, LoadMap(), "layer_06_event",
+                RunAdventureEventContextKind.FallenAltarGuardian);
+            PureRunState pending = pendingSnapshot.ActiveRun!;
+            string[] keys = pending.AppliedTransactionKeys
+                .Append("battle:encounter.pure-run.n1:settlement")
+                .Distinct(StringComparer.Ordinal).ToArray();
+            pending = new PureRunState(pending.RunId, pending.Seed, pending.Revision, pending.Phase, pending.EncounterIndex,
+                pending.EncounterContentId, pending.Party, pending.BackpackConsumables, pending.BackpackEquipment,
+                pending.PendingProgression, keys, pending.Gold, pending.BattlesCompleted, pending.EnemiesDefeated,
+                pending.AcquiredItems, pending.Checkpoint, pending.MapState, pending.NodeTransaction, pending.EscortState,
+                pending.AdventureState);
+            store.RestoreFixture(new PureRunSaveSnapshot(pending.Revision, pending, null));
+            var victory = new PureRunBattleResult(pending.RunId, pending.Checkpoint!.Revision, pending.EncounterContentId,
+                true, 3, 3, pending.Checkpoint.Party.Select(member => new BattlePartyResult(member.CharacterId,
+                    member.MaxHealth, member.MaxMana, false, member.CarriedConsumables)).ToArray());
+
+            InvokePrivate(ui, "CompleteBattle", victory);
+            for (int frame = 0; frame < 2; frame++) await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+
+            AssertThat(store.Load().Snapshot!.ActiveRun!.PendingProgression.Single().TransactionKey)
+                .IsEqual("progression:node:layer_06_event:resolve");
+            AssertThat(LiveProgressionButton(ui)).IsNull();
+            Button proceed = LiveButtons(ui).Single(button => button.Text == "Continue");
+            proceed.EmitSignal(BaseButton.SignalName.Pressed);
+            AssertThat(LiveProgressionButton(ui)).IsNotNull();
+        }
+        finally
+        {
+            ui.QueueFree();
+            for (int frame = 0; frame < 4 && GodotObject.IsInstanceValid(ui); frame++)
+                await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        }
+    }
+
     private static IEnumerable<Button> LiveButtons(Node root)
     {
         foreach (Node child in root.GetChildren())

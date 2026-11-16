@@ -51,11 +51,8 @@ public sealed class PureRunSettlementService
                 new ItemInstanceId(instanceId), drop.Value, remainingCharges: 1, maxCharges: 1)).ToArray();
         }
 
-        string? progressionTarget = ProgressionTarget(party, result);
-        PendingProgression[] progression = progressionTarget is null
-            ? state.PendingProgression.ToArray()
-            : state.PendingProgression.Append(new PendingProgression(
-                $"progression:{state.EncounterContentId.Value}", state.EncounterContentId.Value, progressionTarget)).ToArray();
+        PendingProgression[] progression = NodeCompletion.Apply(state.PendingProgression,
+            new BattleVictoryCompletion(result, state.EncounterContentId.Value).OfferGrowth(party));
         int battles = state.BattlesCompleted + 1;
         int defeatedEnemies = checked(state.EnemiesDefeated + result.EnemiesDefeated);
         if (state.EncounterIndex == definition.Encounters.Count - 1)
@@ -132,10 +129,8 @@ public sealed class PureRunSettlementService
             acquired = acquired.Append(item).OrderBy(value => value.Value, StringComparer.Ordinal).ToArray();
         }
         // Keyed by the node transaction: the same encounter can settle on more than one node of a run.
-        PendingProgression[] progression = ProgressionTarget(party, result) is string target
-            ? state.PendingProgression.Append(new PendingProgression(
-                $"progression:{transaction.TransactionKey}", result.EncounterContentId.Value, target)).ToArray()
-            : state.PendingProgression.ToArray();
+        PendingProgression[] progression = NodeCompletion.Apply(state.PendingProgression,
+            new BattleVictoryCompletion(result, transaction.TransactionKey).OfferGrowth(party));
         bool layerSix = transaction.NodeId.StartsWith("layer_06_", StringComparison.Ordinal);
         PureRunMapState map = state.MapState! with
         {
@@ -184,18 +179,18 @@ public sealed class PureRunSettlementService
         int defeated = checked(state.EnemiesDefeated + result.EnemiesDefeated);
         if (boss)
         {
+            PendingProgression[] unchanged = NodeCompletion.Apply(state.PendingProgression,
+                new BossVictoryCompletion().OfferGrowth(party));
             var won = new PureRunState(state.RunId, state.Seed, state.Revision + 1, PureRunPhase.SliceCompleted,
                 state.EncounterIndex, state.EncounterContentId, party, backpack, state.BackpackEquipment,
-                state.PendingProgression, transactions, gold, battles, defeated, acquired, mapState: state.MapState,
+                unchanged, transactions, gold, battles, defeated, acquired, mapState: state.MapState,
                 escortState: state.EscortState, adventureState: state.AdventureState);
             PureRunSummary summary = CreateSummary(won, PureRunOutcome.BossVictory, party, transactions) with
             { BossDefeated = true, TerminalEncounterId = result.EncounterContentId };
             return new(true, null, null, summary, false);
         }
-        string target = ProgressionTarget(party, result) ?? string.Empty;
-        PendingProgression[] progression = string.IsNullOrEmpty(target) ? state.PendingProgression.ToArray() :
-            state.PendingProgression.Append(new PendingProgression($"progression:{result.EncounterContentId.Value}",
-                result.EncounterContentId.Value, target)).ToArray();
+        PendingProgression[] progression = NodeCompletion.Apply(state.PendingProgression,
+            new BattleVictoryCompletion(result, result.EncounterContentId.Value).OfferGrowth(party));
         var next = new PureRunState(state.RunId, state.Seed, state.Revision + 1, victoryPhase,
             state.EncounterIndex, state.EncounterContentId, party, backpack, state.BackpackEquipment, progression,
             transactions, gold, battles, defeated, acquired, mapState: state.MapState,
@@ -204,20 +199,26 @@ public sealed class PureRunSettlementService
     }
 
     /// <summary>
-    /// The one character a victory levels up: the lowest level among those still standing when the battle ended,
-    /// ties broken by party order. A character who was down at the end is excluded even though the post-victory
-    /// recovery in <see cref="MergeParty"/> has already put them back on their feet. Characters at
-    /// <see cref="MaxCharacterLevel"/> are skipped. Null when nobody qualifies.
+    /// The one character a completion levels up: the lowest level among <paramref name="eligible"/> who are still
+    /// alive on <paramref name="party"/>, ties broken by party order. A battle passes the characters standing when
+    /// the fight ended, so post-victory recovery cannot put a downed character back into the eligible set.
+    /// Characters at <see cref="MaxCharacterLevel"/> are skipped. Null when nobody qualifies.
     /// </summary>
-    private static string? ProgressionTarget(RunCharacterState[] party, PureRunBattleResult result)
+    internal static string? SelectProgressionTarget(IReadOnlyList<RunCharacterState> party, IEnumerable<string> eligible)
     {
-        HashSet<string> standing = result.Party.Where(member => !member.IsDead)
-            .Select(member => member.CharacterId).ToHashSet(StringComparer.Ordinal);
+        HashSet<string> allowed = eligible.ToHashSet(StringComparer.Ordinal);
         return party.Where(character => !character.IsDead && character.Level < MaxCharacterLevel &&
-                standing.Contains(character.CharacterId))
+                allowed.Contains(character.CharacterId))
             .OrderBy(character => character.Level)
-            .ThenBy(character => Array.FindIndex(party, candidate => candidate.CharacterId == character.CharacterId))
+            .ThenBy(character => IndexOf(party, character.CharacterId))
             .Select(character => character.CharacterId).FirstOrDefault();
+    }
+
+    private static int IndexOf(IReadOnlyList<RunCharacterState> party, string characterId)
+    {
+        for (int index = 0; index < party.Count; index++)
+            if (string.Equals(party[index].CharacterId, characterId, StringComparison.Ordinal)) return index;
+        return int.MaxValue;
     }
 
     private static string? Validate(PureRunState state, PureRunBattleResult result)

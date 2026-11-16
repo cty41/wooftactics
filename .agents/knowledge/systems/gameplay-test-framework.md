@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics/tree/main/Tools/gameplay-test-spec
 title: Gameplay Test Framework
 description: 将受控 gameplay spec 编译为 Godot runtime runner 可执行的确定性计划。
 tags: [testing, gameplay, automation, godot]
-timestamp: "2026-11-11T12:17:01+08:00"
+timestamp: "2026-11-16T22:26:33+08:00"
 status: active
 catalog_scope: gameplay-test-framework
 repo_paths:
@@ -16,7 +16,7 @@ repo_paths:
   - godot/src/Tactics.Godot.Adapter/Runtime/GodotPlayableRunMain.cs
   - Tests/gameplay-specs
 verified_revision: c56d71ad4ebd
-source_fingerprint: sha256:d882f70d1184515a1c9e67dc399a61a1a64c4d1d62c8772b848f78ec82278f2f
+source_fingerprint: sha256:25ffc7a5396671c500f4adaf507d86886bf473e78b99bd98d56473f9ea2c8712
 ---
 
 # Current State
