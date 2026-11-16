@@ -1,6 +1,6 @@
 ---
 feature: review-nits-to-gates
-status: in-progress
+status: delivered
 updated: 2026-11-16
 source: feat/review-nits-to-gates
 ---
@@ -8,6 +8,10 @@ source: feat/review-nits-to-gates
 # 评审打回沉淀为门禁 + 可抄点盘点
 
 ## Report
+
+**What was built** — `Tools/agent-policy/validate_compose_spec.py`（stdlib-only）：按 A1–A6 校验 `docs/compose/spec/*.md` 的 frontmatter、status/Report/勾选框一致性、占位符与 `covers:`/`depends:` 锚点，经既有 `unittest discover` 步骤进 verify 链（不改 `verify_steps.py`）；`test_validate_compose_spec.py` 含正反 fixture 与真树测试。同时交付 S2.2 打回语料七类分类（含跨分支锚点）与 S2.3 可抄点盘点（Poteto 五层 × tactics 现状 × 处置）。
+
+**Verification** — `py -3 -m unittest discover -s Tools/agent-policy -p test_*.py` 34 tests OK（含真树 9 份 spec）；`py -3 Tools/agent-policy/validate_compose_spec.py` 退出码 0。独立 review PASS-WITH-NITS（无 critical），4 处 nits（A4 无 id 旁路、Risks 缺失、语料口径、打印风格）已修复并复验。
 
 ## [S1] Problem
 
@@ -78,8 +82,12 @@ source: feat/review-nits-to-gates
 
 ## Tasks
 
-- [ ] T1: `Tools/agent-policy/validate_compose_spec.py` — acceptance: 规则 A1–A6 全部可执行；正反 fixture 覆盖每条规则；stdlib-only，风格对齐 `validate_godot_incidents.py`。(covers: S2.1)
-- [ ] T2: `Tools/agent-policy/test_validate_compose_spec.py` — acceptance: unittest discover 全绿；含真树测试（现存 spec 校验通过或列出已修违例）；入口可 `python -m` 直接跑真实目录。(covers: S2.1, S2.4)(depends: T1)
-- [ ] T3: 独立 review 与收口 — acceptance: review 无关键缺口；Report 记录验证命令与结果。(depends: T1, T2)
+- [x] T1: `Tools/agent-policy/validate_compose_spec.py` — acceptance: 规则 A1–A6 全部可执行；正反 fixture 覆盖每条规则；stdlib-only，风格对齐 `validate_godot_incidents.py`。(covers: S2.1)
+- [x] T2: `Tools/agent-policy/test_validate_compose_spec.py` — acceptance: unittest discover 全绿；含真树测试（现存 spec 校验通过或列出已修违例）；入口可 `python -m` 直接跑真实目录。(covers: S2.1, S2.4)(depends: T1)
+- [x] T3: 独立 review 与收口 — acceptance: review 无关键缺口；Report 记录验证命令与结果。(depends: T1, T2)
 
 ## Journey log
+
+- 门禁规则按「语料失效模式」校准而非按模板完备性校准：打回语料的病是勾选过期与状态不同步，不是缺 Tasks 段，故 Report-only delivered spec（如 `p2-split-pilots.md`）判合法。
+- 评审暴露 A4 旁路：任务行不带 `T\d:` id 时勾选框漏审。已改为「有 id 查 id、无 id 查框」双覆盖；结论「模板任务必须带 id」自此过时。
+- S2.2 语料锚点含跨分支引用（`feat/all-tilemap` 的 `6582206c`→`183912ba`），评审抽验全部真实；该表可作类别 B/C 后置检查器的索引。
