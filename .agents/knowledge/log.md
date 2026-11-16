@@ -1,5 +1,9 @@
 # Tactics Knowledge Update Log
 
+## 2026-11-16
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:83d1cc2e8613196417793a72faf2b0f0cac36059dbbd18596ee243f4ecffb414`。
+* **Update**: 人工验收收成打一局法师、死灵、亚马逊；旧切片暂缓；已通过结论挪到 `manual-acceptance-history.md`。
+
 ## 2026-11-13
 * **Sync**: `project-documentation` 已同步到来源指纹 `sha256:60f149f3d0cb09366816122047c8f6fae6a882f9f89d993e26957b730fb74ae6`。
 * **Update**: 人工验收账本改为中文，待验收只保留观感、手感、难度和编辑器操作；`project-documentation` 记下这条边界。

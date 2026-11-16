@@ -1,19 +1,21 @@
 # Manual QA Output Contract
 
-Read this file only when changing `.agents/docs/manual-acceptance.md` or producing a manual acceptance handoff.
+Read this file only when changing `.agents/docs/manual-acceptance.md` or producing a manual acceptance handoff. Passed conclusions stay in `.agents/docs/manual-acceptance-history.md`.
 
 ## Ledger Schema
 
-Use stable IDs shaped as `MQA-<SYSTEM>-<SUBSYSTEM>`. Each item is a level-three heading and contains:
+Use stable IDs shaped as `MQA-<SYSTEM>-<SUBSYSTEM>`. Each item is a level-three heading.
 
-- `Status`: `pending`, `passed`, `failed`, `deferred`, or `blocked`.
-- `Source`: first introduction or latest reopen commit/task.
-- `Reopen reason`: only when a previously passed item is reopened.
-- `Action`, `Expected`, `Observe`, `Preserve on failure`, and `Save boundary`.
-- `Automated evidence`: what automation proves and the remaining human boundary.
-- `User verdict`: latest explicit user conclusion, `none`, or the automated-evidence basis when a fully asserted item is closed by rule.
+当前待验收默认只有 `MQA-GODOT-SINGLE-RUN`。新的人工边界默认写进 `MQA-GODOT-SINGLE-RUN`，不另开九字段条目。只有这一局里看不到的新观感，才另加一行。短待验收只写：
 
-Keep items under the matching status section. 观感、操作手感、难度体验和编辑器实际操作仍须用户明确说通过才能改为 `passed`。预期结果已全部被测试断言的事实（页面文字、存档字段、导航落点）不新增人工条目；已有条目被测试完全覆盖后可改为 `passed`，并在 `User verdict` 写明依据是自动证据和本规则。Preserve pending items when plans are archived.
+- `Status`: `pending`, `failed`, `passed`, `deferred`, or `blocked`.
+- `看什么`: the one thing the person looks at during the current run.
+- `怎样算过`: the feel, readability, difficulty, or real Editor action that counts.
+- `User verdict`: latest explicit user conclusion, or `none`.
+
+已通过条目留在历史文件，沿用全字段：`Source`、`Action`、`Expected`、`Observe`、`Preserve on failure`、`Save boundary`、`Automated evidence`、`User verdict`。暂缓条目留在活账本，也沿用这些全字段，避免旧 ID 丢记录。
+
+Keep items under the matching status section. 观感、操作手感、难度体验和编辑器实际操作仍须用户明确说通过才能改为 `passed`。预期结果已全部被测试断言的事实（页面文字、存档字段、导航落点）不新增人工条目；已有条目被测试完全覆盖后可改为 `passed`，并在 `User verdict` 写明依据是自动证据和本规则。Preserve pending items when plans are archived. Do not repeat passed history in a handoff.
 
 `## Last Emitted Order` maps the most recent numbered output to stable IDs:
 
@@ -64,7 +66,7 @@ Output：无异常
 | Scenario | Required behavior |
 |---|---|
 | Godot fix is reviewed and verified | Emit changed/reopened items plus older Inventory pending. |
-| Multiple Godot surfaces have pending items | Keep them separate and name the exact Editor/runtime observation surface. |
+| Multiple Godot surfaces have pending items | Fold them into `MQA-GODOT-SINGLE-RUN` when that run already shows them. Add one short line only for a feel the run cannot show. |
 | Required automated gate fails | Report the gate and do not say acceptance can start. |
 | User reports partial numbered results | Resolve numbers through `Last Emitted Order`, then update stable IDs. |
 | A related presentation change follows a pass | Reopen only the affected visual/input item with a reason. |
