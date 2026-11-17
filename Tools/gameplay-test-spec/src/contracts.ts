@@ -1,3 +1,4 @@
+import { readFile } from "node:fs/promises";
 import yaml from "js-yaml";
 import { z } from "zod";
 import { ContractIdSchema, type ExpectationDiagnostic } from "./schema.js";
@@ -111,6 +112,99 @@ export function contractCoverage(contractIds: string[], contracts: ParsedGamepla
     if (contract.dsl_support === "unsupported") return { id, status: "unsupported" };
     return { id, status: "covered" };
   });
+}
+
+export type ContractCoverageStatus = "covered" | "failed" | "missing-spec" | "unsupported";
+
+export interface ContractCoverageItem {
+  id: string;
+  status: ContractCoverageStatus;
+}
+
+const AllowMissingSpecAllowlistSchema = z.object({
+  schema: z.literal("gameplay-contract-coverage-allow-missing-spec-v1"),
+  contractIds: z.array(ContractIdSchema)
+}).strict();
+
+export interface ContractCoverageGateResult {
+  valid: boolean;
+  uncoveredMissingSpec: string[];
+  staleAllowlistEntries: string[];
+  failedContractIds: string[];
+}
+
+export function buildRegistryContractCoverage(
+  registry: ContractValidationResult,
+  references: ReadonlyMap<string, "covered" | "failed">
+): ContractCoverageItem[] {
+  return registry.contracts.map(contract => ({
+    id: contract.id,
+    status: contract.dsl_support === "unsupported"
+      ? "unsupported"
+      : references.get(contract.id) ?? "missing-spec"
+  }));
+}
+
+export function evaluateContractCoverageGate(
+  registryValid: boolean,
+  coverage: ContractCoverageItem[],
+  allowedMissingSpecIds: ReadonlySet<string>
+): ContractCoverageGateResult {
+  const failedContractIds = coverage.filter(item => item.status === "failed").map(item => item.id);
+  const missingSpecIds = coverage.filter(item => item.status === "missing-spec").map(item => item.id);
+  const missingSpecSet = new Set(missingSpecIds);
+  const uncoveredMissingSpec = missingSpecIds.filter(id => !allowedMissingSpecIds.has(id));
+  const staleAllowlistEntries = [...allowedMissingSpecIds]
+    .filter(id => !missingSpecSet.has(id))
+    .sort((left, right) => left.localeCompare(right));
+  const valid = registryValid &&
+    failedContractIds.length === 0 &&
+    uncoveredMissingSpec.length === 0 &&
+    staleAllowlistEntries.length === 0;
+  return { valid, uncoveredMissingSpec, staleAllowlistEntries, failedContractIds };
+}
+
+export function contractCoverageGateDiagnostics(gate: ContractCoverageGateResult): ExpectationDiagnostic[] {
+  const diagnostics: ExpectationDiagnostic[] = [];
+  for (const id of gate.failedContractIds) {
+    diagnostics.push({
+      code: "ContractCoverageFailedSpec",
+      severity: "error",
+      message: `Contract '${id}' is referenced by an invalid ScenarioSpec.`,
+      path: id
+    });
+  }
+  for (const id of gate.uncoveredMissingSpec) {
+    diagnostics.push({
+      code: "ContractCoverageMissingSpec",
+      severity: "error",
+      message: `Contract '${id}' has no valid ScenarioSpec coverage.`,
+      path: id
+    });
+  }
+  for (const id of gate.staleAllowlistEntries) {
+    diagnostics.push({
+      code: "ContractCoverageAllowlistStale",
+      severity: "error",
+      message: `Allowlist entry '${id}' is no longer missing-spec; remove it from the baseline allowlist.`,
+      path: id
+    });
+  }
+  return diagnostics;
+}
+
+export async function loadAllowMissingSpecAllowlist(path: string): Promise<ReadonlySet<string>> {
+  let raw: unknown;
+  try {
+    raw = JSON.parse(await readFile(path, "utf8"));
+  } catch (error) {
+    throw new Error(`Allow-missing-spec allowlist '${path}' is not readable JSON: ${String(error)}`);
+  }
+  const parsed = AllowMissingSpecAllowlistSchema.safeParse(raw);
+  if (!parsed.success) {
+    throw new Error(`Allow-missing-spec allowlist '${path}' failed schema validation: ${parsed.error.message}`);
+  }
+  return new Set(parsed.data.contractIds);
 }
 
 function lineNumberAt(text: string, index: number): number {

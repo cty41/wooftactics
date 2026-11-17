@@ -1,6 +1,6 @@
 ---
 name: artworks-prompt-library
-description: "Use when creating reusable GPT Image prompt libraries for Godot 2D character sprites — analyzes a reference image plus a short character brief and writes structured prompt docs under Tools/artworks/, one folder per character"
+description: "Use when creating reusable GPT Image prompt libraries for Godot 2D character sprites — analyzes a reference image plus a short character brief and writes structured prompt docs under Tools/artworks/, one folder per character. Prompt-doc authoring only; actual generation/chroma/review runs through pure-run-artwork-pipeline"
 ---
 
 # Artworks Prompt Library

@@ -22,6 +22,8 @@ if ($selectedModes -gt 1) {
 }
 
 $resolvedRoot = (Resolve-Path -LiteralPath $ProjectRoot).Path
+Import-Module (Join-Path $PSScriptRoot 'TacticsPython.psm1') -Force
+$tacticsPythonExe = Get-TacticsPythonExecutable -RepoRoot $resolvedRoot
 $helper = Join-Path $PSScriptRoot '..\migration\godot_ai_codex_config.py'
 $arguments = @(
     $helper,
@@ -41,7 +43,7 @@ elseif ($Check) {
     $arguments += '--check'
 }
 
-& python @arguments
+& $tacticsPythonExe @arguments
 if ($LASTEXITCODE -ne 0) {
     throw "Godot AI Codex configuration failed with exit code $LASTEXITCODE."
 }

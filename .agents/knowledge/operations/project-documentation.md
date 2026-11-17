@@ -17,7 +17,7 @@ source_fingerprint: sha256:83d1cc2e8613196417793a72faf2b0f0cac36059dbbd18596ee24
 
 # Current State
 
-`.agents/docs/` 主要保存当前设计与使用指南；同一主题优先维护一份权威文档。`brainstorm.md` 是唯一的临时灵感收集箱，不属于设计真相源或实施承诺。想法成熟后迁入主题设计、[项目已知缺口](../plans/project-known-gaps.md)或正式计划。
+`.agents/docs/` 主要保存当前设计与使用指南；同一主题优先维护一份权威文档。`brainstorm.md` 是唯一的临时灵感收集箱，不属于设计真相源或实施承诺。想法成熟后迁入主题设计、[项目已知缺口](../plans/project-known-gaps.md)或正式计划。需要展开讨论的方向可写成 `.agents/docs/YYYY-MM-DD-brainstorm-<主题>.md` 深化草稿：草稿同样不是真相源，`brainstorm.md` 只保留摘要和链接。
 
 端到端指南 `.agents/docs/gameplay-design-to-development-workflow.md` 说明需求收束、玩法合同、可替换 Provider、受控 Draft、确定性编译、typed authoring、自动测试与人工验收。模型只生成带证据的候选；设计合同、代码、Resource 和测试继续承担权威，外接 LLM 不替代 Codex/开发者判断。
 
@@ -28,6 +28,8 @@ Pure Run 新装备的独立生产策略记录在 `.agents/docs/2026-08-25-pure-r
 魔剑士 `Demonbound` 已从职业 brainstorm 迁入 `.agents/docs/demonbound-class-design.md` 作为唯一权威设计，并由 `.agents/plans/demonbound-loop-development.md` 持续跟踪非大师实现、自动样本与人工门禁。腐化满后的恶魔失控形态规格（六维+5 派生重构、已学技能临时满级、敌友统一目标池、幸运修正永久死亡、墓碑记录、缺员继续）已实现在 `.agents/plans/demonbound-possessed-form-implementation.md`，六份 `DEMONBOUND-POSSESSED-*` 合同全部升级为 `verified_current`；30 固定样本已由自动测试覆盖，三局人工 Run 由 `.agents/docs/demonbound-possession-manual-checklist.md` 承接并在验收账本保持 `pending`。死亡来源的正式存档字段仍需单独立项。三个大师技能及正式美术/完整表现仍由[项目已知缺口](../plans/project-known-gaps.md)导航；在人工账本通过前不得把自动绿灯表述为体验验收。
 
 诗人权威规则已收束在 `.agents/docs/poet-class-design.md`，动态行动顺序在 `.agents/docs/battle-initiative-rules.md`，Core Facing 合同已回写 `.agents/docs/battle-facing-rules.md`。本轮装备明确延期且没有 schema/Resource 实现，未来 family、资格、事务、背包满与存档迁移问题只记录在 `.agents/docs/equipment-system-future-design.md`；诗人已接入获批五红土松 Idle、Melee、Cast、Hit DR/UL 与单张 Death，正式分身美术仍是后续边界，完整运行时视觉仍等待人工验收。
+
+Agent 工作流改进的 P2 拆分试点（OKF 同步链与门禁日志分诊）已交付：派发配方沉淀在 `.agents/rules/subagent-handback.md`，试跑证据与经验见 `docs/compose/spec/p2-split-pilots.md`；计划文件按约定清理，由 Git 历史保留。
 
 `.agents/plans/` 只保存仍需执行且 decision-complete 的计划。实现完成并验证后，长期规则回写 docs，未实施项进入已知缺口或经批准的新计划，completed plan 随后删除并由 Git 保留历史。
 

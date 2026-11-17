@@ -4,7 +4,13 @@
     "repository": "https://github.com/cty41/maliang.git",
     "submodulePath": "Tools/vendor/maliang",
     "version": "0.1.0",
-    "commit": "00d772ffe57c610c3217b8294d6b2794df175ca2"
+    "commit": "75897ee523b23a9da018d36b86f97bbbeec806ff",
+    "defaultBranch": "main"
+  },
+  "upstreamSkill": {
+    "path": "skills/maliang-art/SKILL.md",
+    "sha256": "22b28eb53ecb96070e9b2b3b69a17d69ef24c4a1966de076ef8e950c84ac7625",
+    "localAdaptation": ".agents/skills/pure-run-artwork-pipeline/SKILL.md"
   },
   "authority": {
     "reviewer": "cty41"

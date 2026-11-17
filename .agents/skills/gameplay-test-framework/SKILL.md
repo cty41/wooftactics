@@ -29,7 +29,7 @@ description: "Use when generating, validating, compiling, or running gameplay au
 
 ### 1. 先核对支持面
 
-检查 `Tools/gameplay-test-spec/src` 的 schema/validator/compiler 和 Godot runtime runner 的 adapter。不要根据旧阶段文档猜 action/assertion 名称。
+action/assertion 支持面以 `Tools/gameplay-test-spec/src` 当前 schema/adapter 与 runner 为准。
 
 当前 adapter 包括 Skill、Battle、Map、UI；它们按场景需要组合，不存在必须先完成某一 adapter 才能使用其他 adapter 的阶段限制。
 
@@ -74,7 +74,7 @@ node Tools/gameplay-test-spec/dist/src/cli.js generate-drafts -d <design.md> -c 
 - Key 只存在同目录的 `secrets.json`，该文件 ACL 只能授权当前用户、SYSTEM 或 Administrators；不得把 Key 放入仓库、命令参数、日志或对话。
 - 每次在线进程调用 `/models` 发现 exact model；缺模型、鉴权/配额、超时、截断或协议错误一律 fail-closed，不自动回退。
 - 本地调试可显式传 `--provider ollama --host http://127.0.0.1:11434 --model qwen3.5:2b`。
-- 模型输出必须继续执行 `validate-draft` / `compile-draft`，不得因 JSON 合法就视为 DSL 或玩法合法。
+- 模型输出一律经 `validate-draft` / `compile-draft` 验证后才进入编译。
 - 新角色、技能、状态和机制设计先使用 `gameplay-design-constraints` Skill 确认相关 Contract ID。
 
 首次配置：复制 `Tools/gameplay-test-spec/examples/providers.example.json` 和 `secrets.example.json` 到上述用户目录，写入已重新生成且未暴露的 Key，然后用 PowerShell 为 secrets 撤销继承并仅授予当前用户 FullControl：
@@ -92,7 +92,7 @@ Set-Acl -LiteralPath $secretPath -AclObject $acl
 node Tools/gameplay-test-spec/dist/src/cli.js provider-doctor
 ```
 
-修改 TypeScript 后先按 package scripts 构建。校验失败必须修复 Spec 或 schema，不跳过 validator 直接改生成计划。
+修改 TypeScript 后先按 package scripts 构建。校验失败时修复 Spec 或 schema，由 compiler 重新生成计划。
 
 ### 4. Godot 执行
 
@@ -108,7 +108,7 @@ node Tools/gameplay-test-spec/dist/src/cli.js provider-doctor
 - 下游首次出现新失败时停止扩围，先取得该失败的最小复现和 GREEN，再从最早受影响的后续门禁继续；不要盲目重跑已证明不受影响的前置门禁。
 - 同一 canonical Godot Editor、runner 和 verifier 同时只能有一个 mutating job owner；build、Editor、GdUnit 和统一 verifier 按项目 mutex 串行，独立只读分析可以并行。
 - 超过 60 秒的任务报告阶段、进度和最近更新时间。自最后可验证进展起 90 秒无变化时检查进程、runner 与日志；只有确认卡死后才停止当前 job，并只恢复当前门禁。
-- 当前任务引入的失败必须修复。疑似基线失败需有基线复现或权威记录，并按用户许可或仓库政策决定是否继续，不得自行忽略。
+- 当前任务引入的失败必须修复。疑似基线失败需有基线复现或权威记录，并按用户许可或仓库政策决定是否继续。
 
 ## Agent-first SkillGraph 辅助命令
 
@@ -117,7 +117,7 @@ node Tools/gameplay-test-spec/dist/src/cli.js generate-skill-graph-spec -t "<技
 node Tools/gameplay-test-spec/dist/src/cli.js generate-test-from-spec -s <skill-spec.json> -o <scenario.gameplay-test.md>
 ```
 
-自然语言 `generate-spec` 是辅助入口，不是绕过 Agent 收束和人工确认的理由。
+`generate-spec` 仅辅助产出草案；仍需 Agent 收束与人工确认。
 
 ## Anti-patterns
 

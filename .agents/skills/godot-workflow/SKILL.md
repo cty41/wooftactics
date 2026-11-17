@@ -1,6 +1,6 @@
 ---
 name: godot-workflow
-description: Use when a task changes, diagnoses, tests, researches, or migrates the canonical Godot 4.7 C# project; routes work to the smallest specialist skill and evidence set.
+description: Use when a Godot 4.7 C# task's correct specialist skill, project boundary, or evidence level is not already explicit — routing entry point that dispatches to the smallest specialist skill; reach a specialist directly only when its domain is already unambiguous.
 ---
 
 # Godot Workflow
@@ -25,7 +25,7 @@ Use for every Godot migration task when the correct project boundary, specialist
 
 ## Workflow
 
-1. Confirm the worktree is `migration/godot` and the project is `godot/project.godot`.
+1. Confirm the current workspace (per `agent-worktree`) and the canonical project `godot/project.godot`.
 2. Read `.agents/knowledge/operations/godot-agent-workflow.md` and the task-relevant migration concept.
 3. Select the smallest specialist skill from the table; load multiple only when the task truly crosses boundaries.
 4. If the authorized work requires Editor session count `0`, route through `godot-editor-lifecycle`; restore only an Editor that workflow closed.

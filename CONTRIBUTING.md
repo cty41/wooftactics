@@ -18,4 +18,8 @@ Before opening a pull request:
 5. Keep gameplay, visual, and Editor manual QA status explicit; automated
    tests do not convert a human acceptance item to passed.
 
+The agent-workflow map at `.agents/docs/agent-workflow-infrastructure.md`
+summarizes the repository's agent tooling (eval kit, dispatch recipes,
+environment guards) and where each piece applies.
+
 Security reports must follow `SECURITY.md` rather than a public issue.

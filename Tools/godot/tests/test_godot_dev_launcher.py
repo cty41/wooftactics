@@ -32,10 +32,22 @@ class GodotDevLauncherPolicyTests(unittest.TestCase):
         self.assertIn("CODEX_RESTART_REQUIRED", self.launcher)
         self.assertIn("tactics-dev-session.json", self.launcher)
 
+    def test_python_entry_documents_no_launch_only(self):
+        python_entry = (self.root / "Tools/godot/open_godot_dev.py").read_text(encoding="utf-8")
+        self.assertIn("--no-launch", python_entry)
+        self.assertIn("Open-GodotDev.ps1", python_entry)
+
     def test_verifier_rebuilds_a_native_host_that_removed_its_temp_assembly(self):
+        extended = (
+            self.root / "Tools/godot/Verify-GodotProject.WindowsExtended.ps1"
+        ).read_text(encoding="utf-8")
+        self.assertIn("Rebuild isolated GdUnit4Net test host", extended)
+        self.assertIn("Test-Path -LiteralPath $testHostAssembly", extended)
+
+    def test_verifier_entry_forwards_to_python(self):
         verifier = (self.root / "Tools/godot/Verify-GodotProject.ps1").read_text(encoding="utf-8")
-        self.assertIn("Rebuild isolated GdUnit4Net test host", verifier)
-        self.assertIn("Test-Path -LiteralPath $testHostAssembly", verifier)
+        self.assertIn("verify_godot_project.py", verifier)
+        self.assertIn("'windows'", verifier)
 
 
 if __name__ == "__main__":

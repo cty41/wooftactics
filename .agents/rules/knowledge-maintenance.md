@@ -85,7 +85,7 @@ Agent 修改代码、Godot Resource、设计、计划、规则或工具后：
 4. 对每个实际影响的 scope 运行 `python Tools/okf/catalog_impact.py sync --worktree --scope <scope> --write`。
 5. 运行 bundle 校验和 OKF 单元测试。
 
-`sync` 只自动更新时间、来源指纹和根日志，不替代 Agent 对正文语义的核对。未映射的受监控路径必须加入已有 scope、建立新概念，或经核对后加入明确的忽略规则。
+`sync` 只自动更新时间、来源指纹和根日志，不替代 Agent 对正文语义的核对。未映射的受监控路径必须加入已有 scope、建立新概念，或经核对后加入明确的忽略规则。第 1、4、5 步（report → sync --write → validate）的机械段可按 `.agents/rules/subagent-handback.md` 已验证派发配方拆给子代理；第 2、3 步的变更甄别与正文落笔仍由主循环完成。
 
 ### Supersede
 

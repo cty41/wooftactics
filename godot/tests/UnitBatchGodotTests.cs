@@ -18,6 +18,43 @@ public class UnitBatchGodotTests
 {
     [TestCase]
     [RequireGodotRuntime]
+    public void AllGlobalCatalogUnitsSatisfyVisualResourceContracts()
+    {
+        var catalog = ResourceLoader.Load<GodotResourceCatalog>(
+            "res://content/ContentCatalog.tres", string.Empty, ResourceLoader.CacheMode.Ignore);
+        AssertThat(catalog).IsNotNull();
+        if (catalog is null)
+            return;
+
+        GodotResourceEntry[] unitEntries = catalog.Entries
+            .Where(entry => entry.ResourceTypeIdValue == "unit")
+            .OrderBy(entry => entry.ContentIdValue, StringComparer.Ordinal)
+            .ToArray();
+        AssertThat(unitEntries.Length).IsGreater(0);
+
+        foreach (GodotResourceEntry entry in unitEntries)
+        {
+            var definition = ResourceLoader.Load<UnitDefinitionResource>(
+                entry.DiagnosticPathValue, string.Empty, ResourceLoader.CacheMode.Ignore);
+            AssertThat(definition).IsNotNull();
+            if (definition is null)
+                continue;
+
+            definition.ValidateVisualContract();
+            AssertBodyOffsetWithinTexture(definition.DownRightTexture!, definition.DownRightBodyOffset);
+            AssertBodyOffsetWithinTexture(definition.UpLeftTexture!, definition.UpLeftBodyOffset);
+            if (definition.DeathTexture is not null)
+                AssertBodyOffsetWithinTexture(definition.DeathTexture, definition.DeathBodyOffset);
+            AssertThat(definition.ShadowTexture).IsNotNull();
+            AssertThat(definition.ShadowScale.X).IsGreater(0f);
+            AssertThat(definition.ShadowScale.Y).IsEqual(definition.ShadowScale.X);
+            AssertThat(definition.ShadowOpacity).IsGreaterEqual(0f);
+            AssertThat(definition.ShadowOpacity).IsLessEqual(1f);
+        }
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
     public void MawBatCorpseCentersOnGroundContactAndSettlesWithoutExtraDescent()
     {
         var bat = ResourceLoader.Load<UnitDefinitionResource>(
@@ -481,5 +518,13 @@ public class UnitBatchGodotTests
             bounds.Position.Y >= safeRect.Position.Y &&
             boundsEnd.X <= safeEnd.X &&
             boundsEnd.Y <= safeEnd.Y;
+    }
+
+    private static void AssertBodyOffsetWithinTexture(Texture2D texture, Vector2 offset)
+    {
+        AssertThat(texture.GetWidth()).IsGreater(0);
+        AssertThat(texture.GetHeight()).IsGreater(0);
+        AssertThat(Mathf.Abs(offset.X)).IsLessEqual(texture.GetWidth());
+        AssertThat(Mathf.Abs(offset.Y)).IsLessEqual(texture.GetHeight());
     }
 }

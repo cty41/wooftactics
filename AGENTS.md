@@ -22,9 +22,13 @@
 - `.agents/rules/godot-agent-workflow.md`：Godot 项目、C#、Resource、EditorPlugin 和测试边界。
 - `.agents/rules/foreground-interaction.md`：窗口、真实输入和人工验证边界。
 - `.agents/rules/agent-worktree.md`：默认当前 workspace checkout；细节见 `tactics-git-workspace`。
+- `.agents/rules/agent-environment.md`：长任务防 Modern Standby 休眠（电源请求 keep-awake）。
 - `.agents/rules/code-documentation.md`：代码注释与系统规则说明。
 - `.agents/rules/knowledge-maintenance.md`：OKF 查询、写回、替代和校验。
 - `.agents/rules/godot-migration.md`：退役完成前的历史迁移与来源审计边界。
+- `.agents/rules/subagent-handback.md`：子代理拆分判据、四段回执契约与主循环核验义务。
+- `REVIEW.md`：非纯文档改动按该试行契约开工对齐，并在收口前评审；代理评审不能代替人工验收。
+- 参考 `.agents/docs/agent-workflow-infrastructure.md`：agent 工作流基础设施地图（P0–P4 产物索引与场景速查）。
 
 Unity-only rules、skills、MCP 和工具的退役证据保存在 `Tools/migration/manifest/retirement/unity-governance-retirement-v1.json`；它们不得再指导新实现。公开根不包含 Unity 工程；固定的 MIT godot-ai EditorPlugin 源码随仓库审计，但不进入游戏发布包。
 

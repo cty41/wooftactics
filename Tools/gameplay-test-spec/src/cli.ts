@@ -7,7 +7,14 @@ import { formatGameplayTestDocument, parseGameplayTestDocument } from "./frontma
 import { generateScenarioSpec, generateSkillGraphSpec, generateSkillGraphSpecFromAnswers, generateGameplayTestFromSpec, type SkillDesignAnswers } from "./generator.js";
 import { validateScenarioSpec, validateScenarioDraft } from "./validator.js";
 import { compileAuthoringSpec } from "./authoring/compiler.js";
-import { parseGameplayContracts, validateContractRegistry } from "./contracts.js";
+import {
+  buildRegistryContractCoverage,
+  contractCoverageGateDiagnostics,
+  evaluateContractCoverageGate,
+  loadAllowMissingSpecAllowlist,
+  parseGameplayContracts,
+  validateContractRegistry
+} from "./contracts.js";
 import { extractContractCandidates, generateScenarioDraft, type LlmProviderId, type StructuredLlmProvider } from "./llm.js";
 import { loadConfiguredProvider } from "./provider-config.js";
 import { createOllamaProvider } from "./providers/ollama-provider.js";
@@ -125,6 +132,7 @@ program.command("contract-coverage")
   .description("Report deterministic contract coverage from design documents and gameplay specs")
   .requiredOption("--docs <path>", "directory containing contract Markdown documents")
   .requiredOption("--specs <path>", "directory containing *.gameplay-test.md files")
+  .option("--allow-missing-spec <path>", "JSON baseline allowlist for supported contracts without ScenarioSpec")
   .action(async options => {
     const documents = await Promise.all((await findMarkdownFiles(options.docs)).map(async path => ({ path, markdown: await readFile(path, "utf8") })));
     const registry = validateContractRegistry(documents);
@@ -135,10 +143,26 @@ program.command("contract-coverage")
       const ids = (doc.frontmatter as { contractIds?: string[] }).contractIds ?? [];
       for (const id of ids) if (references.get(id) !== "failed") references.set(id, validation.valid ? "covered" : "failed");
     }
-    const coverage = registry.contracts.map(contract => ({ id: contract.id, status: contract.dsl_support === "unsupported" ? "unsupported" : references.get(contract.id) ?? "missing-spec" }));
-    const valid = registry.valid && coverage.every(value => value.status !== "failed");
-    printJson({ valid, diagnostics: registry.diagnostics, coverage });
-    process.exitCode = valid ? 0 : 1;
+    const coverage = buildRegistryContractCoverage(registry, references);
+    const allowedMissingSpecIds = options.allowMissingSpec
+      ? await loadAllowMissingSpecAllowlist(options.allowMissingSpec)
+      : new Set<string>();
+    const gate = evaluateContractCoverageGate(registry.valid, coverage, allowedMissingSpecIds);
+    const diagnostics = [
+      ...registry.diagnostics,
+      ...contractCoverageGateDiagnostics(gate)
+    ];
+    printJson({
+      valid: gate.valid,
+      diagnostics,
+      coverage,
+      gate: {
+        uncoveredMissingSpec: gate.uncoveredMissingSpec,
+        staleAllowlistEntries: gate.staleAllowlistEntries,
+        failedContractIds: gate.failedContractIds
+      }
+    });
+    process.exitCode = gate.valid ? 0 : 1;
   });
 
 program

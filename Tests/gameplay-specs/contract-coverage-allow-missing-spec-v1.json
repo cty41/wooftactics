@@ -1,0 +1,13 @@
+{
+  "schema": "gameplay-contract-coverage-allow-missing-spec-v1",
+  "contractIds": [
+    "AI-PREDATORY-TARGET-001",
+    "ATTR-DERIVED-STATS-001",
+    "GRID-LOGIC-AUTHORITY-001",
+    "MOVE-AIR-FLYOVER-001",
+    "MOVE-TERRAIN-COST-001",
+    "ROGUELIKE-NODE-SAME-SCENE-001",
+    "SKILL-BITE-LIFESTEAL-001",
+    "SKILL-PRESENTATION-BOUNDARY-001"
+  ]
+}

@@ -8,7 +8,7 @@ Apache-2.0 or CC BY 4.0 grants.
 |---|---:|---|---|
 | Godot Engine / GodotSharp / Godot.NET.Sdk | 4.7.1 | MIT | Engine and C# SDK |
 | Godot AI EditorPlugin | 4.3.1 (`35da2c2f`) | MIT | Project-scoped Editor automation and MCP Attach integration; source vendored under `godot/addons/godot_ai` |
-| MaLiang game-art toolkit | 0.1.0 (`00d772ff`) | MIT for toolkit code and synthetic fixtures; CC BY 4.0 for the Poet Cast sample | Pinned development toolkit under `Tools/vendor/maliang`; expanded into RC source for audit |
+| MaLiang game-art toolkit | 0.1.0 (`75897ee5`) | MIT for toolkit code and synthetic fixtures; CC BY 4.0 for the bundled artwork samples (`cty41`, except `examples/gamemancer/**` and `docs/gallery/thumbs/gamemancer.png` held by `loco`) | Pinned development toolkit under `Tools/vendor/maliang`; expanded into RC source for audit |
 | .NET SDK | 9.0.312 | MIT and component notices | Build/runtime toolchain |
 | NUnit | 4.3.2 | MIT | Core/Application/Oracle tests |
 | NUnit3TestAdapter | 4.6.0 | MIT | Test discovery |

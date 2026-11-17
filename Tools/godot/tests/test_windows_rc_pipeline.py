@@ -24,6 +24,7 @@ def run_pwsh(script: pathlib.Path, *args: str, cwd: pathlib.Path | None = None):
     )
 
 
+@unittest.skipUnless(POWERSHELL is not None, "PowerShell not available (Windows-only RC pipeline tests)")
 class WindowsRcPipelineTests(unittest.TestCase):
     def test_powershell_scripts_parse(self):
         scripts = [
@@ -454,7 +455,7 @@ class WindowsRcPipelineTests(unittest.TestCase):
         self.assertIn("GodotSharpEditor", debug_lock["dependencies"]["net9.0"])
         self.assertNotIn("GodotSharpEditor", export_lock["dependencies"]["net9.0"])
 
-        verifier = (TOOLS / "Verify-GodotProject.ps1").read_text(encoding="utf-8-sig")
+        verifier = (TOOLS / "Verify-GodotProject.WindowsExtended.ps1").read_text(encoding="utf-8-sig")
         runsettings = (REPO / "Tactics.Godot.runsettings").read_text(encoding="utf-8-sig")
         self.assertIn("Invoke-IsolatedGdUnitSuite", verifier)
         self.assertIn("Assert-GodotEditorDependencyGraph", verifier)
