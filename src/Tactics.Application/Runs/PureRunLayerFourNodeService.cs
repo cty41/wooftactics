@@ -44,7 +44,7 @@ public sealed class PureRunLayerFourNodeService
         RunCharacterState[] party = run.Party.Select(character => character.IsDead ? character : CopyVitals(character,
             Math.Min(character.MaxHealth, character.CurrentHealth + Percent(character.MaxHealth, 30)),
             Math.Min(character.MaxMana, character.CurrentMana + Percent(character.MaxMana, 30)))).ToArray();
-        return Commit(run, party: party);
+        return Commit(run, new RestCompletion(), party);
     }
 
     public LayerFourNodeResolution OpenStore(PureRunState run, IEnumerable<RunStoreOffer> equipment,
@@ -107,7 +107,7 @@ public sealed class PureRunLayerFourNodeService
     }
 
     public LayerFourNodeResolution LeaveStore(PureRunState run) =>
-        Validate(run, PureRunNodeKind.Store, out LayerFourNodeResolution? failure) ? Commit(run) : failure!;
+        Validate(run, PureRunNodeKind.Store, out LayerFourNodeResolution? failure) ? Commit(run, new StoreCompletion()) : failure!;
 
     public LayerFourNodeResolution ResolveTreasure(PureRunState run, PureRunTreasureDefinition definition)
     {
@@ -134,7 +134,7 @@ public sealed class PureRunLayerFourNodeService
 
     public LayerFourNodeResolution ConfirmTreasure(PureRunState run, PureRunTreasureDefinition definition,
         IReadOnlyDictionary<ContentId, EquipmentDefinition> equipment,
-        IReadOnlyDictionary<ContentId, ConsumableDefinition> consumables)
+        IReadOnlyDictionary<ContentId, ConsumableDefinition> consumables, bool grantsGrowth = false)
     {
         ArgumentNullException.ThrowIfNull(definition);
         if (!Validate(run, PureRunNodeKind.Treasure, out LayerFourNodeResolution? failure)) return failure!;
@@ -176,7 +176,7 @@ public sealed class PureRunLayerFourNodeService
             .Select(value => value!.Value)).ToArray();
         PureRunState awarded = Copy(run, equipment: gear, consumables: items,
             gold: Math.Min(50, checked(run.Gold + outcome.Gold)), map: map, acquiredItems: acquired);
-        return Commit(awarded);
+        return Commit(awarded, new TreasureCompletion(run.NodeTransaction!.TransactionKey, grantsGrowth));
     }
 
     public LayerFourNodeResolution AssignMysteryAdjudicator(PureRunState run, string eventId)
@@ -287,7 +287,7 @@ public sealed class PureRunLayerFourNodeService
         };
         PureRunState effected = Copy(run, party: party, consumables: backpack, gold: gold, map: map);
         if (party.All(value => value.IsDead)) return new(true, null, Copy(effected, phase: PureRunPhase.Defeated));
-        return Commit(effected);
+        return Commit(effected, new MysteryChoiceCompletion());
     }
 
     public LayerFourNodeResolution BeginN4(PureRunState run, ContentId encounterId)
@@ -322,8 +322,10 @@ public sealed class PureRunLayerFourNodeService
         failure = null; return true;
     }
 
-    private static LayerFourNodeResolution Commit(PureRunState run, IReadOnlyList<RunCharacterState>? party = null)
+    private static LayerFourNodeResolution Commit(PureRunState run, NodeCompletion completion, IReadOnlyList<RunCharacterState>? party = null)
     {
+        RunCharacterState[] resolvedParty = (party ?? run.Party).ToArray();
+        PendingProgression[] progression = NodeCompletion.Apply(run.PendingProgression, completion.OfferGrowth(resolvedParty));
         RunNodeTransaction transaction = run.NodeTransaction!;
         bool layerSix = run.NodeTransaction?.NodeId.StartsWith("layer_06_", StringComparison.Ordinal) == true;
         PureRunMapState map = run.MapState! with
@@ -339,7 +341,7 @@ public sealed class PureRunLayerFourNodeService
         };
         PureRunState updated = Copy(run, phase: layerSix ? PureRunPhase.ReadyForBoss : PureRunPhase.ReadyForLayerFive, party: party,
             appliedKey: transaction.TransactionKey, checkpoint: null, map: map,
-            transaction: transaction with { Committed = true });
+            transaction: transaction with { Committed = true }, progression: progression);
         return new(true, null, updated);
     }
 
@@ -348,10 +350,10 @@ public sealed class PureRunLayerFourNodeService
         IReadOnlyList<BattleConsumableState>? consumables = null, IReadOnlyList<RunEquipmentState>? equipment = null,
         int? gold = null, string? appliedKey = null, RunEncounterCheckpoint? checkpoint = null,
         PureRunMapState? map = null, RunNodeTransaction? transaction = null,
-        IReadOnlyList<ContentId>? acquiredItems = null) => new(run.RunId, run.Seed,
+        IReadOnlyList<ContentId>? acquiredItems = null, IReadOnlyList<PendingProgression>? progression = null) => new(run.RunId, run.Seed,
         run.Revision + 1, phase ?? run.Phase, run.EncounterIndex, encounterId ?? run.EncounterContentId,
         party ?? run.Party, consumables ?? run.BackpackConsumables, equipment ?? run.BackpackEquipment,
-        run.PendingProgression, appliedKey is null ? run.AppliedTransactionKeys : run.AppliedTransactionKeys.Append(appliedKey).ToArray(),
+        progression ?? run.PendingProgression, appliedKey is null ? run.AppliedTransactionKeys : run.AppliedTransactionKeys.Append(appliedKey).ToArray(),
         gold ?? run.Gold, run.BattlesCompleted, run.EnemiesDefeated, acquiredItems ?? run.AcquiredItems, checkpoint,
         map ?? run.MapState, transaction ?? run.NodeTransaction, run.EscortState, run.AdventureState);
 

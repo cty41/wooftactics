@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Godot migration provenance
 description: 已完成迁移的冻结来源、Godot ownership、生成批次与验证边界。
 tags: [migration, godot, provenance, testing]
-timestamp: "2026-10-30T22:10:12+08:00"
+timestamp: "2026-11-16T22:26:34+08:00"
 status: active
 catalog_scope: godot-migration
 repo_paths:
@@ -16,7 +16,7 @@ repo_paths:
   - Tools/migration
   - Tools/migration/manifest/retirement
 verified_revision: 2b341cb3
-source_fingerprint: sha256:72c1c47c3eb098931e6e78a610a04f6f17acef1297c90ff4578a7f421e968b7b
+source_fingerprint: sha256:ffa549e1abd2d5d24936039b38d9a05049254a185f268f6587388a73fb4454fe
 ---
 
 # Current State
@@ -31,7 +31,7 @@ Godot 4.7 C# 是唯一产品主线，`godot/project.godot` 是唯一项目。Cor
 
 Adventure/Battle 生产指针目标先从 Control 本地坐标转换为 Canvas 与 Screen 坐标，再由 Viewport 按对应坐标空间注入；定位必须同时命中目标 Control 和精确本地点，PointerPressed 与状态变化继续作为提交证据，避免全屏 surface 的宽泛 Hover 掩盖错误格。
 
-`GodotAdventureBoardView` 在驻留地图上用 `GodotUnitActor` 呈现队员(无驻留面时回退文字标记);右缘出口标记仅响应落在棋盘格之外的点击,不抢占相邻可走格的输入。
+`GodotAdventureBoardView` 在驻留地图上用 `GodotUnitActor` 呈现队员(无驻留面时回退文字标记);右缘出口标记仅响应落在棋盘格之外的点击,不抢占相邻可走格的输入。`ResidentExplorationPagesGodotTests`(14 项)覆盖各页正式地图与精灵、回退原因上屏、无效站位重新落座、点击规则、全部正式地图物件的相邻格可达、Inventory 按钮共用槽位且不遮挡出口标记（画布固定 1600x900 拉伸）、战后缺目标/缺入口路线跳过。
 
 开发工具链把固定的 MIT godot-ai v4.3.1 源码作为 Editor-only vendor 依赖纳入公开源码，并由 manifest tree hash 审计；它不进入游戏 PCK/Windows 包。Editor 通过统一入口完成 production C# Build、worktree 用户数据隔离、项目级 Codex 配置和会话租约，避免测试宿主程序集或另一个 worktree 的窗口被误认成当前项目。
 

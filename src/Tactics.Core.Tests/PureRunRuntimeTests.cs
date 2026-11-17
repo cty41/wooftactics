@@ -32,6 +32,66 @@ public sealed class PureRunRuntimeTests
         });
     }
 
+    /// <summary>
+    /// "Living" for progression means standing when the battle ended: a character who was down is recovered by the
+    /// victory but is not levelled, even when it is the lowest level or first in party order.
+    /// </summary>
+    [TestCase(new[] { 1, 2, 2 }, new[] { 0, 9, 8 }, "necro", TestName = "Progression_LowestLevelDownAtEndIsSkipped")]
+    [TestCase(new[] { 1, 1, 1 }, new[] { 0, 9, 8 }, "necro", TestName = "Progression_SameLevelDownFirstInOrderIsSkipped")]
+    [TestCase(new[] { 2, 1, 1 }, new[] { 9, 0, 8 }, "amazon", TestName = "Progression_DownMiddleMemberIsSkipped")]
+    [TestCase(new[] { 1, 1, 1 }, new[] { 9, 9, 8 }, "mage", TestName = "Progression_NobodyDownKeepsLowestLevelThenPartyOrder")]
+    [TestCase(new[] { 2, 2, 1 }, new[] { 9, 9, 8 }, "amazon", TestName = "Progression_NobodyDownPicksLowestLevel")]
+    public void Settlement_ProgressionTargetsOnlyCharactersStandingAtBattleEnd(int[] levels, int[] health, string expected)
+    {
+        PureRunDefinition definition = TestDefinition();
+        PureRunState pending = PendingState(definition, seed: 19, levels: levels);
+        PureRunBattleResult result = Result(pending, victory: true, rounds: 3, health, mana: new[] { 1, 1, 1 });
+
+        PureRunSettlementResult first = new PureRunSettlementService().Apply(
+            definition, pending, result, Array.Empty<ContentId>());
+        PureRunSettlementResult late = new PureRunSettlementService().ApplyFixedLateBattle(
+            pending, result, Array.Empty<ContentId>(), PureRunPhase.Ready, boss: false);
+
+        Assert.Multiple(() =>
+        {
+            foreach (PureRunSettlementResult settled in new[] { first, late })
+            {
+                Assert.That(settled.Succeeded, Is.True);
+                Assert.That(settled.ActiveRun!.PendingProgression.Single().CharacterId, Is.EqualTo(expected));
+                // The down member still gets the normal post-victory recovery and keeps its level.
+                Assert.That(settled.ActiveRun.Party.Any(member => member.IsDead), Is.False);
+                Assert.That(settled.ActiveRun.Party.Select(member => member.Level), Is.EqualTo(levels));
+                for (int index = 0; index < health.Length; index++)
+                    Assert.That(settled.ActiveRun.Party[index].CurrentHealth, Is.EqualTo(Math.Min(20, health[index] + 10)));
+            }
+        });
+    }
+
+    [TestCase(new[] { 12, 12, 12 }, null, TestName = "Progression_EveryoneAtLevelCapGrantsNothing")]
+    [TestCase(new[] { 12, 12, 11 }, "amazon", TestName = "Progression_OnlyCharacterBelowCapIsPicked")]
+    public void Settlement_ProgressionSkipsCharactersAtLevelCap(int[] levels, string? expected)
+    {
+        PureRunDefinition definition = TestDefinition();
+        PureRunState pending = PendingState(definition, seed: 19, levels: levels);
+        PureRunBattleResult result = Result(pending, victory: true, rounds: 3, new[] { 9, 9, 8 }, mana: new[] { 1, 1, 1 });
+
+        PureRunSettlementResult first = new PureRunSettlementService().Apply(
+            definition, pending, result, Array.Empty<ContentId>());
+        PureRunSettlementResult late = new PureRunSettlementService().ApplyFixedLateBattle(
+            pending, result, Array.Empty<ContentId>(), PureRunPhase.Ready, boss: false);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(PureRunSettlementService.MaxCharacterLevel, Is.EqualTo(12));
+            foreach (PureRunSettlementResult settled in new[] { first, late })
+            {
+                Assert.That(settled.Succeeded, Is.True);
+                Assert.That(settled.ActiveRun!.PendingProgression.Select(value => value.CharacterId),
+                    Is.EqualTo(expected is null ? Array.Empty<string>() : new[] { expected }));
+            }
+        });
+    }
+
     [Test]
     public void Settlement_N3ProducesSliceCompletedInsteadOfBossVictory()
     {
@@ -125,10 +185,10 @@ public sealed class PureRunRuntimeTests
             new PureRunPartyTemplate("amazon", new ContentId("unit.pure-run.amazon"), new ContentId("skill.amazon.thrust.lv1"), new UnitAttributes(5,6,5,5,5,5))
         });
 
-    internal static PureRunState PendingState(PureRunDefinition definition, int seed, int encounterIndex = 0)
+    internal static PureRunState PendingState(PureRunDefinition definition, int seed, int encounterIndex = 0, int[]? levels = null)
     {
-        RunCharacterState[] party = definition.Party.Select(template => new RunCharacterState(
-            template.CharacterId, template.UnitContentId, 1, template.Attributes,
+        RunCharacterState[] party = definition.Party.Select((template, index) => new RunCharacterState(
+            template.CharacterId, template.UnitContentId, levels?[index] ?? 1, template.Attributes,
             20, 20, 5, 18, false, new[] { template.StartingSkillContentId })).ToArray();
         ContentId encounter = definition.Encounters[encounterIndex];
         var checkpoint = new RunEncounterCheckpoint(encounter, encounterIndex, 2, party,

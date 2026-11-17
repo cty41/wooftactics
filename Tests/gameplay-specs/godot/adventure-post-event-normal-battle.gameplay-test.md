@@ -36,6 +36,18 @@ actions:
     parameters: { targetKind: UiElement }
   - kind: clickPointerTarget
     adapter: PlayerInput
+    target: ProgressionAttribute_Strength
+    parameters: { targetKind: UiElement }
+  - kind: clickPointerTarget
+    adapter: PlayerInput
+    target: ProgressionAttributeContinue
+    parameters: { targetKind: UiElement }
+  - kind: clickPointerTarget
+    adapter: PlayerInput
+    target: ProgressionSkillChoice_0
+    parameters: { targetKind: UiElement }
+  - kind: clickPointerTarget
+    adapter: PlayerInput
     target: "exit:layer_05_battle"
     parameters: { targetKind: AdventureExitApproach }
   - kind: clickPointerTarget
@@ -63,4 +75,4 @@ timeoutMs: 150000
 
 # Post-event normal battle
 
-事件结算后进入下一场标准 Elite 战斗，断言已持久化清空事件上下文，普通战斗不再进入事件分支。
+事件战胜利后先完成该场胜利带来的一次成长，再进入下一场标准 Elite 战斗，断言已持久化清空事件上下文，普通战斗不再进入事件分支。

@@ -8,6 +8,7 @@ using Tactics.Core.Runs;
 using Tactics.Core.Pathfinding;
 using Tactics.Core.Skills;
 using Tactics.Core.Statuses;
+using Tactics.Core.Turns;
 using Tactics.Core.Units;
 
 namespace Tactics.Application.Battle;
@@ -106,7 +107,8 @@ public sealed record BattleUiSnapshot(
     bool TerminalPending = false,
     BattleUiSkillAvailability? MeditationAvailability = null,
     IReadOnlyCollection<GridPoint>? ShallowWaterCells = null,
-    IReadOnlyList<BattleUiInitiativeEntry>? InitiativeQueue = null);
+    IReadOnlyList<BattleUiInitiativeEntry>? InitiativeQueue = null,
+    IReadOnlyList<BattleUiInitiativeEntry>? NextRoundInitiativeQueue = null);
 
 public sealed record PlayableBattleSessionContext(
     BattleState InitialState,
@@ -253,13 +255,17 @@ public sealed class PlayableBattleSessionService
             _battleResult is not null,
             MeditationAvailability(view, active),
             _context.ShallowWaterCells ?? Array.Empty<GridPoint>(),
-            view.InitiativeRound.GetCurrentRoundOrder().Select(entry =>
-            {
-                BattleUnitState unit = view.Units[entry.UnitId];
-                return new BattleUiInitiativeEntry(entry.UnitId, unit.Unit.DefinitionId,
-                    unit.Unit.PlayerNumber, entry.UnitId == view.ActiveUnitId);
-            }).ToArray());
+            InitiativeEntries(view, view.InitiativeRound.GetCurrentRoundOrder(), markCurrent: true),
+            InitiativeEntries(view, view.PreviewNextRoundOrder(), markCurrent: false));
     }
+
+    private static BattleUiInitiativeEntry[] InitiativeEntries(BattleState view, IEnumerable<InitiativeEntry> order, bool markCurrent) =>
+        order.Select(entry =>
+        {
+            BattleUnitState unit = view.Units[entry.UnitId];
+            return new BattleUiInitiativeEntry(entry.UnitId, unit.Unit.DefinitionId,
+                unit.Unit.PlayerNumber, markCurrent && entry.UnitId == view.ActiveUnitId);
+        }).ToArray();
 
     public IReadOnlyList<GridPoint> PreviewMovePath(GridPoint destination)
     {

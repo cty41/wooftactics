@@ -165,13 +165,20 @@ public sealed class AdventureMapTileMapGodotTests
         AssertThat(view.AtlasNodeBounds.Values.All(value => value.Size == start.Size)).IsTrue();
         AssertThat(battle.Position.X).IsGreater(start.Position.X);
         AssertThat(battle.Position.Y).IsLess(start.Position.Y);
-        AssertThat(left.Position.Y).IsEqual(right.Position.Y);
-        AssertThat(left.Position.X).IsLess(right.Position.X);
+        // Lanes line up along grid +Y (screen up-left): the higher lane sits further up-left, parallel to the lower.
+        Vector2 laneOffset = right.Position - left.Position;
+        Vector2 axisY = GodotAdventureAtlasLayout.BoardAxisY(start.Size);
+        AssertThat(laneOffset.Normalized().IsEqualApprox(axisY.Normalized())).IsTrue();
+        AssertThat(GodotAdventureAtlasLayout.DiamondContains(left, right.GetCenter())).IsFalse();
         AdventureMapTemplateDefinition campDefinition = AdventureMapAssetFactory.CreateStartCampTemplate().ToCoreDefinition();
         AdventureMapTemplateDefinition previewDefinition = AdventureMapAssetFactory.CreateBasicBattleTemplate().ToCoreDefinition();
         (Vector2 from, Vector2 to) = view.ConnectionEndpoints["start->battle"];
-        AssertThat(from).IsEqual(view.AtlasNodeTransforms["start"] *
-            view.MapInstance.Surface.CellCenter(campDefinition.Exits.Single().Cell));
+        // Routes leave from the outer rim beside the exit cell, half a cell beyond it along grid +X.
+        GridPoint exitCell = campDefinition.Exits.Single().Cell;
+        AssertThat(from).IsEqual(view.AtlasNodeTransforms["start"] * GodotAdventureAtlasLayout.ExitRimPoint(
+            view.MapInstance.Surface.CellCenter(exitCell), view.MapInstance.Surface.CellCenter(new GridPoint(exitCell.X - 1, exitCell.Y))));
+        // A centred exit and the centred entry of the map one layer on join along the isometric +X slope.
+        AssertThat((to - from).Normalized().IsEqualApprox(GodotAdventureAtlasLayout.BoardAxisX(start.Size).Normalized())).IsTrue();
         AssertThat(to).IsEqual(view.AtlasNodeTransforms["battle"] *
             view.MapInstance.Surface.CellCenter(previewDefinition.Entries.Single().Cell));
         float currentMapZoom = GodotBattleBoardFitter.Fit(start, GodotStartCampView.AtlasViewport).X.Length();

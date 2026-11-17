@@ -15,6 +15,7 @@ SKILL = ".agents/skills/manual-qa-handoff/SKILL.md"
 REFERENCE = ".agents/skills/manual-qa-handoff/references/output-contract.md"
 METADATA = ".agents/skills/manual-qa-handoff/agents/openai.yaml"
 LEDGER = ".agents/docs/manual-acceptance.md"
+HISTORY = ".agents/docs/manual-acceptance-history.md"
 
 
 class ManualQaHandoffPolicyTests(unittest.TestCase):
@@ -36,9 +37,9 @@ class ManualQaHandoffPolicyTests(unittest.TestCase):
             self.copy_contract(root)
             skill = root / SKILL
             skill.write_text(skill.read_text(encoding="utf-8").replace(
-                "自动证据不得把人工项目改为 `passed`。",
+                "观感、操作手感、难度体验和编辑器实际操作仍须用户明确说通过才能改为 `passed`。",
                 "自动门禁通过后把人工项目改为 `passed`。"), encoding="utf-8")
-            self.assertTrue(any("自动证据" in error for error in validate_manual_qa_handoff(root)))
+            self.assertTrue(any("explicit user verdict" in error for error in validate_manual_qa_handoff(root)))
 
     def test_status_must_match_ledger_section(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -59,7 +60,7 @@ class ManualQaHandoffPolicyTests(unittest.TestCase):
             self.copy_contract(root)
             ledger = root / LEDGER
             ledger.write_text(ledger.read_text(encoding="utf-8").replace(
-                "- Action: Open a battle", "- Action: \n- Note: Open a battle", 1), encoding="utf-8")
+                "- Action: 现在不单独看。", "- Action: \n- Note: 现在不单独看。", 1), encoding="utf-8")
             self.assertTrue(any("Action" in error for error in validate_manual_qa_handoff(root)))
 
     def test_last_emitted_ordinals_must_be_contiguous(self) -> None:
@@ -91,7 +92,7 @@ class ManualQaHandoffPolicyTests(unittest.TestCase):
             self.copy_contract(root)
             ledger = root / LEDGER
             ledger.write_text(ledger.read_text(encoding="utf-8").replace(
-                "### MQA-GODOT-BOARD-FIT —", "### MQA-GODOT-BOARD-FIT -", 1), encoding="utf-8")
+                "### MQA-GODOT-SINGLE-RUN —", "### MQA-GODOT-SINGLE-RUN -", 1), encoding="utf-8")
             self.assertTrue(any("malformed item" in error for error in validate_manual_qa_handoff(root)))
 
     def test_malformed_order_line_cannot_be_ignored(self) -> None:
@@ -104,7 +105,7 @@ class ManualQaHandoffPolicyTests(unittest.TestCase):
 
     def copy_contract(self, root: Path) -> None:
         source = Path(__file__).resolve().parents[2]
-        for relative in (SKILL, REFERENCE, METADATA, LEDGER):
+        for relative in (SKILL, REFERENCE, METADATA, LEDGER, HISTORY):
             target = root / relative
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_text((source / relative).read_text(encoding="utf-8"), encoding="utf-8")

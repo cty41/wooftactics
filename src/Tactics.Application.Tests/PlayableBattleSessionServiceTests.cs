@@ -126,6 +126,24 @@ public sealed class PlayableBattleSessionServiceTests
     }
 
     [Test]
+    public void Snapshot_PreviewsTheFullNextRoundForBothSidesWithoutACurrentMarker()
+    {
+        PlayableBattleSessionService service = CreateService(out _, out _);
+
+        BattleUiSnapshot snapshot = service.CaptureSnapshot();
+        IReadOnlyList<BattleUiInitiativeEntry> next = snapshot.NextRoundInitiativeQueue!;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(next, Is.Not.Null);
+            Assert.That(next.Select(item => item.UnitId),
+                Is.EquivalentTo(snapshot.Units.Where(item => item.IsAlive).Select(item => item.UnitId)));
+            Assert.That(next.Select(item => item.PlayerNumber).Distinct(), Is.EquivalentTo(new[] { 0, 1 }));
+            Assert.That(next.Any(item => item.IsCurrent), Is.False);
+        });
+    }
+
+    [Test]
     public void InsufficientMana_DisablesSkillAndRejectsTargetingWithoutMutation()
     {
         PlayableBattleSessionService service = CreateService(out SkillDefinition skill, out _, playerMana: 2, skillMana: 3);

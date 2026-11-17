@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics
 title: Battle System
 description: Godot Pure Run 的棋盘、回合、技能、状态、AI 合法性、结算与表现投影主链。
 tags: [gameplay, battle, turn-based, godot]
-timestamp: "2026-10-30T22:09:51+08:00"
+timestamp: "2026-11-11T12:17:00+08:00"
 status: active
 catalog_scope: battle-system
 repo_paths:
@@ -27,7 +27,7 @@ repo_paths:
   - godot/src/Tactics.Godot.Adapter/Runtime/GodotPlayableRunMain.cs
   - godot/tests/CoreGoldenVectorGodotTests.cs
 verified_revision: 04c75ec4
-source_fingerprint: sha256:7b471c97dc582bb88864fdb4711f7f7c79898eeeb1c7c187dd3c3dbfeefaa6d3
+source_fingerprint: sha256:95671c96f8d72227d7e43b4e8896ec324f8ef4416c060ce27500ec86c68f8d68
 ---
 
 # Current State
@@ -40,7 +40,7 @@ Gameplay runner 的 Battle/Adventure 生产指针坐标统一转换到 Canvas �
 
 跨引擎沿用的属性、状态、朝向与等距投影规则已整理为带稳定 Contract ID 的 Godot 权威文档。新角色或机制必须显式引用相关合同；旧 Unity 类名和编辑器结构不再作为规则来源。
 
-六维统一战斗投影已支持状态携带有符号临时属性修正：有效属性从 BaseAttributes 与全部活动修正重算，敏捷同步派生命中和先攻，状态移除后恢复。回合顺序由 Core `InitiativeRoundState` 分区维护；新回合完整排序，轮中只重排 remaining，行动召唤可按新 InstanceId 插入，Decoy 不入队。持续治疗冻结施加时总量并按前高后低的未来 TurnStart tick 分配。
+六维统一战斗投影已支持状态携带有符号临时属性修正：有效属性从 BaseAttributes 与全部活动修正重算，敏捷同步派生命中和先攻，状态移除后恢复。回合顺序由 Core `InitiativeRoundState` 分区维护（HUD 行动条显示本回合剩余、分隔符、再接 `BattleState.PreviewNextRoundOrder` 投影的下回合完整顺序；头像暂时屏蔽，`GodotInitiativeStrip.ShowPortraits = false`，只显示敌我颜色圆点）；新回合完整排序，轮中只重排 remaining，行动召唤可按新 InstanceId 插入，Decoy 不入队。持续治疗冻结施加时总量并按前高后低的未来 TurnStart tick 分配。
 
 固定战场使用 10×10、零基坐标。单位实例身份使用 `UnitInstanceId`，不能用内容 `ContentId` 代替。合法性预览、
 AI 和真实 Transition 必须复用 Core 规则；表现 cue、Tween、伤害数字和 Sprite 姿态不能修改战斗状态。
@@ -57,7 +57,7 @@ AI 和真实 Transition 必须复用 Core 规则；表现 cue、Tween、伤害�
 
 ## Battle Runtime
 
-所有探索页(初始营地、战斗入口、战后、休息、商店、宝箱、事件)统一经 `TryPrepareResidentExploration` 借用该节点的正式驻留 Act 地图，队员以战斗同款 `GodotUnitActor` 精灵显示，不再绘制占位棋盘；出口位于地图右缘 `9,y`。仅在无驻留世界(无头上下文)或模板与绑定不符时才回退到唯一的占位棋盘，并输出 `exploration.resident_template_mismatch` 警告。Core `RunAdventureTransitionService.PlaceParty` 在 `EnterBoard` 的固定落点不适用于正式地图时重新落座并持久化。
+所有探索页(初始营地、战斗入口、战后、休息、商店、宝箱、事件)统一经 `TryPrepareResidentExploration` 借用该节点的正式驻留 Act 地图，队员以战斗同款 `GodotUnitActor` 精灵显示，不再绘制占位棋盘；出口位于地图右缘 `9,y`。仅在无驻留世界(无头上下文)或模板与绑定不符时才回退到唯一的占位棋盘，并输出 `exploration.resident_template_mismatch` 警告；该原因暂存在 `_residentFallbackReason`，页面创建状态标签时经 `WithResidentFallback` 一次性显示在状态栏（`CreatePage` 清空，不会串到下一页）。初始页与已解决节点页共用同一个 Inventory 按钮槽（`ExplorationInventoryButtonRect`，右下角，不覆盖右缘出口标记）。战后路线布局遇到缺失的目标节点、目标模板或入口锚点时跳过该路线并记 `postbattle.route_target_missing` / `postbattle.route_template_missing` / `postbattle.route_entry_missing`，其余路线照常。战后镜头默认只框当前（刚打完的）地图，与战斗镜头一致；后继路线的框选点存在 `_postBattleOverviewPoints`，由 Inventory 上方的 `Overview` 按钮或 `M` 键在俯瞰与当前地图之间切换（`GodotAdventureBoardView.RefitCamera`）。Core `RunAdventureTransitionService.PlaceParty` 在 `EnterBoard` 的固定落点不适用于正式地图时重新落座并持久化。
 
 Adventure 事件战的随机状态会从 checkpoint revision 中扣除 Adventure 专属 revision，确保领队移动、路线点击和场景切换不会改变相同 run seed 的战斗序列。护送 NPC 的生命值读取正式 UnitDefinition 派生值，不再使用硬编码 12 HP；其存活、团灭与事件失败仍由现有 Protected NPC 胜负规则裁决。
 
@@ -67,7 +67,7 @@ Adventure 事件战的随机状态会从 checkpoint revision 中扣除 Adventure
 
 Pure Run 三职业、敌人、召唤物和固定遭遇均从 Godot-owned Catalog/Resource 组合；N6/E2 使用的
 `battle-layout.pure-run.split-flank` 已由正式 `BattleLayoutResource` 提供，不再由运行时硬编码补建。内容
-ownership 与人工验收分开记录；自动测试通过不能把视觉或操作验收直接标为 passed。
+ownership 与人工验收分开记录；自动测试通过不能把视觉或操作验收直接标为 passed。页面文字、存档字段和导航落点已被断言时，可以按自动证据收口。
 
 棋盘地形现区分 Ground 与 ShallowWater，单位移动类型为 Land、Air、Swim。Land 进入浅水消耗 2 点，
 Air/Swim 消耗 1 点；路径范围按累计点数裁决，但冲刺等按路径格数计数的机制继续读取实际经过格数。
@@ -77,7 +77,7 @@ Air 可越过动态占位与 flyover 障碍但不能停在其上；absolute 障�
 大嘴蝠是 N2 的 Air 敌人，咬击复用标准物理攻击链，并按最终实际 HP 伤害的 50% 向下取整吸血。
 伤害、恢复、死亡结算保持稳定事件顺序；完整数值、AI 与表现合同见 `.agents/docs/maw-bat-enemy-slice-design.md`。
 
-魔剑士 `Demonbound` 作为第四名开局候选但仍维持三人参战。Core 保存战斗局部 0–10 腐化、正念等级、冥想资格与附身控制状态；附身只切换控制者、不改变阵营，AI 使用敌友统一候选池（正式敌我+存活召唤物，排除自身与诱饵）按收益统一评分选目标，不再硬编码阵营优先级；附身形态施加一次六维+5 强化并把已学技能临时投影到分支最高等级。终局生成 `BattlePartyResult` 时会把强化后的 HP/MP 按比例还原到 checkpoint 上限，保证战斗局部投影不泄漏到 Run 或触发结算拒绝。友军致命伤进行一次确定性永久死亡判定（基线 25%，目标幸运 >5 每点 -2%，无下限钳 0），永久死亡者不进入后续战斗但保留 Summary 墓碑，队伍缺员继续；仅剩附身魔剑士且敌人全灭仍是玩家胜利。Godot 左上状态卡只绑定当前行动者，复用 Unit Resource 显示头像/名称/HP/MP，并由 nullable Corruption 投影可选连续特殊资源条；Hover/LOS 详情迁入鼠标旁输入穿透浮层。结构与语义已自动覆盖，视觉可读性仍待人工验收。
+魔剑士 `Demonbound` 作为第四名开局候选但仍维持三人参战。Core 保存战斗局部 0–10 腐化、正念等级、冥想资格与附身控制状态；附身只切换控制者、不改变阵营，AI 使用敌友统一候选池（正式敌我+存活召唤物，排除自身与诱饵）按收益统一评分选目标，不再硬编码阵营优先级；附身形态施加一次六维+5 强化并把已学技能临时投影到分支最高等级。终局生成 `BattlePartyResult` 时会把强化后的 HP/MP 按比例还原到 checkpoint 上限，保证战斗局部投影不泄漏到 Run 或触发结算拒绝。友军致命伤进行一次确定性永久死亡判定（基线 25%，目标幸运 >5 每点 -2%，无下限钳 0），永久死亡者不进入后续战斗但保留 Summary 墓碑，队伍缺员继续；仅剩附身魔剑士且敌人全灭仍是玩家胜利。Godot 左上状态卡只绑定当前行动者，复用 Unit Resource 显示头像（裁去透明边，与名称+资源条整块垂直居中）/名称/HP/MP，并由 nullable Corruption 投影可选连续特殊资源条；Hover/LOS 详情迁入鼠标旁输入穿透浮层。结构与语义已自动覆盖，视觉可读性仍待人工验收。
 
 厄运魔刃使用相邻方向输入并按近到远命中前方两格；墙体和第一格单位都不截断半月斩。技能效果通过统一成长类型读取战斗有效属性，不再使用“高于中立值”的独立伤害加值。表现层把 Bane 编译为近战挥剑 Cue，并在半月斩抵达第一、第二格时依次插入受击和数字；规则提交仍早于表现，表现暂停或取消不改变结算。
 
@@ -94,7 +94,7 @@ Air 可越过动态占位与 flyover 障碍但不能停在其上；absolute 障�
 
 # Primary Attribute
 
-职业主属性是单位数据：`UnitDefinitionResource.PrimaryAttributeValue`（字符串，缺省 None）经 `ToCoreDefinition()` 进入 `UnitDefinition.PrimaryAttribute`。职业与主属性的唯一规则源是 `PrimaryAttributeRules.For(SkillRole)`（Mage→智力、Necromancer→体质、Demonbound→魅力、Poet→力量、Amazon→无）；战斗伤害加成与 `UnitCombatStatRules` 都调用它，Amazon 的敏捷加成在 `DamageBonusSource` 中显式保留。加点页读取单位数据，一致性测试保证资源与规则不漂移。战斗本身不读取单位字段。
+职业主属性是单位数据：`UnitDefinitionResource.PrimaryAttributeValue`（字符串，缺省 None）经 `ToCoreDefinition()` 进入 `UnitDefinition.PrimaryAttribute`。职业与主属性的唯一规则源是 `PrimaryAttributeRules.For(SkillRole)`（Mage→智力、Necromancer→体质、Demonbound→魅力、Poet→力量、Amazon→无）；战斗伤害加成与 `UnitCombatStatRules` 都调用它，Amazon 的敏捷加成在 `DamageBonusSource` 中显式保留。加点页读取单位数据，把主属性以金色 `★ Primary` 标在对应属性行上（全能型只在标题下注明），一致性测试保证资源与规则不漂移。技能选择页中已掌握技能与候选技能使用同一尺寸的技能卡（`ProgressionSkillCardSize`），仅边框样式与可点击性不同。战斗本身不读取单位字段。
 
 # Battle Node Entry
 

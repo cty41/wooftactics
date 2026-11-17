@@ -42,6 +42,22 @@ actions:
   - kind: waitForPlayerObservable
     adapter: PlayerInput
     parameters: { observable: adventureSceneChanged, maximumFrames: 600 }
+  - kind: clickPointerTarget
+    adapter: PlayerInput
+    target: Continue
+    parameters: { targetKind: UiElement }
+  - kind: clickPointerTarget
+    adapter: PlayerInput
+    target: ProgressionAttribute_Strength
+    parameters: { targetKind: UiElement }
+  - kind: clickPointerTarget
+    adapter: PlayerInput
+    target: ProgressionAttributeContinue
+    parameters: { targetKind: UiElement }
+  - kind: clickPointerTarget
+    adapter: PlayerInput
+    target: ProgressionSkillChoice_0
+    parameters: { targetKind: UiElement }
 assertions:
   - kind: eventResolutionEquals
     adapter: Map
@@ -69,4 +85,4 @@ timeoutMs: 120000
 
 # Fallen altar guardian battle
 
-从正式 Layer 6 Event Tile 点击堕落祭坛，进入标准战斗。通过正式战斗输入获胜后返回同一 Tile 的变化场景，并断言祭坛已净化。
+从正式 Layer 6 Event Tile 点击堕落祭坛，进入标准战斗。通过正式战斗输入获胜后返回同一 Tile 的变化场景，完成这场胜利带来的一次升级，并断言祭坛已净化。

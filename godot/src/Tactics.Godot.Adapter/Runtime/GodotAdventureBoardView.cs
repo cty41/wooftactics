@@ -95,6 +95,14 @@ public partial class GodotAdventureBoardView : Control
         RelayoutMarkers();
     }
 
+    /// <summary>Re-frames the camera after <see cref="FrameExtraPoints"/> changed on a configured board.</summary>
+    public void RefitCamera()
+    {
+        if (_definition is null || _tiles is null || !IsResidentLeaseCurrent) return;
+        FitBoardToViewport();
+        RelayoutMarkers();
+    }
+
     public void BindResidentSurface(GodotActWorldHost host, GodotNodeActivationLease lease,
         GodotIsometricTileMapSurface surface)
     {
@@ -156,6 +164,56 @@ public partial class GodotAdventureBoardView : Control
         return false;
     }
 
+    /// <summary>Constant per-cell walk time on exploration boards.</summary>
+    public const float ExplorationStepSeconds = .16f;
+    private Tween? _walk;
+    /// <summary>True while an actor walks a path; board input is ignored until it lands.</summary>
+    public bool IsWalking => _walk is not null && _walk.IsValid() && _walk.IsRunning();
+    /// <summary>Seconds of the walk started last (path cells after the origin times the step).</summary>
+    public double LastWalkSeconds { get; private set; }
+
+    /// <summary>
+    /// Walks <paramref name="actorId"/> along <paramref name="path"/> (origin first) at a constant speed, one Linear
+    /// tween per cell with battle facing rules, then lands it on the last cell and calls <paramref name="onFinished"/>.
+    /// Freeing the board kills the tween without calling back; the caller has already committed the move.
+    /// </summary>
+    public void AnimateActorPath(string actorId, IReadOnlyList<GridPoint> path, Action onFinished)
+    {
+        if (!_actorCells.ContainsKey(actorId)) throw new ArgumentException("Unknown adventure actor.", nameof(actorId));
+        if (path.Count == 0) { onFinished(); return; }
+        _walk?.Kill();
+        LastWalkSeconds = (path.Count - 1) * ExplorationStepSeconds;
+        if (path.Count == 1 || !_actors.TryGetValue(actorId, out CanvasItem? marker) || marker is not Node2D and not Control || !IsInsideTree())
+        {
+            MoveActor(actorId, path[^1]);
+            onFinished();
+            return;
+        }
+        Tween tween = CreateTween();
+        for (int index = 1; index < path.Count; index++)
+        {
+            GridPoint from = path[index - 1], to = path[index];
+            tween.TweenCallback(Callable.From(() =>
+            {
+                if (marker is GodotUnitActor unit)
+                {
+                    unit.SetFacing(GodotPresentationFacingResolver.Resolve(from, to, unit.Facing));
+                    unit.ZIndex = 30 + Math.Max(from.X + from.Y, to.X + to.Y);
+                }
+            }));
+            Vector2 target = marker is Label ? CellCenter(to) - new Vector2(42, 34) : CellCenter(to);
+            tween.TweenProperty(marker, "position", target, ExplorationStepSeconds).SetTrans(Tween.TransitionType.Linear);
+        }
+        _walk = tween;
+        tween.Finished += () =>
+        {
+            if (!ReferenceEquals(_walk, tween)) return;
+            _walk = null;
+            MoveActor(actorId, path[^1]);
+            onFinished();
+        };
+    }
+
     public void MoveActor(string actorId, GridPoint cell)
     {
         if (!_actorCells.ContainsKey(actorId)) throw new ArgumentException("Unknown adventure actor.", nameof(actorId));
@@ -210,6 +268,7 @@ public partial class GodotAdventureBoardView : Control
     private void OnGuiInput(InputEvent input)
     {
         if (!IsResidentLeaseCurrent) return;
+        if (IsWalking) { if (input is InputEventMouseButton) AcceptEvent(); return; }
         if (input is not InputEventMouseButton { ButtonIndex: MouseButton.Left, Pressed: true } button ||
             _definition is null) return;
         if (!TryPointToCell(button.Position, out GridPoint cell))

@@ -6,31 +6,31 @@
   "artifacts": [
     {
       "resourcePath": "res://content/layer4/encounter_pure_run_n4.tres",
-      "targetHash": "sha256:659b0c1ef68013c24eefe626b2f97f1b890ad2720a37e708c6e9bd7553546166"
+      "targetHash": "sha256:eb65bb750d7aa2f4fb0a679902db112b8e474591d283bcf743ac12734e06e516"
     },
     {
       "resourcePath": "res://content/layer4/event_pure_run_cursed_chest.tres",
-      "targetHash": "sha256:d1b9a23195ed4a67b566e2af0fd82b9b70e1d87280f5e7f12266f130127bea0d"
+      "targetHash": "sha256:f0af636439c5dea92b7661e2b412557e51093076a3b5904197b90309b4d18642"
     },
     {
       "resourcePath": "res://content/layer4/event_pure_run_fallen_altar.tres",
-      "targetHash": "sha256:f5538afd8ac4836ae352cd93ee6ab09912cc72073d3def9a6af80ac2a97e878f"
+      "targetHash": "sha256:2b3a0793b4f7d60d27ab8da926bb06cc999a499de5e3c439ec1168c98f10e453"
     },
     {
       "resourcePath": "res://content/layer4/event_pure_run_lost_villager.tres",
-      "targetHash": "sha256:6367d12325489efd6ac8fa58bf3f2650bec189488b7e0552df191470ef6d1ff3"
+      "targetHash": "sha256:fccd939a61212fdfbb753a558431b41a3da5e9722915a8611867d94974540064"
     },
     {
       "resourcePath": "res://content/layer4/rest_pure_run_standard_v1.tres",
-      "targetHash": "sha256:c0564ed209f5c9632b5f06157ecf4caf9cbcc3147d8b77eedb7da8eb5bc2c4d1"
+      "targetHash": "sha256:3a2e551a6ce72ad7942f901025af26107761ebaa4898c959823b955ea05bfe0d"
     },
     {
       "resourcePath": "res://content/layer4/run_map_pure_run_layer4_v1.tres",
-      "targetHash": "sha256:661cea0acb72bc3f1718285302730efe7b8615f6f892953c5f7b37611a6f3f54"
+      "targetHash": "sha256:3d1000e2464dbbc0d7393f4ab2c93284ca945ede96202fecea5019a07e3ccb9e"
     },
     {
       "resourcePath": "res://content/layer4/store_pure_run_standard_v1.tres",
-      "targetHash": "sha256:0d1f327df55dbbc925e868ab1fd81c41135a4272c9475404a2516ca91e68214b"
+      "targetHash": "sha256:8e83405e6cd358cac3dcd4cdbae3be6b7c1be54755ffcd600c7f08c5e0cc6681"
     }
   ]
 }

@@ -7,6 +7,8 @@ public sealed class PureRunSettlementService
 {
     public const string ContractId = "pure-run-settlement-v1";
     private const int GoldCap = 50;
+    /// <summary>Design cap carried over from <c>SkillSystem.MaxCharacterLevel</c>; a character at the cap no longer levels up.</summary>
+    public const int MaxCharacterLevel = 12;
 
     public PureRunSettlementResult Apply(
         PureRunDefinition definition,
@@ -49,14 +51,8 @@ public sealed class PureRunSettlementService
                 new ItemInstanceId(instanceId), drop.Value, remainingCharges: 1, maxCharges: 1)).ToArray();
         }
 
-        string? progressionTarget = party.Where(character => !character.IsDead)
-            .OrderBy(character => character.Level)
-            .ThenBy(character => Array.FindIndex(party, candidate => candidate.CharacterId == character.CharacterId))
-            .Select(character => character.CharacterId).FirstOrDefault();
-        PendingProgression[] progression = progressionTarget is null
-            ? state.PendingProgression.ToArray()
-            : state.PendingProgression.Append(new PendingProgression(
-                $"progression:{state.EncounterContentId.Value}", state.EncounterContentId.Value, progressionTarget)).ToArray();
+        PendingProgression[] progression = NodeCompletion.Apply(state.PendingProgression,
+            new BattleVictoryCompletion(result, state.EncounterContentId.Value).OfferGrowth(party));
         int battles = state.BattlesCompleted + 1;
         int defeatedEnemies = checked(state.EnemiesDefeated + result.EnemiesDefeated);
         if (state.EncounterIndex == definition.Encounters.Count - 1)
@@ -132,6 +128,9 @@ public sealed class PureRunSettlementService
                 new ItemInstanceId($"drop-{state.BattlesCompleted + 1}-{item.Value}"), item, 1, 1)).ToArray();
             acquired = acquired.Append(item).OrderBy(value => value.Value, StringComparer.Ordinal).ToArray();
         }
+        // Keyed by the node transaction: the same encounter can settle on more than one node of a run.
+        PendingProgression[] progression = NodeCompletion.Apply(state.PendingProgression,
+            new BattleVictoryCompletion(result, transaction.TransactionKey).OfferGrowth(party));
         bool layerSix = transaction.NodeId.StartsWith("layer_06_", StringComparison.Ordinal);
         PureRunMapState map = state.MapState! with
         {
@@ -145,7 +144,7 @@ public sealed class PureRunSettlementService
             .OrderBy(value => value, StringComparer.Ordinal).ToArray();
         var completed = new PureRunState(state.RunId, state.Seed, state.Revision + 1,
             layerSix ? PureRunPhase.ReadyForBoss : PureRunPhase.ReadyForLayerFive, state.EncounterIndex, state.EncounterContentId, party, backpack,
-            state.BackpackEquipment, state.PendingProgression, transactions, gold, state.BattlesCompleted + 1,
+            state.BackpackEquipment, progression, transactions, gold, state.BattlesCompleted + 1,
             checked(state.EnemiesDefeated + result.EnemiesDefeated), acquired, mapState: map,
             nodeTransaction: transaction with { Committed = true }, escortState: state.EscortState,
             adventureState: state.AdventureState);
@@ -180,25 +179,46 @@ public sealed class PureRunSettlementService
         int defeated = checked(state.EnemiesDefeated + result.EnemiesDefeated);
         if (boss)
         {
+            PendingProgression[] unchanged = NodeCompletion.Apply(state.PendingProgression,
+                new BossVictoryCompletion().OfferGrowth(party));
             var won = new PureRunState(state.RunId, state.Seed, state.Revision + 1, PureRunPhase.SliceCompleted,
                 state.EncounterIndex, state.EncounterContentId, party, backpack, state.BackpackEquipment,
-                state.PendingProgression, transactions, gold, battles, defeated, acquired, mapState: state.MapState,
+                unchanged, transactions, gold, battles, defeated, acquired, mapState: state.MapState,
                 escortState: state.EscortState, adventureState: state.AdventureState);
             PureRunSummary summary = CreateSummary(won, PureRunOutcome.BossVictory, party, transactions) with
             { BossDefeated = true, TerminalEncounterId = result.EncounterContentId };
             return new(true, null, null, summary, false);
         }
-        string target = party.Where(value => !value.IsDead).OrderBy(value => value.Level)
-            .ThenBy(value => Array.FindIndex(party, candidate => candidate.CharacterId == value.CharacterId))
-            .Select(value => value.CharacterId).FirstOrDefault() ?? string.Empty;
-        PendingProgression[] progression = string.IsNullOrEmpty(target) ? state.PendingProgression.ToArray() :
-            state.PendingProgression.Append(new PendingProgression($"progression:{result.EncounterContentId.Value}",
-                result.EncounterContentId.Value, target)).ToArray();
+        PendingProgression[] progression = NodeCompletion.Apply(state.PendingProgression,
+            new BattleVictoryCompletion(result, result.EncounterContentId.Value).OfferGrowth(party));
         var next = new PureRunState(state.RunId, state.Seed, state.Revision + 1, victoryPhase,
             state.EncounterIndex, state.EncounterContentId, party, backpack, state.BackpackEquipment, progression,
             transactions, gold, battles, defeated, acquired, mapState: state.MapState,
             escortState: state.EscortState, adventureState: state.AdventureState);
         return new(true, null, next, null, false);
+    }
+
+    /// <summary>
+    /// The one character a completion levels up: the lowest level among <paramref name="eligible"/> who are still
+    /// alive on <paramref name="party"/>, ties broken by party order. A battle passes the characters standing when
+    /// the fight ended, so post-victory recovery cannot put a downed character back into the eligible set.
+    /// Characters at <see cref="MaxCharacterLevel"/> are skipped. Null when nobody qualifies.
+    /// </summary>
+    internal static string? SelectProgressionTarget(IReadOnlyList<RunCharacterState> party, IEnumerable<string> eligible)
+    {
+        HashSet<string> allowed = eligible.ToHashSet(StringComparer.Ordinal);
+        return party.Where(character => !character.IsDead && character.Level < MaxCharacterLevel &&
+                allowed.Contains(character.CharacterId))
+            .OrderBy(character => character.Level)
+            .ThenBy(character => IndexOf(party, character.CharacterId))
+            .Select(character => character.CharacterId).FirstOrDefault();
+    }
+
+    private static int IndexOf(IReadOnlyList<RunCharacterState> party, string characterId)
+    {
+        for (int index = 0; index < party.Count; index++)
+            if (string.Equals(party[index].CharacterId, characterId, StringComparison.Ordinal)) return index;
+        return int.MaxValue;
     }
 
     private static string? Validate(PureRunState state, PureRunBattleResult result)

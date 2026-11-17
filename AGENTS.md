@@ -14,7 +14,7 @@
 | Godot 修改验证 | Core/Application/Godot `.cs` 使用主线或迁移期隔离门禁，不调用 Unity compile |
 | Editor 生命周期 | reload-sensitive 修改使用 `godot-editor-lifecycle` 正常关闭并恢复，不强杀进程 |
 | 前台交互 | 未经明确授权不得抢占焦点或注入真实输入；自动 QA 使用后台测试链 |
-| 人工验收 | review 与自动门禁完成后，用 `manual-qa-handoff` 更新累计账本；自动测试不能代替人工通过 |
+| 人工验收 | review 与自动门禁完成后，用 `manual-qa-handoff` 更新累计账本。观感、手感、难度和编辑器操作仍须人看；页面文字、存档字段和导航落点已被测试断言时，不要求人看截图 |
 | 知识维护 | 先读 `.agents/knowledge/index.md`，变更后运行 OKF impact、更新正文并 sync |
 
 ## 当前规则索引
@@ -58,7 +58,7 @@ Unity-only rules、skills、MCP 和工具的退役证据保存在 `Tools/migrati
    - `python Tools/okf/catalog_impact.py report --worktree`
    - 更新受影响权威概念正文
    - `python Tools/okf/catalog_impact.py sync --worktree --scope <scope> --write`
-5. 内容 ownership 与人工验收分开记录：允许 `GodotOwned + manual_qa_pending`，不得把自动门禁写成人工通过。
+5. 内容 ownership 与人工验收分开记录：允许 `GodotOwned + manual_qa_pending`。观感、操作手感、难度体验和编辑器实际操作不得把自动门禁写成人工通过；预期结果已全部被测试断言的事实不进入人工账本。
 6. 验证采用成本递增顺序：最小相关测试 → 相关本地门禁 → 必要时一次统一本地 verifier。除非用户明确要求、已批准计划逐项写明，或托管平台自行触发 required check，否则 Agent 不得主动调用 `gh workflow run`、重新运行 GitHub Actions、远程 RC/导出/制品构建或其他同类高耗时任务；若合并政策依赖未自动触发的远程门禁，应报告并等待授权，不得自行补跑。纯文档或人工账本提交不得因此重跑完整产品 CI。
 
 ## Agent 约束

@@ -40,6 +40,8 @@ Godot 修改先由 `godot-workflow` 路由到最小 Specialist Skill。C#、Reso
 
 统一入口 `Tools/godot/Verify-GodotProject.ps1` 串行执行 restore/build、Core/Application/FrozenOracle、Gameplay Spec、Python、Skill/Incident、GdUnit、Release/Runtime/Editor headless、renderer、receipt 与 OKF。FrozenOracle、Golden 和 receipt 只是历史/确定性证据，不能替代视觉、手感、真实 Editor Reload 或干净 Windows 启动。
 
+MaLiang 子模块（`Tools/vendor/maliang`）是可选依赖：验证器在开头判定其是否已初始化，缺失时明确 SKIP 美术管线单元测试与美术状态登记检查；加 `-RequireArtwork` 则立即失败（CI 工作流已加该开关）。新检出或额外 worktree 做美术前先 `git submodule update --init Tools/vendor/maliang`。隔离 GdUnit 套件的重试覆盖两类偶发：原生 Godot 宿主崩溃，以及玩法 spec 的 `step.timeout`（固定种子完整通关曾在 28 次单独运行中偶发 1 次，停在战斗中约 100 秒）；重试时会把超时诊断（阶段、最近操作）打印为警告，重复失败仍会让总门禁失败。
+
 Windows 构建使用单一 `Windows Desktop` preset、锁定工具链和受审计 staging。Debug/Release 包必须通过架构、PCK/managed runtime、顶层 allowlist、测试/缓存/本地配置排除、manifest/hash 与隔离用户目录启动验证。
 
 # Relationships

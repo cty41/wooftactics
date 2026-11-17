@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics/tree/main/Tools/gameplay-test-spec
 title: Gameplay Test Framework
 description: 将受控 gameplay spec 编译为 Godot runtime runner 可执行的确定性计划。
 tags: [testing, gameplay, automation, godot]
-timestamp: "2026-10-30T11:59:13+08:00"
+timestamp: "2026-11-16T22:26:33+08:00"
 status: active
 catalog_scope: gameplay-test-framework
 repo_paths:
@@ -16,7 +16,7 @@ repo_paths:
   - godot/src/Tactics.Godot.Adapter/Runtime/GodotPlayableRunMain.cs
   - Tests/gameplay-specs
 verified_revision: c56d71ad4ebd
-source_fingerprint: sha256:4210f39c239c71a9bd5167e33cbeeb3ebe9f0e9689e2eb271e2de2ac93c62b3b
+source_fingerprint: sha256:25ffc7a5396671c500f4adaf507d86886bf473e78b99bd98d56473f9ea2c8712
 ---
 
 # Current State
@@ -32,7 +32,7 @@ provider/schema/compiler smoke 候选，因使用占位 checkpoint 未晋升为�
 
 OpenCode Go Key 与普通 provider 配置分离，secrets ACL 只允许当前用户、SYSTEM 或 Administrators。doctor 只发送固定 JSON 探针；项目文档仅由显式 extract/generate 命令发送，确定性 validate/compile 命令不联网。审计输出不包含 Key、Authorization、prompt 或原始响应。
 
-`GodotGameplayRuntimeRunner` 加载正式 `Main.tscn`，并通过 `Viewport.PushInput` 驱动生产 GUI/Input 链。每个场景使用隔离 `user://qa-runner/<scenario>/<attempt>/`，执行前后验证生产主档与 backup 未变化，并在退出时释放 Main、临时节点和隔离目录。
+`GodotGameplayRuntimeRunner` 加载正式 `Main.tscn`，并通过 `Viewport.PushInput` 驱动生产 GUI/Input 链。每个场景使用隔离 `user://qa-runner/<scenario>/<attempt>/`，执行前后验证生产主档与 backup 未变化，并在退出时释放 Main、临时节点和隔离目录。步骤 watchdog 超时的诊断（`step.timeout:…`）除页面与战斗状态外，还带战斗循环当前阶段（`stage=`，含不能提交输入的原因）和最近 8 次决策操作（`actions=… recent=[…]`），用于区分机器变慢与决策循环停滞。
 
 依赖命中/闪避结果的 presentation 场景绑定显式 checkpoint RNG state；属性、行动顺序或 committed battle snapshot 变化后必须重新确认目标分支，并同步 checkpoint semantic hash 与由源 spec 编译的 plan。生产输入 readiness 同时观察表现播放锁和 initiative Tween 输入锁，避免自动旅程在 Core 已提交但 HUD 动画尚未解锁时注入下一次点击。
 

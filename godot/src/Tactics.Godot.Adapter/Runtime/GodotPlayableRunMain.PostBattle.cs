@@ -11,6 +11,18 @@ namespace Tactics.Godot.Adapter.Runtime;
 public partial class GodotPlayableRunMain
 {
     private const string PostBattleRoutesName = "PostBattleRoutes";
+    internal const string PostBattleRouteTargetMissing = "postbattle.route_target_missing";
+    internal const string PostBattleRouteEntryMissing = "postbattle.route_entry_missing";
+    internal const string PostBattleRouteTemplateMissing = "postbattle.route_template_missing";
+
+    /// <summary>Diagnostic codes raised while laying out the latest post-battle page (tests and logs read them).</summary>
+    private readonly List<string> _postBattleDiagnostics = new();
+
+    private void ReportPostBattleDiagnostic(string code)
+    {
+        _postBattleDiagnostics.Add(code);
+        GD.PushWarning($"{code} — route skipped.");
+    }
 
     private Dictionary<string, Transform2D> _hostBaselineTransforms = new();
     private GodotActWorldHost? _hostBaselineHost;
@@ -54,7 +66,13 @@ public partial class GodotPlayableRunMain
         GodotAdventureBoardView board)
     {
         GodotActWorldHost host = _actWorld!;
-        GodotAdventureMapInstance current = host.Nodes[nodeId];
+        _postBattleDiagnostics.Clear();
+        _postBattleOverviewPoints = Array.Empty<Vector2>();
+        if (!host.Nodes.TryGetValue(nodeId, out GodotAdventureMapInstance? current))
+        {
+            ReportPostBattleDiagnostic($"postbattle.current_node_missing:{nodeId}");
+            return;
+        }
         Rect2 bounds = GodotBattleBoardFitter.BoardBounds();
         var layout = GodotAdventureAtlasLayout.Project(MapDefinition, bounds.Size);
         // Remember the pre-layout transforms once so other pages (single-map exploration, battle, Overview) get
@@ -68,6 +86,15 @@ public partial class GodotPlayableRunMain
         foreach ((string id, GodotAdventureMapInstance map) in host.Nodes)
             if (layout.TryGetValue(id, out GodotAdventureAtlasNodeLayout? node))
                 map.Transform = new Transform2D(0f, node.WorldBounds.Position - bounds.Position);
+        // The visible successors are placed relative to the fought map, not on their global atlas lanes: one layer
+        // up-right, in the exits' rim order (grid y) and centred on this map, so a single exit's route is one
+        // straight line along the isometric slope and several fan out symmetrically without crossing.
+        string[] byExit = template.Exits.Where(value => allowedTargets.Contains(value.TargetNodeId, StringComparer.Ordinal) &&
+                                                        value.TargetNodeId != nodeId && host.Nodes.ContainsKey(value.TargetNodeId))
+            .OrderBy(value => value.Cell.Y).Select(value => value.TargetNodeId).Distinct(StringComparer.Ordinal).ToArray();
+        IReadOnlyList<Vector2> slots = GodotAdventureAtlasLayout.ProjectSuccessors(current.Transform.Origin, byExit.Length, bounds.Size);
+        for (int index = 0; index < byExit.Length; index++)
+            host.Nodes[byExit[index]].Transform = new Transform2D(0f, slots[index]);
 
         foreach ((string id, GodotAdventureMapInstance map) in host.Nodes)
             map.Visible = id == nodeId || allowedTargets.Contains(id, StringComparer.Ordinal);
@@ -84,11 +111,27 @@ public partial class GodotPlayableRunMain
         Transform2D toCurrent = current.Transform.AffineInverse();
         foreach (AdventureMapExitAnchor exit in template.Exits.Where(value => allowedTargets.Contains(value.TargetNodeId, StringComparer.Ordinal)))
         {
-            GodotAdventureMapInstance target = host.Nodes[exit.TargetNodeId];
-            AdventureMapTemplateDefinition targetTemplate = target.Surface.Template!.ToCoreDefinition();
-            AdventureMapAnchor entry = targetTemplate.Entries.Single(value => value.AnchorId == exit.TargetEntryId);
+            // A route whose target map or entry anchor is missing is skipped with a diagnostic; the remaining
+            // routes and the camera framing still work.
+            if (!host.Nodes.TryGetValue(exit.TargetNodeId, out GodotAdventureMapInstance? target))
+            {
+                ReportPostBattleDiagnostic($"{PostBattleRouteTargetMissing}:{nodeId}->{exit.TargetNodeId}");
+                continue;
+            }
+            if (target.Surface.Template is null)
+            {
+                ReportPostBattleDiagnostic($"{PostBattleRouteTemplateMissing}:{nodeId}->{exit.TargetNodeId}");
+                continue;
+            }
+            AdventureMapAnchor? entry = target.Surface.Template.ToCoreDefinition().Entries
+                .FirstOrDefault(value => value.AnchorId == exit.TargetEntryId);
+            if (entry is null)
+            {
+                ReportPostBattleDiagnostic($"{PostBattleRouteEntryMissing}:{nodeId}->{exit.TargetNodeId}:{exit.TargetEntryId}");
+                continue;
+            }
             Vector2 centre = current.Surface.CellCenter(exit.Cell);
-            Vector2 rim = centre + (centre - current.Surface.CellCenter(new GridPoint(exit.Cell.X - 1, exit.Cell.Y))) * .5f;
+            Vector2 rim = GodotAdventureAtlasLayout.ExitRimPoint(centre, current.Surface.CellCenter(new GridPoint(exit.Cell.X - 1, exit.Cell.Y)));
             Vector2 to = toCurrent * target.Transform * target.Surface.CellCenter(entry.Cell);
             routes.AddChild(new Line2D
             {
@@ -100,7 +143,58 @@ public partial class GodotPlayableRunMain
                          targetBounds.Position + new Vector2(0, targetBounds.Size.Y), targetBounds.End })
                 extra.Add(toCurrent * target.Transform * corner);
         }
-        board.FrameExtraPoints = extra;
+        // The camera starts on the fought map like the battle did; Overview widens it to the successor routes.
+        _postBattleOverviewPoints = extra;
+        board.FrameExtraPoints = Array.Empty<Vector2>();
+    }
+
+    /// <summary>Overview text-hint slot: on the status line, left of the shared Inventory button.</summary>
+    internal static readonly Rect2 PostBattleOverviewButtonRect = new(
+        new Vector2(ExplorationInventoryButtonRect.Position.X - 260, ExplorationInventoryButtonRect.Position.Y + 12), new Vector2(240, 34));
+    internal const string PostBattleOverviewLabel = "[M] Overview";
+    internal const string PostBattleCurrentMapLabel = "[M] Back to map";
+
+    private IReadOnlyList<Vector2> _postBattleOverviewPoints = Array.Empty<Vector2>();
+    private LinkButton? _postBattleOverviewButton;
+
+    private void AddPostBattleOverviewButton(Control root, GodotAdventureBoardView board)
+    {
+        if (_postBattleOverviewPoints.Count == 0) return;
+        var button = new LinkButton
+        {
+            Name = "PostBattleOverviewButton",
+            Text = PostBattleOverviewLabel,
+            Underline = LinkButton.UnderlineMode.OnHover,
+            FocusMode = FocusModeEnum.None,
+            Position = PostBattleOverviewButtonRect.Position,
+            Size = PostBattleOverviewButtonRect.Size,
+            ZIndex = StartPageUiZIndex
+        };
+        button.AddThemeFontSizeOverride("font_size", 18);
+        button.AddThemeColorOverride("font_color", PrimaryAttributeColor);
+        button.AddThemeColorOverride("font_hover_color", PrimaryAttributeColor.Lightened(.25f));
+        button.Pressed += () => TogglePostBattleOverview(board);
+        _postBattleOverviewButton = button;
+        root.AddChild(button);
+    }
+
+    private void TogglePostBattleOverview(GodotAdventureBoardView board)
+    {
+        if (!GodotObject.IsInstanceValid(board) || _postBattleOverviewButton is not { } button || !GodotObject.IsInstanceValid(button)) return;
+        bool overview = board.FrameExtraPoints.Count == 0;
+        board.FrameExtraPoints = overview ? _postBattleOverviewPoints : Array.Empty<Vector2>();
+        board.RefitCamera();
+        button.Text = overview ? PostBattleCurrentMapLabel : PostBattleOverviewLabel;
+    }
+
+    /// <summary>M toggles the post-battle overview while its button is on screen.</summary>
+    private bool TryHandlePostBattleOverviewKey(InputEvent inputEvent)
+    {
+        if (inputEvent is not InputEventKey { Pressed: true, Echo: false, Keycode: Key.M } ||
+            _postBattleOverviewButton is not { } button || !GodotObject.IsInstanceValid(button) ||
+            button.IsQueuedForDeletion() || !button.IsVisibleInTree() || _adventureBoard is not { } board) return false;
+        TogglePostBattleOverview(board);
+        return true;
     }
 
     /// <summary>Resolved node exploration on the node's resident map; false when the binding does not match.</summary>
@@ -117,6 +211,7 @@ public partial class GodotPlayableRunMain
         _adventureBoard.SetBoard(definition);
         WireAdventureMovement(run, definition, ShowResolvedAdventureNode);
         _adventureBoard.ObjectPressed += pressed => HandleExitPointer(run, definition, pressed);
+        AddPostBattleOverviewButton(root, _adventureBoard);
         return true;
     }
 }

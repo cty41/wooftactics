@@ -9,13 +9,22 @@ public sealed record GodotAdventureAtlasNodeLayout(
     float Lane,
     Rect2 WorldBounds);
 
-/// <summary>Projects the engine-neutral route onto an isometric, right-up atlas world.</summary>
+/// <summary>
+/// Projects the engine-neutral route onto the isometric atlas along the boards' own axes: each layer advances one
+/// board along grid +X (screen up-right, beyond the x = 9 exit rim) and lanes line up along grid +Y (screen up-left,
+/// parallel to that rim), so every map sits parallel to its neighbours.
+/// </summary>
 public static class GodotAdventureAtlasLayout
 {
     public const string StartNodeId = "start";
-    public const float LayerGap = 160f;
-    public const float DiagonalGap = 100f;
-    public const float BranchGap = 80f;
+    /// <summary>Gap between neighbouring boards as a fraction of one board step along each axis.</summary>
+    public const float LayerGapFraction = .35f;
+    public const float LaneGapFraction = .18f;
+
+    /// <summary>Screen offset of one whole board along grid +X (up-right) for a board whose bounding box is <paramref name="mapSize"/>.</summary>
+    public static Vector2 BoardAxisX(Vector2 mapSize) => new(mapSize.X * .5f, -mapSize.Y * .5f);
+    /// <summary>Screen offset of one whole board along grid +Y (up-left).</summary>
+    public static Vector2 BoardAxisY(Vector2 mapSize) => new(-mapSize.X * .5f, -mapSize.Y * .5f);
 
     public static IReadOnlyDictionary<string, GodotAdventureAtlasNodeLayout> Project(
         PureRunMapDefinition map,
@@ -26,17 +35,48 @@ public static class GodotAdventureAtlasLayout
         if (!map.Nodes.Any(value => value.NodeId == StartNodeId))
             throw new ArgumentException("Atlas topology requires the start node.", nameof(map));
 
-        Vector2 layerStep = new(mapSize.X + LayerGap, -(mapSize.Y + DiagonalGap));
-        float branchStep = mapSize.X + BranchGap;
+        Vector2 layerStep = BoardAxisX(mapSize) * (1f + LayerGapFraction);
+        Vector2 laneStep = BoardAxisY(mapSize) * (1f + LaneGapFraction);
         return map.Nodes.ToDictionary(
             node => node.NodeId,
             node =>
             {
-                Vector2 position = layerStep * node.Layer + new Vector2(node.Lane * branchStep, 0);
+                Vector2 position = layerStep * node.Layer + laneStep * node.Lane;
                 return new GodotAdventureAtlasNodeLayout(
                     node.NodeId, node.Layer, node.Lane, new Rect2(position, mapSize));
             },
             StringComparer.Ordinal);
+    }
+
+    /// <summary>
+    /// Places the successors of one map relative to it: one layer step up-right, spread along the lane axis and
+    /// centred on the map itself, in the given order (the exits' rim order). A single successor therefore sits
+    /// head-on, so its centred exit and the successor's centred entry join in one straight line along grid +X.
+    /// </summary>
+    public static IReadOnlyList<Vector2> ProjectSuccessors(Vector2 currentPosition, int count, Vector2 mapSize)
+    {
+        if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+        if (mapSize.X <= 0 || mapSize.Y <= 0) throw new ArgumentOutOfRangeException(nameof(mapSize));
+        Vector2 layerStep = BoardAxisX(mapSize) * (1f + LayerGapFraction);
+        Vector2 laneStep = BoardAxisY(mapSize) * (1f + LaneGapFraction);
+        return Enumerable.Range(0, count)
+            .Select(index => currentPosition + layerStep + laneStep * (index - (count - 1) * .5f)).ToArray();
+    }
+
+    /// <summary>
+    /// Surface-local point on the outer top-right rim beside an exit cell: half a cell beyond it along grid +X.
+    /// Exit markers and route lines both start here.
+    /// </summary>
+    public static Vector2 ExitRimPoint(Vector2 exitCellCenter, Vector2 innerCellCenter) =>
+        exitCellCenter + (exitCellCenter - innerCellCenter) * .5f;
+
+    /// <summary>True when <paramref name="point"/> lies on the board diamond inscribed in <paramref name="bounds"/>.</summary>
+    public static bool DiamondContains(Rect2 bounds, Vector2 point)
+    {
+        Vector2 half = bounds.Size * .5f;
+        if (half.X <= 0 || half.Y <= 0) return false;
+        Vector2 delta = point - bounds.GetCenter();
+        return MathF.Abs(delta.X) / half.X + MathF.Abs(delta.Y) / half.Y <= 1f;
     }
 
     public static Rect2 Union(IEnumerable<Rect2> bounds)

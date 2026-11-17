@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics/tree/main/src/Tactics.Core/Runs
 title: Roguelike Run
 description: Godot Pure Run 的七层路线、节点事务、队伍成长、存档和终局主链。
 tags: [gameplay, roguelike, map, progression, godot]
-timestamp: "2026-10-30T11:59:14+08:00"
+timestamp: "2026-11-16T22:26:32+08:00"
 status: active
 catalog_scope: roguelike-run
 repo_paths:
@@ -21,7 +21,7 @@ repo_paths:
   - godot/src/Tactics.Godot.Adapter/Runtime/GodotPlayableRunMain.cs
   - Tests/gameplay-specs/godot
 verified_revision: c56d71ad4ebd
-source_fingerprint: sha256:97585efb5506f23376c6797fe7dc2c404146822d3c6425563adaa343c51afdb4
+source_fingerprint: sha256:efad656ae258b0f21dca3840bd64f3ba1710204d59d957f749e719fcdbc2321f
 ---
 
 # Current State
@@ -32,11 +32,13 @@ Pure Run 使用七层只前进路线、稳定节点 ID 和持久化 `RunAdventur
 
 Godot Adventure Board 使用正式 Tile 投影和生产输入链呈现出口、队伍位置与节点状态。所有 Active Board（含 Start Camp）使用真实 `GodotUnitActor` 与逐格 Tween；每段朝向按真实等距投影后的屏幕运动方向解析：`+X→右上(UL镜像)`、`-X→左下(DR镜像)`、`+Y→左上(UL)`、`-Y→右下(DR)`。移动期间仅合法空格可替换目标，当前段先精确落在格中心再重算，角色/对象/出口和页面导航均拒绝；手动retarget或resize中断会清除待触发出口。普通 Adventure 只在最终 settle 后提交一次 `MoveLeader`；Viewport resize中断会先把最后格中心同步到process-local session再重排，Start Camp 保持非持久化；V11 丢弃格位后由带 RunId 隔离的 `AdventureExplorationSession` 从入口槽恢复 process-local 位置。冻结规则见 `.agents/docs/adventure-movement-contract.md`。共享 `GodotIsometricTileMapSurface` 提供 10×10、96×48 的 Terrain/Decoration/Mask/Overlay TileMapLayer 与确定性拾取；Active Adventure Board按实际Tile边界等比填充近全屏安全区并精确居中，标题/Run摘要/Leader/Inventory压缩覆盖菱形四角空白，Actor与指针逆变换共享同一fit。应用启动不再经过 Home：可恢复状态直接 Continue，无有效存档创建进程内 Setup 草稿并进入开始营地。营地点击顺序、队伍和部分起始技能只存在于 `PureRunSessionService` 实例；最后一个必需技能完成时才基于起始 revision 一次 CAS 保存完整 Active Run。Replay 前的未完成草稿不会恢复，历史 `PendingRunSetup` 在 V11 读取时丢弃，替换草稿也不会提前覆盖旧 Active Run。`GodotPlayableRunMain`持有跨页唯一Pause Shell，在GUI控件之前的全局`_Input`阶段捕获Esc；每次打开都以当前context重建Root、恢复GUI命中顺序并只取得一次暂停ownership，Options/Back不重入Open，Close清理临时子树。Progression/Inventory临时状态由RunId隔离，Page status不再引用旧页；页面只声明Setup、Adventure或Battle context。`GodotStartCampView` 持有实际 GUI InputSurface，以完整 Transform 把 Control-local 输入映射到地图并优先解析不透明 Sprite，再使用边界容错；每次左键在 Debug Output 与测试 Probe 留下有界结构化诊断，三人满员才解锁出口。Start 地图集使用 Current/Overview 双状态：Current 完整框住真实 Start 并允许选人/移动；Overview 采用固定可读缩放，仅允许 Preview、右键与键盘平移，不提供滚轮缩放。`M` 全局切换双态，`F/Home` 返回领队。每个非战斗节点的标题、类型与层数锚定在自身10×10 TileMap上方中央；模式提示与固定UI独立于地图变换。确定性Battle、Elite、Boss节点选择后直接建立encounter，不再显示预战斗TileMap或encounter marker；事件对象产生的条件战斗保持原交互。战斗棋盘共享TileMap表面仍由后续切片处理。
 
+探索页交互与布局（2026-11-09，取代上段“settle 后提交/移动中可改目标”的描述）：常驻探索页点普通格或交互目标都走 `GodotPlayableRunMain.Exploration.cs`——先按 `AdventureBoardPathfinder` 求路径并**立即**一次 `MoveLeader` 提交，再由 `GodotAdventureBoardView.AnimateActorPath` 以每格 `ExplorationStepSeconds=0.16s` 匀速 Linear Tween 播放，结束后重绘页面；点出口/事件对象/Rest·Store·Treasure 对象时若不相邻，自动走到 `BestApproachCell`（路径最短→屏幕距离→x→y）后再触发交互，无可达邻格只显示 `adventure.target_unreachable` 且不写存档；行走期间棋盘吞掉鼠标输入、探索页 Inventory 按钮不响应；走完回调先确认该棋盘仍是当前 `_adventureBoard`，已换页的旧棋盘不重绘也不触发交互。Gameplay journey runner 等待 `IsAdventureWalking` 为 false。出口居中（2026-11-11）：`AdventureMapAssetFactory.CenteredExitRows` 让生成的节点图出口落在 x=9 边缘、以入口行 y=5 对称（1 个出口在 (9,5)，5 个为 y=1/3/5/7/9），并按后继 lane 排序；22 个节点模板与 ledger 已经工厂+ResourceSaver 重新生成且二次运行无差异。全局 atlas（`GodotAdventureAtlasLayout.Project`，开局总览使用）每层沿网格 +X（屏幕右上）前进一块棋盘、lane 沿 +Y（左上）平行排列；战后/已完成节点页改用 `ProjectSuccessors`：可见后继以当前图为中心放在正右上方一层，按出口 y 顺序沿 lane 轴对称展开，单出口路线是一条沿等距 +X 斜度的直线，多出口对称扇形且互不相交。路线起点统一为 `ExitRimPoint`（出口格外侧半格）。总览图中 5 图汇入同一图的路线仍是斜的。Overview 改为背包按钮左侧 `[M] Overview` 文字 LinkButton；页头 `PageHeader` 自适应并在右侧放 Run 摘要，内容从 `PageContentTop=140` 开始；背包页三列卡片重排。人工验收见 `MQA-GODOT-EXPLORATION-WALK-ATLAS-LAYOUT`（pending）。
+
 `GodotActWorldHost` 与 `GodotActLoadCoordinator` 已接Main准备期（唯一租约、全图交叉校验、分帧/取消），Host在_page外。`PureRunActBlueprint`复用已有seed规则，当前Run选择16节点；ResourceSaver已生成22个正式变体，local catalog含legacy共24项，ledger保持manual_qa_pending并校验target SHA、磁盘UID和重复生成一致性。模板支持终局零出口、探索槽可达、真实布局/事件及N2浅水atlas5。营地视图只借用已有MapInstance/Surface，切技能页/首战入口不重建地图；只有明确成功的Setup提交可以收养草稿Host，取消同seed草稿/终局释放旧Host，迟到Prepared与陈旧遭遇请求被拒绝。UI49项通过；普通/Elite/Boss及匹配的Pending事件战使用宿主Surface；Lost cold Ready探索已由持久Traveling证据接通，且成功保存后的warm战后页回到同Surface，但Offer/Travel生产入口、变体不匹配warm护送、冷Resolved恢复、历史事件结算中间态迁移与V12仍未闭环（事件胜利结算现已由`ApplyEventBattleResult`单次保存；普通/L4/L5/L6胜利仍为结算+`ResolveAdventureBoard`两次CAS）；不得将营地常驻与资源生成写成整计划完成。4.7.1本机probe表明GetResourceUid有旧正/负缓存，生成器只读检查ResourceSaver头部UID，不机械修改资源文本。
 
 当前生产存档采用 V11、revision、payload hash、temp 重读、backup 回退与损坏文件隔离；兼容读取保留节点、领队、对象结果、发现、路线与遭遇 checkpoint，丢弃旧 ActorCells 和历史 Setup 草稿，并明确不保存相机、Tooltip、弹窗、选人/起始技能草稿或逐行动战斗状态。V11 writer 对 `PendingRunSetup` fail-closed；Continue 从模板槽重建 Actor 与相机，PendingBattle 以已保存 Encounter、Seed 和入口 checkpoint 重开。
 
-当前可选角色、战斗、事件、休息、商店、宝箱、Elite、Boss、成长和终局均由代码、typed Resource 与测试共同定义。自动旅程验证逻辑和持久化边界；地图可读性、操作手感和视觉反馈由人工验收账本负责。
+当前可选角色、战斗、事件、休息、商店、宝箱、Elite、Boss、成长和终局均由代码、typed Resource 与测试共同定义。成长（2026-11-16）：一次节点完成自己回答欠不欠现在这种升级。`BattleVictoryCompletion` 用于普通战斗、精英和会开战的事件（含堕落祭坛）；`BossVictoryCompletion` 不欠，因为这一局已经结束；`RestCompletion`、`StoreCompletion`、`MysteryChoiceCompletion` 和默认关闭的 `TreasureCompletion` 不欠。宝箱把 `GrantsGrowth` 打开后才欠同一种升级，正式开箱仍关闭。人选由 `PureRunSettlementService.SelectProgressionTarget` 决定：战斗候选只含战斗结束时未倒地的角色，宝箱候选是当时没死的队员；都按最低等级、再按队伍顺序选一人，达到 `MaxCharacterLevel=12` 的不进候选，候选为空则不产生成长。倒地角色即使被战后恢复救起，本场也不成长。前期战斗的事务键是 `progression:<遭遇 id>`，节点上的完成是 `progression:<节点事务键>`。事件战胜利后仍先显示事件结果场景，继续或离开时若还有待完成成长就打开升级页。第 4 层战斗节点（2026-11-13）：`encounter.pure-run.n4` 的怪物已改为现有的 `unit.pure-run.goat-ranged/goat-aoe/goat-charger`（两个远程、一个范围、一个冲锋），经 `LayerFourAssetFactory` 重新生成；运行时仍去掉 `goat-` 来得到 `ai.pure-run.ranged/aoe/charger`。`LayerFourBattleNodeStartsTheFight` 确认进入 `layer_04_battle` 会开战。测试可用 `TACTICS_QA_SCREENSHOT_DIR` 让 `godot/tests/ManualQaScreenshot.cs` 输出页面截图作为人工验收证据。人工验收 `MQA-GODOT-PROGRESSION-DOWNED-EXCLUDED` 已按自动证据收口为 passed；未计入的是实战打倒和第四层升级页。自动旅程验证逻辑和持久化边界；地图可读性、操作手感和视觉反馈由人工验收账本负责。
 
 # Relationships
 
