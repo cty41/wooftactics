@@ -2,7 +2,7 @@
 feature: review-nits-to-gates
 status: delivered
 updated: 2026-11-16
-source: feat/review-nits-to-gates
+source: https://github.com/cty41/wooftactics/pull/34
 ---
 
 # 评审打回沉淀为门禁 + 可抄点盘点
