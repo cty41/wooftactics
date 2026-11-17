@@ -77,7 +77,7 @@ source: feat/review-nits-to-gates
 ## Risks
 
 - **OKF sync 延后**：主工作区含另一会话未提交的知识改动（`local-review-contract` 遗留：未删计划 + `log.md` 重写）。新文件 `Tools/agent-policy/validate_compose_spec.py` 落在 `Tools/agent-policy/` 受监控根内但暂无 scope 映射；待工作区干净后补 `catalog-scopes.yaml` 映射并跑 report→正文→sync，本次未执行。
-- **与 feat/all-tilemap 的合并摩擦**：该分支（未合）改了 `Tools/agent-policy/validate_manual_qa_handoff.py` 与 `AGENTS.md` 相邻行；建议其先收编，再合本分支。
+- **合并路径**（2026-11-16 复审更新）：`feat/all-tilemap`（gd1）已合入 `origin/main`（`183912ba` 起，至 PR #33 `6eee004d`），与本分支**零文件重叠**，`git merge-tree` 计算合并树 `e6c60e7f` 无冲突。但本地遗留的未提交 `log.md`/`project-documentation.md` 重写正对 main 本次同两文件的改动，任何本地 main 更新（pull/merge）都会被 git 拒绝；且该重写作于旧版 log.md 之上，盲提交会冲掉 main 新增的 50 行 Sync 记录——收尾走 PR（GitHub 侧合并干净），遗留须由其归属方与新版 log.md 对账后再收。
 - **真树测试的耦合**：`test_real_tree_specs_pass` 将 unittest 绿度与现存 spec 内容绑定，后续新 spec 违例会直接打红全套测试——这是预期门禁行为，不是回归。
 
 ## Tasks
