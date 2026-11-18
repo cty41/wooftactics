@@ -1,5 +1,8 @@
 # Tactics Knowledge Update Log
 
+## 2026-11-18
+* **Update**: `roguelike-run` 的冻结规则改指同页 2026-11-09 探索说明，不再指向不存在的探索移动合同。
+
 ## 2026-11-16
 * **Sync**: `project-architecture` 已同步到来源指纹 `sha256:9cd7e40ffa9b56e63d11326fc438c3d8ac8202850215d8038ba7dbd28252221d`。
 * **Sync**: `godot-migration` 已同步到来源指纹 `sha256:ffa549e1abd2d5d24936039b38d9a05049254a185f268f6587388a73fb4454fe`。
