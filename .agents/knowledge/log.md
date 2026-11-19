@@ -1,5 +1,12 @@
 # Tactics Knowledge Update Log
 
+## 2026-11-19
+* **Sync**: `project-architecture` 已同步到来源指纹 `sha256:a90ec2da530825a46a3de9143158f3b0ce2c9fab98af4a59161ad58bbfdc2f97`。
+* **Sync**: `okf-maintenance` 已同步到来源指纹 `sha256:9526a8dfcbdd26d40523638083e6fa3df3517678b61feda1b0f5a0a43e6fa456`。
+* **Sync**: `godot-agent-workflow` 已同步到来源指纹 `sha256:9f47aa598dd68bbb472be63b57d56f8c833085ce2bfe314ea74ccc868c86c531`。
+* **Sync**: `project-documentation` 已同步到来源指纹 `sha256:3e7b1581cbe401b31909b60ea76581efbbcbdea70a6d477eecdf49b17e4bb3a1`。
+* **Update**: 已交付的 Agent 工作流规格从根目录 `docs/compose/spec/` 挪到 `.agents/compose/spec/`。该目录不是玩法设计，交付后保留，不纳入 OKF 监控。
+
 ## 2026-11-18
 * **Update**: `roguelike-run` 的冻结规则改指同页 2026-11-09 探索说明，不再指向不存在的探索移动合同。
 

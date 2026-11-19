@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Validate docs/compose/spec/*.md feature-document structure without external packages.
+"""Validate .agents/compose/spec/*.md feature-document structure without external packages.
 
-Rules (see docs/compose/spec/review-nits-to-gates.md S2.1):
+Rules (see .agents/compose/spec/review-nits-to-gates.md S2.1):
 A1 frontmatter has non-empty feature/status/updated/source; status in designed|in-progress|delivered.
 A2 status delivered => Report non-empty with "What was built" and "Verification".
 A3 status designed|in-progress => Report empty (template: fill only at finalize).
@@ -122,7 +122,7 @@ def main() -> int:
     parser.add_argument(
         "--root",
         type=Path,
-        default=Path("docs/compose/spec"),
+        default=Path(".agents/compose/spec"),
         help="compose spec directory",
     )
     args = parser.parse_args()

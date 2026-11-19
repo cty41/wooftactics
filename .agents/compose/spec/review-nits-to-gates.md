@@ -21,7 +21,7 @@ source: https://github.com/cty41/wooftactics/pull/34
 
 ### S2.1 spec 结构校验器（本轮实现）
 
-新增 `Tools/agent-policy/validate_compose_spec.py`（stdlib-only，风格对齐 `validate_godot_incidents.py`）校验 `docs/compose/spec/*.md`：
+新增 `Tools/agent-policy/validate_compose_spec.py`（stdlib-only，风格对齐 `validate_godot_incidents.py`）校验 `.agents/compose/spec/*.md`：
 
 | 规则 | 判据 | 来源语料 |
 |---|---|---|
@@ -63,7 +63,7 @@ source: https://github.com/cty41/wooftactics/pull/34
 
 ### S2.4 接线方式
 
-校验器经既有 `python -m unittest discover -s Tools/agent-policy -p 'test_*.py'` 步骤进入 verify 编排；另含一条真树测试：对仓库现存 `docs/compose/spec/*.md` 跑校验器（修掉现存违例，使基线为绿）。不改 `verify_steps.py`（避免与 gd1 分支同面摩擦）。
+校验器经既有 `python -m unittest discover -s Tools/agent-policy -p 'test_*.py'` 步骤进入 verify 编排；另含一条真树测试：对仓库现存 `.agents/compose/spec/*.md` 跑校验器（修掉现存违例，使基线为绿）。不改 `verify_steps.py`（避免与 gd1 分支同面摩擦）。
 
 ## [S3] Out of Scope
 

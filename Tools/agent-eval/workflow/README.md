@@ -54,4 +54,4 @@
 ## 目录
 
 - `cases/GO-01.md` … `cases/GO-10.md` — golden 任务。每文件六段：任务 prompt / 场景前提 / 必做行为（must） / 禁做行为（must-not） / 证据锚点（evidence） / 评分条目（rubric）。
-- 覆盖对照与 case 选型依据见 `docs/compose/spec/workflow-golden-evals.md`。
+- 覆盖对照与 case 选型依据见 `.agents/compose/spec/workflow-golden-evals.md`。

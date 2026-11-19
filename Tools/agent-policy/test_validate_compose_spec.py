@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from validate_compose_spec import validate_root, validate_spec  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-REAL_SPEC_ROOT = REPO_ROOT / "docs" / "compose" / "spec"
+REAL_SPEC_ROOT = REPO_ROOT / ".agents" / "compose" / "spec"
 
 DESIGNED_SPEC = """---
 feature: sample-feature

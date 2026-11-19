@@ -1,4 +1,4 @@
-本文件为 P4 产物（prompt-audit 初筛 + 主循环裁决：初筛只标记不修改；裁决与修订落地见文末「裁决」节，依据 `docs/compose/spec/prompt-audit.md` S2.2/S2.3）。
+本文件为 P4 产物（prompt-audit 初筛 + 主循环裁决：初筛只标记不修改；裁决与修订落地见文末「裁决」节，依据 `.agents/compose/spec/prompt-audit.md` S2.2/S2.3）。
 
 ## 初筛候选清单
 

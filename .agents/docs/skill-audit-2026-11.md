@@ -1,6 +1,6 @@
 # Skill 体检报告 · 2026-11
 
-P3 体检产物。数据口径见各节；处置边界见 `docs/compose/spec/skill-audit.md`（S2.4：低风险直接修，删除/重组只列建议）。
+P3 体检产物。数据口径见各节；处置边界见 `.agents/compose/spec/skill-audit.md`（S2.4：低风险直接修，删除/重组只列建议）。
 
 ## 用量数据表
 

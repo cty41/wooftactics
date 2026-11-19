@@ -4,7 +4,7 @@ resource: https://github.com/cty41/tactics/tree/main/.agents/docs
 title: Project Documentation
 description: 当前设计、活跃计划、统一缺口与 OKF 综合层的文档生命周期。
 tags: [operations, documentation, plans, knowledge]
-timestamp: "2026-11-16T10:13:38+08:00"
+timestamp: "2026-11-19T11:32:33+08:00"
 status: active
 catalog_scope: project-documentation
 repo_paths:
@@ -12,12 +12,12 @@ repo_paths:
   - .agents/plans
   - .agents/skills/manual-qa-handoff/SKILL.md
 verified_revision: c9ff3a710fd9
-source_fingerprint: sha256:83d1cc2e8613196417793a72faf2b0f0cac36059dbbd18596ee243f4ecffb414
+source_fingerprint: sha256:3e7b1581cbe401b31909b60ea76581efbbcbdea70a6d477eecdf49b17e4bb3a1
 ---
 
 # Current State
 
-`.agents/docs/` 主要保存当前设计与使用指南；同一主题优先维护一份权威文档。`brainstorm.md` 是唯一的临时灵感收集箱，不属于设计真相源或实施承诺。想法成熟后迁入主题设计、[项目已知缺口](../plans/project-known-gaps.md)或正式计划。需要展开讨论的方向可写成 `.agents/docs/YYYY-MM-DD-brainstorm-<主题>.md` 深化草稿：草稿同样不是真相源，`brainstorm.md` 只保留摘要和链接。
+`.agents/docs/` 主要保存当前设计与使用指南；同一主题优先维护一份权威文档。`brainstorm.md` 是唯一的临时灵感收集箱，不属于设计真相源或实施承诺。想法成熟后迁入主题设计、[项目已知缺口](../plans/project-known-gaps.md)或正式计划。需要展开讨论的方向可写成 `.agents/docs/YYYY-MM-DD-brainstorm-<主题>.md` 深化草稿：草稿同样不是真相源，`brainstorm.md` 只保留摘要和链接。`.agents/compose/spec/` 保存已交付的 Agent 工作流规格和 Journey log；它不是玩法设计，交付后保留，不纳入 OKF 监控范围。
 
 端到端指南 `.agents/docs/gameplay-design-to-development-workflow.md` 说明需求收束、玩法合同、可替换 Provider、受控 Draft、确定性编译、typed authoring、自动测试与人工验收。模型只生成带证据的候选；设计合同、代码、Resource 和测试继续承担权威，外接 LLM 不替代 Codex/开发者判断。
 
@@ -29,7 +29,7 @@ Pure Run 新装备的独立生产策略记录在 `.agents/docs/2026-08-25-pure-r
 
 诗人权威规则已收束在 `.agents/docs/poet-class-design.md`，动态行动顺序在 `.agents/docs/battle-initiative-rules.md`，Core Facing 合同已回写 `.agents/docs/battle-facing-rules.md`。本轮装备明确延期且没有 schema/Resource 实现，未来 family、资格、事务、背包满与存档迁移问题只记录在 `.agents/docs/equipment-system-future-design.md`；诗人已接入获批五红土松 Idle、Melee、Cast、Hit DR/UL 与单张 Death，正式分身美术仍是后续边界，完整运行时视觉仍等待人工验收。
 
-Agent 工作流改进的 P2 拆分试点（OKF 同步链与门禁日志分诊）已交付：派发配方沉淀在 `.agents/rules/subagent-handback.md`，试跑证据与经验见 `docs/compose/spec/p2-split-pilots.md`；计划文件按约定清理，由 Git 历史保留。
+Agent 工作流改进的 P2 拆分试点（OKF 同步链与门禁日志分诊）已交付：派发配方沉淀在 `.agents/rules/subagent-handback.md`，试跑证据与经验见 `.agents/compose/spec/p2-split-pilots.md`；计划文件按约定清理，由 Git 历史保留。
 
 `.agents/plans/` 只保存仍需执行且 decision-complete 的计划。实现完成并验证后，长期规则回写 docs，未实施项进入已知缺口或经批准的新计划，completed plan 随后删除并由 Git 保留历史。
 
