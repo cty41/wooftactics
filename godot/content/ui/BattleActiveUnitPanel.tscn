@@ -1,0 +1,156 @@
+[gd_scene format=3 uid="uid://oo4rm8lchjke"]
+
+[ext_resource type="Theme" path="res://content/ui/TacticsTheme.tres" id="1_pec2w"]
+[ext_resource type="Script" path="res://src/Tactics.Godot.Adapter/Runtime/GodotBattleActiveUnitPanel.cs" id="2_fh5sj"]
+
+[sub_resource type="StyleBoxFlat" id="HealthBar_fill"]
+bg_color = Color(0.7254902, 0.37254903, 0.4, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.774902, 0.4854902, 0.508, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="ManaBar_fill"]
+bg_color = Color(0.32156864, 0.4862745, 0.78039217, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.4436863, 0.5787451, 0.81992155, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="SpecialBar_fill"]
+bg_color = Color(0.39607844, 0.34117648, 0.43529412, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.50478435, 0.45976472, 0.5369412, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[node name="BattleActiveUnitPanel" type="Control" unique_id=288620433]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 414.0
+offset_bottom = 174.0
+mouse_filter = 2
+theme = ExtResource("1_pec2w")
+script = ExtResource("2_fh5sj")
+
+[node name="ActiveUnitLayout" type="MarginContainer" parent="." unique_id=576893331]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="ActiveUnitColumns" type="HBoxContainer" parent="ActiveUnitLayout" unique_id=1665798987]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="ActiveUnitPortrait" type="TextureRect" parent="ActiveUnitLayout/ActiveUnitColumns" unique_id=687515711]
+custom_minimum_size = Vector2(108, 0)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ActiveUnitResourceRows" type="VBoxContainer" parent="ActiveUnitLayout/ActiveUnitColumns" unique_id=1104489639]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="ActiveUnitName" type="Label" parent="ActiveUnitLayout/ActiveUnitColumns/ActiveUnitResourceRows" unique_id=798698975]
+layout_mode = 2
+theme_type_variation = &"TacticsHeadingLabel"
+text = "Unit Name"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HealthResourceRow" type="Control" parent="ActiveUnitLayout/ActiveUnitColumns/ActiveUnitResourceRows" unique_id=1844563979]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="HealthBar" type="ProgressBar" parent="ActiveUnitLayout/ActiveUnitColumns/ActiveUnitResourceRows/HealthResourceRow" unique_id=1675015576]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_type_variation = &"TacticsResourceBar"
+theme_override_styles/fill = SubResource("HealthBar_fill")
+max_value = 20.0
+value = 16.0
+show_percentage = false
+
+[node name="HealthValue" type="Label" parent="ActiveUnitLayout/ActiveUnitColumns/ActiveUnitResourceRows/HealthResourceRow" unique_id=1770827880]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "16/20"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ManaResourceRow" type="Control" parent="ActiveUnitLayout/ActiveUnitColumns/ActiveUnitResourceRows" unique_id=1205803215]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ManaBar" type="ProgressBar" parent="ActiveUnitLayout/ActiveUnitColumns/ActiveUnitResourceRows/ManaResourceRow" unique_id=1402862896]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_type_variation = &"TacticsResourceBar"
+theme_override_styles/fill = SubResource("ManaBar_fill")
+max_value = 18.0
+value = 7.0
+show_percentage = false
+
+[node name="ManaValue" type="Label" parent="ActiveUnitLayout/ActiveUnitColumns/ActiveUnitResourceRows/ManaResourceRow" unique_id=1886872735]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "7/18"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SpecialResourceRow" type="Control" parent="ActiveUnitLayout/ActiveUnitColumns/ActiveUnitResourceRows" unique_id=848428742]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="SpecialBar" type="ProgressBar" parent="ActiveUnitLayout/ActiveUnitColumns/ActiveUnitResourceRows/SpecialResourceRow" unique_id=866816849]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_type_variation = &"TacticsResourceBar"
+theme_override_styles/fill = SubResource("SpecialBar_fill")
+max_value = 10.0
+value = 5.0
+show_percentage = false
+
+[node name="SpecialValue" type="Label" parent="ActiveUnitLayout/ActiveUnitColumns/ActiveUnitResourceRows/SpecialResourceRow" unique_id=636900799]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "Corruption  5/10"
+horizontal_alignment = 1
+vertical_alignment = 1

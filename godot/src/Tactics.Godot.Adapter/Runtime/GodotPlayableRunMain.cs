@@ -589,7 +589,7 @@ public partial class GodotPlayableRunMain : Control
         Label subtitle = Label("PURE RUN", 16); subtitle.HorizontalAlignment = HorizontalAlignment.Center;
         subtitle.AddThemeColorOverride("font_color", GodotTacticsTheme.TextSecondary); menu.AddChild(subtitle);
         menu.AddChild(new ColorRect { Color = GodotTacticsTheme.Accent, CustomMinimumSize = new Vector2(0, 2), MouseFilter = MouseFilterEnum.Ignore });
-        Button newRun = Button("New Run", () => StartNewRun()); menu.AddChild(newRun);
+        Button newRun = Button("New Run", () => StartNewRun(), true); menu.AddChild(newRun);
         RunStoreResult loaded = SaveStore.Load();
         Button continueRun = Button(loaded.Snapshot?.PendingRunSetup is null ? "Continue" : "Resume New Run Setup", ContinueRun);
         continueRun.Disabled = !loaded.Succeeded || loaded.Snapshot is null ||
@@ -639,7 +639,7 @@ public partial class GodotPlayableRunMain : Control
         });
         menu.AddChild(fullscreen);
         menu.AddChild(Label("Battle playback speed is controlled from the battle HUD.", 16));
-        menu.AddChild(Button("Back", ShowHome));
+        menu.AddChild(Button("Back", ShowHome, true));
         PushEscapeLayer("home.options", ShowHome);
     }
 
@@ -729,7 +729,9 @@ public partial class GodotPlayableRunMain : Control
             throw new InvalidOperationException("Pending setup is missing.");
         bool useResidentWorld = IsInsideTree();
         if (useResidentWorld && !EnsureSetupActPrepared(setup)) return;
-        Control root = NewPage("NEW RUN — START CAMP", "Select exactly 3. Your first choice becomes the leader and can move on camp tiles.");
+        Control root = NewPage("NEW RUN — START CAMP",
+            "Select exactly 3. Your first choice becomes the leader and can move on camp tiles.",
+            fitHeaderToContent: true);
         _partySelectionOrder.Clear();
         _partySelectionOrder.AddRange(setup.SelectedCharacterIds);
         GodotStartCampCandidate[] candidates = _runDefinition!.Party.Select(value =>
@@ -793,13 +795,28 @@ public partial class GodotPlayableRunMain : Control
             if (input is InputEventMouse mouse)
                 _startCampView?.HandleAtlasInput(input, atlasInput.Position + mouse.Position);
         };
-        PanelContainer partyPanel = PanelAt(root, new Vector2(1080, 150), new Vector2(460, 220), GodotTacticsTheme.Card);
-        partyPanel.Name = "StartCampPartyPanel";
-        partyPanel.ZIndex = StartPageUiZIndex;
-        Label partyInstructions = LabelAt(root, "PARTY SETUP\nChoose exactly 3 candidates\nFirst choice = Leader\nSelected members cannot be removed or reordered\nExit unlocks at 3/3", new Vector2(1105, 172), 18);
+        PanelContainer partyPanel = new()
+        {
+            Name = "StartCampPartyPanel",
+            ThemeTypeVariation = GodotTacticsTheme.Card,
+            MouseFilter = MouseFilterEnum.Ignore,
+            ZIndex = StartPageUiZIndex,
+            ClipContents = true
+        };
+        const string partyText =
+            "PARTY SETUP\nChoose exactly 3 candidates\nFirst choice = Leader\nSelected members cannot be removed or reordered\nExit unlocks at 3/3";
+        Label partyInstructions = Label(partyText, GodotTacticsTheme.FontBody);
         partyInstructions.Name = "StartCampPartyInstructions";
-        partyInstructions.Size = new Vector2(410, 170);
-        partyInstructions.ZIndex = StartPageUiZIndex + 1;
+        partyInstructions.AutowrapMode = TextServer.AutowrapMode.WordSmart;
+        Vector2 partyTextSize = MeasuredTextSize(ThemeDB.FallbackFont, partyText, GodotTacticsTheme.FontBody, StartCampPartyTextWidth);
+        partyInstructions.CustomMinimumSize = new Vector2(StartCampPartyTextWidth, Mathf.Max(partyTextSize.Y, 1f));
+        partyInstructions.Size = partyInstructions.CustomMinimumSize;
+        partyPanel.AddChild(partyInstructions);
+        root.AddChild(partyPanel);
+        Vector2 partyPadding = PanelContentPadding(partyPanel);
+        Vector2 partySize = partyInstructions.Size + partyPadding;
+        partyPanel.Size = partySize;
+        partyPanel.Position = new Vector2(CanvasWidth - GodotTacticsTheme.SpaceXl - partySize.X, GodotTacticsTheme.SpaceXl);
         _status = LabelAt(root, PartySelectionStatus(), new Vector2(470, 810), 18);
         _status.Name = "StartCampStatus";
         _status.ZIndex = StartPageUiZIndex;
@@ -1017,7 +1034,7 @@ public partial class GodotPlayableRunMain : Control
         var controls=new HBoxContainer{Position=new Vector2(1160,32),Size=new Vector2(410,55),ZIndex=1201};root.AddChild(controls);
         controls.AddChild(SmallButton("Pause/Resume",TogglePause));_stepButton=SmallButton("Step",()=>{if(_playbackPaused)PlaybackStep(true);});_stepButton.Disabled=true;controls.AddChild(_stepButton);_speedButton=SmallButton($"Speed {_playbackSpeed:0.#}x",ToggleSpeed);controls.AddChild(_speedButton);
         _cheatConsole=new GodotBattleCheatConsole();_cheatConsole.ClearRequested+=()=>{_logs.Clear();RefreshLog();};root.AddChild(_cheatConsole);
-        _endTurnButton=Button("End Turn\nEnter",()=>ApplyIntent(new EndTurnIntent()));_endTurnButton.ZIndex=1201;root.AddChild(PlaceControl(_endTurnButton,new Vector2(1325,801),new Vector2(242,72)));
+        _endTurnButton=Button("End Turn\nEnter",()=>ApplyIntent(new EndTurnIntent()), true);_endTurnButton.ZIndex=1201;root.AddChild(PlaceControl(_endTurnButton,new Vector2(1325,801),new Vector2(242,72)));
         BuildPauseMenu(root);
         _eventLog=null;
         _status = _settlementStatus;
@@ -1564,7 +1581,7 @@ public partial class GodotPlayableRunMain : Control
         {
             if(continueRequested)return;continueRequested=true;
             RouteRunState(snapshot);
-        }); nextButton.Position = new Vector2(1000, 650); nextButton.Size = new Vector2(300, 70); root.AddChild(nextButton);
+        }, true); nextButton.Position = new Vector2(1000, 650); nextButton.Size = new Vector2(300, 70); root.AddChild(nextButton);
     }
 
     private string SettlementSubtitle(PureRunState run, out string next)
@@ -1611,11 +1628,11 @@ public partial class GodotPlayableRunMain : Control
         if (run.PendingProgression.FirstOrDefault() is PendingProgression pending)
         {
             LabelAt(root, "Progression must be completed before the next node.", new Vector2(1140, 430), 18);
-            root.AddChild(PlaceControl(Button("Complete Progression", () => ShowProgression(run, pending)),
+            root.AddChild(PlaceControl(Button("Complete Progression", () => ShowProgression(run, pending), true),
                 new Vector2(1140, 475), new Vector2(360, 58)));
         }
         root.AddChild(PlaceControl(Button("Inventory", () => ShowInventory(run)), new Vector2(1140, 560), new Vector2(360, 58)));
-        root.AddChild(PlaceControl(Button("Return to Current Scene", () => RouteRunState(new PureRunSaveSnapshot(run.Revision, run, null))),
+        root.AddChild(PlaceControl(Button("Return to Current Scene", () => RouteRunState(new PureRunSaveSnapshot(run.Revision, run, null)), run.PendingProgression.Count == 0),
             new Vector2(1140, 630), new Vector2(360, 58)));
         _status = LabelAt(root, string.Empty, new Vector2(1140, 790), 16);
         BuildPauseMenu(root, false);
@@ -1624,6 +1641,8 @@ public partial class GodotPlayableRunMain : Control
     /// <summary>Four 15 px lines must end above the settlement result panel at y = 230 (header-less fallback only).</summary>
     private const float RunShellLineHeight = 20;
     internal static readonly Rect2 PageHeaderRect = new(new Vector2(48, 24), new Vector2(1504, 104));
+    /// <summary>Wrap width for the start-camp party note. The card grows taller, not wider.</summary>
+    internal const float StartCampPartyTextWidth = 320f;
     /// <summary>First free y below the page header; page content starts here.</summary>
     internal const float PageContentTop = 140;
     private Label? _headerRunInfo;
@@ -1789,7 +1808,7 @@ public partial class GodotPlayableRunMain : Control
         _adventureBoard.SetBoard(definition);
         WireAdventureMovement(run, definition, changed => ShowPostEventScene(changed, contextKind));
         _adventureBoard.ObjectPressed += pressed => HandleExitPointer(run, definition, pressed);
-        root.AddChild(PlaceControl(Button("Continue", () => RouteMap(run)), new Vector2(650, 740), new Vector2(300, 50)));
+        root.AddChild(PlaceControl(Button("Continue", () => RouteMap(run), true), new Vector2(650, 740), new Vector2(300, 50)));
         _status = LabelAt(root, WithResidentFallback(eventResolution), new Vector2(470, 810), 18);
     }
 
@@ -1987,7 +2006,7 @@ public partial class GodotPlayableRunMain : Control
         _adventureBoard = null;
         Label status = LabelAt(root, BattleStartingStatus, new Vector2(470, 810), 18);
         _status = status;
-        root.AddChild(PlaceControl(Button("Begin battle", beginBattle), new Vector2(1130, 720), new Vector2(360, 58)));
+        root.AddChild(PlaceControl(Button("Begin battle", beginBattle, true), new Vector2(1130, 720), new Vector2(360, 58)));
         // One automatic start per (run, node, revision): re-rendering or a failed start must not loop or double-start.
         (string RunId, string NodeId, long Revision) key = (run.RunId, nodeId, run.Revision);
         if (_autoBattleKey == key) return;
@@ -2146,7 +2165,7 @@ public partial class GodotPlayableRunMain : Control
         Control root=NewPage($"{LayerLabel(run)} — REST","Preview: living party members recover ceil(30% max HP/MP); dead characters remain dead.");
         AddRunShell(root,run,"Rest");
         LabelAt(root,string.Join('\n',run.Party.Select(c=>$"{c.CharacterId}: HP {c.CurrentHealth} → {(c.IsDead?c.CurrentHealth:Math.Min(c.MaxHealth,c.CurrentHealth+(int)Math.Ceiling(c.MaxHealth*.3)))} / {c.MaxHealth}, MP {c.CurrentMana} → {(c.IsDead?c.CurrentMana:Math.Min(c.MaxMana,c.CurrentMana+(int)Math.Ceiling(c.MaxMana*.3)))} / {c.MaxMana}")),new Vector2(360,250),26);
-        root.AddChild(PlaceControl(Button("Confirm Rest",()=>CommitLayerFour(state=>new PureRunLayerFourNodeService().ConfirmRest(state))),new Vector2(650,650),new Vector2(300,65)));
+        root.AddChild(PlaceControl(Button("Confirm Rest",()=>CommitLayerFour(state=>new PureRunLayerFourNodeService().ConfirmRest(state)), true),new Vector2(650,650),new Vector2(300,65)));
     }
 
     private void ShowStore(PureRunState run)
@@ -2163,7 +2182,7 @@ public partial class GodotPlayableRunMain : Control
         var menu=new VBoxContainer{Position=new Vector2(430,210),Size=new Vector2(740,520)};root.AddChild(menu);
         foreach(RunStoreOfferState offer in run.MapState!.StoreOffers!)
         {Button buy=Button($"{offer.ContentId.Value} — {offer.Price} gold{(offer.Purchased?" [SOLD]":"")}",()=>PurchaseStore(offer.InstanceId));buy.Disabled=offer.Purchased;menu.AddChild(buy);}
-        menu.AddChild(Button("Leave Store",()=>CommitLayerFour(state=>new PureRunLayerFourNodeService().LeaveStore(state))));
+        menu.AddChild(Button("Leave Store",()=>CommitLayerFour(state=>new PureRunLayerFourNodeService().LeaveStore(state)), true));
     }
 
     private void PurchaseStore(ItemInstanceId id)
@@ -2190,7 +2209,7 @@ public partial class GodotPlayableRunMain : Control
         if(run.MapState.MysteryResolution is RunMysteryResolutionState resolved)
         {
             menu.AddChild(Label($"{resolved.OptionId}: {(resolved.Succeeded?"Success":"Failure")} — roll {resolved.Roll}, chance {resolved.SuccessRate}%\nEffect: {resolved.Effect} {resolved.Amount}",24));
-            menu.AddChild(Button("Confirm Result",()=>CommitLayerFour(state=>new PureRunLayerFourNodeService().ConfirmMystery(state,_consumables))));return;
+            menu.AddChild(Button("Confirm Result",()=>CommitLayerFour(state=>new PureRunLayerFourNodeService().ConfirmMystery(state,_consumables)), true));return;
         }
         foreach(JsonElement option in rootElement.GetProperty("options").EnumerateArray())
         {
@@ -2229,7 +2248,7 @@ public partial class GodotPlayableRunMain : Control
             $"Consumable: {outcome.ConsumableContentId?.Value ?? "None"}\nBuff: {outcome.BuffContentId?.Value ?? "None"}\n" +
             $"Buff target: {outcome.TargetCharacterId}", 24));
         menu.AddChild(Button("Confirm Treasure", () => CommitLayerFour(state =>
-            new PureRunLayerFourNodeService().ConfirmTreasure(state, _treasureDefinition!, _equipment, _consumables))));
+            new PureRunLayerFourNodeService().ConfirmTreasure(state, _treasureDefinition!, _equipment, _consumables)), true));
     }
 
     private static RunEventAttribute EventAttribute(string value)=>value switch{"None"=>RunEventAttribute.None,"Strength"=>RunEventAttribute.Strength,"Dexterity" or "Agility"=>RunEventAttribute.Agility,"Constitution"=>RunEventAttribute.Constitution,"Intelligence"=>RunEventAttribute.Intelligence,"Charisma"=>RunEventAttribute.Charisma,"Luck"=>RunEventAttribute.Luck,_=>throw new InvalidOperationException($"Unknown event attribute: {value}.")};
@@ -2335,7 +2354,7 @@ public partial class GodotPlayableRunMain : Control
             detail.AddChild(WrappedLabel($"\n{definition.DisplayName}\nPrice {definition.Price}\n{definition.Description}\nSource: deterministic Battle drop / Store / Mystery",17));
             detail.AddChild(Button(selectedCharacter.CarriedConsumables.Count>0?"Replace carried consumable":"Carry",()=>CommitInventoryMutation(state=>new RunInventoryProgressionService().Carry(state,state.Revision,selectedCharacter.CharacterId,selectedConsumable.InstanceId),returnTarget)));
         }
-        Button back = Button("Back",()=>ReturnFromInventory(run,returnTarget));
+        Button back = Button("Back",()=>ReturnFromInventory(run,returnTarget), true);
         back.Name = "InventoryBack";
         root.AddChild(PlaceControl(back,new Vector2((CanvasWidth-InventoryBackSize.X)*.5f,InventoryColumnsBottom+14),InventoryBackSize));
         PushEscapeLayer("inventory", () => ReturnFromInventory(run, returnTarget));
@@ -2372,7 +2391,7 @@ public partial class GodotPlayableRunMain : Control
         panel.ClipContents = true;
         var margin = new MarginContainer { Name = "Margin" };
         foreach (string side in new[] { "left", "right", "top", "bottom" })
-            margin.AddThemeConstantOverride($"margin_{side}", 12);
+            margin.AddThemeConstantOverride($"margin_{side}", GodotTacticsTheme.SpaceMd);
         panel.AddChild(margin);
         var column = new VBoxContainer { Name = "Column" };
         column.AddThemeConstantOverride("separation", 8);
@@ -2495,7 +2514,7 @@ public partial class GodotPlayableRunMain : Control
             var confirmRow = new HBoxContainer { Name = "ProgressionAttributeContinueRow", CustomMinimumSize = new Vector2(ProgressionAttributeRowWidth, 0) };
             confirmRow.Alignment = BoxContainer.AlignmentMode.End;
             confirmRow.SizeFlagsHorizontal = SizeFlags.ShrinkBegin;
-            Button confirm = Button("Continue", () => { _progressionConfirmed.Add(key); ShowProgression(run, pending); });
+            Button confirm = Button("Continue", () => { _progressionConfirmed.Add(key); ShowProgression(run, pending); }, true);
             confirm.Name = "ProgressionAttributeContinue";
             confirm.Disabled = !raised;
             confirm.CustomMinimumSize = ProgressionContinueSize;
@@ -2540,7 +2559,7 @@ public partial class GodotPlayableRunMain : Control
             if(candidates.Length==0)
             {
                 choices.AddChild(Label("No legal skill candidate.\nAttribute-only confirmation is allowed.",16));
-                choices.AddChild(Button("Confirm Attribute",()=>CompleteProgression(run.RunId,pending.TransactionKey,proposed,null)));
+                choices.AddChild(Button("Confirm Attribute",()=>CompleteProgression(run.RunId,pending.TransactionKey,proposed,null), true));
             }
             PushEscapeLayer("progression.step2", () =>
             {
@@ -2597,7 +2616,7 @@ public partial class GodotPlayableRunMain : Control
             Size = ProgressionSkillCardSize - new Vector2(24, 16),
             MouseFilter = MouseFilterEnum.Ignore
         };
-        text.AddThemeConstantOverride("separation", 2);
+        text.AddThemeConstantOverride("separation", GodotTacticsTheme.SpaceXs);
         Label heading = Label(title, 15);
         heading.Name = "SkillCardTitle";
         Label detail = Label(SkillCardDetail(metadata), 13);
@@ -2663,7 +2682,7 @@ public partial class GodotPlayableRunMain : Control
         Control root = NewPage(summary.Outcome.ToString(), "Three-encounter slice complete");
         PanelAt(root,new Vector2(450,205),new Vector2(700,470)).Name="TerminalSummaryPanel";
         LabelAt(root, $"Battles: {summary.BattlesCompleted}\nKills: {summary.EnemiesDefeated}\nGold: {summary.TotalGoldEarned}\nItems: {string.Join(", ", summary.AcquiredItems.Select(id => id.Value))}\nDead: {string.Join(", ", summary.DeadCharacters)}", new Vector2(520, 260), 30);
-        Button home = Button("Continue to Fresh Camp", () => { _run!.ConsumeCompletedSummary(); StartNewRunConfirmed(); }); home.Position = new Vector2(620, 620); home.Size = new Vector2(360, 70); root.AddChild(home);
+        Button home = Button("Continue to Fresh Camp", () => { _run!.ConsumeCompletedSummary(); StartNewRunConfirmed(); }, true); home.Position = new Vector2(620, 620); home.Size = new Vector2(360, 70); root.AddChild(home);
     }
 
     private void AbandonRun()
@@ -2683,7 +2702,7 @@ public partial class GodotPlayableRunMain : Control
         Label subtitle = Label("Game is paused", 16); subtitle.HorizontalAlignment = HorizontalAlignment.Center;
         subtitle.AddThemeColorOverride("font_color", GodotTacticsTheme.TextSecondary); menu.AddChild(subtitle);
         menu.AddChild(new ColorRect { Color = GodotTacticsTheme.Accent, CustomMinimumSize = new Vector2(0, 2), MouseFilter = MouseFilterEnum.Ignore });
-        menu.AddChild(Button("CONTINUE",ClosePauseMenu));
+        menu.AddChild(Button("CONTINUE",ClosePauseMenu, true));
         menu.AddChild(Button("OPTIONS",()=>ShowPauseOptions(menu)));
         menu.AddChild(Button("ABANDON RUN", ConfirmAbandonRun));
         menu.AddChild(Button("SAVE AND QUIT", SaveAndQuit));
@@ -2738,7 +2757,7 @@ public partial class GodotPlayableRunMain : Control
             OpenPauseMenu(false);
             _pauseMenuPausedPlayback=ownsPlaybackPause;
         }
-        menu.AddChild(Button("BACK", RestorePauseRoot));
+        menu.AddChild(Button("BACK", RestorePauseRoot, true));
         PushEscapeLayer("pause.options", RestorePauseRoot);
     }
 
@@ -2762,10 +2781,58 @@ public partial class GodotPlayableRunMain : Control
         _pauseMenuPausedPlayback=false;
     }
 
-    private Control NewPage(string title, string subtitle, bool battleBackdrop = false) =>
-        CreatePage(title, subtitle, battleBackdrop, true);
+    private void BuildFittedPageHeader(Control root, string title, string subtitle)
+    {
+        Font font = ThemeDB.FallbackFont;
+        float titleWidth = Mathf.Max(MeasuredTextSize(font, title, GodotTacticsTheme.FontTitle, -1).X, 1f);
+        float titleHeight = MeasuredTextSize(font, title, GodotTacticsTheme.FontTitle, -1).Y;
+        float subtitleHeight = MeasuredTextSize(font, subtitle, GodotTacticsTheme.FontBody, titleWidth).Y;
+        var header = new PanelContainer
+        {
+            Name = "PageHeader",
+            Position = new Vector2(GodotTacticsTheme.SpaceXl, GodotTacticsTheme.SpaceXl),
+            ZIndex = StartPageUiZIndex,
+            MouseFilter = MouseFilterEnum.Ignore,
+            ThemeTypeVariation = GodotTacticsTheme.Panel,
+            ClipContents = true
+        };
+        root.AddChild(header);
+        var labels = new VBoxContainer { MouseFilter = MouseFilterEnum.Ignore };
+        labels.AddThemeConstantOverride("separation", GodotTacticsTheme.SpaceXs);
+        header.AddChild(labels);
+        Label heading = Label(title, GodotTacticsTheme.FontTitle);
+        heading.Name = "PageHeaderTitle";
+        heading.CustomMinimumSize = new Vector2(titleWidth, titleHeight);
+        heading.Size = heading.CustomMinimumSize;
+        labels.AddChild(heading);
+        // 副标题换到标题的宽度里，顶栏就不会被长句子拉成整窗宽。
+        Label detail = Label(subtitle, GodotTacticsTheme.FontBody);
+        detail.Name = "PageHeaderSubtitle";
+        detail.AddThemeColorOverride("font_color", GodotTacticsTheme.TextSecondary);
+        detail.AutowrapMode = TextServer.AutowrapMode.WordSmart;
+        detail.CustomMinimumSize = new Vector2(titleWidth, subtitleHeight);
+        detail.Size = detail.CustomMinimumSize;
+        labels.AddChild(detail);
+        Vector2 padding = PanelContentPadding(header);
+        header.Size = new Vector2(titleWidth + padding.X, titleHeight + GodotTacticsTheme.SpaceXs + subtitleHeight + padding.Y);
+    }
 
-    private Control CreatePage(string title, string subtitle, bool battleBackdrop, bool showHeader)
+    private static Vector2 MeasuredTextSize(Font font, string text, int fontSize, float width) =>
+        font.GetMultilineStringSize(text, HorizontalAlignment.Left, width, fontSize);
+
+    private static Vector2 PanelContentPadding(PanelContainer panel)
+    {
+        StyleBox? style = panel.GetThemeStylebox("panel");
+        float horizontal = (style?.ContentMarginLeft ?? 0f) + (style?.ContentMarginRight ?? 0f);
+        float vertical = (style?.ContentMarginTop ?? 0f) + (style?.ContentMarginBottom ?? 0f);
+        return new Vector2(horizontal, vertical);
+    }
+
+    private Control NewPage(string title, string subtitle, bool battleBackdrop = false, bool fitHeaderToContent = false) =>
+        CreatePage(title, subtitle, battleBackdrop, true, fitHeaderToContent);
+
+    private Control CreatePage(string title, string subtitle, bool battleBackdrop, bool showHeader,
+        bool fitHeaderToContent = false)
     {
         _residentFallbackReason = null;
         _headerRunInfo = null;
@@ -2806,7 +2873,9 @@ public partial class GodotPlayableRunMain : Control
         background.ZIndex = -100; // Persistent Act maps render above the page-owned backdrop.
         background.MouseFilter = MouseFilterEnum.Ignore;
         background.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect); root.AddChild(background);
-        if (!battleBackdrop && showHeader)
+        if (!battleBackdrop && showHeader && fitHeaderToContent)
+            BuildFittedPageHeader(root, title, subtitle);
+        else if (!battleBackdrop && showHeader)
         {
             PanelContainer header = PanelAt(root, PageHeaderRect.Position, PageHeaderRect.Size);
             header.Name = "PageHeader";
@@ -2826,7 +2895,7 @@ public partial class GodotPlayableRunMain : Control
                 VerticalAlignment = VerticalAlignment.Center,
                 SizeFlagsVertical = SizeFlags.ShrinkCenter
             };
-            _headerRunInfo.AddThemeFontSizeOverride("font_size", 13);
+            _headerRunInfo.AddThemeFontSizeOverride("font_size", GodotTacticsTheme.SnapFontSize(13));
             _headerRunInfo.AddThemeColorOverride("font_color", GodotTacticsTheme.TextSecondary);
             row.AddChild(_headerRunInfo);
         }
@@ -2869,9 +2938,16 @@ public partial class GodotPlayableRunMain : Control
         _presentationInputLocked=false;
     }
 
-    private static Button Button(string text, Action action)
+    private static Button Button(string text, Action action, bool primary = false)
     {
-        var button = new Button { Text = text, CustomMinimumSize = new Vector2(300, 56), ThemeTypeVariation = GodotTacticsTheme.PrimaryButton }; button.Pressed += action; return button;
+        var button = new Button
+        {
+            Text = text,
+            CustomMinimumSize = new Vector2(300, 56),
+            ThemeTypeVariation = primary ? GodotTacticsTheme.PrimaryButton : GodotTacticsTheme.SecondaryButton
+        };
+        button.Pressed += action;
+        return button;
     }
     private static Button SmallButton(string text, Action action)
     {
@@ -2892,7 +2968,12 @@ public partial class GodotPlayableRunMain : Control
     }
     internal static bool ShouldShowActiveMarker(bool presentationInputLocked, bool presentationPlaying) =>
         !presentationInputLocked && !presentationPlaying;
-    private static Label Label(string text, int size) { var label = new Label { Text = text }; label.AddThemeFontSizeOverride("font_size", size); return label; }
+    private static Label Label(string text, int size)
+    {
+        var label = new Label { Text = text };
+        label.AddThemeFontSizeOverride("font_size", GodotTacticsTheme.SnapFontSize(size));
+        return label;
+    }
     private static Label LabelAt(Control parent, string text, Vector2 position, int size) { Label label = Label(text, size); label.Position = position; parent.AddChild(label); return label; }
     private void SetStatus(string? text)
     {

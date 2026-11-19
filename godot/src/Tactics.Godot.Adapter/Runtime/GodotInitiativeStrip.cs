@@ -53,14 +53,14 @@ public partial class GodotInitiativeStrip : HBoxContainer
         Name = "InitiativeStrip";
         MouseFilter = MouseFilterEnum.Pass;
         Alignment = AlignmentMode.End;
-        AddThemeConstantOverride("separation", 10);
+        AddThemeConstantOverride("separation", GodotTacticsTheme.SpaceSm);
         _roundLabel.VerticalAlignment = VerticalAlignment.Center;
         _roundLabel.HorizontalAlignment = HorizontalAlignment.Right;
         _roundLabel.CustomMinimumSize = new Vector2(74, 46);
         _roundLabel.AddThemeColorOverride("font_color", new Color("e8dcc1"));
-        _roundLabel.AddThemeFontSizeOverride("font_size", 16);
+        _roundLabel.AddThemeFontSizeOverride("font_size", GodotTacticsTheme.FontSmall);
         _slots.Alignment = AlignmentMode.End;
-        _slots.AddThemeConstantOverride("separation", 6);
+        _slots.AddThemeConstantOverride("separation", GodotTacticsTheme.SpaceSm);
         _slots.SizeFlagsHorizontal = SizeFlags.ExpandFill;
         AddChild(_roundLabel);
         AddChild(_slots);
@@ -300,7 +300,7 @@ public partial class GodotInitiativeStrip : HBoxContainer
             VerticalAlignment = VerticalAlignment.Center,
             MouseFilter = MouseFilterEnum.Ignore
         };
-        label.AddThemeFontSizeOverride("font_size", 24);
+        label.AddThemeFontSizeOverride("font_size", GodotTacticsTheme.FontHeading);
         label.AddThemeColorOverride("font_color", new Color("c8b99c"));
         return label;
     }

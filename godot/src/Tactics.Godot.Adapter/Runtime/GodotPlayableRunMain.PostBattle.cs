@@ -150,7 +150,7 @@ public partial class GodotPlayableRunMain
 
     /// <summary>Overview text-hint slot: on the status line, left of the shared Inventory button.</summary>
     internal static readonly Rect2 PostBattleOverviewButtonRect = new(
-        new Vector2(ExplorationInventoryButtonRect.Position.X - 260, ExplorationInventoryButtonRect.Position.Y + 12), new Vector2(240, 34));
+        new Vector2(ExplorationInventoryButtonRect.Position.X - 260, ExplorationInventoryButtonRect.Position.Y + 12), new Vector2(240, 40));
     internal const string PostBattleOverviewLabel = "[M] Overview";
     internal const string PostBattleCurrentMapLabel = "[M] Back to map";
 

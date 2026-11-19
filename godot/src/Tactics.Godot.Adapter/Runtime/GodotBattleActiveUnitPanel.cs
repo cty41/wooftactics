@@ -34,7 +34,7 @@ public partial class GodotBattleActiveUnitPanel : Control
     private const float NameHeight = 32f;
     private const float NameGap = 4f;
     private const float RowHeight = 34f;
-    private const float RowGap = 8f;
+    private const float RowGap = GodotTacticsTheme.SpaceSm;
 
     private TextureRect? _portrait;
     private VBoxContainer? _rows;
@@ -53,7 +53,15 @@ public partial class GodotBattleActiveUnitPanel : Control
     {
         if (_portrait is not null) return;
         MouseFilter = MouseFilterEnum.Ignore;
+        // 编辑器场景已经带好节点。运行时这张卡仍按固定尺寸摆放，不能再套一套容器布局。
+        if (FindChild("ActiveUnitPortrait", true, false) is not null) AdoptExistingLayout();
+        else BuildLayout();
+        Visible = false;
+    }
 
+    /// <summary>生成与运行时相同的节点树，供 ResourceSaver 写场景。已有场景文件时生成器不会调用。</summary>
+    public void BuildLayout()
+    {
         _portrait = new TextureRect
         {
             Name = "ActiveUnitPortrait",
@@ -68,11 +76,12 @@ public partial class GodotBattleActiveUnitPanel : Control
         {
             Name = "ActiveUnitName",
             Size = new Vector2(BarWidth, NameHeight),
+            ThemeTypeVariation = GodotTacticsTheme.HeadingLabel,
             HorizontalAlignment = HorizontalAlignment.Left,
             VerticalAlignment = VerticalAlignment.Center,
             MouseFilter = MouseFilterEnum.Ignore
         };
-        _name.AddThemeFontSizeOverride("font_size", 22);
+        _name.AddThemeFontSizeOverride("font_size", GodotTacticsTheme.FontHeading);
         AddChild(_name);
 
         var rows = new VBoxContainer
@@ -93,7 +102,20 @@ public partial class GodotBattleActiveUnitPanel : Control
         rows.AddChild(manaRow);
         (_special, _specialText, _specialRow) = CreateResourceRow("Special", LowCorruptionColor);
         rows.AddChild(_specialRow);
-        Visible = false;
+    }
+
+    private void AdoptExistingLayout()
+    {
+        _portrait = (TextureRect)FindChild("ActiveUnitPortrait", true, false);
+        _name = (Label)FindChild("ActiveUnitName", true, false);
+        _rows = (VBoxContainer)FindChild("ActiveUnitResourceRows", true, false);
+        _health = (ProgressBar)FindChild("HealthBar", true, false);
+        _healthText = (Label)FindChild("HealthValue", true, false);
+        _mana = (ProgressBar)FindChild("ManaBar", true, false);
+        _manaText = (Label)FindChild("ManaValue", true, false);
+        _special = (ProgressBar)FindChild("SpecialBar", true, false);
+        _specialText = (Label)FindChild("SpecialValue", true, false);
+        _specialRow = (Control)FindChild("SpecialResourceRow", true, false);
     }
 
     public override void _Process(double delta)
@@ -132,7 +154,9 @@ public partial class GodotBattleActiveUnitPanel : Control
             _specialRow.Modulate = Colors.White;
         }
 
-        LayoutBlock(special is not null ? 3 : 2);
+        // 场景版的头像挂在容器里，位置由容器决定。运行时头像直接挂在面板上，才按中线重排。
+        if (_portrait!.GetParent() is not Container)
+            LayoutBlock(special is not null ? 3 : 2);
         Visible = true;
     }
 
@@ -196,11 +220,21 @@ public partial class GodotBattleActiveUnitPanel : Control
             Name = name + "Bar",
             Position = Vector2.Zero,
             Size = new Vector2(BarWidth, RowHeight),
+            ThemeTypeVariation = GodotTacticsTheme.ResourceBar,
             ShowPercentage = false,
             MouseFilter = MouseFilterEnum.Ignore
         };
         ApplyBarStyle(bar, fill);
         row.AddChild(bar);
+        var scrim = new ColorRect
+        {
+            Name = name + "ValueScrim",
+            Position = new Vector2(0, (RowHeight - GodotTacticsTheme.FontHeading) * .5f),
+            Size = new Vector2(BarWidth, GodotTacticsTheme.FontHeading),
+            Color = new Color(GodotTacticsTheme.Background, .78f),
+            MouseFilter = MouseFilterEnum.Ignore
+        };
+        row.AddChild(scrim);
         var text = new Label
         {
             Name = name + "Value",
@@ -210,7 +244,7 @@ public partial class GodotBattleActiveUnitPanel : Control
             VerticalAlignment = VerticalAlignment.Center,
             MouseFilter = MouseFilterEnum.Ignore
         };
-        text.AddThemeFontSizeOverride("font_size", 18);
+        text.AddThemeFontSizeOverride("font_size", GodotTacticsTheme.FontBody);
         row.AddChild(text);
         return (bar, text, row);
     }

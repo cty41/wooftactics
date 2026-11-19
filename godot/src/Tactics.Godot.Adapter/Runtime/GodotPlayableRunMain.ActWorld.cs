@@ -195,7 +195,7 @@ public partial class GodotPlayableRunMain
     {
         if (!ReferenceEquals(_page, page) || IsQueuedForDeletion()) return;
         SetStatus($"Act preparation failed: {error}");
-        page.AddChild(PlaceControl(Button("Retry Act Preparation", () => PrepareActWorld(seed, runId, resume, contentPlan)),
+        page.AddChild(PlaceControl(Button("Retry Act Preparation", () => PrepareActWorld(seed, runId, resume, contentPlan), true),
             new Vector2(580, 530), new Vector2(440, 64)));
     }
 
