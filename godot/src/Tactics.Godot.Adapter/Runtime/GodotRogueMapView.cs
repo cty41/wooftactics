@@ -67,8 +67,9 @@ public partial class GodotRogueMapView : Control
             Vector2 start = NodeCenter(connection.FromNodeId);
             Vector2 end = NodeCenter(connection.ToNodeId);
             Vector2 direction = start.DirectionTo(end);
-            DrawLine(start + direction * NodeRadius, end - direction * NodeRadius, color,
-                connection.Traversed ? 4f : available ? 2.5f : 1.25f, true);
+            float radius = NodeRadius * _zoom;
+            float width = (connection.Traversed ? 4f : available ? 2.5f : 1.25f) * _zoom;
+            DrawLine(start + direction * radius, end - direction * radius, color, Math.Max(1f, width), true);
         }
         foreach (PureRunMapNodeSnapshot node in _snapshot.Nodes)
             DrawNode(node);
@@ -162,15 +163,20 @@ public partial class GodotRogueMapView : Control
     {
         Font font = ThemeDB.FallbackFont;
         const string hints = "[LMB] inspect   [RMB hold] drag   [Wheel] zoom   [M] overview   [F/Home] focus";
-        Vector2 size = font.GetStringSize(hints, HorizontalAlignment.Left, -1, 14);
-        Vector2 origin = new(Size.X - size.X - 22, Size.Y - 20);
-        DrawRect(new Rect2(origin - new Vector2(10, 17), size + new Vector2(20, 23)), new Color(0, 0, 0, .42f));
-        DrawString(font, origin, hints, HorizontalAlignment.Left, -1, 14, new Color("c4d0d3b8"));
+        int hintSize = GodotTacticsTheme.FontSmall;
+        Vector2 size = font.GetStringSize(hints, HorizontalAlignment.Left, -1, hintSize);
+        Vector2 origin = new(Size.X - size.X - GodotTacticsTheme.SpaceMd, Size.Y - GodotTacticsTheme.SpaceMd);
+        DrawRect(new Rect2(origin - new Vector2(GodotTacticsTheme.SpaceSm, GodotTacticsTheme.SpaceMd),
+            size + new Vector2(GodotTacticsTheme.SpaceMd, GodotTacticsTheme.SpaceLg)),
+            new Color(GodotTacticsTheme.Background, .72f));
+        DrawString(font, origin, hints, HorizontalAlignment.Left, -1, hintSize, new Color("c4d0d3b8"));
     }
 
     private void DrawNode(PureRunMapNodeSnapshot node)
     {
         Vector2 center = NodeCenter(node.NodeId);
+        float scale = _zoom;
+        float radius = NodeRadius * scale;
         Color fill = node.State switch
         {
             PureRunMapNodeState.Available => new Color("4fa9c6"),
@@ -180,29 +186,41 @@ public partial class GodotRogueMapView : Control
             PureRunMapNodeState.Completed => new Color("d9d6c7"),
             _ => new Color("52616a")
         };
-        DrawCircle(center, NodeRadius, fill);
-        Color outline = node.NodeId == _hoveredNodeId ? Colors.White : new Color("17242c");
-        DrawArc(center, NodeRadius, 0, Mathf.Tau, 40, outline, node.NodeId == _hoveredNodeId ? 4f : 2f, true);
-        string glyph = node.Kind switch
-        {
-            Tactics.Core.Runs.PureRunNodeKind.Battle => "B",
-            Tactics.Core.Runs.PureRunNodeKind.Rest => "R",
-            Tactics.Core.Runs.PureRunNodeKind.Store => "$",
-            _ => "?"
-        };
+        DrawCircle(center, radius, fill);
+        bool hovered = node.NodeId == _hoveredNodeId;
+        Color outline = hovered ? GodotTacticsTheme.Accent : new Color("17242c");
+        DrawArc(center, radius, 0, Mathf.Tau, 40, outline, Math.Max(1f, (hovered ? 4f : 2f) * scale), true);
         Font font = ThemeDB.FallbackFont;
-        DrawString(font, center + new Vector2(-8, 8), glyph, HorizontalAlignment.Left, -1, 22,
+        int glyphSize = Math.Max(1, Mathf.RoundToInt(GodotTacticsTheme.FontHeading * scale));
+        int titleSize = Math.Max(1, Mathf.RoundToInt(GodotTacticsTheme.FontBody * scale));
+        int layerSize = Math.Max(1, Mathf.RoundToInt(GodotTacticsTheme.FontSmall * scale));
+        DrawString(font, center + new Vector2(-8, 8) * scale, KindGlyph(node.Kind), HorizontalAlignment.Left, -1, glyphSize,
             node.State == PureRunMapNodeState.Locked ? new Color("9ba8ae") : new Color("17242c"));
-        DrawString(font, center + new Vector2(-58, 49), node.Title, HorizontalAlignment.Center, 116, 16,
+        DrawString(font, center + new Vector2(-58, 49) * scale, node.Title, HorizontalAlignment.Center, 116f * scale, titleSize,
             node.State == PureRunMapNodeState.Locked ? new Color("87969d") : new Color("edf1ed"));
-        DrawString(font, center + new Vector2(-48, -37), $"L{node.Layer}", HorizontalAlignment.Center, 96, 13,
+        DrawString(font, center + new Vector2(-48, -37) * scale, $"L{node.Layer}", HorizontalAlignment.Center, 96f * scale, layerSize,
             new Color("b7c6cc"));
     }
 
-    private PureRunMapNodeSnapshot? FindNode(Vector2 point) => _snapshot?.Nodes
-        .Where(node => point.DistanceSquaredTo(NodeCenter(node.NodeId)) <= NodeRadius * NodeRadius)
+    private static string KindGlyph(Tactics.Core.Runs.PureRunNodeKind kind) => kind switch
+    {
+        Tactics.Core.Runs.PureRunNodeKind.Battle => "B",
+        Tactics.Core.Runs.PureRunNodeKind.Elite => "E",
+        Tactics.Core.Runs.PureRunNodeKind.Boss => "!",
+        Tactics.Core.Runs.PureRunNodeKind.Rest => "R",
+        Tactics.Core.Runs.PureRunNodeKind.Store => "S",
+        Tactics.Core.Runs.PureRunNodeKind.Treasure => "T",
+        _ => "?"
+    };
+
+    private PureRunMapNodeSnapshot? FindNode(Vector2 point)
+    {
+        float radius = NodeRadius * _zoom;
+        return _snapshot?.Nodes
+        .Where(node => point.DistanceSquaredTo(NodeCenter(node.NodeId)) <= radius * radius)
         .OrderBy(node => point.DistanceSquaredTo(NodeCenter(node.NodeId)))
         .ThenBy(node => node.NodeId, StringComparer.Ordinal).FirstOrDefault();
+    }
 
     private void CenterOn(string nodeId)
     {

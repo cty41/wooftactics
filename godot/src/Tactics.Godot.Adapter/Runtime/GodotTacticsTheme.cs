@@ -11,6 +11,40 @@ public static class GodotTacticsTheme
     public const string ActionButton = "TacticsActionButton";
     public const string Panel = "TacticsPanel";
     public const string Card = "TacticsCard";
+    public const string HeadingLabel = "TacticsHeadingLabel";
+    public const string SmallLabel = "TacticsSmallLabel";
+    public const string ResourceBar = "TacticsResourceBar";
+
+    // UI 规则档位：新界面的间距与字号只能取这些值（见 .agents/docs/ui-skill-survey.md）。
+    public const int SpaceXs = 4;
+    public const int SpaceSm = 8;
+    public const int SpaceMd = 16;
+    public const int SpaceLg = 24;
+    public const int SpaceXl = 32;
+    public const int FontSmall = 14;
+    public const int FontBody = 18;
+    public const int FontHeading = 22;
+    public const int FontTitle = 28;
+    public static readonly int[] SpacingScale = [SpaceXs, SpaceSm, SpaceMd, SpaceLg, SpaceXl];
+    public static readonly int[] FontSizeScale = [FontSmall, FontBody, FontHeading, FontTitle];
+
+    /// <summary>把任意字号收到档位上。距离相同的时候取更小的一档，避免正文跳成标题。</summary>
+    public static int SnapFontSize(int size)
+    {
+        if (FontSizeScale.Contains(size)) return size;
+        int nearest = FontSmall;
+        int best = int.MaxValue;
+        foreach (int candidate in FontSizeScale)
+        {
+            int distance = Math.Abs(candidate - size);
+            if (distance < best || distance == best && candidate < nearest)
+            {
+                best = distance;
+                nearest = candidate;
+            }
+        }
+        return nearest;
+    }
 
     public static readonly Color Background = new("090d10");
     public static readonly Color PanelBackground = new(0.02f, 0.02f, 0.02f, 0.94f);
@@ -30,7 +64,16 @@ public static class GodotTacticsTheme
         theme.SetColor("font_shadow_color", "Label", new Color(0, 0, 0, .65f));
         theme.SetConstant("shadow_offset_x", "Label", 1);
         theme.SetConstant("shadow_offset_y", "Label", 1);
-        theme.SetFontSize("font_size", "Label", 18);
+        theme.SetFontSize("font_size", "Label", FontBody);
+        theme.SetTypeVariation(HeadingLabel, "Label");
+        theme.SetTypeVariation(SmallLabel, "Label");
+        theme.SetFontSize("font_size", HeadingLabel, FontHeading);
+        theme.SetFontSize("font_size", SmallLabel, FontSmall);
+
+        // 资源条用变体而不是 ProgressBar 基础类型，避免改变其他界面里已有进度条的外观。
+        theme.SetTypeVariation(ResourceBar, "ProgressBar");
+        theme.SetStylebox("background", ResourceBar, ResourceBarBox(new Color("20252a"), new Color("6c7176")));
+        theme.SetStylebox("fill", ResourceBar, ResourceBarFill(new Color("6c7176")));
 
         theme.SetTypeVariation(PrimaryButton, "Button");
         theme.SetTypeVariation(SecondaryButton, "Button");
@@ -65,6 +108,24 @@ public static class GodotTacticsTheme
         theme.SetStylebox("focus", type, Box(new Color(0, 0, 0, 0), AccentHover, 2, radius, 10));
         theme.SetStylebox("disabled", type, Box(DisabledBackground, new Color("45484a"), 1, radius, 12));
     }
+
+    /// <summary>按状态颜色生成资源条填充样式；边框取填充色的提亮版本。</summary>
+    public static StyleBoxFlat ResourceBarFill(Color fill) => ResourceBarBox(fill, fill.Lightened(.18f));
+
+    private static StyleBoxFlat ResourceBarBox(Color background, Color border) => new()
+    {
+        BgColor = background,
+        BorderColor = border,
+        BorderWidthLeft = 2,
+        BorderWidthTop = 2,
+        BorderWidthRight = 2,
+        BorderWidthBottom = 2,
+        CornerRadiusTopLeft = 7,
+        CornerRadiusTopRight = 7,
+        CornerRadiusBottomLeft = 7,
+        CornerRadiusBottomRight = 7,
+        AntiAliasing = true
+    };
 
     private static StyleBoxFlat Box(Color background, Color border, int borderWidth, int radius, float margin) => new()
     {

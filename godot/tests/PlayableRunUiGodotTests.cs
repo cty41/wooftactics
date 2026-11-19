@@ -40,6 +40,154 @@ public class PlayableRunUiGodotTests
 
     [TestCase]
     [RequireGodotRuntime]
+    public void TacticsThemeDefinesSpacingAndFontScalesWithoutChangingExistingEntries()
+    {
+        using Theme theme = GodotTacticsTheme.Create();
+
+        AssertThat(GodotTacticsTheme.SpacingScale).ContainsExactly(4, 8, 16, 24, 32);
+        AssertThat(GodotTacticsTheme.FontSizeScale).ContainsExactly(14, 18, 22, 28);
+        AssertThat(theme.GetFontSize("font_size", GodotTacticsTheme.HeadingLabel)).IsEqual(22);
+        AssertThat(theme.GetFontSize("font_size", GodotTacticsTheme.SmallLabel)).IsEqual(14);
+        AssertThat(theme.GetTypeVariationBase(GodotTacticsTheme.HeadingLabel).ToString()).IsEqual("Label");
+        AssertThat(theme.GetTypeVariationBase(GodotTacticsTheme.ResourceBar).ToString()).IsEqual("ProgressBar");
+        AssertThat(theme.GetStylebox("background", GodotTacticsTheme.ResourceBar) is StyleBoxFlat).IsTrue();
+        AssertThat(theme.GetStylebox("fill", GodotTacticsTheme.ResourceBar) is StyleBoxFlat).IsTrue();
+        using StyleBoxFlat fill = GodotTacticsTheme.ResourceBarFill(new Color("b95f66"));
+        AssertThat(fill.BgColor).IsEqual(new Color("b95f66"));
+
+        // 试点不改已有条目：其他界面依赖这些数值。
+        AssertThat(theme.GetFontSize("font_size", "Label")).IsEqual(18);
+        AssertThat(theme.GetFontSize("font_size", GodotTacticsTheme.PrimaryButton)).IsEqual(20);
+        AssertThat(theme.GetFontSize("font_size", GodotTacticsTheme.CompactButton)).IsEqual(15);
+        AssertThat(((StyleBoxFlat)theme.GetStylebox("panel", GodotTacticsTheme.Panel)).ContentMarginLeft).IsEqual(20f);
+        AssertThat(((StyleBoxFlat)theme.GetStylebox("panel", GodotTacticsTheme.Card)).ContentMarginLeft).IsEqual(14f);
+        AssertThat(theme.HasStylebox("fill", "ProgressBar")).IsFalse();
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public void TacticsThemeResourceMatchesCodeThemeAndRegeneratesIdentically()
+    {
+        using Theme code = GodotTacticsTheme.Create();
+        Theme? saved = ResourceLoader.Load<Theme>(TacticsUiAssetFactory.ThemePath);
+        AssertThat(saved).IsNotNull();
+        AssertThat(saved!.GetFontSize("font_size", "Label")).IsEqual(code.GetFontSize("font_size", "Label"));
+        AssertThat(saved.GetFontSize("font_size", GodotTacticsTheme.HeadingLabel))
+            .IsEqual(code.GetFontSize("font_size", GodotTacticsTheme.HeadingLabel));
+        AssertThat(saved.GetColor("font_color", "Label")).IsEqual(code.GetColor("font_color", "Label"));
+        foreach (string item in new[] { "background", "fill" })
+        {
+            var savedBox = (StyleBoxFlat)saved.GetStylebox(item, GodotTacticsTheme.ResourceBar);
+            var codeBox = (StyleBoxFlat)code.GetStylebox(item, GodotTacticsTheme.ResourceBar);
+            AssertThat(savedBox.BgColor).IsEqual(codeBox.BgColor);
+            AssertThat(savedBox.BorderColor).IsEqual(codeBox.BorderColor);
+            AssertThat(savedBox.BorderWidthLeft).IsEqual(codeBox.BorderWidthLeft);
+        }
+        AssertThat(saved.GetStyleboxTypeList().OrderBy(value => value).ToArray())
+            .ContainsExactly(code.GetStyleboxTypeList().OrderBy(value => value).ToArray());
+
+        string path = $"user://tactics-theme-{Guid.NewGuid():N}.tres";
+        string absolute = ProjectSettings.GlobalizePath(path);
+        try
+        {
+            TacticsUiAssetFactory.SaveTheme(path);
+            byte[] first = File.ReadAllBytes(absolute);
+            TacticsUiAssetFactory.SaveTheme(path);
+            AssertThat(File.ReadAllBytes(absolute).SequenceEqual(first)).IsTrue();
+        }
+        finally
+        {
+            if (File.Exists(absolute)) File.Delete(absolute);
+        }
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public void ActiveUnitPanelSceneBindsLikeTheCodeBuiltPanel()
+    {
+        using ImageTexture texture = ImageTexture.CreateFromImage(Image.CreateEmpty(8, 8, false, Image.Format.Rgba8));
+        var definition = new UnitDefinitionResource { DisplayName = "Demonbound", DownRightTexture = texture };
+        PackedScene? scene = ResourceLoader.Load<PackedScene>(TacticsUiAssetFactory.ActiveUnitPanelScenePath);
+        AssertThat(scene).IsNotNull();
+        GodotBattleActiveUnitPanel panel = scene!.Instantiate<GodotBattleActiveUnitPanel>();
+        // Theme 只有在场景树里才会向下传递；挂到根节点后 _Ready 会自动执行。
+        SceneRoot().AddChild(panel);
+
+        // 场景自带布局节点，_Ready 只绑定而不重复创建。
+        AssertThat(Descendants<Label>(panel).Count(value => value.Name == "ActiveUnitName")).IsEqual(1);
+        panel.Bind(definition, BattleUnit(corruption: 9));
+        AssertThat(panel.Visible).IsTrue();
+        AssertThat(Descendants<TextureRect>(panel).Single(value => value.Name == "ActiveUnitPortrait").Texture)
+            .IsSame(texture);
+        AssertThat(Descendants<Label>(panel).Single(value => value.Name == "ActiveUnitName").Text)
+            .IsEqual("Demonbound");
+        AssertThat(Descendants<Label>(panel).Single(value => value.Name == "HealthValue").Text).IsEqual("16/20");
+        AssertThat(Descendants<Label>(panel).Single(value => value.Name == "ManaValue").Text).IsEqual("7/18");
+        AssertThat(Descendants<Label>(panel).Single(value => value.Name == "SpecialValue").Text)
+            .IsEqual("Corruption  9/10");
+        panel.Bind(definition, BattleUnit());
+        AssertThat(Descendants<Control>(panel).Single(value => value.Name == "SpecialResourceRow").Visible)
+            .IsFalse();
+        // 拼成一个字符串再断言，失败时能直接看到是哪条规则、哪个节点。
+        AssertThat(string.Join('\n', UiDesignRuleChecker.Check(panel, GodotTacticsTheme.PanelBackground)))
+            .IsEqual(string.Empty);
+        panel.Free();
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public void ActiveUnitPanelPassesUiDesignRules()
+    {
+        var panel = new GodotBattleActiveUnitPanel
+        {
+            Theme = GodotTacticsTheme.Create(),
+            Size = new Vector2(414, 174)
+        };
+        SceneRoot().AddChild(panel);
+        using Image image = Image.CreateEmpty(8, 8, false, Image.Format.Rgba8);
+        image.Fill(Colors.White);
+        using ImageTexture texture = ImageTexture.CreateFromImage(image);
+        var definition = new UnitDefinitionResource { DisplayName = "Demonbound", DownRightTexture = texture };
+
+        // main 把头像改成固定正方形，并在隐藏特殊资源行后保持这个尺寸。
+        panel.Bind(definition, BattleUnit(corruption: 9));
+        TextureRect portrait = Descendants<TextureRect>(panel).Single(value => value.Name == "ActiveUnitPortrait");
+        Vector2 portraitSize = portrait.Size;
+        panel.Bind(definition, BattleUnit());
+        AssertThat(portrait.Size).IsEqual(portraitSize);
+        AssertThat(portrait.Size.X).IsEqual(portrait.Size.Y);
+        AssertThat(portrait.Size.X).IsGreater(0f);
+
+        // 运行时这张卡用绝对坐标对齐中线，规则检查会报坐标，但字号仍必须落在档位里。
+        IReadOnlyList<string> violations = UiDesignRuleChecker.Check(panel, GodotTacticsTheme.PanelBackground);
+        AssertThat(violations.Any(value => value.Contains("字号", StringComparison.Ordinal))).IsFalse();
+        AssertThat(violations.Any(value => value.Contains("绝对坐标", StringComparison.Ordinal))).IsTrue();
+        panel.Free();
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public void UiDesignRuleCheckerReportsOffScaleFontAndAbsolutePosition()
+    {
+        var root = new Control { Theme = GodotTacticsTheme.Create() };
+        var label = new Label { Name = "Offender", Position = new Vector2(8, 31), Size = new Vector2(108, 30) };
+        label.AddThemeFontSizeOverride("font_size", 17);
+        root.AddChild(label);
+        SceneRoot().AddChild(root);
+
+        IReadOnlyList<string> violations = UiDesignRuleChecker.Check(root, GodotTacticsTheme.PanelBackground);
+
+        AssertThat(violations.Count).IsEqual(2);
+        AssertThat(violations.Count(value => value.Contains("字号 17", StringComparison.Ordinal))).IsEqual(1);
+        AssertThat(violations.Count(value => value.Contains("绝对坐标", StringComparison.Ordinal))).IsEqual(1);
+        // 低对比度文字同样会被报出（灰字配近黑底）。
+        label.AddThemeColorOverride("font_color", new Color("45484a"));
+        AssertThat(UiDesignRuleChecker.Check(root, GodotTacticsTheme.PanelBackground).Count).IsEqual(3);
+        root.Free();
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
     public void MainSceneLoadsNativePlayableUiContract()
     {
         AssertThat(GodotPlayableRunMain.CanvasWidth).IsEqual(1600);
@@ -523,6 +671,16 @@ public class PlayableRunUiGodotTests
             panel.ThemeTypeVariation == GodotTacticsTheme.Panel)).IsTrue();
         AssertThat(ui.CaptureTestProbe().PageTitle).IsEqual("NEW RUN — START CAMP");
         AssertThat(Descendants<GodotStartCampView>(ui).Count()).IsEqual(1);
+        PanelContainer header = Descendants<PanelContainer>(ui).Single(panel => panel.Name == "PageHeader");
+        PanelContainer party = Descendants<PanelContainer>(ui).Single(panel => panel.Name == "StartCampPartyPanel");
+        Label instructions = Descendants<Label>(ui).Single(label => label.Name == "StartCampPartyInstructions");
+        AssertThat(header.Size.X).IsGreater(120f);
+        AssertThat(header.Size.X).IsLess(GodotPlayableRunMain.PageHeaderRect.Size.X);
+        AssertThat(header.Position.X).IsGreater(0f);
+        AssertThat(header.GetGlobalRect().Intersects(party.GetGlobalRect())).IsFalse();
+        AssertThat(instructions.GetParent()).IsSame(party);
+        AssertThat(instructions.AutowrapMode).IsEqual(TextServer.AutowrapMode.WordSmart);
+        AssertThat(party.GetGlobalRect().Grow(1f).Encloses(instructions.GetGlobalRect())).IsTrue();
         ui.Free();
     }
 
@@ -1118,6 +1276,8 @@ public class PlayableRunUiGodotTests
         await ui.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
     }
 
+    private static Window SceneRoot() => ((SceneTree)Engine.GetMainLoop()).Root;
+
     private static IEnumerable<T> Descendants<T>(Node node) where T : Node
     {
         foreach (Node child in node.GetChildren())
@@ -1220,7 +1380,7 @@ public class PlayableRunUiGodotTests
         meters?.Add(new UnitInstanceId("test.disposed-meter"), disposedMeter);
         disposedMeter.Free();
 
-        newPage?.Invoke(ui, new object[] { "PAGE REPLACEMENT TEST", "Disposed references must be forgotten", false });
+        newPage?.Invoke(ui, new object[] { "PAGE REPLACEMENT TEST", "Disposed references must be forgotten", false, false });
 
         AssertThat(meters).IsNotNull();
         AssertThat(meters?.Count ?? -1).IsEqual(0);

@@ -84,7 +84,7 @@ public partial class GodotDamageNumberLayer : Node2D
             HorizontalAlignment = HorizontalAlignment.Center,
             ZIndex = 1200
         };
-        label.AddThemeFontSizeOverride("font_size", 24);
+        label.AddThemeFontSizeOverride("font_size", GodotTacticsTheme.FontHeading);
         return label;
     }
 
@@ -102,6 +102,6 @@ public partial class GodotDamageNumberLayer : Node2D
         BattlePresentationNumberKind.Heal => new Color(.31f, 1f, .47f),
         BattlePresentationNumberKind.Mana => new Color(.35f, .65f, 1f),
         BattlePresentationNumberKind.Miss => new Color(.59f, .59f, .59f),
-        _ => Colors.White
+        _ => GodotTacticsTheme.TextPrimary
     };
 }
